@@ -27,9 +27,21 @@ jobs:
             cd web
             npm ci
             RESULTS_BASE=./results npm run build
+            # The offline file is built from the same results the site shows.
+            if [ -f ../results/current.json ]; then RESULTS_DIR=../results npm run build:offline; else npm run build:offline; fi
             cd ..
             mkdir -p web/dist/results
-            cp -R results/. web/dist/results/
+            if [ -f results/current.json ]; then
+              cp -R results/. web/dist/results/
+            else
+              # No real results yet: publish the synthetic examples, which the site labels with its banner.
+              id=$(node -p "require('./examples/current.json').buildId")
+              mkdir -p "web/dist/results/$id"
+              cp examples/current.json web/dist/results/current.json
+              cp -R examples/. "web/dist/results/$id/"
+              rm -rf "web/dist/results/$id/golden" "web/dist/results/$id/power"
+            fi
+            cp web/dist-offline/index.html web/dist/casefile-earth-offline.html
             echo "SITE_DIR=web/dist" >> "$GITHUB_ENV"
           else
             mkdir -p _site/results

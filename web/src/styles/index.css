@@ -1,0 +1,279 @@
+/* Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md. */
+/* Style tokens: docs/04_UI.md §11. Every colour in the site comes from these tokens. */
+
+@import 'tailwindcss';
+
+/* Fonts are bundled (nothing is fetched from another origin). unicode-range means a browser downloads
+   a file only when its characters appear: the Bangla font loads in Bangla mode only. */
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/latin-700.css';
+@import '@fontsource/inter/greek-400.css';
+@import '@fontsource/inter/greek-600.css';
+@import '@fontsource/noto-sans-bengali/bengali-400.css';
+@import '@fontsource/noto-sans-bengali/bengali-500.css';
+@import '@fontsource/noto-sans-bengali/bengali-600.css';
+@import '@fontsource/noto-sans-bengali/bengali-700.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* docs/04_UI.md §11 */
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --ink: #1e2430;
+  --muted: #5b6472;
+  --accent: #b87514;
+  --link: #1f5aa6;
+  --grade-strong: #0e6b5c;
+  --grade-supported: #1f8a7a;
+  --grade-cant-tell: #5b6472;
+  --no-verdict: #9c3b2b;
+  --exploration: #6b5ca5;
+
+  /* Derived tokens (same hues): text-safe accent, hairlines, tints, the synthetic banner. */
+  --accent-ink: #8a5510;
+  --accent-soft: #f3e6cf;
+  --surface-2: #fbfaf7;
+  --line: #e2ddd2;
+  --line-strong: #cfc8b9;
+  --banner: #f6dc7a;
+  --banner-ink: #3b2f05;
+  --ring: #b87514;
+  --shadow: 0 1px 2px rgb(30 36 48 / 0.06), 0 4px 16px -6px rgb(30 36 48 / 0.12);
+  --shadow-lg: 0 2px 4px rgb(30 36 48 / 0.06), 0 18px 40px -16px rgb(30 36 48 / 0.28);
+  --grain-opacity: 0.35;
+
+  --radius: 10px;
+  --header-h: 56px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dark {
+  --bg: #0f141c;
+  --surface: #171e29;
+  --ink: #e8e6e1;
+  --muted: #a3acb9;
+  --accent: #e0a33a;
+  --link: #7fb0ff;
+  --grade-strong: #36b39c;
+  --grade-supported: #5cc9b5;
+  --grade-cant-tell: #a3acb9;
+  --no-verdict: #e07a66;
+  --exploration: #a99be0;
+
+  --accent-ink: #e0a33a;
+  --accent-soft: #2a2416;
+  --surface-2: #131a24;
+  --line: #263142;
+  --line-strong: #34425a;
+  --banner: #5c4a0c;
+  --banner-ink: #fbefc4;
+  --ring: #e0a33a;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 6px 18px -8px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 2px 6px rgb(0 0 0 / 0.4), 0 24px 48px -20px rgb(0 0 0 / 0.8);
+  --grain-opacity: 0.18;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-link: var(--link);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-strong: var(--grade-strong);
+  --color-supported: var(--grade-supported);
+  --color-canttell: var(--grade-cant-tell);
+  --color-noverdict: var(--no-verdict);
+  --color-exploration: var(--exploration);
+  --color-banner: var(--banner);
+  --color-banner-ink: var(--banner-ink);
+  --color-ring: var(--ring);
+
+  --font-sans: 'Inter', 'Noto Sans Bengali', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-bn: 'Noto Sans Bengali', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --radius-card: var(--radius);
+  --shadow-card: var(--shadow);
+  --shadow-lift: var(--shadow-lg);
+  --ease-out: var(--ease-out);
+
+  --text-h1: 28px;
+  --text-h1--line-height: 1.2;
+  --text-h2: 22px;
+  --text-h2--line-height: 1.3;
+  --text-h3: 18px;
+  --text-h3--line-height: 1.4;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 56px);
+  }
+  html:lang(bn) body {
+    font-family: var(--font-bn);
+    line-height: 1.65;
+  }
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* A faint paper grain, drawn in code (no image file). */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  #root {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    letter-spacing: -0.015em;
+  }
+  html:lang(bn) h1,
+  html:lang(bn) h2,
+  html:lang(bn) h3 {
+    letter-spacing: 0;
+  }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+  a {
+    color: var(--link);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+  button,
+  [role='button'] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+  .text-h1 {
+    font-size: clamp(24px, 2.2vw + 14px, 34px);
+    line-height: 1.15;
+    font-weight: 650;
+  }
+  .text-h2 {
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 650;
+  }
+  .text-h3 {
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  html:lang(bn) .eyebrow {
+    font-family: var(--font-bn);
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 13px;
+  }
+  /* The "can't test here" hatching (docs/04_UI.md §6.3): 45°, 30% opacity. */
+  .hatch {
+    background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--muted) 30%, transparent) 0 2px, transparent 2px 6px);
+  }
+  .paper-edge {
+    background-image: linear-gradient(to bottom, var(--surface), var(--surface-2));
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Observable Plot output follows the tokens. */
+figure.cfe-plot svg {
+  overflow: visible;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+figure.cfe-plot [aria-label='tip'] path {
+  fill: var(--surface);
+  stroke: var(--line-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  body::before,
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+}
