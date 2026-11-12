@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/series.schema.json",
+  "title": "Series — one variable for one region: monthly values for display and one value per year per season (03_SCIENCE §2)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/series@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/variableId"
+    },
+    "region": {
+      "$ref": "common.schema.json#/$defs/regionId"
+    },
+    "units": {
+      "type": "object",
+      "properties": {
+        "monthly": {
+          "type": "string"
+        },
+        "aggregated": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "monthly",
+        "aggregated"
+      ]
+    },
+    "rule": {
+      "enum": [
+        "mean",
+        "sum"
+      ]
+    },
+    "monthly": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "start": {
+          "type": "string",
+          "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+        },
+        "values": {
+          "$ref": "common.schema.json#/$defs/values"
+        },
+        "coverage": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      },
+      "required": [
+        "start",
+        "values",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "seasons": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/seasonId"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "years": {
+            "$ref": "common.schema.json#/$defs/years"
+          },
+          "values": {
+            "$ref": "common.schema.json#/$defs/values"
+          },
+          "monthsUsed": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "coverage": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "years",
+          "values",
+          "monthsUsed",
+          "coverage"
+        ]
+      },
+      "minProperties": 1
+    },
+    "areaKm2": {
+      "type": "number"
+    },
+    "effectiveCells": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "provenance": {
+      "$ref": "provenance.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "variable",
+    "region",
+    "units",
+    "rule",
+    "monthly",
+    "seasons",
+    "areaKm2",
+    "effectiveCells",
+    "provenance"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "CaseFile Earth",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" }
+  },
+  "hostRequirements": { "cpus": 4 },
+  "secrets": {
+    "EARTHDATA_USERNAME": { "description": "NASA Earthdata Login user name (Parts 2 and 4 only)" },
+    "EARTHDATA_PASSWORD": { "description": "NASA Earthdata Login password (Parts 2 and 4 only)" }
+  },
+  "postCreateCommand": "pip install --user uv && cd python && uv sync --extra pipeline"
+}

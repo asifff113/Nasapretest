@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/current.schema.json",
+  "title": "Pointer to the build the site shows — results/current.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/current@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "previous": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "path",
+    "previous",
+    "synthetic"
+  ]
+}

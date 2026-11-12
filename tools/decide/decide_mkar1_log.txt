@@ -1,0 +1,10 @@
+n=20 done 1s
+n=25 done 1s
+n=30 done 2s
+n=35 done 3s
+n=40 done 4s
+n=46 done 6s
+V1_sen_clip0 {'domainCells': 45, 'worstFalseAlarmInDomain': 7.9, 'meanPowerInDomain': 26.27, 'falseAlarmRange_phi_le_0.6': [3.17, 8.08], 'phiMaxByN': {20: 0.5, 25: 0.6, 30: 0.7, 35: 0.7, 40: 0.7, 46: 0.7}, 'coverageMin_2.25': 95.1}
+V2_dyn_neg {'domainCells': 50, 'worstFalseAlarmInDomain': 7.88, 'meanPowerInDomain': 26.41, 'falseAlarmRange_phi_le_0.6': [5.1, 7.88], 'phiMaxByN': {20: 0.6, 25: 0.7, 30: 0.7, 35: 0.8, 40: 0.8, 46: 0.8}, 'coverageMin_2.25': 95.3}
+V3_dyn_clip0 {'domainCells': 50, 'worstFalseAlarmInDomain': 7.75, 'meanPowerInDomain': 24.63, 'falseAlarmRange_phi_le_0.6': [3.23, 7.75], 'phiMaxByN': {20: 0.6, 25: 0.7, 30: 0.7, 35: 0.8, 40: 0.8, 46: 0.8}, 'coverageMin_2.25': 95.45}
+V4_sen_neg {'domainCells': 44, 'worstFalseAlarmInDomain': 7.65, 'meanPowerInDomain': 27.98, 'falseAlarmRange_phi_le_0.6': [5.17, 8.12], 'phiMaxByN': {20: 0.4, 25: 0.6, 30: 0.7, 35: 0.7, 40: 0.7, 46: 0.7}, 'coverageMin_2.25': 95.0}

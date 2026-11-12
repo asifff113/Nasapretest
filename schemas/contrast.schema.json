@@ -1,0 +1,347 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/contrast.schema.json",
+  "title": "Contrast — the trend in the difference A − B for one pair (03_SCIENCE §8.5)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/contrast@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "id": {
+      "type": "string"
+    },
+    "pair": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/pairId"
+        },
+        "a": {
+          "$ref": "common.schema.json#/$defs/regionId"
+        },
+        "b": {
+          "$ref": "common.schema.json#/$defs/regionId"
+        },
+        "preRegistered": {
+          "type": "boolean"
+        },
+        "lead": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "a",
+        "b",
+        "preRegistered",
+        "lead"
+      ]
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/analysedVariable"
+    },
+    "season": {
+      "$ref": "common.schema.json#/$defs/seasonId"
+    },
+    "window": {
+      "$ref": "common.schema.json#/$defs/window"
+    },
+    "family": {
+      "$ref": "common.schema.json#/$defs/family"
+    },
+    "multiplicity": {
+      "$ref": "common.schema.json#/$defs/multiplicity"
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "grade": {
+      "enum": [
+        "strong",
+        "supported",
+        "cant_tell_yet",
+        null
+      ]
+    },
+    "reason": {
+      "enum": [
+        "outside_domain",
+        "short_record",
+        "too_short",
+        "missing_year",
+        "not_testable",
+        "break_review",
+        "exploration",
+        null
+      ]
+    },
+    "estimand": {
+      "const": "trend_in_difference"
+    },
+    "difference": {
+      "type": "object",
+      "properties": {
+        "years": {
+          "$ref": "common.schema.json#/$defs/years"
+        },
+        "values": {
+          "$ref": "common.schema.json#/$defs/values"
+        },
+        "units": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "years",
+        "values",
+        "units"
+      ]
+    },
+    "domain": {
+      "$ref": "common.schema.json#/$defs/domain"
+    },
+    "stats": {
+      "$ref": "common.schema.json#/$defs/stats"
+    },
+    "robustness": {
+      "$ref": "common.schema.json#/$defs/robustness"
+    },
+    "doubts": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/doubt"
+      },
+      "uniqueItems": true
+    },
+    "regions": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/regionId"
+            },
+            "verdict": {
+              "type": "string"
+            },
+            "ratePerDecade": {
+              "type": "number"
+            },
+            "rateLowPerDecade": {
+              "type": "number"
+            },
+            "rateHighPerDecade": {
+              "type": "number"
+            },
+            "pAdjusted": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "status": {
+              "$ref": "common.schema.json#/$defs/status"
+            },
+            "grade": {
+              "enum": [
+                "strong",
+                "supported",
+                "cant_tell_yet",
+                null
+              ]
+            },
+            "inDomain": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "verdict",
+            "ratePerDecade",
+            "rateLowPerDecade",
+            "rateHighPerDecade",
+            "pAdjusted",
+            "status",
+            "grade",
+            "inDomain"
+          ]
+        },
+        "b": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/regionId"
+            },
+            "verdict": {
+              "type": "string"
+            },
+            "ratePerDecade": {
+              "type": "number"
+            },
+            "rateLowPerDecade": {
+              "type": "number"
+            },
+            "rateHighPerDecade": {
+              "type": "number"
+            },
+            "pAdjusted": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "status": {
+              "$ref": "common.schema.json#/$defs/status"
+            },
+            "grade": {
+              "enum": [
+                "strong",
+                "supported",
+                "cant_tell_yet",
+                null
+              ]
+            },
+            "inDomain": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "verdict",
+            "ratePerDecade",
+            "rateLowPerDecade",
+            "rateHighPerDecade",
+            "pAdjusted",
+            "status",
+            "grade",
+            "inDomain"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "a",
+        "b"
+      ]
+    },
+    "labels": {
+      "type": "object",
+      "properties": {
+        "oppositeFittedDirections": {
+          "type": "boolean"
+        },
+        "supportedOppositeTrends": {
+          "type": "boolean"
+        },
+        "ratesDiffer": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "oppositeFittedDirections",
+        "supportedOppositeTrends",
+        "ratesDiffer"
+      ]
+    },
+    "sensitivity": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "variable": {
+          "$ref": "common.schema.json#/$defs/analysedVariable"
+        },
+        "path": {
+          "type": "string"
+        },
+        "window": {
+          "$ref": "common.schema.json#/$defs/window"
+        },
+        "rateImergPerDecade": {
+          "type": "number"
+        },
+        "rateMerraPerDecade": {
+          "type": "number"
+        },
+        "sameSign": {
+          "type": "boolean"
+        },
+        "imergExcludesZero": {
+          "type": "boolean"
+        },
+        "merraExcludesZero": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "variable",
+        "path",
+        "window",
+        "rateImergPerDecade",
+        "rateMerraPerDecade",
+        "sameSign",
+        "imergExcludesZero",
+        "merraExcludesZero"
+      ],
+      "additionalProperties": false
+    },
+    "practical": {
+      "$ref": "common.schema.json#/$defs/practical"
+    },
+    "spine": {
+      "$ref": "common.schema.json#/$defs/spine"
+    },
+    "chart": {
+      "$ref": "common.schema.json#/$defs/chart"
+    },
+    "split": {
+      "$ref": "common.schema.json#/$defs/pairSplit"
+    },
+    "text": {
+      "$ref": "common.schema.json#/$defs/text"
+    },
+    "provenance": {
+      "$ref": "provenance.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "id",
+    "pair",
+    "variable",
+    "season",
+    "window",
+    "family",
+    "multiplicity",
+    "status",
+    "grade",
+    "reason",
+    "estimand",
+    "difference",
+    "domain",
+    "stats",
+    "robustness",
+    "doubts",
+    "regions",
+    "labels",
+    "sensitivity",
+    "practical",
+    "spine",
+    "chart",
+    "split",
+    "text",
+    "provenance"
+  ]
+}

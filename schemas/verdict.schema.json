@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/verdict.schema.json",
+  "title": "Verdict — one region, one variable, one season, main window (03_SCIENCE §8)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/verdict@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "id": {
+      "type": "string"
+    },
+    "variable": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/analysedVariable"
+        },
+        "kind": {
+          "enum": [
+            "satellite",
+            "model",
+            "observations"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "units": {
+          "type": "string"
+        },
+        "rule": {
+          "enum": [
+            "mean",
+            "sum"
+          ]
+        },
+        "ratioScale": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "source",
+        "units",
+        "rule",
+        "ratioScale"
+      ]
+    },
+    "region": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/regionId"
+        },
+        "kind": {
+          "enum": [
+            "country",
+            "division",
+            "comparison",
+            "cell",
+            "synthetic"
+          ]
+        },
+        "areaKm2": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "areaKm2"
+      ]
+    },
+    "season": {
+      "$ref": "common.schema.json#/$defs/seasonId"
+    },
+    "window": {
+      "$ref": "common.schema.json#/$defs/window"
+    },
+    "family": {
+      "$ref": "common.schema.json#/$defs/family"
+    },
+    "multiplicity": {
+      "$ref": "common.schema.json#/$defs/multiplicity"
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "grade": {
+      "enum": [
+        "strong",
+        "supported",
+        "cant_tell_yet",
+        null
+      ]
+    },
+    "reason": {
+      "enum": [
+        "outside_domain",
+        "short_record",
+        "too_short",
+        "missing_year",
+        "not_testable",
+        "break_review",
+        "exploration",
+        null
+      ]
+    },
+    "series": {
+      "type": "object",
+      "properties": {
+        "years": {
+          "$ref": "common.schema.json#/$defs/years"
+        },
+        "values": {
+          "$ref": "common.schema.json#/$defs/values"
+        },
+        "units": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "years",
+        "values",
+        "units"
+      ]
+    },
+    "domain": {
+      "$ref": "common.schema.json#/$defs/domain"
+    },
+    "stats": {
+      "$ref": "common.schema.json#/$defs/stats"
+    },
+    "robustness": {
+      "$ref": "common.schema.json#/$defs/robustness"
+    },
+    "doubts": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/doubt"
+      },
+      "uniqueItems": true
+    },
+    "practical": {
+      "$ref": "common.schema.json#/$defs/practical"
+    },
+    "overturn": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "O1",
+          "O2",
+          "O3",
+          "O4",
+          "O5",
+          "O6",
+          "O7"
+        ]
+      },
+      "maxItems": 3
+    },
+    "sensitivity": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Path of the matching IMERG result (rain only)"
+    },
+    "spine": {
+      "$ref": "common.schema.json#/$defs/spine"
+    },
+    "chart": {
+      "$ref": "common.schema.json#/$defs/chart"
+    },
+    "text": {
+      "$ref": "common.schema.json#/$defs/text"
+    },
+    "provenance": {
+      "$ref": "provenance.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "id",
+    "variable",
+    "region",
+    "season",
+    "window",
+    "family",
+    "multiplicity",
+    "status",
+    "grade",
+    "reason",
+    "series",
+    "domain",
+    "stats",
+    "robustness",
+    "doubts",
+    "practical",
+    "overturn",
+    "sensitivity",
+    "spine",
+    "chart",
+    "text",
+    "provenance"
+  ]
+}

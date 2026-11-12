@@ -1,0 +1,192 @@
+{
+ "schema": "casefile/prereg@3",
+ "status": "committed",
+ "commit": null,
+ "signed_by": [
+  "A (example)",
+  "B (example)",
+  "C (example)"
+ ],
+ "hashes": {
+  "analysis_yaml_sha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "input_manifest_sha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "regions_support_sha256": "08919beaa86a293ddd8a436ba3476fffb513e4f56b8ce0494096abd8c6cfe44f"
+ },
+ "alpha": {
+  "confirmatory": 0.05,
+  "secondary_q": 0.05,
+  "map_q": 0.1
+ },
+ "variables": [
+  {
+   "id": "air_temp",
+   "product": "MERRA-2 M2TMNXSLV 5.12.4, T2M (synthetic)",
+   "role": "analysed",
+   "main_window": {
+    "first": 1980,
+    "last": 2025
+   },
+   "practical_threshold": {
+    "units": "°C per decade",
+    "default": 0.1,
+    "by_season": {},
+    "reason": "Example threshold for synthetic data."
+   }
+  },
+  {
+   "id": "rain",
+   "product": "MERRA-2 PRECTOTCORR (synthetic)",
+   "role": "analysed",
+   "main_window": {
+    "first": 1980,
+    "last": 2025
+   },
+   "practical_threshold": {
+    "units": "mm per decade",
+    "default": 40.0,
+    "by_season": {
+     "JJAS": 30.0
+    },
+    "reason": "Example threshold for synthetic data."
+   }
+  },
+  {
+   "id": "rain_imerg",
+   "product": "GPM IMERG V07 Final monthly (synthetic)",
+   "role": "sensitivity",
+   "main_window": {
+    "first": 1998,
+    "last": 2024
+   },
+   "practical_threshold": {
+    "units": "mm per decade",
+    "default": 40.0,
+    "by_season": {
+     "JJAS": 30.0
+    },
+    "reason": "Same as rain."
+   }
+  }
+ ],
+ "seasons": {
+  "main": "ANN",
+  "secondary": [
+   "MAM",
+   "JJAS"
+  ],
+  "djf_starts_one_year_later": true
+ },
+ "regions": {
+  "support_rule": {
+   "min_native_cells": 4
+  },
+  "set": [
+   {
+    "id": "synthetic:north_plain",
+    "role": "home",
+    "effective_native_cells": {
+     "merra2_native": 24.0,
+     "imerg_native": 750.0
+    }
+   },
+   {
+    "id": "synthetic:south_delta",
+    "role": "comparison",
+    "effective_native_cells": {
+     "merra2_native": 24.0005,
+     "imerg_native": 750.0
+    }
+   },
+   {
+    "id": "synthetic:east_coast",
+    "role": "division",
+    "effective_native_cells": {
+     "merra2_native": 19.2003,
+     "imerg_native": 600.0
+    }
+   }
+  ]
+ },
+ "pairs": [
+  {
+   "id": "pair_north_vs_delta",
+   "a": "synthetic:north_plain",
+   "b": "synthetic:south_delta",
+   "lead": true,
+   "question": {
+    "en": "Has rain changed differently in North Plain and South Delta? (example)",
+    "bn": "উত্তর সমভূমি ও দক্ষিণ ব-দ্বীপে কি বৃষ্টি ভিন্নভাবে বদলেছে? (উদাহরণ)"
+   }
+  }
+ ],
+ "windows": {
+  "alternatives": [
+   {
+    "id": "s3",
+    "start_shift": 3,
+    "end_shift": 0
+   },
+   {
+    "id": "s6",
+    "start_shift": 6,
+    "end_shift": 0
+   },
+   {
+    "id": "e3",
+    "start_shift": 0,
+    "end_shift": -3
+   },
+   {
+    "id": "e6",
+    "start_shift": 0,
+    "end_shift": -6
+   },
+   {
+    "id": "s3e3",
+    "start_shift": 3,
+    "end_shift": -3
+   }
+  ]
+ },
+ "headline_cases": [
+  {
+   "kind": "contrast",
+   "pair": "pair_north_vs_delta",
+   "variable": "rain",
+   "season": "ANN"
+  },
+  {
+   "kind": "contrast",
+   "pair": "pair_north_vs_delta",
+   "variable": "air_temp",
+   "season": "ANN"
+  }
+ ],
+ "family_preview": {
+  "confirmatory": [
+   "air_temp | synthetic:north_plain | ANN | main",
+   "air_temp | synthetic:south_delta | ANN | main",
+   "air_temp | synthetic:north_plain-minus-synthetic:south_delta | ANN | main",
+   "rain | synthetic:north_plain | ANN | main",
+   "rain | synthetic:south_delta | ANN | main",
+   "rain | synthetic:north_plain-minus-synthetic:south_delta | ANN | main"
+  ],
+  "secondary": [
+   "air_temp | synthetic:north_plain | MAM | main",
+   "air_temp | synthetic:north_plain | JJAS | main",
+   "air_temp | synthetic:south_delta | MAM | main",
+   "air_temp | synthetic:south_delta | JJAS | main",
+   "air_temp | synthetic:north_plain-minus-synthetic:south_delta | MAM | main",
+   "air_temp | synthetic:north_plain-minus-synthetic:south_delta | JJAS | main",
+   "rain | synthetic:north_plain | MAM | main",
+   "rain | synthetic:north_plain | JJAS | main",
+   "rain | synthetic:south_delta | MAM | main",
+   "rain | synthetic:south_delta | JJAS | main",
+   "rain | synthetic:north_plain-minus-synthetic:south_delta | MAM | main",
+   "rain | synthetic:north_plain-minus-synthetic:south_delta | JJAS | main"
+  ]
+ },
+ "amendments": [],
+ "synthetic": true,
+ "sha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e"
+}

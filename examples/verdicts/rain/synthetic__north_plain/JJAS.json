@@ -1,0 +1,533 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": true,
+ "id": "rain__synthetic__north_plain__JJAS",
+ "variable": {
+  "id": "rain",
+  "kind": "model",
+  "source": "merra2_precip",
+  "units": "mm",
+  "rule": "sum",
+  "ratioScale": true
+ },
+ "region": {
+  "id": "synthetic:north_plain",
+  "kind": "synthetic",
+  "areaKm2": 92335.4
+ },
+ "season": "JJAS",
+ "window": {
+  "id": "main",
+  "first": 1980,
+  "last": 2025
+ },
+ "family": "secondary",
+ "multiplicity": {
+  "method": "bh",
+  "familySize": 12,
+  "pAdjusted": 0.0070167303469349145,
+  "alpha": 0.05
+ },
+ "status": "verdict",
+ "grade": "strong",
+ "reason": null,
+ "series": {
+  "years": [
+   1980,
+   1981,
+   1982,
+   1983,
+   1984,
+   1985,
+   1986,
+   1987,
+   1988,
+   1989,
+   1990,
+   1991,
+   1992,
+   1993,
+   1994,
+   1995,
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   1642.5854231446715,
+   1629.2241750315225,
+   1474.8264058722252,
+   1465.1764757251208,
+   1555.4654700659091,
+   1457.9986220824026,
+   1575.2812391576435,
+   1516.222866293443,
+   1561.3823736668046,
+   1575.2756138123054,
+   1499.746688119921,
+   1338.0443255135444,
+   1456.2876761231055,
+   1579.9801818601102,
+   1390.829671063321,
+   1674.3425879561682,
+   1413.8498824070803,
+   1484.7294249954866,
+   1688.9134591576176,
+   1591.381734160705,
+   1536.2900131939527,
+   1354.0993789405538,
+   1621.6059158147157,
+   1567.462733996292,
+   1606.2909969075968,
+   1415.6024360210654,
+   1460.4625250919426,
+   1363.0905126193793,
+   1415.2239057124764,
+   1557.4414253536806,
+   1643.0321092077977,
+   1468.128348814258,
+   1465.7815387675744,
+   1513.2836420421609,
+   1396.8671703532466,
+   1495.7480816206464,
+   1469.072405478936,
+   1329.5538309975232,
+   1330.4723051290418,
+   1303.2972035243292,
+   1544.6551385164091,
+   1377.1677889379848,
+   1421.2875907966795,
+   1303.6063268361504,
+   1187.5198162167367,
+   1233.3808104175466
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": true,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain",
+    "limit": "air_temp, rain, rain_imerg"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "JJAS",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 46,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.19401509698321817,
+    "limit": 0.8
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": -0.049961207238923076,
+    "limit": 0.007528074510300524
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 46,
+  "mk": {
+   "S": -363,
+   "varS": 11155.0,
+   "tau": -0.3507246376811594,
+   "z": -3.4274709552759774,
+   "p": 0.0006092314718990957,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.13366595811511223,
+   "phi": 0.19401509698321817,
+   "vif": 1.468450700884314,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 16380.567568364522,
+   "z": -2.82842129123672,
+   "p": 0.004677820231289943,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -4.760611958466568,
+   "intercept": 11005.074852504884,
+   "ciLowPerYear": -8.364128584631732,
+   "ciHighPerYear": -1.2409686424719715,
+   "multiplier": 2.25,
+   "nPairs": 1035
+  },
+  "change": {
+   "ratePerDecade": -47.606119584665684,
+   "rateLowPerDecade": -83.64128584631732,
+   "rateHighPerDecade": -12.409686424719714,
+   "total": -214.22753813099558,
+   "totalLow": -376.38578630842795,
+   "totalHigh": -55.84358891123872,
+   "span": 45,
+   "units": "mm",
+   "percent": -13.566749041951585,
+   "baseline": 1579.063174741079,
+   "residSd": 98.93609336105956,
+   "snr": 2.1653122824365916
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -4.65930755414092,
+   "intercept": 10807.480078200193,
+   "se": 1.1110923963827928,
+   "r1": 0.12816964152195456,
+   "phi": 0.1879953216669026,
+   "nEff": 31.44138240453065,
+   "seAdj": 1.3583053607539308,
+   "t": -3.430235710440515,
+   "df": 29.44138240453065,
+   "p": 0.0018058797625267154,
+   "ciLowPerYear": -7.435545999850929,
+   "ciHighPerYear": -1.8830691084309108,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -3.4274709552759774,
+   "p": 0.0006092314718990957,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": -0.049961207238923076,
+   "m": 30,
+   "mEff": 6.184988863655657,
+   "mEffStep": 5,
+   "rhoBar": 0.36438201616971627,
+   "phiCells": 0.11768806574177981,
+   "critical": 0.007528074510300524,
+   "passed": true,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "pass",
+   "year": 1995,
+   "pMax": 0.013003474781323162,
+   "pMin": 0.00131292138529922
+  },
+  "windows": {
+   "status": "pass",
+   "agree": 4,
+   "ran": 5,
+   "items": [
+    {
+     "id": "s3",
+     "first": 1983,
+     "last": 2025,
+     "ran": true,
+     "ratePerDecade": -44.96646450021988,
+     "rateLowPerDecade": -87.66677660002485,
+     "rateHighPerDecade": -5.059956342717113,
+     "p": 0.013993819057540222,
+     "agrees": true
+    },
+    {
+     "id": "s6",
+     "first": 1986,
+     "last": 2025,
+     "ran": true,
+     "ratePerDecade": -56.63349045972463,
+     "rateLowPerDecade": -102.77967006162069,
+     "rateHighPerDecade": -11.666695108808653,
+     "p": 0.007952309135076763,
+     "agrees": true
+    },
+    {
+     "id": "e3",
+     "first": 1980,
+     "last": 2022,
+     "ran": true,
+     "ratePerDecade": -33.53668162185613,
+     "rateLowPerDecade": -64.93702696365546,
+     "rateHighPerDecade": -1.6923530568497909,
+     "p": 0.01979972669865569,
+     "agrees": true
+    },
+    {
+     "id": "e6",
+     "first": 1980,
+     "last": 2019,
+     "ran": true,
+     "ratePerDecade": -38.26088829109096,
+     "rateLowPerDecade": -76.50279188393803,
+     "rateHighPerDecade": 2.9820349777407626,
+     "p": 0.042224076075601503,
+     "agrees": true
+    },
+    {
+     "id": "s3e3",
+     "first": 1983,
+     "last": 2022,
+     "ran": true,
+     "ratePerDecade": -27.99642456936226,
+     "rateLowPerDecade": -63.71931028728462,
+     "rateHighPerDecade": 4.746931322234445,
+     "p": 0.06580059890017409,
+     "agrees": false
+    }
+   ]
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "practical": {
+  "threshold": 30.0,
+  "units": "mm per decade",
+  "position": "overlaps"
+ },
+ "overturn": [
+  "O2",
+  "O3",
+  "O5"
+ ],
+ "sensitivity": "verdicts/rain_imerg/synthetic__north_plain/JJAS.json",
+ "spine": {
+  "status": "verdict",
+  "grade": "strong",
+  "reason": null,
+  "ratePerDecade": -47.606119584665684,
+  "rateLowPerDecade": -83.64128584631732,
+  "rateHighPerDecade": -12.409686424719714,
+  "units": "mm",
+  "family": "secondary",
+  "familySize": 12,
+  "inDomain": true
+ },
+ "chart": {
+  "values": [
+   1642.5854231446715,
+   1629.2241750315225,
+   1474.8264058722252,
+   1465.1764757251208,
+   1555.4654700659091,
+   1457.9986220824026,
+   1575.2812391576435,
+   1516.222866293443,
+   1561.3823736668046,
+   1575.2756138123054,
+   1499.746688119921,
+   1338.0443255135444,
+   1456.2876761231055,
+   1579.9801818601102,
+   1390.829671063321,
+   1674.3425879561682,
+   1413.8498824070803,
+   1484.7294249954866,
+   1688.9134591576176,
+   1591.381734160705,
+   1536.2900131939527,
+   1354.0993789405538,
+   1621.6059158147157,
+   1567.462733996292,
+   1606.2909969075968,
+   1415.6024360210654,
+   1460.4625250919426,
+   1363.0905126193793,
+   1415.2239057124764,
+   1557.4414253536806,
+   1643.0321092077977,
+   1468.128348814258,
+   1465.7815387675744,
+   1513.2836420421609,
+   1396.8671703532466,
+   1495.7480816206464,
+   1469.072405478936,
+   1329.5538309975232,
+   1330.4723051290418,
+   1303.2972035243292,
+   1544.6551385164091,
+   1377.1677889379848,
+   1421.2875907966795,
+   1303.6063268361504,
+   1187.5198162167367,
+   1233.3808104175466
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2002.5,
+   1471.9494056755807
+  ],
+  "line": [
+   [
+    1980,
+    1579.063174741079
+   ],
+   [
+    2025,
+    1364.8356366100834
+   ]
+  ],
+  "band": {
+   "low": [
+    [
+     1980,
+     1660.1422988297948
+    ],
+    [
+     2025,
+     1283.7565125213666
+    ]
+   ],
+   "high": [
+    [
+     1980,
+     1499.8712001312
+    ],
+    [
+     2025,
+     1444.0276112199613
+    ]
+   ]
+  }
+ },
+ "text": {
+  "en": {
+   "headline": "Rain and snowfall in North Plain (Jun–Sep total) fell by 214 mm over 1980–2025.",
+   "howMuch": [
+    "Rate: −48 mm per decade (95% range −84 mm to −12 mm).",
+    "Total change over 1980–2025: −214 mm (−14% of the starting level).",
+    "That is bigger than the usual year-to-year ups and downs."
+   ],
+   "howSure": [
+    "A secondary result: one of 12 season tests registered in advance; after correcting for them, p = 0.007.",
+    "Mann–Kendall test allowing for year-to-year memory, before correction: p = 0.005.",
+    "That is below the 0.05 line we set in advance."
+   ],
+   "checks": [
+    "No missing years.",
+    "No documented data change falls inside these years.",
+    "No single year decides the answer.",
+    "4 of 5 other windows agree."
+   ],
+   "practical": [
+    "We decided in advance that a change of 30 mm per decade matters. The 95% range includes smaller changes, so it may or may not matter."
+   ],
+   "overturn": [
+    "The answer leans most on 1995: without it, p = 0.013.",
+    "The weakest of the other windows, 1983–2022, gives −28 mm per decade.",
+    "IMERG, a different rain record, points the same way over 1998–2024."
+   ],
+   "notes": [
+    "Secondary result (seasons).",
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "১৯৮০–২০২৫ সময়ে উত্তর সমভূমিতে (জুন–সেপ্টে মোট) বৃষ্টি ও তুষারপাত মোট ২১৪ মিমি কমেছে।",
+   "howMuch": [
+    "হার: প্রতি দশকে −৪৮ মিমি (৯৫% পরিসর −৮৪ মিমি থেকে −১২ মিমি)।",
+    "১৯৮০–২০২৫ সময়ে মোট পরিবর্তন: −২১৪ মিমি (শুরুর মাত্রার −১৪%)।",
+    "এটি স্বাভাবিক বছর-থেকে-বছরের ওঠানামার চেয়ে বড়।"
+   ],
+   "howSure": [
+    "দ্বিতীয় সারির ফল: আগে থেকে নিবন্ধিত ১২টি ঋতু-পরীক্ষার একটি; সেগুলোর জন্য সংশোধনের পর p = ০.০০৭।",
+    "বছর-থেকে-বছরের স্মৃতি বিবেচনা করা ম্যান–কেন্ডাল পরীক্ষা, সংশোধনের আগে: p = ০.০০৫।",
+    "এটি আমাদের আগে থেকে ঠিক করা ০.০৫ সীমার নিচে।"
+   ],
+   "checks": [
+    "কোনো বছর অনুপস্থিত নয়।",
+    "এই বছরগুলোর মধ্যে ডেটার কোনো নথিভুক্ত পরিবর্তন নেই।",
+    "কোনো একক বছর উত্তর ঠিক করে দিচ্ছে না।",
+    "অন্য ৫টি সময়সীমার মধ্যে ৪টি একমত।"
+   ],
+   "practical": [
+    "আমরা আগেই ঠিক করেছি যে প্রতি দশকে ৩০ মিমি পরিবর্তন গুরুত্বপূর্ণ। ৯৫% পরিসরে এর চেয়ে ছোট পরিবর্তনও আছে, তাই এটি গুরুত্বপূর্ণ হতেও পারে, না-ও পারে।"
+   ],
+   "overturn": [
+    "উত্তরটি সবচেয়ে বেশি নির্ভর করে ১৯৯৫-এর ওপর: সেটি বাদ দিলে p = ০.০১৩।",
+    "অন্য সময়সীমাগুলোর মধ্যে সবচেয়ে দুর্বলটি, ১৯৮৩–২০২২, প্রতি দশকে −২৮ মিমি দেয়।",
+    "IMERG, বৃষ্টির ভিন্ন একটি রেকর্ড, ১৯৯৮–২০২৪ সময়ে একই দিকে নির্দেশ করে।"
+   ],
+   "notes": [
+    "দ্বিতীয় সারির ফল (ঋতু)।",
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 tavgM_2d_flx_Nx: monthly mean surface flux diagnostics (holds PRECTOTCORR, bias-corrected total precipitation)",
+    "shortName": "M2TMNXFLX",
+    "version": "5.12.4",
+    "doi": "10.5067/0JRLVL8YV2Y4",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

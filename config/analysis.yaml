@@ -1,0 +1,94 @@
+# Method settings the engine uses (docs/03_SCIENCE.md). Compiled into the results build; its SHA-256 is the
+# "config hash" in every result's provenance and is copied into config/preregistration.yaml before commit.
+# Choices that belong to the team (variables, regions, pairs, seasons, practical thresholds, alpha) are in
+# config/preregistration.yaml, not here. Changing a value here changes results: only with person A's approval,
+# a decision-log row (docs/01_ARCHITECTURE.md §11), new Methods tables and, after the pre-registration is
+# committed, an amendment (03 §10).
+version: 3
+
+interval:
+  multiplier: 2.25              # widened Sen interval: 2.25 instead of 1.96 (03 §4.4; v3 6.3 r4)
+  label_coverage: 0.95          # the "95% range"; achieved coverage is reported on the Methods page
+
+ar1:
+  # phi_hat = AR(1) coefficient of x(t) = c + phi x(t-1) + delta (t - tbar) on consecutive-year pairs (03 §4.2);
+  # phi~ = clip((n * phi_hat + 2) / (n - 4), 0, 0.95) for n >= 6; clip(phi_hat, 0, 0.95) below.
+  # Chosen on the full calibration grid (docs/12_METHOD_COMPARISON.md §8.1): the largest validated domain and the
+  # lowest worst-case false alarms of the four variants consistent with v3 6.3 rule 1.
+  estimator: ar1_regression_consecutive
+  clip_min: 0.0
+  clip_max: 0.95
+  zero_residual_rel_tol: 1.0e-9 # residSd <= tol * max(1, |median(x)|) counts as zero residuals (03 §4.5)
+
+domain:                         # 03 §5
+  variables: [air_temp, rain, rain_imerg]
+  seasons_allowed: prereg       # ANN plus the seasons listed in the pre-registration
+  min_years_verdict: 20         # D3: a verdict needs at least 20 complete years
+  min_years_exploratory: 15     # D3: 15-19 years are "exploratory"; below 15 "too short to test"
+  allow_missing_years: false    # D4: a missing year inside the window means no verdict
+  max_false_alarm_pct: 8.0      # D5: phi_max(n) = largest tabulated phi with false alarms <= this (methods tables)
+  leftover:                     # D6: pooled leftover-memory check, memory-matched (03 §5.3)
+    lags: [2, 3, 4]
+    quantile: 0.95
+    max_cells: 200
+    m_eff_steps: [1, 2, 3, 5, 10, 20]
+    phi_source: median_cell_phi     # memory for the critical value: median of the cells' own phi~ (not the region series')
+    phi_step: 0.1                   # table step; the critical value is interpolated linearly between steps
+    phi_interpolation: linear
+    phi_cap: 0.8
+    m_eff_rho_power: 2              # m_eff = m / (1 + (m - 1) * rho_bar^2) (docs/12_METHOD_COMPARISON.md §8.2)
+    map_neighbourhood: 5        # 5 x 5 cells on the 1-degree grid for the screening map
+
+robustness:                     # 03 §6 (M5)
+  coverage_drift_min_range: 0.2 # coverage drift doubt needs max - min >= 0.2 and a trend in coverage (p < alpha)
+  break_margin_years: 2         # documented breaks at least this far inside the window are checked
+  loo_min_years: 20
+  windows:                      # default five alternative windows; the pre-registration may restate them
+    - { id: s3,   start_shift: 3, end_shift: 0 }
+    - { id: s6,   start_shift: 6, end_shift: 0 }
+    - { id: e3,   start_shift: 0, end_shift: -3 }
+    - { id: e6,   start_shift: 0, end_shift: -6 }
+    - { id: s3e3, start_shift: 3, end_shift: -3 }
+  windows_min_years: 20
+  windows_agree_min: 4          # fewer than 4 agreeing windows (of those that ran) is a doubt
+  pettitt_alpha: 0.05           # S4 flag only; never decides (03 §6.5)
+
+grade:                          # 03 §8.2; alpha comes from the pre-registration
+  strong_alpha_divisor: 5       # strong: p_adj < alpha / 5 and no doubts
+  supported_max_doubts: 1
+
+map:                            # 03 §7.5 (M8)
+  fdr_q: 0.10                   # Benjamini-Hochberg within each map (Wilks 2016)
+  pool_radius_cells: 2          # 5 x 5 neighbourhood for pooled phi~
+  colour_percentile: 98         # colour limits = +/- 98th percentile of |slope| over testable cells
+
+aggregation:                    # 03 §2 (pipeline)
+  ann_min_months: 10
+  seasons_need_all_months: true
+  coverage_month_min: 0.5
+
+support:                        # 02 §7.3–§7.4 (pipeline); the pre-registration may tighten these, never loosen them
+  min_native_cells: 4           # S1: effective native cells (sum of fractions) on every first-release grid (a 2 x 2 MERRA-2 block)
+  max_spill_share: 0.333        # S2: at most a third of the region mean may describe area outside the region
+  pair_split: disjoint_cells_larger_fraction   # S3: a contrast uses disjoint cells; each side keeps >= min_native_cells
+  subsamples: 5                 # 5 x 5 sample points per native cell for polygon fractions
+
+methods_tables:                 # 03 §9; engine's own simulation (synthetic only)
+  reps: 2000
+  calibration_n: [15, 20, 25, 30, 35, 40, 46]
+  calibration_phi: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+  coverage_n: [20, 25, 30, 46]
+  coverage_phi: [0.0, 0.3, 0.6]
+  power_n: [20, 25, 30, 35, 40, 46]
+  power_phi: [0.0, 0.3, 0.6]
+  power_effects_sd_per_year: [0.02, 0.05, 0.10]
+  leftover_reps: 1000
+  leftover_n: [20, 25, 30, 35, 40, 46]
+
+display:
+  per: decade
+  p_small: 0.001                # below: "< 0.001"
+  p_two_decimals_from: 0.1      # p >= 0.1 with 2 decimals, else 3
+  snr_small: 1.0
+  snr_large: 2.0
+  minus_sign: "−"               # U+2212

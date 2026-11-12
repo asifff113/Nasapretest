@@ -1,0 +1,291 @@
+{
+ "schema": "casefile/region_index@3",
+ "buildId": "synthetic-v3",
+ "synthetic": true,
+ "grids": [
+  {
+   "id": "merra2_native",
+   "lat0": -90.0,
+   "dlat": 0.5,
+   "nlat": 361,
+   "lon0": -180.0,
+   "dlon": 0.625,
+   "nlon": 576
+  },
+  {
+   "id": "imerg_native",
+   "lat0": -89.95,
+   "dlat": 0.1,
+   "nlat": 1800,
+   "lon0": -179.95,
+   "dlon": 0.1,
+   "nlon": 3600
+  },
+  {
+   "id": "global_1deg",
+   "lat0": 89.5,
+   "dlat": -1.0,
+   "nlat": 180,
+   "lon0": -179.5,
+   "dlon": 1.0,
+   "nlon": 360
+  }
+ ],
+ "minNativeCells": 4,
+ "maxSpillShare": 0.333,
+ "cellIdPattern": "cell:<row>_<col>",
+ "regions": [
+  {
+   "id": "synthetic:north_plain",
+   "kind": "synthetic",
+   "role": "home",
+   "name": {
+    "en": "North Plain (example)",
+    "bn": "উত্তর সমভূমি (উদাহরণ)"
+   },
+   "in": {
+    "en": "in North Plain",
+    "bn": "উত্তর সমভূমিতে"
+   },
+   "bbox": [
+    1.0,
+    4.0,
+    4.0,
+    6.5
+   ],
+   "centroid": [
+    2.5,
+    5.25
+   ],
+   "areaKm2": 92335.4,
+   "boundary": {
+    "source": "synthetic box",
+    "licence": "synthetic example"
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 24.0,
+     "spillShare": 0.1337,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 750.0,
+     "spillShare": 0.0,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/synthetic__north_plain.json",
+    "imerg_native": "regions/cells/imerg_native/synthetic__north_plain.json"
+   },
+   "geom": null,
+   "pairs": [
+    "pair_north_vs_delta",
+    "pair_north_vs_east"
+   ]
+  },
+  {
+   "id": "synthetic:south_delta",
+   "kind": "synthetic",
+   "role": "comparison",
+   "name": {
+    "en": "South Delta (example)",
+    "bn": "দক্ষিণ ব-দ্বীপ (উদাহরণ)"
+   },
+   "in": {
+    "en": "in South Delta",
+    "bn": "দক্ষিণ ব-দ্বীপে"
+   },
+   "bbox": [
+    1.0,
+    1.0,
+    4.0,
+    3.5
+   ],
+   "centroid": [
+    2.5,
+    2.25
+   ],
+   "areaKm2": 92654.8,
+   "boundary": {
+    "source": "synthetic box",
+    "licence": "synthetic example"
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 24.0005,
+     "spillShare": 0.1337,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 750.0,
+     "spillShare": 0.0,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/synthetic__south_delta.json",
+    "imerg_native": "regions/cells/imerg_native/synthetic__south_delta.json"
+   },
+   "geom": null,
+   "pairs": [
+    "pair_north_vs_delta"
+   ]
+  },
+  {
+   "id": "synthetic:east_coast",
+   "kind": "synthetic",
+   "role": "division",
+   "name": {
+    "en": "East Coast (example)",
+    "bn": "পূর্ব উপকূল (উদাহরণ)"
+   },
+   "in": {
+    "en": "on the East Coast",
+    "bn": "পূর্ব উপকূলে"
+   },
+   "bbox": [
+    4.5,
+    1.5,
+    6.5,
+    4.5
+   ],
+   "centroid": [
+    5.5,
+    3.0
+   ],
+   "areaKm2": 74076.4,
+   "boundary": {
+    "source": "synthetic box",
+    "licence": "synthetic example"
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 19.2003,
+     "spillShare": 0.1693,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 600.0,
+     "spillShare": 0.0,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/synthetic__east_coast.json",
+    "imerg_native": "regions/cells/imerg_native/synthetic__east_coast.json"
+   },
+   "geom": null,
+   "pairs": [
+    "pair_north_vs_east"
+   ]
+  },
+  {
+   "id": "synthetic:hill_rim",
+   "kind": "synthetic",
+   "role": "division",
+   "name": {
+    "en": "Hill Rim (example)",
+    "bn": "পাহাড়ি প্রান্ত (উদাহরণ)"
+   },
+   "in": {
+    "en": "on the Hill Rim",
+    "bn": "পাহাড়ি প্রান্তে"
+   },
+   "bbox": [
+    6.6,
+    5.0,
+    7.4,
+    5.8
+   ],
+   "centroid": [
+    7.0,
+    5.4
+   ],
+   "areaKm2": 7877.9,
+   "boundary": {
+    "source": "synthetic box",
+    "licence": "synthetic example"
+   },
+   "inSet": false,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 2.0479,
+     "spillShare": 0.3853,
+     "passes": false
+    },
+    "imerg_native": {
+     "effectiveCells": 64.0,
+     "spillShare": 0.0,
+     "passes": true
+    }
+   },
+   "cells": {},
+   "geom": null,
+   "pairs": []
+  }
+ ],
+ "pairs": [
+  {
+   "id": "pair_north_vs_delta",
+   "a": "synthetic:north_plain",
+   "b": "synthetic:south_delta",
+   "lead": true,
+   "preRegistered": true,
+   "question": {
+    "en": "Has rain changed differently in North Plain and South Delta? (example)",
+    "bn": "উত্তর সমভূমি ও দক্ষিণ ব-দ্বীপে কি বৃষ্টি ভিন্নভাবে বদলেছে? (উদাহরণ)"
+   },
+   "split": {
+    "rule": "disjoint_cells_larger_fraction",
+    "grids": {
+     "merra2_native": {
+      "sharedCells": 0,
+      "effectiveCellsA": 24.0,
+      "effectiveCellsB": 24.0005,
+      "passes": true
+     },
+     "imerg_native": {
+      "sharedCells": 0,
+      "effectiveCellsA": 750.0,
+      "effectiveCellsB": 750.0,
+      "passes": true
+     }
+    },
+    "passes": true
+   }
+  },
+  {
+   "id": "pair_north_vs_east",
+   "a": "synthetic:north_plain",
+   "b": "synthetic:east_coast",
+   "lead": false,
+   "preRegistered": false,
+   "question": {
+    "en": "Did North Plain and East Coast change differently? (example, not pre-registered)",
+    "bn": "উত্তর সমভূমি ও পূর্ব উপকূল কি ভিন্নভাবে বদলেছে? (উদাহরণ, আগে নিবন্ধিত নয়)"
+   },
+   "split": {
+    "rule": "disjoint_cells_larger_fraction",
+    "grids": {
+     "merra2_native": {
+      "sharedCells": 0,
+      "effectiveCellsA": 24.0,
+      "effectiveCellsB": 19.2003,
+      "passes": true
+     },
+     "imerg_native": {
+      "sharedCells": 0,
+      "effectiveCellsA": 750.0,
+      "effectiveCellsB": 600.0,
+      "passes": true
+     }
+    },
+    "passes": true
+   }
+  }
+ ]
+}

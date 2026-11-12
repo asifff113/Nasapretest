@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/cell_tiles.schema.json",
+  "title": "Cell tiles — one value per year and season for every 1° cell, read one tile at a time (02_DATA §6)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/cell_tiles@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/analysedVariable"
+    },
+    "grid": {
+      "$ref": "common.schema.json#/$defs/grid"
+    },
+    "tile": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "integer"
+        },
+        "cols": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rows",
+        "cols"
+      ]
+    },
+    "seasons": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/seasonId"
+      }
+    },
+    "years": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "integer"
+        },
+        "last": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "first",
+        "last"
+      ]
+    },
+    "units": {
+      "type": "string"
+    },
+    "dtype": {
+      "const": "int16"
+    },
+    "byteOrder": {
+      "const": "little"
+    },
+    "scale": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "offset": {
+      "type": "number"
+    },
+    "fill": {
+      "const": -32768
+    },
+    "layout": {
+      "const": "[row][col][season][year]"
+    },
+    "path": {
+      "const": "t/<tr>_<tc>.bin.gz"
+    },
+    "tilesPresent": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "provenance": {
+      "$ref": "provenance.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "variable",
+    "grid",
+    "tile",
+    "seasons",
+    "years",
+    "units",
+    "dtype",
+    "byteOrder",
+    "scale",
+    "offset",
+    "fill",
+    "layout",
+    "path",
+    "tilesPresent",
+    "provenance"
+  ]
+}

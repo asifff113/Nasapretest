@@ -1,0 +1,61 @@
+# The fixed region set (docs/02_DATA.md §7; v3 D9). No districts, no drawn boxes, no free-form places.
+# The pipeline turns this file into results/<build>/regions/index.json with native-grid weights, the support
+# result and the contributing cells for each first-release product. Only regions that pass the support rule
+# can enter the pre-registration (config/preregistration.yaml → regions.set). Any 1° cell of the global
+# screening map can also be opened as a place (exploration only).
+version: 3
+
+boundaries:
+  natural_earth_admin0:
+    source: "Natural Earth 1:50m Admin 0 – Countries"
+    url: "https://www.naturalearthdata.com/downloads/50m-cultural-vectors/"
+    licence: "Public domain per Natural Earth's terms (record the statement shipped with the downloaded file; #33)"
+    id_field: ADM0_A3
+  natural_earth_admin1:
+    source: "Natural Earth 1:10m Admin 1 – States, provinces"
+    url: "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/"
+    licence: "Public domain per Natural Earth's terms (record the statement shipped with the file; #33)"
+    id_field: "name, filtered on adm0_a3"   # match "West Bengal (IND)" = name West Bengal, adm0_a3 IND; both fields read in the 1:10m file on 3 Nov 2026 (tools/decide/support_cells.py)
+  natural_earth_land:
+    source: "Natural Earth 1:50m Land (or the union of Admin 0 polygons)"
+    url: "https://www.naturalearthdata.com/downloads/50m-physical-vectors/"
+    licence: "Public domain per Natural Earth's terms (record the statement shipped with the file; #33)"
+    id_field: null
+  geoboundaries_bgd_adm1:
+    source: "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons)"
+    url: "https://github.com/wmgeolab/geoBoundaries/tree/main/releaseData/gbOpen/BGD/ADM1"
+    licence: "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication, per geoBoundaries-BGD-ADM1-metaData.json (read 3 Nov 2026; #33, #33b)"
+    id_field: shapeISO               # match on the ISO code: shapeName spells Rajshahi "Rajshani" and uses Chittagong, Barisal
+
+home:
+  - id: "country:BGD"
+    boundary: natural_earth_admin0
+    match: BGD
+    name: { en: "Bangladesh", bn: "বাংলাদেশ" }
+    in: { en: "in Bangladesh", bn: "বাংলাদেশে" }
+
+divisions:                          # included only if each passes the support rule (02 §7.3). Computed from the boundary
+                                    # files: Dhaka, Khulna, Rajshahi and Rangpur pass; Chittagong fails S2 (coastal spill 0.45);
+                                    # Sylhet, Mymensingh and Barisal fail S1 (under 4 MERRA-2 cells). The pipeline recomputes this (build plan step 2B).
+  - { id: "bd_div:barishal",   boundary: geoboundaries_bgd_adm1, match: "BD-A", name: { en: "Barishal division", bn: "বরিশাল বিভাগ" },     in: { en: "in Barishal division", bn: "বরিশাল বিভাগে" } }
+  - { id: "bd_div:chattogram", boundary: geoboundaries_bgd_adm1, match: "BD-B", name: { en: "Chattogram division", bn: "চট্টগ্রাম বিভাগ" }, in: { en: "in Chattogram division", bn: "চট্টগ্রাম বিভাগে" } }
+  - { id: "bd_div:dhaka",      boundary: geoboundaries_bgd_adm1, match: "BD-C", name: { en: "Dhaka division", bn: "ঢাকা বিভাগ" },           in: { en: "in Dhaka division", bn: "ঢাকা বিভাগে" } }
+  - { id: "bd_div:khulna",     boundary: geoboundaries_bgd_adm1, match: "BD-D", name: { en: "Khulna division", bn: "খুলনা বিভাগ" },         in: { en: "in Khulna division", bn: "খুলনা বিভাগে" } }
+  - { id: "bd_div:mymensingh", boundary: geoboundaries_bgd_adm1, match: "BD-H", name: { en: "Mymensingh division", bn: "ময়মনসিংহ বিভাগ" }, in: { en: "in Mymensingh division", bn: "ময়মনসিংহ বিভাগে" } }
+  - { id: "bd_div:rajshahi",   boundary: geoboundaries_bgd_adm1, match: "BD-E", name: { en: "Rajshahi division", bn: "রাজশাহী বিভাগ" },     in: { en: "in Rajshahi division", bn: "রাজশাহী বিভাগে" } }
+  - { id: "bd_div:rangpur",    boundary: geoboundaries_bgd_adm1, match: "BD-F", name: { en: "Rangpur division", bn: "রংপুর বিভাগ" },       in: { en: "in Rangpur division", bn: "রংপুর বিভাগে" } }
+  - { id: "bd_div:sylhet",     boundary: geoboundaries_bgd_adm1, match: "BD-G", name: { en: "Sylhet division", bn: "সিলেট বিভাগ" },         in: { en: "in Sylhet division", bn: "সিলেট বিভাগে" } }
+
+comparison_candidates:              # the team picks comparison regions in the pre-registration; others stay out of the set
+  - { id: "cmp:west_bengal", boundary: natural_earth_admin1, match: "West Bengal (IND)", name: { en: "West Bengal (India)", bn: "পশ্চিমবঙ্গ (ভারত)" }, in: { en: "in West Bengal", bn: "পশ্চিমবঙ্গে" } }
+  - { id: "cmp:assam",       boundary: natural_earth_admin1, match: "Assam (IND)",       name: { en: "Assam (India)", bn: "আসাম (ভারত)" },           in: { en: "in Assam", bn: "আসামে" } }
+  - { id: "cmp:meghalaya",   boundary: natural_earth_admin1, match: "Meghalaya (IND)",   name: { en: "Meghalaya (India)", bn: "মেঘালয় (ভারত)" },     in: { en: "in Meghalaya", bn: "মেঘালয়ে" } }
+  - { id: "cmp:myanmar",     boundary: natural_earth_admin0, match: MMR,                 name: { en: "Myanmar", bn: "মিয়ানমার" },                  in: { en: "in Myanmar", bn: "মিয়ানমারে" } }
+  - { id: "cmp:nepal",       boundary: natural_earth_admin0, match: NPL,                 name: { en: "Nepal", bn: "নেপাল" },                       in: { en: "in Nepal", bn: "নেপালে" } }
+  - { id: "cmp:bay_of_bengal", box: [80.0, 5.0, 95.0, 22.0], minus: natural_earth_land, name: { en: "Bay of Bengal", bn: "বঙ্গোপসাগর" }, in: { en: "over the Bay of Bengal", bn: "বঙ্গোপসাগরে" } }   # a fixed box minus Natural Earth land (sea only), not a drawn one; the IMERG subset box must cover it
+
+cells:                              # any 1° cell of the screening map (exploration only)
+  grid: global_1deg
+  id_pattern: "cell:<row>_<col>"    # row 0 at 89.5° N, col 0 at 179.5° W
+  name: { en: "1° cell at {lat}, {lon}", bn: "{lat}, {lon}-এর ১° ঘর" }
+  in: { en: "in the 1° cell at {lat}, {lon}", bn: "{lat}, {lon}-এর ১° ঘরে" }

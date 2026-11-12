@@ -1,0 +1,4 @@
+n=25 independent cells=5: flags AR(1) 0.3 9%, mixed memory 35%, AR(2) 100%
+n=25 independent cells=20: flags AR(1) 0.3 22%, mixed memory 89%, AR(2) 100%
+n=46 independent cells=5: flags AR(1) 0.3 6%, mixed memory 75%, AR(2) 100%
+n=46 independent cells=20: flags AR(1) 0.3 11%, mixed memory 99%, AR(2) 100%

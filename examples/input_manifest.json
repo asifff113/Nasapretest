@@ -1,0 +1,146 @@
+{
+ "schema": "casefile/input_manifest@3",
+ "manifestId": "synthetic-manifest",
+ "created": "2026-11-02T00:00:00Z",
+ "synthetic": true,
+ "products": [
+  {
+   "source": "merra2_slv",
+   "shortName": "M2TMNXSLV",
+   "version": "5.12.4",
+   "doi": "10.5067/AP1B0BA5PD2K",
+   "query": {
+    "provider": "synthetic",
+    "temporal": [
+     "1980-01",
+     "2025-12"
+    ],
+    "bbox": null
+   },
+   "variables": [
+    "T2M"
+   ],
+   "units": {
+    "T2M": "K"
+   },
+   "fill": null,
+   "firstMonth": "1980-01",
+   "lastMonth": "2025-12",
+   "granuleCount": 552,
+   "files": [
+    {
+     "name": "SYNTHETIC_air_temp_synthetic__east_coast.bin",
+     "month": "1980-01",
+     "sha256": "56794c5a777720ee21b4b820c38162ae75218f4f6e061106e9dcaba0adc7ebc8",
+     "bytes": 2208
+    },
+    {
+     "name": "SYNTHETIC_air_temp_synthetic__north_plain.bin",
+     "month": "1980-01",
+     "sha256": "c01163ddeaf8da0762a5cffbd110b767796537384460e64e6626bce692b6fbde",
+     "bytes": 2208
+    },
+    {
+     "name": "SYNTHETIC_air_temp_synthetic__south_delta.bin",
+     "month": "1980-01",
+     "sha256": "e8e34e829382a1f4a1b67ffd231f33eaf00ea8c9b22463aea68e9413997dece2",
+     "bytes": 2208
+    }
+   ]
+  },
+  {
+   "source": "merra2_precip",
+   "shortName": "M2TMNXFLX",
+   "version": "5.12.4",
+   "doi": "10.5067/0JRLVL8YV2Y4",
+   "query": {
+    "provider": "synthetic",
+    "temporal": [
+     "1980-01",
+     "2025-12"
+    ],
+    "bbox": null
+   },
+   "variables": [
+    "PRECTOTCORR"
+   ],
+   "units": {
+    "PRECTOTCORR": "kg m-2 s-1"
+   },
+   "fill": null,
+   "firstMonth": "1980-01",
+   "lastMonth": "2025-12",
+   "granuleCount": 552,
+   "files": [
+    {
+     "name": "SYNTHETIC_rain_synthetic__east_coast.bin",
+     "month": "1980-01",
+     "sha256": "94141ddf8378a45e54e98ccc28b9211411e889d18b81c527b4478d7b5ddcb477",
+     "bytes": 2208
+    },
+    {
+     "name": "SYNTHETIC_rain_synthetic__north_plain.bin",
+     "month": "1980-01",
+     "sha256": "724922133f7f11568fa02ff1642565d1ab357bb60b8a559e6d08665fd3b8761d",
+     "bytes": 2208
+    },
+    {
+     "name": "SYNTHETIC_rain_synthetic__south_delta.bin",
+     "month": "1980-01",
+     "sha256": "7d892b50ec4c9ce1fcd07063a1794abe0d3f927aa2cf23476763aabc8a0a577b",
+     "bytes": 2208
+    }
+   ]
+  },
+  {
+   "source": "imerg_v07_final_monthly",
+   "shortName": "GPM_3IMERGM",
+   "version": "07",
+   "doi": "10.5067/GPM/IMERG/3B-MONTH/07",
+   "query": {
+    "provider": "synthetic",
+    "temporal": [
+     "1998-01",
+     "2025-09"
+    ],
+    "bbox": [
+     80.0,
+     15.0,
+     100.0,
+     30.0
+    ]
+   },
+   "variables": [
+    "precipitation"
+   ],
+   "units": {
+    "precipitation": "mm/hr"
+   },
+   "fill": null,
+   "firstMonth": "1998-01",
+   "lastMonth": "2025-09",
+   "granuleCount": 333,
+   "files": [
+    {
+     "name": "SYNTHETIC_rain_imerg_synthetic__north_plain.bin",
+     "month": "1998-01",
+     "sha256": "c990d4e281e09f1c4f0cf85dd68ece28974879c5d5a02f7f8c339def545a8219",
+     "bytes": 1332
+    },
+    {
+     "name": "SYNTHETIC_rain_imerg_synthetic__south_delta.bin",
+     "month": "1998-01",
+     "sha256": "50bcd4079a6457b297ded35e5b4ee7bef37bb4e746c55c166c5ee1c1e52b6be3",
+     "bytes": 1332
+    }
+   ]
+  }
+ ],
+ "checks": [
+  {
+   "id": "power_cross_check",
+   "result": "skip",
+   "note": "synthetic data: no POWER call"
+  }
+ ]
+}

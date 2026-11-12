@@ -1,0 +1,83 @@
+{
+ "schema": "casefile/casefile@3",
+ "synthetic": true,
+ "id": "lead_contrast_rain",
+ "uses": {
+  "kind": "contrast",
+  "pair": "pair_north_vs_delta",
+  "variable": "rain",
+  "season": "ANN"
+ },
+ "ending": "supported",
+ "title": {
+  "en": "Has rain changed differently in North Plain (example) and South Delta (example)?",
+  "bn": "উত্তর সমভূমি (উদাহরণ) ও দক্ষিণ ব-দ্বীপ (উদাহরণ)-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+ },
+ "summary": {
+  "en": "Our pre-registered comparison, on NASA MERRA-2 rain: we test the trend in the difference itself.",
+  "bn": "আমাদের আগে থেকে নিবন্ধিত তুলনা, নাসার MERRA-2 বৃষ্টি দিয়ে: আমরা পার্থক্যের প্রবণতাই সরাসরি যাচাই করি।"
+ },
+ "results": [
+  "contrasts/rain/pair_north_vs_delta/ANN.json",
+  "verdicts/rain/synthetic__north_plain/ANN.json",
+  "verdicts/rain/synthetic__south_delta/ANN.json"
+ ],
+ "beats": [
+  {
+   "at": "question",
+   "caption": {
+    "en": "Has rainfall changed differently in North Plain (example) and South Delta (example)?",
+    "bn": "উত্তর সমভূমি (উদাহরণ) ও দক্ষিণ ব-দ্বীপ (উদাহরণ)-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   }
+  },
+  {
+   "at": "place",
+   "caption": {
+    "en": "The two places, and the data cells that cover them.",
+    "bn": "দুটি জায়গা, আর যে ডেটা-ঘরগুলো এদের ঢাকে।"
+   }
+  },
+  {
+   "at": "series",
+   "caption": {
+    "en": "Yearly rain in each place, 1980–2025, from MERRA-2.",
+    "bn": "প্রতিটি জায়গার বার্ষিক বৃষ্টি, ১৯৮০–২০২৫, MERRA-2 থেকে।"
+   }
+  },
+  {
+   "at": "difference",
+   "caption": {
+    "en": "Now subtract: North Plain (example) minus South Delta (example), year by year. Shared ups and downs cancel.",
+    "bn": "এবার বিয়োগ: প্রতি বছর উত্তর সমভূমি (উদাহরণ) থেকে দক্ষিণ ব-দ্বীপ (উদাহরণ)। দুই জায়গার একসঙ্গে ওঠানামা কেটে যায়।"
+   }
+  },
+  {
+   "at": "verdict",
+   "caption": {
+    "en": "Yes. Since 1980, rain in North Plain (example) has changed by −150 mm a decade relative to South Delta (example).",
+    "bn": "হ্যাঁ। ১৯৮০ থেকে দক্ষিণ ব-দ্বীপ (উদাহরণ)-এর তুলনায় উত্তর সমভূমি (উদাহরণ)-এ বৃষ্টি প্রতি দশকে −১৫০ মিমি বদলেছে।"
+   }
+  },
+  {
+   "at": "robustness",
+   "caption": {
+    "en": "We try to break it: a missing year, other start and end years, known data changes.",
+    "bn": "আমরা এটি ভাঙার চেষ্টা করি: একটি বছর বাদ, অন্য শুরু ও শেষের বছর, ডেটার জানা পরিবর্তন।"
+   }
+  },
+  {
+   "at": "methods",
+   "caption": {
+    "en": "Every verdict shows its evidence: datasets, years, method and the 6 tests we registered in advance.",
+    "bn": "প্রতিটি রায় তার প্রমাণ দেখায়: ডেটাসেট, বছর, পদ্ধতি এবং আগে থেকে নিবন্ধিত ৬টি পরীক্ষা।"
+   }
+  },
+  {
+   "at": "takeaway",
+   "caption": {
+    "en": "Your turn: open the case and look at the seasons.",
+    "bn": "এবার আপনার পালা: কেসটি খুলুন, ঋতুগুলো দেখুন।"
+   }
+  }
+ ]
+}

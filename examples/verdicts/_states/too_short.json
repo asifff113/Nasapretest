@@ -1,0 +1,310 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": true,
+ "id": "state__too_short",
+ "variable": {
+  "id": "air_temp",
+  "kind": "model",
+  "source": "merra2_slv",
+  "units": "°C",
+  "rule": "mean",
+  "ratioScale": false
+ },
+ "region": {
+  "id": "synthetic:north_plain",
+  "kind": "synthetic",
+  "areaKm2": 92335.4
+ },
+ "season": "ANN",
+ "window": {
+  "id": "main",
+  "first": 2014,
+  "last": 2025
+ },
+ "family": "confirmatory",
+ "multiplicity": {
+  "method": "holm",
+  "familySize": 6,
+  "pAdjusted": 0.5,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "too_short",
+ "series": {
+  "years": [
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   26.887302626818126,
+   27.136038467058096,
+   27.131737917597192,
+   26.990826067017334,
+   27.002558227682687,
+   27.124021256639505,
+   27.287066523288136,
+   27.372015785983127,
+   27.175811670040407,
+   27.151288448673682,
+   27.234579099060237,
+   27.26754884414491
+  ],
+  "units": "°C"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "air_temp",
+    "limit": "air_temp, rain, rain_imerg"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "ANN",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": false,
+    "value": 12,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": false,
+    "value": 0.54836472266862,
+    "limit": 0.4
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": -0.13593632675065387,
+    "limit": -0.03237378464219946
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 12,
+  "mk": {
+   "S": 34,
+   "varS": 212.66666666666666,
+   "tau": 0.5151515151515151,
+   "z": 2.2628940883683475,
+   "p": 0.02364221890919847,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.19890981511241335,
+   "phi": 0.54836472266862,
+   "vif": 2.9806167318728476,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 633.8778249782922,
+   "z": 1.3107237244486898,
+   "p": 0.18995112034231088,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": 0.02956487935405718,
+   "intercept": -32.562610397652584,
+   "ciLowPerYear": -0.0645898449572524,
+   "ciHighPerYear": 0.12315251943347978,
+   "multiplier": 2.25,
+   "nPairs": 66
+  },
+  "change": {
+   "ratePerDecade": 0.29564879354057183,
+   "rateLowPerDecade": -0.645898449572524,
+   "rateHighPerDecade": 1.2315251943347978,
+   "total": 0.325213672894629,
+   "totalLow": -0.7104882945297764,
+   "totalHigh": 1.3546777137682775,
+   "span": 11,
+   "units": "°C",
+   "percent": null,
+   "baseline": null,
+   "residSd": 0.10135880825874492,
+   "snr": 3.208538838227417
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": 0.025883824310540524,
+   "intercept": -25.12565028396961,
+   "se": 0.008813213790229795,
+   "r1": 0.1923634631548054,
+   "phi": 0.5385451947322081,
+   "nEff": 3.5991517715391694,
+   "seAdj": 0.02203887712591905,
+   "t": 1.1744620273824922,
+   "df": 1.5991517715391694,
+   "p": 0.3858426989395048,
+   "ciLowPerYear": -0.0957930737400756,
+   "ciHighPerYear": 0.14756072236115664,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": 2.2628940883683475,
+   "p": 0.02364221890919847,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": -0.13593632675065387,
+   "m": 6,
+   "mEff": 6.0,
+   "mEffStep": 5,
+   "rhoBar": 0.0,
+   "phiCells": 0.04269558822461145,
+   "critical": -0.03237378464219946,
+   "passed": true,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "practical": {
+  "threshold": null,
+  "units": "°C per decade",
+  "position": null
+ },
+ "overturn": [],
+ "sensitivity": null,
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "too_short",
+  "ratePerDecade": 0.29564879354057183,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "°C",
+  "family": "confirmatory",
+  "familySize": 6,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   26.887302626818126,
+   27.136038467058096,
+   27.131737917597192,
+   26.990826067017334,
+   27.002558227682687,
+   27.124021256639505,
+   27.287066523288136,
+   27.372015785983127,
+   27.175811670040407,
+   27.151288448673682,
+   27.234579099060237,
+   27.26754884414491
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2019.5,
+   27.14366345786589
+  ],
+  "line": [
+   [
+    2014,
+    26.98105662141858
+   ],
+   [
+    2025,
+    27.306270294313208
+   ]
+  ],
+  "band": null
+ },
+ "text": {
+  "en": {
+   "headline": "Too short to test: only 12 years.",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "যাচাইয়ের জন্য খুব ছোট: মাত্র ১২ বছর।",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

@@ -1,0 +1,68 @@
+You are building the fetch stage of the CaseFile Earth pipeline. Read AGENTS.md, docs/01_ARCHITECTURE.md §5–§6.1,
+docs/02_DATA.md §2–§3 and §9, and config/sources.yaml.
+
+Build python/src/casefile_pipeline/sources/ and the commands `casefile-pipeline access-check` and
+`casefile-pipeline fetch`. Structure it as one generic Earthdata fetcher plus one small reader per source
+(docs/01_ARCHITECTURE.md §6.1): everything specific to a product (short name, version, variable path, units, fill,
+axis order, conversion) comes from config/sources.yaml and config/variables.yaml or lives in that product's reader,
+so that another dataset can be added later by writing one reader and no other code (python/src/casefile_pipeline/cli.py is a stub to replace). Install with
+`cd python && uv sync --extra pipeline`.
+
+Login: earthaccess.login(strategy="environment") using EARTHDATA_USERNAME / EARTHDATA_PASSWORD from the environment.
+Never print, log or write a credential.
+
+Search: earthaccess.search_data(short_name=..., version=..., temporal=(start, end)) for
+  M2TMNXSLV 5.12.4 (T2M), M2TMNXFLX 5.12.4 (PRECTOTCORR), GPM_3IMERGM 07 (/Grid/precipitation).
+MERRA-2: 1980-01 to the last month of the last complete year. IMERG: 1998-01 to the latest month available.
+Take the month of each granule from its temporal metadata, not from its file name. Fail loudly if a month is
+missing or doubled.
+
+Fetch one variable per granule, trying these routes in order and using the first that works for the product:
+  1. OPeNDAP subset: take the granule's related URL with Subtype "OPENDAP DATA" (granule["umm"]["RelatedUrls"]);
+     GET  <that url>.dap.nc4?dap4.ce=<url-encoded constraint>  with earthaccess.get_requests_https_session().
+     Constraint for MERRA-2: /T2M;/time;/lat;/lon (or /PRECTOTCORR;...). For IMERG: /Grid/precipitation;/Grid/lat;/Grid/lon;/Grid/time.
+     Save the small NetCDF-4 response in .cache/raw/<short name>/ and open it with xarray (engine "h5netcdf").
+  2. Remote read: earthaccess.open([granule]) and xarray.open_dataset(f, engine="h5netcdf", group=...)[variable].load().
+  3. Whole file: earthaccess.download(granule, dir), read the variable, delete the file.
+Use up to 8 parallel workers, retry with back-off, and skip months already in the cache so a stopped run resumes.
+
+`access-check` does this for ONE granule of each product and prints: the route that worked, the variable's
+dimensions and their order, units attribute, fill value, the coordinate ranges, and the min, max and mean of the
+field. Expect: T2M in kelvin, dims (time, lat, lon), lat −90…90 (361), lon −180…179.375 (576); PRECTOTCORR in
+kg m-2 s-1; IMERG precipitation in mm/hr with dims (time, lon, lat) — transpose to (lat, lon) — and a fill value
+near −9999.9. If anything differs from this, stop and report; do not guess.
+
+Convert on read: T2M − 273.15 → °C; PRECTOTCORR × 86400 → mm/day; IMERG × 24 → mm/day. Mask fill values and
+non-finite values to NaN before any arithmetic. Store per product one array [n_months][n_lat][n_lon] (float32) with
+its month list in .cache/monthly/<short name>.npz. IMERG: keep only the box that covers every region of
+config/regions.yaml plus 1° (store the row and column offsets of the box in the same file).
+
+Write the product entries of input_manifest.json (schemas/input_manifest.schema.json): query, variables, units as
+found, fill as found, firstMonth, lastMonth, granuleCount, and per file: name, month, bytes and sha256 of the saved
+response (plus valuesSha256 of the decoded array). "provider" records the route used. "synthetic": false.
+
+The ordering rule: print climatologies, counts, units and ranges only. Never print or plot a yearly or seasonal
+series, a difference between early and late years, or a slope.
+
+Tests in python/tests/pipeline/ (no network): unit conversions; fill masking; the IMERG transpose; month
+bookkeeping (a missing or doubled month raises), each on a tiny NetCDF file the test writes itself.
+
+Checks:
+- uv run casefile-pipeline access-check         → one granule per product read; the printed facts match the list above
+- uv run casefile-pipeline fetch                → run it in a background shell; it resumes if stopped
+- uv run pytest tests/pipeline                  → all pass
+- .cache/monthly/ holds three files with 552, 552 and at least 333 months (or the counts the catalogue has today)
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

@@ -1,0 +1,122 @@
+{
+ "schema": "casefile/lineup@3",
+ "synthetic": true,
+ "region": "synthetic:east_coast",
+ "nTests": 6,
+ "familySizes": {
+  "confirmatory": 6,
+  "secondary": 12
+ },
+ "items": [
+  {
+   "variable": "air_temp",
+   "season": "ANN",
+   "family": "exploration",
+   "status": "no_verdict",
+   "grade": null,
+   "reason": "exploration",
+   "ratePerDecade": 0.2768201331385677,
+   "rateLowPerDecade": 0.22803319914846593,
+   "rateHighPerDecade": 0.3271407565743597,
+   "units": "°C",
+   "pAdjusted": null,
+   "qWithinLineup": 4.9229401722434904e-11,
+   "path": "verdicts/air_temp/synthetic__east_coast/ANN.json"
+  },
+  {
+   "variable": "air_temp",
+   "season": "MAM",
+   "family": "exploration",
+   "status": "no_verdict",
+   "grade": null,
+   "reason": "exploration",
+   "ratePerDecade": 0.27588166244191853,
+   "rateLowPerDecade": 0.21495502701944486,
+   "rateHighPerDecade": 0.33258880465194984,
+   "units": "°C",
+   "pAdjusted": null,
+   "qWithinLineup": 1.8740781606667947e-09,
+   "path": "verdicts/air_temp/synthetic__east_coast/MAM.json"
+  },
+  {
+   "variable": "air_temp",
+   "season": "JJAS",
+   "family": "exploration",
+   "status": "no_verdict",
+   "grade": null,
+   "reason": "exploration",
+   "ratePerDecade": 0.28122236617959856,
+   "rateLowPerDecade": 0.22848155426719546,
+   "rateHighPerDecade": 0.33949606402987464,
+   "units": "°C",
+   "pAdjusted": null,
+   "qWithinLineup": 7.710935224059119e-11,
+   "path": "verdicts/air_temp/synthetic__east_coast/JJAS.json"
+  },
+  {
+   "variable": "rain",
+   "season": "ANN",
+   "family": "exploration",
+   "status": "no_verdict",
+   "grade": null,
+   "reason": "missing_year",
+   "ratePerDecade": 3.5944295249035436,
+   "rateLowPerDecade": null,
+   "rateHighPerDecade": null,
+   "units": "mm",
+   "pAdjusted": null,
+   "qWithinLineup": 0.8865041849485209,
+   "path": "verdicts/rain/synthetic__east_coast/ANN.json"
+  },
+  {
+   "variable": "rain",
+   "season": "MAM",
+   "family": "exploration",
+   "status": "no_verdict",
+   "grade": null,
+   "reason": "missing_year",
+   "ratePerDecade": 1.6595359349946732,
+   "rateLowPerDecade": null,
+   "rateHighPerDecade": null,
+   "units": "mm",
+   "pAdjusted": null,
+   "qWithinLineup": 0.8865041849485209,
+   "path": "verdicts/rain/synthetic__east_coast/MAM.json"
+  },
+  {
+   "variable": "rain",
+   "season": "JJAS",
+   "family": "exploration",
+   "status": "no_verdict",
+   "grade": null,
+   "reason": "exploration",
+   "ratePerDecade": 2.6602680073538068,
+   "rateLowPerDecade": -31.23732612675682,
+   "rateHighPerDecade": 37.50472721841078,
+   "units": "mm",
+   "pAdjusted": null,
+   "qWithinLineup": 0.8865041849485209,
+   "path": "verdicts/rain/synthetic__east_coast/JJAS.json"
+  }
+ ],
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

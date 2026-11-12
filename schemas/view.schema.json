@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/view.schema.json",
+  "title": "View state in the URL hash (01_ARCHITECTURE §6)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "screen"
+  ],
+  "properties": {
+    "screen": {
+      "enum": [
+        "home",
+        "question",
+        "place",
+        "compare",
+        "map",
+        "methods",
+        "watch",
+        "offline",
+        "data",
+        "ai",
+        "about"
+      ]
+    },
+    "region": {
+      "$ref": "common.schema.json#/$defs/regionId"
+    },
+    "pair": {
+      "type": "string"
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/analysedVariable"
+    },
+    "season": {
+      "$ref": "common.schema.json#/$defs/seasonId"
+    },
+    "sensitivity": {
+      "const": "imerg"
+    },
+    "case": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    }
+  }
+}

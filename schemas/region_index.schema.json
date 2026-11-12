@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/region_index.schema.json",
+  "title": "Region index — the fixed region set with support results and contributing cells (02_DATA §7)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/region_index@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "grids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/grid"
+      }
+    },
+    "minNativeCells": {
+      "type": "number",
+      "minimum": 4
+    },
+    "maxSpillShare": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 0.3334
+    },
+    "cellIdPattern": {
+      "const": "cell:<row>_<col>"
+    },
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/regionId"
+          },
+          "kind": {
+            "enum": [
+              "country",
+              "division",
+              "comparison",
+              "synthetic"
+            ]
+          },
+          "role": {
+            "enum": [
+              "home",
+              "division",
+              "comparison"
+            ]
+          },
+          "name": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "in": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "bbox": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "centroid": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "areaKm2": {
+            "type": "number",
+            "minimum": 0
+          },
+          "boundary": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "licence": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "licence"
+            ]
+          },
+          "inSet": {
+            "type": "boolean"
+          },
+          "support": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "effectiveCells": {
+                  "type": "number"
+                },
+                "spillShare": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "passes": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "effectiveCells",
+                "spillShare",
+                "passes"
+              ]
+            }
+          },
+          "cells": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "geom": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pairs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/pairId"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "role",
+          "name",
+          "in",
+          "bbox",
+          "centroid",
+          "areaKm2",
+          "boundary",
+          "inSet",
+          "support",
+          "cells",
+          "geom",
+          "pairs"
+        ]
+      }
+    },
+    "pairs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/pairId"
+          },
+          "a": {
+            "$ref": "common.schema.json#/$defs/regionId"
+          },
+          "b": {
+            "$ref": "common.schema.json#/$defs/regionId"
+          },
+          "lead": {
+            "type": "boolean"
+          },
+          "preRegistered": {
+            "type": "boolean"
+          },
+          "question": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "split": {
+            "$ref": "common.schema.json#/$defs/pairSplit"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "a",
+          "b",
+          "lead",
+          "preRegistered",
+          "question",
+          "split"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "synthetic",
+    "grids",
+    "minNativeCells",
+    "maxSpillShare",
+    "cellIdPattern",
+    "regions",
+    "pairs"
+  ]
+}

@@ -1,0 +1,47 @@
+You are starting the CaseFile Earth site. Read AGENTS.md, docs/04_UI.md §1–§4.3, §8, §11–§12,
+docs/01_ARCHITECTURE.md §6.3 and §7–§9, and look through examples/ and schemas/.
+
+Create web/: Vite + React + TypeScript (strict), Tailwind CSS configured with the tokens of 04 §11 (light and dark),
+shadcn/ui components copied into web/src/ui/common/, Lucide icons, Motion, Observable Plot, Zustand, Vitest,
+Playwright, ESLint. Bundle Inter and Noto Sans Bengali as local font files; nothing is fetched from another origin
+at run time.
+
+Build:
+1. scripts/compile-strings.mjs (prebuild): config/i18n/en.json and bn.json (read-only: the engine's sentences and
+   the shared interface strings) merged with web/src/i18n/site.en.json and site.bn.json (strings you add) →
+   src/generated/strings.json; the build fails if a key is missing in either language.
+2. src/i18n/: t(key, params), language switch (EN/BN) kept in the URL and localStorage, format.ts for every number
+   (Bangla digits in Bangla, the minus sign U+2212, units from the result file).
+3. src/data/results.ts, cache.ts, offline.ts as in 01 §6.3. RESULTS_BASE is a Vite env value; in development it
+   points at the repository's examples/ folder (serve it with a Vite middleware or copy it to public/ at dev start).
+4. src/state/view.ts: view ⇄ URL hash, as in 01 §6.3.
+5. The app shell (header, language switch, theme switch, the synthetic-data banner whenever a loaded file has
+   "synthetic": true, the error states of 01 §9), the Home and Question screens (04 §4.1–§4.2) from catalog.json,
+   with a record card for every variable, and the Place picker (04 §4.3) from regions/index.json, drawing each
+   region's contributing cells.
+
+Hard rule: the site computes no statistic. No mean, slope, difference, rounding of a statistic or p-value in web/.
+Every displayed number and every verdict sentence comes from a result file; arithmetic is for layout only (scales,
+positions). All user-visible text goes through t(); never edit config/i18n/.
+Generic over data: no variable id, region id, pair id, season or year is written in the code or in a test. Lists
+come from catalog.json, regions/index.json and prereg.json; tests read the ids from the folder they run on (an env
+value chooses examples/ or results/<build id>). The same build must show any results folder with this layout.
+
+Checks:
+- npm run typecheck && npm run lint && npm test
+- npm run test:e2e: W-01, W-02 and W-11 of docs/07_TESTS.md §8 on examples/, at 1280 px and 360 px, EN and BN
+- npm run build succeeds; the built site makes no request to another origin (assert it in a Playwright test)
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

@@ -1,0 +1,801 @@
+{
+ "regions": {
+  "bd_div:BD-B": {
+   "name": "Chittagong",
+   "areaKm2": 30579.0,
+   "cellsTouched": 24,
+   "effectiveCells": 8.58,
+   "effectiveCells5x5": 8.52,
+   "cellsMostlyInside": 6,
+   "interiorWeightShare": 0.504,
+   "kishEffectiveCells": 15.28,
+   "largestCellShare": 0.099
+  },
+  "bd_div:BD-C": {
+   "name": "Dhaka",
+   "areaKm2": 20974.0,
+   "cellsTouched": 14,
+   "effectiveCells": 5.93,
+   "effectiveCells5x5": 5.96,
+   "cellsMostlyInside": 6,
+   "interiorWeightShare": 0.773,
+   "kishEffectiveCells": 8.73,
+   "largestCellShare": 0.169
+  },
+  "bd_div:BD-H": {
+   "name": "Mymensingh",
+   "areaKm2": 10460.0,
+   "cellsTouched": 8,
+   "effectiveCells": 2.98,
+   "effectiveCells5x5": 2.84,
+   "cellsMostlyInside": 3,
+   "interiorWeightShare": 0.821,
+   "kishEffectiveCells": 4.22,
+   "largestCellShare": 0.31
+  },
+  "bd_div:BD-E": {
+   "name": "Rajshani",
+   "areaKm2": 18560.0,
+   "cellsTouched": 12,
+   "effectiveCells": 5.28,
+   "effectiveCells5x5": 5.4,
+   "cellsMostlyInside": 5,
+   "interiorWeightShare": 0.81,
+   "kishEffectiveCells": 7.06,
+   "largestCellShare": 0.189
+  },
+  "bd_div:BD-F": {
+   "name": "Rangpur",
+   "areaKm2": 16600.0,
+   "cellsTouched": 14,
+   "effectiveCells": 4.77,
+   "effectiveCells5x5": 4.76,
+   "cellsMostlyInside": 4,
+   "interiorWeightShare": 0.69,
+   "kishEffectiveCells": 7.03,
+   "largestCellShare": 0.21
+  },
+  "bd_div:BD-G": {
+   "name": "Sylhet",
+   "areaKm2": 12250.0,
+   "cellsTouched": 8,
+   "effectiveCells": 3.49,
+   "effectiveCells5x5": 3.56,
+   "cellsMostlyInside": 4,
+   "interiorWeightShare": 0.861,
+   "kishEffectiveCells": 5.06,
+   "largestCellShare": 0.248
+  },
+  "bd_div:BD-D": {
+   "name": "Khulna",
+   "areaKm2": 21540.0,
+   "cellsTouched": 14,
+   "effectiveCells": 6.05,
+   "effectiveCells5x5": 6.12,
+   "cellsMostlyInside": 5,
+   "interiorWeightShare": 0.693,
+   "kishEffectiveCells": 8.72,
+   "largestCellShare": 0.166
+  },
+  "bd_div:BD-A": {
+   "name": "Barisal",
+   "areaKm2": 9581.0,
+   "cellsTouched": 8,
+   "effectiveCells": 2.68,
+   "effectiveCells5x5": 2.6,
+   "cellsMostlyInside": 2,
+   "interiorWeightShare": 0.5,
+   "kishEffectiveCells": 5.23,
+   "largestCellShare": 0.274
+  },
+  "cmp:nepal": {
+   "name": "NPL",
+   "areaKm2": 147196.0,
+   "cellsTouched": 66,
+   "effectiveCells": 43.25,
+   "effectiveCells5x5": 43.16,
+   "cellsMostlyInside": 41,
+   "interiorWeightShare": 0.872,
+   "kishEffectiveCells": 50.2,
+   "largestCellShare": 0.023
+  },
+  "cmp:myanmar": {
+   "name": "MMR",
+   "areaKm2": 662758.0,
+   "cellsTouched": 256,
+   "effectiveCells": 184.32,
+   "effectiveCells5x5": 184.16,
+   "cellsMostlyInside": 184,
+   "interiorWeightShare": 0.925,
+   "kishEffectiveCells": 204.63,
+   "largestCellShare": 0.006
+  },
+  "country:BGD": {
+   "name": "BGD",
+   "areaKm2": 135650.0,
+   "cellsTouched": 66,
+   "effectiveCells": 38.4,
+   "effectiveCells5x5": 38.0,
+   "cellsMostlyInside": 38,
+   "interiorWeightShare": 0.851,
+   "kishEffectiveCells": 47.86,
+   "largestCellShare": 0.026
+  },
+  "cmp:west_bengal": {
+   "name": "West Bengal",
+   "areaKm2": 86561.0,
+   "cellsTouched": 51,
+   "effectiveCells": 24.49,
+   "effectiveCells5x5": 24.24,
+   "cellsMostlyInside": 24,
+   "interiorWeightShare": 0.829,
+   "kishEffectiveCells": 31.64,
+   "largestCellShare": 0.041
+  },
+  "cmp:assam": {
+   "name": "Assam",
+   "areaKm2": 79676.0,
+   "cellsTouched": 47,
+   "effectiveCells": 23.02,
+   "effectiveCells5x5": 23.04,
+   "cellsMostlyInside": 23,
+   "interiorWeightShare": 0.843,
+   "kishEffectiveCells": 29.26,
+   "largestCellShare": 0.044
+  },
+  "cmp:meghalaya": {
+   "name": "Meghalaya",
+   "areaKm2": 23165.0,
+   "cellsTouched": 15,
+   "effectiveCells": 6.65,
+   "effectiveCells5x5": 6.72,
+   "cellsMostlyInside": 6,
+   "interiorWeightShare": 0.744,
+   "kishEffectiveCells": 9.38,
+   "largestCellShare": 0.151
+  },
+  "cmp:bay_of_bengal": {
+   "name": "Bay of Bengal (box minus land)",
+   "areaKm2": 2540609.0,
+   "cellsTouched": 747,
+   "effectiveCells": 675.57,
+   "effectiveCells5x5": 670.0,
+   "cellsMostlyInside": 700,
+   "interiorWeightShare": 0.986,
+   "kishEffectiveCells": 701.74,
+   "largestCellShare": 0.002
+  }
+ },
+ "pairs": {
+  "bd_div:BD-A | bd_div:BD-B": {
+   "sharedCells": 4,
+   "sharedShareA": 0.372,
+   "sharedShareB": 0.095,
+   "maxSharedShare": 0.372
+  },
+  "bd_div:BD-A | bd_div:BD-C": {
+   "sharedCells": 2,
+   "sharedShareA": 0.186,
+   "sharedShareB": 0.133,
+   "maxSharedShare": 0.186
+  },
+  "bd_div:BD-A | bd_div:BD-D": {
+   "sharedCells": 3,
+   "sharedShareA": 0.492,
+   "sharedShareB": 0.135,
+   "maxSharedShare": 0.492
+  },
+  "bd_div:BD-A | bd_div:BD-E": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | bd_div:BD-F": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | bd_div:BD-G": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | bd_div:BD-H": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | cmp:assam": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | cmp:bay_of_bengal": {
+   "sharedCells": 3,
+   "sharedShareA": 0.31,
+   "sharedShareB": 0.002,
+   "maxSharedShare": 0.31
+  },
+  "bd_div:BD-A | cmp:meghalaya": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | cmp:west_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-A | country:BGD": {
+   "sharedCells": 8,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.12,
+   "maxSharedShare": 1.0
+  },
+  "bd_div:BD-B | bd_div:BD-C": {
+   "sharedCells": 4,
+   "sharedShareA": 0.154,
+   "sharedShareB": 0.303,
+   "maxSharedShare": 0.303
+  },
+  "bd_div:BD-B | bd_div:BD-D": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-B | bd_div:BD-E": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-B | bd_div:BD-F": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-B | bd_div:BD-G": {
+   "sharedCells": 2,
+   "sharedShareA": 0.048,
+   "sharedShareB": 0.07,
+   "maxSharedShare": 0.07
+  },
+  "bd_div:BD-B | bd_div:BD-H": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-B | cmp:assam": {
+   "sharedCells": 1,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.002,
+   "maxSharedShare": 0.002
+  },
+  "bd_div:BD-B | cmp:bay_of_bengal": {
+   "sharedCells": 6,
+   "sharedShareA": 0.126,
+   "sharedShareB": 0.004,
+   "maxSharedShare": 0.126
+  },
+  "bd_div:BD-B | cmp:meghalaya": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-B | cmp:myanmar": {
+   "sharedCells": 6,
+   "sharedShareA": 0.21,
+   "sharedShareB": 0.011,
+   "maxSharedShare": 0.21
+  },
+  "bd_div:BD-B | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-B | cmp:west_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-B | country:BGD": {
+   "sharedCells": 22,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.284,
+   "maxSharedShare": 1.0
+  },
+  "bd_div:BD-C | bd_div:BD-D": {
+   "sharedCells": 4,
+   "sharedShareA": 0.163,
+   "sharedShareB": 0.334,
+   "maxSharedShare": 0.334
+  },
+  "bd_div:BD-C | bd_div:BD-E": {
+   "sharedCells": 4,
+   "sharedShareA": 0.271,
+   "sharedShareB": 0.204,
+   "maxSharedShare": 0.271
+  },
+  "bd_div:BD-C | bd_div:BD-F": {
+   "sharedCells": 1,
+   "sharedShareA": 0.002,
+   "sharedShareB": 0.003,
+   "maxSharedShare": 0.003
+  },
+  "bd_div:BD-C | bd_div:BD-G": {
+   "sharedCells": 2,
+   "sharedShareA": 0.073,
+   "sharedShareB": 0.203,
+   "maxSharedShare": 0.203
+  },
+  "bd_div:BD-C | bd_div:BD-H": {
+   "sharedCells": 4,
+   "sharedShareA": 0.222,
+   "sharedShareB": 0.645,
+   "maxSharedShare": 0.645
+  },
+  "bd_div:BD-C | cmp:assam": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-C | cmp:bay_of_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-C | cmp:meghalaya": {
+   "sharedCells": 1,
+   "sharedShareA": 0.002,
+   "sharedShareB": 0.006,
+   "maxSharedShare": 0.006
+  },
+  "bd_div:BD-C | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-C | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-C | cmp:west_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-C | country:BGD": {
+   "sharedCells": 14,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.346,
+   "maxSharedShare": 1.0
+  },
+  "bd_div:BD-D | bd_div:BD-E": {
+   "sharedCells": 2,
+   "sharedShareA": 0.1,
+   "sharedShareB": 0.169,
+   "maxSharedShare": 0.169
+  },
+  "bd_div:BD-D | bd_div:BD-F": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-D | bd_div:BD-G": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-D | bd_div:BD-H": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-D | cmp:assam": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-D | cmp:bay_of_bengal": {
+   "sharedCells": 4,
+   "sharedShareA": 0.198,
+   "sharedShareB": 0.002,
+   "maxSharedShare": 0.198
+  },
+  "bd_div:BD-D | cmp:meghalaya": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-D | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-D | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-D | cmp:west_bengal": {
+   "sharedCells": 7,
+   "sharedShareA": 0.391,
+   "sharedShareB": 0.129,
+   "maxSharedShare": 0.391
+  },
+  "bd_div:BD-D | country:BGD": {
+   "sharedCells": 14,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.237,
+   "maxSharedShare": 1.0
+  },
+  "bd_div:BD-E | bd_div:BD-F": {
+   "sharedCells": 4,
+   "sharedShareA": 0.306,
+   "sharedShareB": 0.201,
+   "maxSharedShare": 0.306
+  },
+  "bd_div:BD-E | bd_div:BD-G": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-E | bd_div:BD-H": {
+   "sharedCells": 3,
+   "sharedShareA": 0.162,
+   "sharedShareB": 0.379,
+   "maxSharedShare": 0.379
+  },
+  "bd_div:BD-E | cmp:assam": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-E | cmp:bay_of_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-E | cmp:meghalaya": {
+   "sharedCells": 1,
+   "sharedShareA": 0.005,
+   "sharedShareB": 0.006,
+   "maxSharedShare": 0.006
+  },
+  "bd_div:BD-E | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-E | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-E | cmp:west_bengal": {
+   "sharedCells": 6,
+   "sharedShareA": 0.477,
+   "sharedShareB": 0.091,
+   "maxSharedShare": 0.477
+  },
+  "bd_div:BD-E | country:BGD": {
+   "sharedCells": 12,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.249,
+   "maxSharedShare": 1.0
+  },
+  "bd_div:BD-F | bd_div:BD-G": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-F | bd_div:BD-H": {
+   "sharedCells": 3,
+   "sharedShareA": 0.113,
+   "sharedShareB": 0.334,
+   "maxSharedShare": 0.334
+  },
+  "bd_div:BD-F | cmp:assam": {
+   "sharedCells": 3,
+   "sharedShareA": 0.221,
+   "sharedShareB": 0.034,
+   "maxSharedShare": 0.221
+  },
+  "bd_div:BD-F | cmp:bay_of_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-F | cmp:meghalaya": {
+   "sharedCells": 3,
+   "sharedShareA": 0.085,
+   "sharedShareB": 0.135,
+   "maxSharedShare": 0.135
+  },
+  "bd_div:BD-F | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-F | cmp:nepal": {
+   "sharedCells": 1,
+   "sharedShareA": 0.012,
+   "sharedShareB": 0.008,
+   "maxSharedShare": 0.012
+  },
+  "bd_div:BD-F | cmp:west_bengal": {
+   "sharedCells": 10,
+   "sharedShareA": 0.677,
+   "sharedShareB": 0.164,
+   "maxSharedShare": 0.677
+  },
+  "bd_div:BD-F | country:BGD": {
+   "sharedCells": 14,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.188,
+   "maxSharedShare": 1.0
+  },
+  "bd_div:BD-G | bd_div:BD-H": {
+   "sharedCells": 2,
+   "sharedShareA": 0.367,
+   "sharedShareB": 0.09,
+   "maxSharedShare": 0.367
+  },
+  "bd_div:BD-G | cmp:assam": {
+   "sharedCells": 3,
+   "sharedShareA": 0.316,
+   "sharedShareB": 0.063,
+   "maxSharedShare": 0.316
+  },
+  "bd_div:BD-G | cmp:bay_of_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-G | cmp:meghalaya": {
+   "sharedCells": 3,
+   "sharedShareA": 0.52,
+   "sharedShareB": 0.092,
+   "maxSharedShare": 0.52
+  },
+  "bd_div:BD-G | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-G | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-G | cmp:west_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-G | country:BGD": {
+   "sharedCells": 8,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.114,
+   "maxSharedShare": 1.0
+  },
+  "bd_div:BD-H | cmp:assam": {
+   "sharedCells": 1,
+   "sharedShareA": 0.02,
+   "sharedShareB": 0.005,
+   "maxSharedShare": 0.02
+  },
+  "bd_div:BD-H | cmp:bay_of_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-H | cmp:meghalaya": {
+   "sharedCells": 4,
+   "sharedShareA": 0.662,
+   "sharedShareB": 0.158,
+   "maxSharedShare": 0.662
+  },
+  "bd_div:BD-H | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-H | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-H | cmp:west_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "bd_div:BD-H | country:BGD": {
+   "sharedCells": 8,
+   "sharedShareA": 1.0,
+   "sharedShareB": 0.177,
+   "maxSharedShare": 1.0
+  },
+  "cmp:assam | cmp:bay_of_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:assam | cmp:meghalaya": {
+   "sharedCells": 10,
+   "sharedShareA": 0.192,
+   "sharedShareB": 0.763,
+   "maxSharedShare": 0.763
+  },
+  "cmp:assam | cmp:myanmar": {
+   "sharedCells": 3,
+   "sharedShareA": 0.004,
+   "sharedShareB": 0.003,
+   "maxSharedShare": 0.004
+  },
+  "cmp:assam | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:assam | cmp:west_bengal": {
+   "sharedCells": 3,
+   "sharedShareA": 0.061,
+   "sharedShareB": 0.023,
+   "maxSharedShare": 0.061
+  },
+  "cmp:assam | country:BGD": {
+   "sharedCells": 6,
+   "sharedShareA": 0.097,
+   "sharedShareB": 0.053,
+   "maxSharedShare": 0.097
+  },
+  "cmp:bay_of_bengal | cmp:meghalaya": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:bay_of_bengal | cmp:myanmar": {
+   "sharedCells": 21,
+   "sharedShareA": 0.015,
+   "sharedShareB": 0.052,
+   "maxSharedShare": 0.052
+  },
+  "cmp:bay_of_bengal | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:bay_of_bengal | cmp:west_bengal": {
+   "sharedCells": 7,
+   "sharedShareA": 0.005,
+   "sharedShareB": 0.089,
+   "maxSharedShare": 0.089
+  },
+  "cmp:bay_of_bengal | country:BGD": {
+   "sharedCells": 10,
+   "sharedShareA": 0.006,
+   "sharedShareB": 0.07,
+   "maxSharedShare": 0.07
+  },
+  "cmp:meghalaya | cmp:myanmar": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:meghalaya | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:meghalaya | cmp:west_bengal": {
+   "sharedCells": 1,
+   "sharedShareA": 0.03,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.03
+  },
+  "cmp:meghalaya | country:BGD": {
+   "sharedCells": 7,
+   "sharedShareA": 0.255,
+   "sharedShareB": 0.102,
+   "maxSharedShare": 0.255
+  },
+  "cmp:myanmar | cmp:nepal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:myanmar | cmp:west_bengal": {
+   "sharedCells": 0,
+   "sharedShareA": 0.0,
+   "sharedShareB": 0.0,
+   "maxSharedShare": 0.0
+  },
+  "cmp:myanmar | country:BGD": {
+   "sharedCells": 5,
+   "sharedShareA": 0.009,
+   "sharedShareB": 0.042,
+   "maxSharedShare": 0.042
+  },
+  "cmp:nepal | cmp:west_bengal": {
+   "sharedCells": 2,
+   "sharedShareA": 0.017,
+   "sharedShareB": 0.031,
+   "maxSharedShare": 0.031
+  },
+  "cmp:nepal | country:BGD": {
+   "sharedCells": 1,
+   "sharedShareA": 0.008,
+   "sharedShareB": 0.001,
+   "maxSharedShare": 0.008
+  },
+  "cmp:west_bengal | country:BGD": {
+   "sharedCells": 20,
+   "sharedShareA": 0.351,
+   "sharedShareB": 0.21,
+   "maxSharedShare": 0.351
+  }
+ }
+}

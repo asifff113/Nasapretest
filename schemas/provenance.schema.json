@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/provenance.schema.json",
+  "title": "Provenance — where a result came from",
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "doi": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "route": {
+            "enum": [
+              "earthaccess",
+              "power_check",
+              "csv",
+              "synthetic"
+            ]
+          },
+          "granules": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accessed": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "product",
+          "shortName",
+          "version",
+          "doi",
+          "route",
+          "granules",
+          "accessed",
+          "note"
+        ]
+      }
+    },
+    "inputManifestSha256": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "preregSha256": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "configSha256": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "engine": {
+      "type": "string"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "items",
+    "inputManifestSha256",
+    "preregSha256",
+    "configSha256",
+    "engine",
+    "buildId",
+    "created"
+  ]
+}

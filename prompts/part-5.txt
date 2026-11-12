@@ -1,0 +1,32 @@
+You are putting the CaseFile Earth site on its real results. Read AGENTS.md, docs/01_ARCHITECTURE.md §7 and §10,
+and results/current.json.
+
+1. Run the whole Playwright suite against results/<build id> (the env value that chooses the folder). If a test or a
+   screen still depends on a synthetic id or name, make it read the id from the files instead.
+2. The real build has no synthetic flag: the banner must be gone, and the provenance panel must show the build id,
+   the products with their DOIs, the pre-registration's SHA-256 and commit.
+3. Region outlines from regions/geom/<region>.json on the Place screen and on the map.
+4. Fix whatever real data break in the layout: long Bangla names, many rows in a line-up, rare states.
+5. `npm run build:offline` with the real offline set.
+6. Check deploy.yml: the site at the Pages root, results under /results/, relative paths only. Push to main.
+The site still computes nothing: if a screen needs a number the result files lack, stop and report it.
+
+Checks:
+- npm run test:e2e against results/<build id> → all pass, at 1280 and 360 px, EN and BN
+- the deployed URL opens in a private window and on a phone; #/methods shows the pre-registration hash; the lead
+  pair's Compare screen shows the sentence that is in the contrast file, word for word
+- the offline file opens from file:// with the network off (W-10)
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

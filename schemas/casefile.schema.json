@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/casefile.schema.json",
+  "title": "Watch case — beats with captions filled from results (S2)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/casefile@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "uses": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "contrast",
+            "trend",
+            "lineup"
+          ]
+        },
+        "pair": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "variable": {
+          "$ref": "common.schema.json#/$defs/analysedVariable"
+        },
+        "season": {
+          "$ref": "common.schema.json#/$defs/seasonId"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "ending": {
+      "enum": [
+        "supported",
+        "cant_tell_yet",
+        null
+      ]
+    },
+    "title": {
+      "$ref": "common.schema.json#/$defs/text2"
+    },
+    "summary": {
+      "$ref": "common.schema.json#/$defs/text2"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "at",
+          "caption"
+        ],
+        "properties": {
+          "at": {
+            "enum": [
+              "question",
+              "place",
+              "series",
+              "difference",
+              "verdict",
+              "robustness",
+              "lineup",
+              "methods",
+              "takeaway"
+            ]
+          },
+          "caption": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "highlight": {
+            "type": "string"
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 20000
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "id",
+    "uses",
+    "ending",
+    "title",
+    "summary",
+    "results",
+    "beats"
+  ]
+}

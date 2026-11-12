@@ -1,0 +1,35 @@
+{
+ "meta": {
+  "rules": "docs/03_SCIENCE.md §9.4; Weatherhead is a labelled fallback on the Methods page only"
+ },
+ "weatherhead": [
+  {
+   "slope": 0.02,
+   "sd": 0.3,
+   "phi": 0.2,
+   "expected": 35.33140984742859
+  },
+  {
+   "slope": 0.0,
+   "sd": 0.3,
+   "phi": 0.2,
+   "expected": null
+  },
+  {
+   "slope": 0.01,
+   "sd": 0.5,
+   "phi": 0.0,
+   "expected": 68.87311273996663
+  }
+ ],
+ "simulated": [
+  {
+   "n": 30,
+   "phi": 0.3,
+   "effectSdPerYear": 0.05,
+   "reps": 200,
+   "seedText": "power_golden|30|0.3|0.05",
+   "expectedPowerPct": 32.0
+  }
+ ]
+}

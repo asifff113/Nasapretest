@@ -1,0 +1,7 @@
+{
+ "schema": "casefile/current@3",
+ "buildId": "synthetic-v3",
+ "path": "results/synthetic-v3/",
+ "previous": [],
+ "synthetic": true
+}

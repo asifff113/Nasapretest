@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/map_meta.schema.json",
+  "title": "Screening map — per-cell results for one variable and season on the 1° grid (M8; 03_SCIENCE §7.5)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/map@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/analysedVariable"
+    },
+    "season": {
+      "$ref": "common.schema.json#/$defs/seasonId"
+    },
+    "grid": {
+      "$ref": "common.schema.json#/$defs/grid"
+    },
+    "window": {
+      "$ref": "common.schema.json#/$defs/window"
+    },
+    "label": {
+      "const": "exploration"
+    },
+    "units": {
+      "type": "string"
+    },
+    "nCells": {
+      "type": "integer"
+    },
+    "nTestable": {
+      "type": "integer"
+    },
+    "nSignificant": {
+      "type": "integer"
+    },
+    "fdrQ": {
+      "const": 0.1
+    },
+    "colourLimit": {
+      "type": "number"
+    },
+    "file": {
+      "type": "string"
+    },
+    "byteOrder": {
+      "const": "little"
+    },
+    "layout": {
+      "const": "field-major: each field is a [nlat][nlon] block, in the order listed"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "enum": [
+              "rate",
+              "rate_low",
+              "rate_high",
+              "p",
+              "q",
+              "flags"
+            ]
+          },
+          "dtype": {
+            "enum": [
+              "int16",
+              "uint8",
+              "float32"
+            ]
+          },
+          "scale": {
+            "type": "number"
+          },
+          "offset": {
+            "type": "number"
+          },
+          "fill": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "dtype",
+          "scale",
+          "offset",
+          "fill"
+        ]
+      }
+    },
+    "flagBits": {
+      "type": "object",
+      "properties": {
+        "testable": {
+          "const": 1
+        },
+        "significant": {
+          "const": 2
+        },
+        "short_or_missing": {
+          "const": 4
+        },
+        "phi_out_of_range": {
+          "const": 8
+        },
+        "leftover_memory": {
+          "const": 16
+        },
+        "not_finite": {
+          "const": 32
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "testable",
+        "significant",
+        "short_or_missing",
+        "phi_out_of_range",
+        "leftover_memory",
+        "not_finite"
+      ]
+    },
+    "provenance": {
+      "$ref": "provenance.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "variable",
+    "season",
+    "grid",
+    "window",
+    "label",
+    "units",
+    "nCells",
+    "nTestable",
+    "nSignificant",
+    "fdrQ",
+    "colourLimit",
+    "file",
+    "byteOrder",
+    "layout",
+    "fields",
+    "flagBits",
+    "provenance"
+  ]
+}

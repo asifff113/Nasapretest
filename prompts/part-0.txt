@@ -1,0 +1,38 @@
+You are setting up the CaseFile Earth repository. Read AGENTS.md and docs/01_ARCHITECTURE.md §3 and §10.
+
+Create:
+1. .gitignore: .cache/, .venv/, node_modules/, dist/, __pycache__/, *.pyc, .pytest_cache/, playwright-report/, test-results/.
+2. LICENSE: Apache-2.0.
+3. .devcontainer/devcontainer.json: Python 3.12, Node 22, uv installed, post-create `cd python && uv sync --extra pipeline`.
+4. .github/workflows/ci.yml, on every push and pull request:
+   - job python: install uv; in python/: `uv sync`; `uv run casefile-engine selfcheck`; `uv run pytest -m "not slow"`;
+     from the repository root: `uv run --project python python tools/validate_pack.py`.
+   - job web: runs only if web/package.json exists: `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`,
+     `npx playwright install --with-deps chromium`, `npm run test:e2e`.
+5. .github/workflows/deploy.yml, on push to main: if web/package.json exists, build the site in web/ with
+   RESULTS_BASE=./results, copy the repository's results/ folder into the build output as results/, and deploy the
+   output to GitHub Pages (actions/upload-pages-artifact + actions/deploy-pages). If web/ does not exist yet, deploy a
+   one-line placeholder index.html so that the Pages URL is live.
+6. results/.gitkeep.
+
+Do not change anything under python/src/casefile_engine/, schemas/, config/ or examples/.
+
+Checks (run and show the output):
+- cd python && uv sync && uv run casefile-engine selfcheck        → "golden self-check: 60/60 cases match"
+- uv run pytest -m "not slow"                                      → all pass
+- cd .. && uv run --project python python tools/validate_pack.py  → "pack OK"
+- after pushing: the ci workflow is green and the Pages URL opens.
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

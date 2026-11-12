@@ -1,0 +1,49 @@
+You are building the regions stage of the CaseFile Earth pipeline. Read AGENTS.md, docs/01_ARCHITECTURE.md §5,
+docs/02_DATA.md §4 and §7, config/regions.yaml, config/preregistration.yaml (the regions and pairs it names), and
+tools/decide/support_cells.py, support_pairs.py and support_split.py.
+
+Those three scripts already compute cell fractions, the support rule and the pair splits from the real boundary
+files; tools/decide/support_out.json, support_pairs_out.json and support_split_out.json hold their results. Reuse
+their download addresses and their method; your numbers must reproduce theirs.
+
+Build python/src/casefile_pipeline/boundaries.py and regions.py and the command `casefile-pipeline regions`:
+1. Download the boundary files of config/regions.yaml into .cache/boundaries/ (once), and record each licence text.
+   Match Bangladesh's divisions on shapeISO (the file spells Rajshahi "Rajshani").
+2. For each region and for both grids (casefile_engine.base.MERRA2 and IMERG): the fraction of every cell inside the
+   region from 5 × 5 sample points per cell (02 §7.2). The Bay of Bengal is its box minus land.
+3. Write regions/cells/<grid>/<region>.json (schemas/mask.schema.json): cells as [row, col, fraction] with
+   fraction rounded to 4 decimals, areaKm2, effectiveCells.
+4. Support: S1 effective cells ≥ 4 and S2 spill share ≤ 1/3 on each grid, with
+   casefile_engine.base.spill_share(cells, grid). inSet = passes on both grids.
+5. Pairs: every pair of config/preregistration.yaml (it ships with two recommended pairs; the team may have changed
+   them). split = casefile_engine.base.pair_split(masks, a, b), where masks[(region id, grid id)] =
+   (cells, areaKm2, effectiveCells). Compute masks for every region of config/regions.yaml, so that the team can
+   still choose other pairs later by rerunning this command.
+6. Write regions/index.json exactly in the shape of examples/regions/index.json (schemas/region_index.schema.json),
+   with kind, role, name and "in" from config/regions.yaml, bbox, centroid, the boundary source and licence.
+   Also write regions/geom/<region>.json: the outline simplified to about 0.02°, as GeoJSON, for the site.
+Output folder: .cache/bundle/<bundle id>/regions/ (bundle id from --bundle-id, default "b1").
+
+Tests (no network): fractions of a 1° × 1° box against casefile_engine.base.box_weights; spill share and pair split
+on a hand-made pair of overlapping boxes; a polygon with a hole.
+
+Checks:
+- uv run casefile-pipeline regions                          → writes the index and one mask per region and grid
+- The MERRA-2 effective cells and spill shares equal tools/decide/support_out.json within 0.15 cells and 0.02:
+  Bangladesh, Dhaka, Khulna, Rajshahi and Rangpur and the six comparison regions pass; Chittagong fails S2;
+  Sylhet and Mymensingh fail S1; Barisal fails both. Print the table side by side.
+- uv run --project python python tools/validate_results.py .cache/bundle/<id>   → "results OK"
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

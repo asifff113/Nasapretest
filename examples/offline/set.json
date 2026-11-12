@@ -1,0 +1,148 @@
+{
+ "schema": "casefile/offline_set@3",
+ "buildId": "synthetic-v3",
+ "synthetic": true,
+ "cases": [
+  {
+   "id": "lead_contrast_rain",
+   "title": {
+    "en": "Has rain changed differently in North Plain (example) and South Delta (example)?",
+    "bn": "উত্তর সমভূমি (উদাহরণ) ও দক্ষিণ ব-দ্বীপ (উদাহরণ)-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   },
+   "files": [
+    "cases/lead_contrast_rain.json",
+    "contrasts/rain/pair_north_vs_delta/ANN.json",
+    "verdicts/rain/synthetic__north_plain/ANN.json",
+    "verdicts/rain/synthetic__south_delta/ANN.json"
+   ]
+  },
+  {
+   "id": "lead_contrast_heat",
+   "title": {
+    "en": "Has it warmed differently in North Plain (example) and South Delta (example)?",
+    "bn": "উত্তর সমভূমি (উদাহরণ) ও দক্ষিণ ব-দ্বীপ (উদাহরণ)-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?"
+   },
+   "files": [
+    "cases/lead_contrast_heat.json",
+    "contrasts/air_temp/pair_north_vs_delta/ANN.json",
+    "verdicts/air_temp/synthetic__north_plain/ANN.json",
+    "verdicts/air_temp/synthetic__south_delta/ANN.json"
+   ]
+  },
+  {
+   "id": "bangladesh_seasons",
+   "title": {
+    "en": "Which seasons changed in Bangladesh?",
+    "bn": "বাংলাদেশে কোন ঋতুগুলো বদলেছে?"
+   },
+   "files": [
+    "cases/bangladesh_seasons.json",
+    "lineups/synthetic__north_plain.json",
+    "verdicts/air_temp/synthetic__north_plain/ANN.json",
+    "verdicts/air_temp/synthetic__north_plain/MAM.json",
+    "verdicts/air_temp/synthetic__north_plain/JJAS.json",
+    "verdicts/rain/synthetic__north_plain/ANN.json",
+    "verdicts/rain/synthetic__north_plain/MAM.json",
+    "verdicts/rain/synthetic__north_plain/JJAS.json"
+   ]
+  }
+ ],
+ "files": [
+  {
+   "path": "build.json",
+   "sha256": "9611b10438f5bc8a4b25030e383ccd9a33c752505ed0df0fd0c7365fecc3e255",
+   "bytes": 1889
+  },
+  {
+   "path": "cases/bangladesh_seasons.json",
+   "sha256": "2f2e438c51c6ba41fd896fff8d29f242e4b38385f0eabacf2505c521bd90b721",
+   "bytes": 2276
+  },
+  {
+   "path": "cases/lead_contrast_heat.json",
+   "sha256": "8528fa4d52b103e78530ba20da28f7c1cb25eaa366b5e30f680031d5fff60d6b",
+   "bytes": 3624
+  },
+  {
+   "path": "cases/lead_contrast_rain.json",
+   "sha256": "3104e6eeb0a8f371abec148059d16c58fbbaede641674e77ed9d18779d740993",
+   "bytes": 3964
+  },
+  {
+   "path": "catalog.json",
+   "sha256": "bedafd2cee3c1cc9d14db31e580c955cc1692ba83084dea47065fd6698c1ba95",
+   "bytes": 50809
+  },
+  {
+   "path": "contrasts/air_temp/pair_north_vs_delta/ANN.json",
+   "sha256": "849b6aef111c92ac87bc39386e2decfa608deb1d399ba1133a67bfb5269c2b85",
+   "bytes": 16422
+  },
+  {
+   "path": "contrasts/rain/pair_north_vs_delta/ANN.json",
+   "sha256": "7302a748b9174375585c0a0988479270790968a21d971a40198183078accc597",
+   "bytes": 17193
+  },
+  {
+   "path": "lineups/synthetic__north_plain.json",
+   "sha256": "f37bf2232c78bc7057bd0a82abb7eda9804e1edc5028f8cc6c8674ef0c81c87b",
+   "bytes": 3424
+  },
+  {
+   "path": "methods/tables.json",
+   "sha256": "b2a1160fd8a7b3ff832265e2288a2b82769a6b27e02a2a6c7d2de0465edc39e6",
+   "bytes": 54517
+  },
+  {
+   "path": "prereg.json",
+   "sha256": "7913e8d1e0626350ee514195d022619988feac46c9bb1e6b3611e966f216f9ba",
+   "bytes": 4565
+  },
+  {
+   "path": "regions/index.json",
+   "sha256": "08919beaa86a293ddd8a436ba3476fffb513e4f56b8ce0494096abd8c6cfe44f",
+   "bytes": 6179
+  },
+  {
+   "path": "verdicts/air_temp/synthetic__north_plain/ANN.json",
+   "sha256": "7a7457889e7f8bdf4e9b18ab69cef6a2f68b1334dc7dac7574002aa0014ff43b",
+   "bytes": 14202
+  },
+  {
+   "path": "verdicts/air_temp/synthetic__north_plain/JJAS.json",
+   "sha256": "19e734653366b4f790a8a7ff5292ccab4eeea31190f720c0a501f2f15744f575",
+   "bytes": 13950
+  },
+  {
+   "path": "verdicts/air_temp/synthetic__north_plain/MAM.json",
+   "sha256": "56367ae39e120b0e20a3e82cbbafd25b05a13a73c43b96c56d94bffc8fc8c580",
+   "bytes": 13960
+  },
+  {
+   "path": "verdicts/air_temp/synthetic__south_delta/ANN.json",
+   "sha256": "afffda1ebd8aea133395a4e1a17fe01baeb9cf8b323f4f704743f08fa754f541",
+   "bytes": 14189
+  },
+  {
+   "path": "verdicts/rain/synthetic__north_plain/ANN.json",
+   "sha256": "d00a71c8594844e0e45f16fcf24d88a6f9fe41ace962dd8c93bcfc61fa1900c5",
+   "bytes": 14788
+  },
+  {
+   "path": "verdicts/rain/synthetic__north_plain/JJAS.json",
+   "sha256": "b07570108e8a3d7f5bfba911819c2f844fd4e05462439cd9f9ec7548538a22a4",
+   "bytes": 14096
+  },
+  {
+   "path": "verdicts/rain/synthetic__north_plain/MAM.json",
+   "sha256": "f8f180f638b49d97d078ceaa0ea7a3897ddae572c4e1a19033897f1e27b16675",
+   "bytes": 14132
+  },
+  {
+   "path": "verdicts/rain/synthetic__south_delta/ANN.json",
+   "sha256": "e1b23c9be21416574b8ffc21a4af48487688efde7cb006ccbad975e2deb5dcbc",
+   "bytes": 14115
+  }
+ ],
+ "totalBytes": 278294
+}

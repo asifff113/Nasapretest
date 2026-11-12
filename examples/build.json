@@ -1,0 +1,73 @@
+{
+ "schema": "casefile/build@3",
+ "buildId": "synthetic-v3",
+ "created": "2026-11-02T00:00:00Z",
+ "synthetic": true,
+ "engine": {
+  "version": "reference",
+  "gitSha": "synthetic"
+ },
+ "pipeline": {
+  "gitSha": "synthetic"
+ },
+ "python": {
+  "numpy": "not recorded in the examples",
+  "scipy": "not recorded in the examples"
+ },
+ "inputManifest": {
+  "path": "input_manifest.json",
+  "sha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a"
+ },
+ "prereg": {
+  "path": "prereg.json",
+  "sha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "commit": null,
+  "status": "synthetic"
+ },
+ "configHashes": {
+  "analysis": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "variables": "590c63d19b09c5add4a6d1b3d40f3a34aa5b794801bc1f2fa3f71b1fef78b01d",
+  "regions": "f36c69c044c477c71a44d5f71455567d30c462f3719f2d05742689bbb82f6824",
+  "seasons": "4c5e88bc4d220cc552a34f79350324fd9131262924458e494a3835d9382fe845",
+  "known_breaks": "100db10265530bae294da6a964e74e405937f2f8a214a3dfff4b18be7d9e4d4e",
+  "break_review": "4f1729e3d9f5d3e834e539b116c58517b5fd667a5c9451c18a3b433ae1c086cd",
+  "i18n_en": "c2dc2ab2f61254f67b46aa9d7e7ed6a2c43219443ba5541a6e65c2b925b5edab",
+  "i18n_bn": "4951f0d720d4bb78017f624d743a0a97cf2db1e6ac6bc67f79e6bf6ab12db09f"
+ },
+ "goldenTests": {
+  "suite": "examples/golden",
+  "total": 0,
+  "passed": 0
+ },
+ "products": [
+  {
+   "source": "merra2_slv",
+   "shortName": "M2TMNXSLV",
+   "version": "5.12.4",
+   "granules": 0
+  },
+  {
+   "source": "merra2_precip",
+   "shortName": "M2TMNXFLX",
+   "version": "5.12.4",
+   "granules": 0
+  },
+  {
+   "source": "imerg_v07_final_monthly",
+   "shortName": "GPM_3IMERGM",
+   "version": "07",
+   "granules": 0
+  }
+ ],
+ "counts": {
+  "verdicts": 30,
+  "contrasts": 11,
+  "lineups": 3,
+  "maps": 1,
+  "cases": 3
+ },
+ "files": {
+  "count": 74,
+  "bytes": 1489894
+ }
+}

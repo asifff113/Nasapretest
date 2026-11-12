@@ -1,0 +1,366 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": true,
+ "id": "state__missing_year",
+ "variable": {
+  "id": "air_temp",
+  "kind": "model",
+  "source": "merra2_slv",
+  "units": "°C",
+  "rule": "mean",
+  "ratioScale": false
+ },
+ "region": {
+  "id": "synthetic:north_plain",
+  "kind": "synthetic",
+  "areaKm2": 92335.4
+ },
+ "season": "ANN",
+ "window": {
+  "id": "main",
+  "first": 1996,
+  "last": 2025
+ },
+ "family": "confirmatory",
+ "multiplicity": {
+  "method": "holm",
+  "familySize": 6,
+  "pAdjusted": 0.5,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "missing_year",
+ "series": {
+  "years": [
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   26.904347941883955,
+   27.005251152212626,
+   27.06448635122069,
+   26.755464480501654,
+   26.983629393844,
+   27.116168076996022,
+   27.191763195884576,
+   null,
+   27.189606401273455,
+   27.407681785188373,
+   27.265657662095773,
+   27.179798487670826,
+   27.30565463758965,
+   27.1821674202164,
+   27.041876944721533,
+   27.253246425085035,
+   27.203982138963344,
+   27.30077693049446,
+   27.44050709606878,
+   27.189649526330314,
+   27.423567755781065,
+   27.506891959917365,
+   27.473310748354294,
+   27.286224851186773,
+   27.443794208118064,
+   27.365191165818036,
+   27.521194749736708,
+   27.598198795853094,
+   27.475957570069244,
+   27.79335528756107
+  ],
+  "units": "°C"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "air_temp",
+    "limit": "air_temp, rain, rain_imerg"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "ANN",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 29,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": false,
+    "value": 1,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.1309019422260337,
+    "limit": 0.3
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": -0.03321677326009582,
+    "limit": -0.030806815541720923
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 29,
+  "mk": {
+   "S": 280,
+   "varS": 2842.0,
+   "tau": 0.6896551724137931,
+   "z": 5.233499252551799,
+   "p": 1.663306795413534e-07,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.043880984677615274,
+   "phi": 0.1309019422260337,
+   "vif": 1.289284302887614,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 3664.145988806599,
+   "z": 4.6091179159960864,
+   "p": 4.04380949754483e-06,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": 0.021090280080705685,
+   "intercept": -15.14689558020336,
+   "ciLowPerYear": 0.01431755843978948,
+   "ciHighPerYear": 0.028216133773543668,
+   "multiplier": 2.25,
+   "nPairs": 406
+  },
+  "change": {
+   "ratePerDecade": 0.21090280080705684,
+   "rateLowPerDecade": 0.1431755843978948,
+   "rateHighPerDecade": 0.28216133773543667,
+   "total": 0.6116181223404649,
+   "totalLow": 0.41520919475389495,
+   "totalHigh": 0.8182678794327664,
+   "span": 29,
+   "units": "°C",
+   "percent": null,
+   "baseline": null,
+   "residSd": 0.11907782312698544,
+   "snr": 5.136289077843076
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": 0.021470342486485845,
+   "intercept": -15.90031751487328,
+   "se": 0.0025906057454280523,
+   "r1": 0.03937746569043387,
+   "phi": 0.1256778602009033,
+   "nEff": 22.52450985368812,
+   "seAdj": 0.002971302095144759,
+   "t": 7.225903593434457,
+   "df": 20.52450985368812,
+   "p": 4.6366152584750764e-07,
+   "ciLowPerYear": 0.015282453376698792,
+   "ciHighPerYear": 0.027658231596272898,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": 5.233499252551799,
+   "p": 1.663306795413534e-07,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": -0.03321677326009582,
+   "m": 6,
+   "mEff": 6.0,
+   "mEffStep": 5,
+   "rhoBar": 0.0,
+   "phiCells": 0.23417001849027197,
+   "critical": -0.030806815541720923,
+   "passed": true,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": [
+    2003
+   ]
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "practical": {
+  "threshold": null,
+  "units": "°C per decade",
+  "position": null
+ },
+ "overturn": [],
+ "sensitivity": null,
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "missing_year",
+  "ratePerDecade": 0.21090280080705684,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "°C",
+  "family": "confirmatory",
+  "familySize": 6,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   26.904347941883955,
+   27.005251152212626,
+   27.06448635122069,
+   26.755464480501654,
+   26.983629393844,
+   27.116168076996022,
+   27.191763195884576,
+   null,
+   27.189606401273455,
+   27.407681785188373,
+   27.265657662095773,
+   27.179798487670826,
+   27.30565463758965,
+   27.1821674202164,
+   27.041876944721533,
+   27.253246425085035,
+   27.203982138963344,
+   27.30077693049446,
+   27.44050709606878,
+   27.189649526330314,
+   27.423567755781065,
+   27.506891959917365,
+   27.473310748354294,
+   27.286224851186773,
+   27.443794208118064,
+   27.365191165818036,
+   27.521194749736708,
+   27.598198795853094,
+   27.475957570069244,
+   27.79335528756107
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2011.0,
+   27.265657662095773
+  ],
+  "line": [
+   [
+    1996,
+    26.949303460885186
+   ],
+   [
+    2025,
+    27.560921583225653
+   ]
+  ],
+  "band": null
+ },
+ "text": {
+  "en": {
+   "headline": "No verdict: years are missing from this record (2003). A verdict needs every year.",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "কোনো রায় নেই: এই রেকর্ডে কিছু বছর অনুপস্থিত (২০০৩)। রায়ের জন্য প্রতিটি বছর লাগে।",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

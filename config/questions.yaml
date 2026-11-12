@@ -1,0 +1,53 @@
+# Question cards (M1): the statement's "short series of questions about what or where they would like to
+# investigate". Each card leads to a short list of variables, each with its record card (config/variables.yaml).
+# Deferred variables keep their cards, greyed and marked "not analysed in this release".
+# flow: place   → place picker → line-up → verdict
+#       compare → pair picker → compare screen (trend in the difference)
+version: 3
+cards:
+  - id: hotter
+    flow: place
+    question: { en: "Is it getting hotter?", bn: "গরম কি বাড়ছে?" }
+    shortlist:
+      - variable: air_temp
+        why: { en: "Air temperature near the ground, every year since 1980.", bn: "ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা, ১৯৮০ থেকে প্রতি বছর।" }
+    also_deferred: [air_temp_levels]
+
+  - id: rain_changing
+    flow: place
+    question: { en: "Is rain changing?", bn: "বৃষ্টি কি বদলাচ্ছে?" }
+    shortlist:
+      - variable: rain
+        why: { en: "Rain and snowfall added up over the year or the monsoon.", bn: "বছর বা বর্ষাকাল ধরে যোগ করা বৃষ্টি ও তুষারপাত।" }
+      - variable: rain_imerg
+        why: { en: "A second rain record, to check whether the answer depends on the dataset.", bn: "দ্বিতীয় একটি বৃষ্টির রেকর্ড — উত্তর ডেটাসেটের ওপর নির্ভর করে কি না দেখতে।" }
+    also_deferred: [rain_gsmap, soil_moisture, runoff]
+
+  - id: rain_two_places
+    flow: compare
+    question: { en: "Has rain changed differently in two places?", bn: "দুই জায়গায় কি বৃষ্টি ভিন্নভাবে বদলেছে?" }
+    shortlist:
+      - variable: rain
+        why: { en: "We test the trend in the difference between the two places.", bn: "আমরা দুই জায়গার পার্থক্যের প্রবণতা যাচাই করি।" }
+
+  - id: heat_two_places
+    flow: compare
+    question: { en: "Has it warmed differently in two places?", bn: "দুই জায়গায় কি উষ্ণতা ভিন্নভাবে বেড়েছে?" }
+    shortlist:
+      - variable: air_temp
+        why: { en: "We test the trend in the difference between the two places.", bn: "আমরা দুই জায়গার পার্থক্যের প্রবণতা যাচাই করি।" }
+
+  - id: one_season
+    flow: place
+    question: { en: "Has one season changed more than the others?", bn: "একটি ঋতু কি অন্যগুলোর চেয়ে বেশি বদলেছে?" }
+    shortlist:
+      - variable: air_temp
+        why: { en: "Pre-monsoon, monsoon, post-monsoon and winter, side by side.", bn: "প্রাক-বর্ষা, বর্ষা, বর্ষা-পরবর্তী ও শীত, পাশাপাশি।" }
+      - variable: rain
+        why: { en: "The same seasons for rain.", bn: "বৃষ্টির জন্যও একই ঋতুগুলো।" }
+
+  - id: more_later
+    flow: none
+    question: { en: "Is the ground drying, or the air getting hazier?", bn: "মাটি কি শুকিয়ে যাচ্ছে, নাকি বাতাস আরও ঘোলাটে হচ্ছে?" }
+    shortlist: []
+    also_deferred: [soil_moisture, water_storage, haze, no2, greenness]

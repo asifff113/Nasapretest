@@ -1,0 +1,53 @@
+# Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
+# Needs: Settings → Pages → Source: GitHub Actions.
+name: deploy
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the site, or a placeholder until web/ exists
+        run: |
+          if [ -f web/package.json ]; then
+            cd web
+            npm ci
+            RESULTS_BASE=./results npm run build
+            cd ..
+            mkdir -p web/dist/results
+            cp -R results/. web/dist/results/
+            echo "SITE_DIR=web/dist" >> "$GITHUB_ENV"
+          else
+            mkdir -p _site/results
+            echo '<!doctype html><meta charset="utf-8"><title>CaseFile Earth</title><p>CaseFile Earth: the site is being built.</p>' > _site/index.html
+            cp -R results/. _site/results/
+            echo "SITE_DIR=_site" >> "$GITHUB_ENV"
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.SITE_DIR }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

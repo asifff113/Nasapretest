@@ -1,0 +1,62 @@
+{
+ "schema": "casefile/casefile@3",
+ "synthetic": true,
+ "id": "lead_contrast_heat",
+ "uses": {
+  "kind": "contrast",
+  "pair": "pair_north_vs_delta",
+  "variable": "air_temp",
+  "season": "ANN"
+ },
+ "ending": "supported",
+ "title": {
+  "en": "Has it warmed differently in North Plain (example) and South Delta (example)?",
+  "bn": "উত্তর সমভূমি (উদাহরণ) ও দক্ষিণ ব-দ্বীপ (উদাহরণ)-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?"
+ },
+ "summary": {
+  "en": "The same pre-registered pair, for air temperature near the ground (NASA MERRA-2).",
+  "bn": "একই আগে থেকে নিবন্ধিত জোড়া, ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রার জন্য (নাসার MERRA-2)।"
+ },
+ "results": [
+  "contrasts/air_temp/pair_north_vs_delta/ANN.json",
+  "verdicts/air_temp/synthetic__north_plain/ANN.json",
+  "verdicts/air_temp/synthetic__south_delta/ANN.json"
+ ],
+ "beats": [
+  {
+   "at": "question",
+   "caption": {
+    "en": "Has it warmed differently in North Plain (example) and South Delta (example)?",
+    "bn": "উত্তর সমভূমি (উদাহরণ) ও দক্ষিণ ব-দ্বীপ (উদাহরণ)-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?"
+   }
+  },
+  {
+   "at": "series",
+   "caption": {
+    "en": "Each place on its own: North Plain (example) +0.29 °C a decade, South Delta (example) +0.24 °C a decade.",
+    "bn": "প্রতিটি জায়গা আলাদাভাবে: উত্তর সমভূমি (উদাহরণ) প্রতি দশকে +০.২৯ °C, দক্ষিণ ব-দ্বীপ (উদাহরণ) প্রতি দশকে +০.২৪ °C।"
+   }
+  },
+  {
+   "at": "difference",
+   "caption": {
+    "en": "The test is on the difference, North Plain (example) minus South Delta (example), not on the two labels side by side.",
+    "bn": "পরীক্ষা হয় পার্থক্যের ওপর — উত্তর সমভূমি (উদাহরণ) বিয়োগ দক্ষিণ ব-দ্বীপ (উদাহরণ) — দুটি আলাদা ফল পাশাপাশি রেখে নয়।"
+   }
+  },
+  {
+   "at": "verdict",
+   "caption": {
+    "en": "Air temperature near the ground changed at different rates in North Plain (example) and South Delta (example): the trend in the difference (North Plain (example) − South Delta (example)) is +0.054 °C per decade (95% range +0.005 °C to +0.103 °C).",
+    "bn": "উত্তর সমভূমি (উদাহরণ) ও দক্ষিণ ব-দ্বীপ (উদাহরণ)-এ ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা ভিন্ন হারে বদলেছে: পার্থক্যের (উত্তর সমভূমি (উদাহরণ) − দক্ষিণ ব-দ্বীপ (উদাহরণ)) প্রবণতা প্রতি দশকে +০.০৫৪ °C (৯৫% পরিসর +০.০০৫ °C থেকে +০.১০৩ °C)।"
+   }
+  },
+  {
+   "at": "takeaway",
+   "caption": {
+    "en": "Switch to the screening map to see where the planet is warming fastest.",
+    "bn": "পৃথিবীর কোথায় সবচেয়ে দ্রুত উষ্ণ হচ্ছে, দেখতে স্ক্রিনিং মানচিত্রে যান।"
+   }
+  }
+ ]
+}

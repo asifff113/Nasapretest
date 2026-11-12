@@ -1,0 +1,36 @@
+You are building the screening map of the CaseFile Earth site. Read AGENTS.md, docs/04_UI.md §4.7, §4.8, §6.3 and §7,
+docs/02_DATA.md §6, examples/maps/air_temp/ANN/meta.json, examples/cells/air_temp/meta.json and their schemas.
+
+Build:
+1. loadMapLayer: fetch cells.bin.gz, decompress it in the browser (DecompressionStream, with a small fallback), and
+   split it into the fields listed in meta.json (field-major blocks of [180][360]; int16 values × scale; float32 p
+   and q; uint8 flags with the bits of meta.flagBits).
+2. The map (04 §4.7) on a canvas, equirectangular, with bundled Natural Earth outlines (web/public/outlines/):
+   colour = rate per decade within ±meta.colourLimit; significant cells (flag bit 2) drawn solid, the others
+   lighter; cells that are not testable hatched; a legend; the label "exploration" and the number of tests on screen.
+   Load this screen lazily so that it stays out of the first bundle.
+3. Picking a cell opens the cell page (04 §4.8), #/place?region=cell:<row>_<col>: its yearly values from the cell tile
+   (cells/<variable>/t/<tr>_<tc>.bin.gz, layout in meta.json) and its rate, range, p, q and flags from the map
+   layer, labelled exploration, with no verdict words. A missing tile means "no data here".
+Decoding (raw × scale, fill handling, bit tests) is allowed; any statistic is not.
+
+Checks:
+- npm run test:e2e: W-06 and W-11 (map and cell views) of docs/07_TESTS.md §8; the tiles present in the example are listed in
+  examples/cells/air_temp/meta.json ("tilesPresent")
+- a unit test decodes examples/maps/air_temp/ANN/cells.bin.gz and finds meta.nTestable testable cells and
+  meta.nSignificant significant cells
+- the map chunk is not in the initial bundle (check the build output)
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

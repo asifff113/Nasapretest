@@ -1,0 +1,26 @@
+You are building the offline version of the CaseFile Earth site. Read AGENTS.md, docs/04_UI.md §2 and §4.12,
+docs/01_ARCHITECTURE.md §8–§9, and examples/offline/set.json.
+
+Build `npm run build:offline` (vite.offline.config.ts with vite-plugin-singlefile): one HTML file with the code,
+styles, fonts and the files listed in offline/set.json inlined (src/data/offline.ts serves them to the same reader
+calls). The offline page lists the cases kept on the device and opens each of them fully: line-up, verdicts,
+contrasts, Methods. It makes no network request at all.
+
+Checks:
+- npm run build:offline → one .html file, at most 15 MB
+- Playwright (W-10 of docs/07_TESTS.md §8 and I-04 of §7): open that file from file:// with the network blocked;
+  every case plays; zero requests are attempted
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

@@ -1,0 +1,67 @@
+# DEFERRED (spec pack v3): not read by any MUST or SHOULD code. Kept from v2 (only this header and one path changed) for the COULD items
+# (an SI matcher onto existing cards; deferred products). The v3 wording rule applies if it returns: "consistent with", never "caused by".
+# "Kinds of place" (archetypes) for the question flow and the Scout (F-03, F-18).
+# Geometry: bbox [W, S, E, N] or circle {lat, lon, radius_km}. Circles under ~60 km are smaller than one
+# 1° cell: they still work (alibi AL11 note), and city cases use Giovanni's native resolution instead.
+# Archetype ids and their suggestion rules live in config/deferred/mechanisms.yaml.
+version: 2
+places:
+  # --- the statement's four examples first: desert, rain forest, tidal estuary, atmosphere above a large city
+  - { id: "place:sahara", archetypes: [desert], bbox: [-15, 17, 32, 30], name: { en: "Sahara", bn: "সাহারা মরুভূমি" }, in: { en: "over the Sahara", bn: "সাহারা মরুভূমিতে" } }
+  - { id: "place:thar", archetypes: [desert], bbox: [69, 24, 75, 30], name: { en: "Thar Desert", bn: "থর মরুভূমি" }, in: { en: "over the Thar Desert", bn: "থর মরুভূমিতে" } }
+  - { id: "place:arabian_desert", archetypes: [desert], bbox: [40, 17, 55, 28], name: { en: "Arabian Desert", bn: "আরব মরুভূমি" }, in: { en: "over the Arabian Desert", bn: "আরব মরুভূমিতে" } }
+  - { id: "place:gobi", archetypes: [desert], bbox: [95, 40, 115, 46], name: { en: "Gobi Desert", bn: "গোবি মরুভূমি" }, in: { en: "over the Gobi", bn: "গোবি মরুভূমিতে" } }
+  - { id: "place:outback", archetypes: [desert], bbox: [120, -30, 140, -20], name: { en: "Australian Outback", bn: "অস্ট্রেলিয়ার আউটব্যাক" }, in: { en: "over the Australian Outback", bn: "অস্ট্রেলিয়ার আউটব্যাকে" } }
+
+  - { id: "place:amazon", archetypes: [rainforest], bbox: [-75, -15, -50, 5], name: { en: "Amazon rainforest", bn: "আমাজন রেইনফরেস্ট" }, in: { en: "over the Amazon rainforest", bn: "আমাজন রেইনফরেস্টে" } }
+  - { id: "place:congo", archetypes: [rainforest], bbox: [12, -5, 30, 5], name: { en: "Congo rainforest", bn: "কঙ্গো রেইনফরেস্ট" }, in: { en: "over the Congo rainforest", bn: "কঙ্গো রেইনফরেস্টে" } }
+  - { id: "place:borneo", archetypes: [rainforest], bbox: [109, -4, 119, 7], name: { en: "Borneo", bn: "বোর্নিও" }, in: { en: "over Borneo", bn: "বোর্নিওতে" } }
+
+  - { id: "place:sundarbans", archetypes: [tidal_estuary, delta, mangrove], bbox: [88.0, 21.5, 90.5, 22.8], name: { en: "Sundarbans and the Bengal delta coast", bn: "সুন্দরবন ও বঙ্গীয় ব-দ্বীপের উপকূল" }, in: { en: "around the Sundarbans", bn: "সুন্দরবন এলাকায়" } }
+  - { id: "place:meghna_estuary", archetypes: [tidal_estuary, delta], bbox: [90.4, 21.8, 91.8, 23.0], name: { en: "Meghna estuary", bn: "মেঘনা মোহনা" }, in: { en: "around the Meghna estuary", bn: "মেঘনা মোহনায়" } }
+  - { id: "place:chesapeake", archetypes: [tidal_estuary], bbox: [-77.5, 36.8, -75.5, 39.6], name: { en: "Chesapeake Bay", bn: "চেসাপিক বে" }, in: { en: "around Chesapeake Bay", bn: "চেসাপিক বে এলাকায়" } }
+  - { id: "place:amazon_mouth", archetypes: [tidal_estuary], bbox: [-52, -1, -48, 2], name: { en: "Mouth of the Amazon", bn: "আমাজনের মোহনা" }, in: { en: "at the mouth of the Amazon", bn: "আমাজনের মোহনায়" } }
+  - { id: "place:rio_de_la_plata", archetypes: [tidal_estuary], bbox: [-59, -36, -55, -34], name: { en: "Río de la Plata", bn: "রিও দে লা প্লাতা" }, in: { en: "in the Río de la Plata", bn: "রিও দে লা প্লাতায়" } }
+  - { id: "place:mekong_delta", archetypes: [tidal_estuary, delta], bbox: [104.5, 8.5, 106.8, 11.0], name: { en: "Mekong Delta", bn: "মেকং ব-দ্বীপ" }, in: { en: "in the Mekong Delta", bn: "মেকং ব-দ্বীপে" } }
+
+  - { id: "place:dhaka", archetypes: [megacity], circle: { lat: 23.81, lon: 90.41, radius_km: 30 }, name: { en: "Dhaka", bn: "ঢাকা" }, in: { en: "above Dhaka", bn: "ঢাকার আকাশে" } }
+  - { id: "place:chattogram", archetypes: [megacity, coast], circle: { lat: 22.36, lon: 91.78, radius_km: 25 }, name: { en: "Chattogram", bn: "চট্টগ্রাম" }, in: { en: "above Chattogram", bn: "চট্টগ্রামের আকাশে" } }
+  - { id: "place:delhi", archetypes: [megacity], circle: { lat: 28.61, lon: 77.21, radius_km: 35 }, name: { en: "Delhi", bn: "দিল্লি" }, in: { en: "above Delhi", bn: "দিল্লির আকাশে" } }
+  - { id: "place:kolkata", archetypes: [megacity], circle: { lat: 22.57, lon: 88.36, radius_km: 30 }, name: { en: "Kolkata", bn: "কলকাতা" }, in: { en: "above Kolkata", bn: "কলকাতার আকাশে" } }
+  - { id: "place:lahore", archetypes: [megacity], circle: { lat: 31.55, lon: 74.34, radius_km: 30 }, name: { en: "Lahore", bn: "লাহোর" }, in: { en: "above Lahore", bn: "লাহোরের আকাশে" } }
+  - { id: "place:karachi", archetypes: [megacity, coast], circle: { lat: 24.86, lon: 67.01, radius_km: 30 }, name: { en: "Karachi", bn: "করাচি" }, in: { en: "above Karachi", bn: "করাচির আকাশে" } }
+  - { id: "place:beijing", archetypes: [megacity], circle: { lat: 39.90, lon: 116.40, radius_km: 35 }, name: { en: "Beijing", bn: "বেইজিং" }, in: { en: "above Beijing", bn: "বেইজিংয়ের আকাশে" } }
+  - { id: "place:shanghai", archetypes: [megacity, coast], circle: { lat: 31.23, lon: 121.47, radius_km: 35 }, name: { en: "Shanghai", bn: "সাংহাই" }, in: { en: "above Shanghai", bn: "সাংহাইয়ের আকাশে" } }
+  - { id: "place:los_angeles", archetypes: [megacity], circle: { lat: 34.05, lon: -118.24, radius_km: 40 }, name: { en: "Los Angeles", bn: "লস অ্যাঞ্জেলেস" }, in: { en: "above Los Angeles", bn: "লস অ্যাঞ্জেলেসের আকাশে" } }
+  - { id: "place:mexico_city", archetypes: [megacity, mountain], circle: { lat: 19.43, lon: -99.13, radius_km: 30 }, name: { en: "Mexico City", bn: "মেক্সিকো সিটি" }, in: { en: "above Mexico City", bn: "মেক্সিকো সিটির আকাশে" } }
+  - { id: "place:cairo", archetypes: [megacity, desert], circle: { lat: 30.04, lon: 31.24, radius_km: 30 }, name: { en: "Cairo", bn: "কায়রো" }, in: { en: "above Cairo", bn: "কায়রোর আকাশে" } }
+  - { id: "place:lagos", archetypes: [megacity, coast], circle: { lat: 6.52, lon: 3.38, radius_km: 30 }, name: { en: "Lagos", bn: "লাগোস" }, in: { en: "above Lagos", bn: "লাগোসের আকাশে" } }
+  - { id: "place:baghdad", archetypes: [megacity, desert], circle: { lat: 33.31, lon: 44.37, radius_km: 25 }, name: { en: "Baghdad", bn: "বাগদাদ" }, in: { en: "above Baghdad", bn: "বাগদাদের আকাশে" } }
+  - { id: "place:madrid", archetypes: [megacity], circle: { lat: 40.42, lon: -3.70, radius_km: 25 }, name: { en: "Madrid", bn: "মাদ্রিদ" }, in: { en: "above Madrid", bn: "মাদ্রিদের আকাশে" } }
+
+  # --- other kinds of place with well-documented trends
+  - { id: "place:punjab_haryana", archetypes: [irrigated_plain], bbox: [73, 28, 78, 32.5], name: { en: "Punjab–Haryana plains (India)", bn: "পাঞ্জাব–হরিয়ানার সমভূমি (ভারত)" }, in: { en: "over the Punjab–Haryana plains", bn: "পাঞ্জাব–হরিয়ানার সমভূমিতে" } }
+  - { id: "place:north_china_plain", archetypes: [irrigated_plain], bbox: [113, 34, 120, 40], name: { en: "North China Plain", bn: "উত্তর চীনের সমভূমি" }, in: { en: "over the North China Plain", bn: "উত্তর চীনের সমভূমিতে" } }
+  - { id: "place:central_valley", archetypes: [irrigated_plain], bbox: [-122.5, 35, -119, 40.5], name: { en: "California's Central Valley", bn: "ক্যালিফোর্নিয়ার সেন্ট্রাল ভ্যালি" }, in: { en: "over California's Central Valley", bn: "ক্যালিফোর্নিয়ার সেন্ট্রাল ভ্যালিতে" } }
+  - { id: "place:nile_delta", archetypes: [irrigated_plain, delta], bbox: [29.5, 30.0, 32.5, 31.6], name: { en: "Nile Delta", bn: "নীল নদের ব-দ্বীপ" }, in: { en: "in the Nile Delta", bn: "নীল নদের ব-দ্বীপে" } }
+  - { id: "place:barind_tract", archetypes: [irrigated_plain, drought_prone], bbox: [88.2, 24.3, 89.5, 25.3], name: { en: "Barind Tract (Bangladesh)", bn: "বরেন্দ্র অঞ্চল" }, in: { en: "in the Barind Tract", bn: "বরেন্দ্র অঞ্চলে" } }
+  - { id: "place:haor_basin", archetypes: [wetland, monsoon_land], bbox: [90.5, 24.0, 91.8, 25.2], name: { en: "Haor wetlands (Bangladesh)", bn: "হাওর অঞ্চল" }, in: { en: "in the haor wetlands", bn: "হাওর অঞ্চলে" } }
+  - { id: "place:bd_coastal_belt", archetypes: [coast, delta, cyclone_coast], bbox: [89.0, 21.5, 92.0, 22.8], name: { en: "Bangladesh coastal belt", bn: "বাংলাদেশের উপকূলীয় অঞ্চল" }, in: { en: "along Bangladesh's coast", bn: "বাংলাদেশের উপকূলীয় অঞ্চলে" } }
+
+  - { id: "place:himalaya", archetypes: [mountain_snow], bbox: [75, 27, 95, 35], name: { en: "Himalaya", bn: "হিমালয়" }, in: { en: "over the Himalaya", bn: "হিমালয়ে" } }
+  - { id: "place:tibetan_plateau", archetypes: [mountain_snow], bbox: [80, 30, 100, 37], name: { en: "Tibetan Plateau", bn: "তিব্বত মালভূমি" }, in: { en: "over the Tibetan Plateau", bn: "তিব্বত মালভূমিতে" } }
+  - { id: "place:alps", archetypes: [mountain_snow], bbox: [6, 45.5, 14, 47.5], name: { en: "Alps", bn: "আল্পস পর্বতমালা" }, in: { en: "over the Alps", bn: "আল্পস পর্বতমালায়" } }
+  - { id: "place:sierra_nevada", archetypes: [mountain_snow], bbox: [-121, 36, -118, 40], name: { en: "Sierra Nevada (California)", bn: "সিয়েরা নেভাদা (ক্যালিফোর্নিয়া)" }, in: { en: "over the Sierra Nevada", bn: "সিয়েরা নেভাদায়" } }
+  - { id: "place:rockies", archetypes: [mountain_snow], bbox: [-115, 38, -105, 49], name: { en: "Rocky Mountains", bn: "রকি পর্বতমালা" }, in: { en: "over the Rocky Mountains", bn: "রকি পর্বতমালায়" } }
+
+  - { id: "place:greenland", archetypes: [polar, ice_sheet], bbox: [-55, 60, -20, 83], name: { en: "Greenland", bn: "গ্রিনল্যান্ড" }, in: { en: "over Greenland", bn: "গ্রিনল্যান্ডে" } }
+  - { id: "place:antarctic_peninsula", archetypes: [polar], bbox: [-70, -70, -55, -60], name: { en: "Antarctic Peninsula", bn: "অ্যান্টার্কটিক উপদ্বীপ" }, in: { en: "over the Antarctic Peninsula", bn: "অ্যান্টার্কটিক উপদ্বীপে" } }
+
+  - { id: "place:canada_boreal", archetypes: [boreal_forest, wildfire], bbox: [-120, 50, -70, 60], name: { en: "Canada's boreal forest", bn: "কানাডার বোরিয়াল বন" }, in: { en: "over Canada's boreal forest", bn: "কানাডার বোরিয়াল বনে" } }
+  - { id: "place:siberia_boreal", archetypes: [boreal_forest, wildfire], bbox: [60, 55, 140, 65], name: { en: "Siberian taiga", bn: "সাইবেরিয়ার তাইগা বন" }, in: { en: "over the Siberian taiga", bn: "সাইবেরিয়ার তাইগা বনে" } }
+
+  - { id: "place:aral_sea", archetypes: [shrinking_lake], bbox: [58, 43, 62, 47], name: { en: "Aral Sea", bn: "আরল সাগর" }, in: { en: "around the Aral Sea", bn: "আরল সাগর এলাকায়" } }
+  - { id: "place:lake_chad", archetypes: [shrinking_lake], bbox: [13, 12.5, 15.5, 14.5], name: { en: "Lake Chad", bn: "চাদ হ্রদ" }, in: { en: "around Lake Chad", bn: "চাদ হ্রদ এলাকায়" } }
+  - { id: "place:loess_plateau", archetypes: [greening], bbox: [104, 34, 114, 40], name: { en: "Loess Plateau (China)", bn: "লোয়েস মালভূমি (চীন)" }, in: { en: "over the Loess Plateau", bn: "লোয়েস মালভূমিতে" } }
+  - { id: "place:sahel", archetypes: [greening, monsoon_land], bbox: [-17, 12, 38, 18], name: { en: "Sahel", bn: "সাহেল অঞ্চল" }, in: { en: "across the Sahel", bn: "সাহেল অঞ্চলে" } }
+  - { id: "place:upper_midwest", archetypes: [smoke_downwind], bbox: [-97.5, 42, -86, 49.5], name: { en: "US Upper Midwest", bn: "যুক্তরাষ্ট্রের আপার মিডওয়েস্ট" }, in: { en: "over the US Upper Midwest", bn: "যুক্তরাষ্ট্রের আপার মিডওয়েস্টে" } }

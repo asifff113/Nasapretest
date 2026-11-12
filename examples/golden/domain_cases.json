@@ -1,0 +1,222 @@
+{
+ "meta": {
+  "rules": "docs/03_SCIENCE.md §5.1",
+  "phiMaxFromExampleTables": {
+   "20": 0.7,
+   "25": 0.3,
+   "46": 0.8
+  },
+  "note": "uses examples/methods/tables.json; with the engine's full tables, phi_max values change but the precedence does not"
+ },
+ "cases": {
+  "in_domain": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 30,
+    "missingYears": 0,
+    "phi": 0.2,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": true,
+    "reason": null,
+    "failed": []
+   }
+  },
+  "d1_variable": {
+   "input": {
+    "variable": "soil_moisture",
+    "season": "ANN",
+    "nComplete": 30,
+    "missingYears": 0,
+    "phi": 0.2,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "outside_domain",
+    "failed": [
+     "D1"
+    ]
+   }
+  },
+  "d2_season": {
+   "input": {
+    "variable": "air_temp",
+    "season": "SON",
+    "nComplete": 30,
+    "missingYears": 0,
+    "phi": 0.2,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "outside_domain",
+    "failed": [
+     "D2"
+    ]
+   }
+  },
+  "d3_short_record": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 18,
+    "missingYears": 0,
+    "phi": 0.2,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "short_record",
+    "failed": [
+     "D3"
+    ]
+   }
+  },
+  "d3_too_short": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 12,
+    "missingYears": 0,
+    "phi": 0.2,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "too_short",
+    "failed": [
+     "D3"
+    ]
+   }
+  },
+  "d4_missing_year": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 29,
+    "missingYears": 1,
+    "phi": 0.2,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "missing_year",
+    "failed": [
+     "D4"
+    ]
+   }
+  },
+  "d5_memory": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 30,
+    "missingYears": 0,
+    "phi": 0.95,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "outside_domain",
+    "failed": [
+     "D5"
+    ]
+   }
+  },
+  "d6_leftover": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 30,
+    "missingYears": 0,
+    "phi": 0.2,
+    "leftoverStat": 0.2,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "outside_domain",
+    "failed": [
+     "D6"
+    ]
+   }
+  },
+  "d7_not_finite": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 30,
+    "missingYears": 0,
+    "phi": 0.2,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": null
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "not_testable",
+    "failed": [
+     "D7"
+    ]
+   }
+  },
+  "precedence_d3_before_d5": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 18,
+    "missingYears": 0,
+    "phi": 0.95,
+    "leftoverStat": -0.1,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "short_record",
+    "failed": [
+     "D3",
+     "D5"
+    ]
+   }
+  },
+  "precedence_d4_before_d6": {
+   "input": {
+    "variable": "air_temp",
+    "season": "ANN",
+    "nComplete": 29,
+    "missingYears": 1,
+    "phi": 0.2,
+    "leftoverStat": 0.2,
+    "leftoverCritical": 0.0,
+    "p": 0.04
+   },
+   "expected": {
+    "inDomain": false,
+    "reason": "missing_year",
+    "failed": [
+     "D4",
+     "D6"
+    ]
+   }
+  }
+ }
+}

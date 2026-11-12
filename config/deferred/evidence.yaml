@@ -1,0 +1,327 @@
+# DEFERRED (spec pack v3): not read by any MUST or SHOULD code. Kept unchanged from v2 for the COULD items
+# (an SI matcher onto existing cards; deferred products). The v3 wording rule applies if it returns: "consistent with", never "caused by".
+# Curated library of news stories and research papers for the Scout ("SI", F-18) and Suspects (F-20).
+# Rules: every entry has a working link; "finding" paraphrases the source in one sentence; the Scout only
+# suggests clues — verdicts always come from our own computation. verified: true = link and claim checked
+# by us on the date in "checked". Add entries only after reading the source (persons A or C).
+version: 2
+entries:
+  - id: eo_smoke_upper_midwest_2023
+    type: news
+    outlet: "NASA Earth Observatory"
+    title: "Smoke Blankets the Upper Midwest"
+    date: "2023-06-16"
+    url: "https://science.nasa.gov/earth/earth-observatory/smoke-blankets-the-upper-midwest-151468/"
+    doi: null
+    scenes: ["us_state:WI", "us_state:MN", "place:upper_midwest"]
+    clues: [haze, haze_model]
+    direction: up
+    period: "June 2023 (event)"
+    finding:
+      en: "Smoke from Canadian wildfires hazed the Upper Midwest in June 2023 (seen by MODIS on Aqua); air quality in Minnesota reached 'very unhealthy'."
+      bn: "২০২৩ সালের জুনে কানাডার দাবানলের ধোঁয়া আপার মিডওয়েস্টের আকাশ ঘোলাটে করে (অ্যাকুয়ার MODIS-এ দেখা); মিনেসোটায় বাতাসের মান ‘খুবই অস্বাস্থ্যকর’ হয়।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: eo_canada_smoke_2025
+    type: news
+    outlet: "NASA Earth Observatory"
+    title: "Widespread Smoke from Canadian Fires"
+    date: "2025-08-06"
+    url: "https://science.nasa.gov/earth/earth-observatory/widespread-smoke-from-canadian-fires-154641/"
+    doi: null
+    scenes: ["place:upper_midwest", "country:CAN", "us_state:MN"]
+    clues: [haze, haze_model]
+    direction: up
+    period: "July–August 2025 (event)"
+    finding:
+      en: "Hundreds of Canadian wildfires in summer 2025 spread smoke over several provinces, the northern United States and as far as Europe."
+      bn: "২০২৫ সালের গ্রীষ্মে কানাডার শত শত দাবানলের ধোঁয়া কয়েকটি প্রদেশ, যুক্তরাষ্ট্রের উত্তরাঞ্চল, এমনকি ইউরোপ পর্যন্ত ছড়ায়।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: eo_no2_decade_2016
+    type: news
+    outlet: "NASA Earth Observatory"
+    title: "A Decade of Change for Nitrogen Dioxide"
+    date: "2016-01-28"
+    url: "https://science.nasa.gov/earth/earth-observatory/a-decade-of-change-for-nitrogen-dioxide-87392/"
+    doi: null
+    scenes: ["place:dhaka", "place:beijing", "place:los_angeles", "place:baghdad", "place:lahore", "place:madrid", "country:BGD"]
+    clues: [no2]
+    direction: mixed
+    period: "2005–2014"
+    finding:
+      en: "OMI showed NO₂ rising 79% over Dhaka — the largest increase of any city cited — while it fell over most US and European cities (Los Angeles −56%) and over Beijing (−10%)."
+      bn: "OMI দেখিয়েছে ঢাকার ওপর NO₂ ৭৯% বেড়েছে — উল্লিখিত শহরগুলোর মধ্যে সবচেয়ে বেশি — অথচ যুক্তরাষ্ট্র ও ইউরোপের বেশির ভাগ শহরে (লস অ্যাঞ্জেলেসে −৫৬%) এবং বেইজিংয়ে (−১০%) কমেছে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: krotkov_2016
+    type: paper
+    outlet: "Atmospheric Chemistry and Physics"
+    title: "Aura OMI observations of regional SO2 and NO2 pollution changes from 2005 to 2015"
+    authors: "Krotkov, N. A., et al."
+    date: "2016"
+    url: "https://acp.copernicus.org/articles/16/4605/2016/"
+    doi: "10.5194/acp-16-4605-2016"
+    scenes: ["country:CHN", "country:IND", "country:USA", "box:mediterranean", "world"]
+    clues: [no2, haze, haze_model]
+    direction: mixed
+    period: "2005–2015"
+    finding:
+      en: "OMI saw NO₂ and SO₂ fall over the United States, Europe and (after about 2011) China, but rise over India and parts of the Middle East."
+      bn: "OMI দেখেছে NO₂ ও SO₂ যুক্তরাষ্ট্র, ইউরোপ ও (প্রায় ২০১১-এর পর) চীনে কমেছে, কিন্তু ভারত ও মধ্যপ্রাচ্যের কিছু অংশে বেড়েছে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: li_2017_so2
+    type: paper
+    outlet: "Scientific Reports"
+    title: "India Is Overtaking China as the World's Largest Emitter of Anthropogenic Sulfur Dioxide"
+    authors: "Li, C., et al."
+    date: "2017"
+    url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5680191/"
+    doi: "10.1038/s41598-017-14639-8"
+    scenes: ["country:IND", "country:CHN"]
+    clues: [haze, haze_model]
+    direction: mixed
+    period: "2005–2016"
+    finding:
+      en: "Satellite data show China's sulfur dioxide pollution falling sharply while India's kept rising — the same activity, burning coal, trending in opposite directions."
+      bn: "স্যাটেলাইট-ডেটা দেখায় চীনের সালফার ডাই-অক্সাইড দূষণ দ্রুত কমেছে, অথচ ভারতে বেড়েই চলেছে — একই কাজ, কয়লা পোড়ানো, দুই দিকে দুই প্রবণতা।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: chen_2019_greening
+    type: paper
+    outlet: "Nature Sustainability"
+    title: "China and India lead in greening of the world through land-use management"
+    authors: "Chen, C., et al."
+    date: "2019"
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/6376198"
+    doi: "10.1038/s41893-019-0220-7"
+    scenes: ["country:CHN", "country:IND", "world", "place:loess_plateau"]
+    clues: [greenness]
+    direction: up
+    period: "2000–2017"
+    finding:
+      en: "MODIS shows the world grew greener after 2000, led by China (tree planting) and India (intensive cropping)."
+      bn: "MODIS দেখায় ২০০০ সালের পর পৃথিবী আরও সবুজ হয়েছে, এতে নেতৃত্ব দিয়েছে চীন (বৃক্ষরোপণ) ও ভারত (নিবিড় চাষাবাদ)।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: rodell_2009_india_groundwater
+    type: paper
+    outlet: "Nature"
+    title: "Satellite-based estimates of groundwater depletion in India"
+    authors: "Rodell, M., Velicogna, I., Famiglietti, J. S."
+    date: "2009"
+    url: "https://www.jpl.nasa.gov/news/satellites-unlock-secret-to-northern-indias-vanishing-water/"
+    doi: "10.1038/nature08238"
+    scenes: ["place:punjab_haryana", "country:IND"]
+    clues: [water_storage]
+    direction: down
+    period: "2002–2008"
+    finding:
+      en: "GRACE showed groundwater under north-west India falling year after year, mainly from pumping for irrigation."
+      bn: "GRACE দেখিয়েছে উত্তর-পশ্চিম ভারতের ভূগর্ভস্থ পানি বছরের পর বছর কমছে, মূলত সেচের জন্য পানি তোলার কারণে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: shamsudduha_2022_bengal_water_machine
+    type: paper
+    outlet: "Science"
+    title: "The Bengal Water Machine: Quantified freshwater capture in Bangladesh"
+    authors: "Shamsudduha, M., Taylor, R. G., et al."
+    date: "2022"
+    url: "https://discovery.ucl.ac.uk/id/eprint/10156393/"
+    doi: "10.1126/science.abm4730"
+    scenes: ["country:BGD", "place:barind_tract"]
+    clues: [water_storage]
+    direction: mixed
+    period: "1988–2018"
+    finding:
+      en: "In much of Bangladesh, dry-season pumping for irrigation makes room underground that monsoon rains refill — but not everywhere, so groundwater falls in some areas."
+      bn: "বাংলাদেশের অনেক জায়গায় শুষ্ক মৌসুমে সেচের জন্য পানি তোলায় ভূগর্ভে যে জায়গা খালি হয়, বর্ষার বৃষ্টি তা আবার ভরে দেয় — তবে সব জায়গায় নয়, তাই কিছু এলাকায় ভূগর্ভস্থ পানি কমছে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: solomon_2016_ozone_healing
+    type: paper
+    outlet: "Science"
+    title: "Emergence of healing in the Antarctic ozone layer"
+    authors: "Solomon, S., et al."
+    date: "2016"
+    url: "https://eprints.whiterose.ac.uk/101876/"
+    doi: "10.1126/science.aae0061"
+    scenes: ["band:antarctic"]
+    clues: [ozone, ozone_omi]
+    direction: reversal
+    period: "2000–2015 (September)"
+    finding:
+      en: "The September Antarctic ozone hole has shrunk since 2000: early signs of healing after the Montreal Protocol, after decades of decline."
+      bn: "২০০০ সালের পর সেপ্টেম্বরের অ্যান্টার্কটিক ওজোন-গর্ত ছোট হয়েছে: কয়েক দশকের ক্ষয়ের পর মন্ট্রিয়ল প্রটোকলের ফলে আরোগ্যের প্রথম লক্ষণ।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: santer_2023_stratosphere
+    type: paper
+    outlet: "Proceedings of the National Academy of Sciences"
+    title: "Exceptional stratospheric contribution to human fingerprints on atmospheric temperature"
+    authors: "Santer, B. D., et al."
+    date: "2023"
+    url: "https://ueaeprints.uea.ac.uk/id/eprint/99024"
+    doi: "10.1073/pnas.2300758120"
+    scenes: ["world"]
+    clues: [air_temp_levels]
+    direction: mixed
+    period: "1986–2022"
+    finding:
+      en: "Satellites show the lower atmosphere warming while the upper stratosphere cools — the same human cause producing opposite trends at different heights."
+      bn: "স্যাটেলাইট দেখায় নিচের বায়ুমণ্ডল উষ্ণ হচ্ছে, অথচ ওপরের স্ট্র্যাটোস্ফিয়ার শীতল হচ্ছে — একই মানবসৃষ্ট কারণ, ভিন্ন উচ্চতায় উল্টো প্রবণতা।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: polovina_2008_ocean_deserts
+    type: paper
+    outlet: "Geophysical Research Letters"
+    title: "Ocean's least productive waters are expanding"
+    authors: "Polovina, J. J., Howell, E. A., Abecassis, M."
+    date: "2008"
+    url: "https://www.earthdata.nasa.gov/news/feature-articles/ocean-full-deserts"
+    doi: "10.1029/2007GL031745"
+    scenes: ["box:north_pacific_gyre"]
+    clues: [chlorophyll, sea_surface_temp]
+    direction: down
+    period: "1998–2006"
+    finding:
+      en: "Satellite ocean colour showed the low-chlorophyll 'ocean deserts' in the subtropical gyres growing as surface waters warmed."
+      bn: "স্যাটেলাইটের সমুদ্র-রঙের ডেটা দেখিয়েছে, ওপরের পানি উষ্ণ হওয়ার সঙ্গে উপক্রান্তীয় ঘূর্ণিস্রোতের কম-ক্লোরোফিলের ‘সমুদ্র-মরুভূমি’ বড় হচ্ছে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: cael_2023_ocean_colour
+    type: paper
+    outlet: "Nature"
+    title: "Global climate-change trends detected in indicators of ocean ecology"
+    authors: "Cael, B. B., et al."
+    date: "2023"
+    url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10356596/"
+    doi: "10.1038/s41586-023-06321-z"
+    scenes: ["ocean"]
+    clues: [chlorophyll]
+    direction: mixed
+    period: "2002–2022"
+    finding:
+      en: "MODIS-Aqua ocean colour changed significantly over more than half of the global ocean in 20 years, more than natural variability alone explains."
+      bn: "২০ বছরে বিশ্বের অর্ধেকেরও বেশি সমুদ্রে MODIS-Aqua-র মাপা সমুদ্রের রং তাৎপর্যপূর্ণভাবে বদলেছে, যা শুধু প্রাকৃতিক ওঠানামা দিয়ে ব্যাখ্যা হয় না।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: rahmstorf_2015_warming_hole
+    type: paper
+    outlet: "Nature Climate Change"
+    title: "Exceptional twentieth-century slowdown in Atlantic Ocean overturning circulation"
+    authors: "Rahmstorf, S., et al."
+    date: "2015"
+    url: "https://pure.psu.edu/en/publications/exceptional-twentieth-century-slowdown-in-atlantic-ocean-overturn/"
+    doi: "10.1038/nclimate2554"
+    scenes: ["box:na_warming_hole"]
+    clues: [sea_surface_temp, air_temp]
+    direction: down
+    period: "1900–2013"
+    finding:
+      en: "A patch of the North Atlantic south of Greenland cooled while the rest of the planet warmed, linked to a slowing ocean overturning circulation."
+      bn: "গ্রিনল্যান্ডের দক্ষিণে উত্তর আটলান্টিকের একটি অংশ শীতল হয়েছে, যখন বাকি পৃথিবী উষ্ণ হয়েছে — এর সঙ্গে সমুদ্রের উল্টে-যাওয়া স্রোতের ধীর হওয়ার যোগ আছে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: eo_aral_sea
+    type: news
+    outlet: "NASA Earth Observatory (World of Change)"
+    title: "World of Change: Shrinking Aral Sea"
+    date: "ongoing"
+    url: "https://science.nasa.gov/earth/earth-observatory/world-of-change/aral-sea/"
+    doi: null
+    scenes: ["place:aral_sea", "country:KAZ", "country:UZB"]
+    clues: [water_storage, evapotranspiration]
+    direction: down
+    period: "1960s–present"
+    finding:
+      en: "Satellite images show the Aral Sea shrinking since the 1960s after its rivers were diverted to irrigate cotton."
+      bn: "স্যাটেলাইট-ছবি দেখায়, তুলা চাষে সেচের জন্য নদীগুলোর পানি সরিয়ে নেওয়ার পর ১৯৬০-এর দশক থেকে আরল সাগর শুকিয়ে ছোট হচ্ছে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: roxy_2015_monsoon
+    type: paper
+    outlet: "Nature Communications"
+    title: "Drying of Indian subcontinent by rapid Indian Ocean warming and a weakening land-sea thermal gradient"
+    authors: "Roxy, M. K., et al."
+    date: "2015"
+    url: "https://ideas.repec.org/a/nat/natcom/v6y2015i1d10.1038_ncomms8423.html"
+    doi: "10.1038/ncomms8423"
+    scenes: ["country:IND", "country:BGD"]
+    clues: [rain, soil_moisture]
+    direction: down
+    period: "1901–2012"
+    finding:
+      en: "Summer monsoon rain over parts of central and northern India declined over the 20th century as the Indian Ocean warmed faster than the land."
+      bn: "বিশ শতকে ভারত মহাসাগর স্থলভাগের চেয়ে দ্রুত উষ্ণ হওয়ায় মধ্য ও উত্তর ভারতের কিছু অংশে গ্রীষ্মকালীন বর্ষার বৃষ্টি কমেছে।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: greve_2014_wet_dry
+    type: paper
+    outlet: "Nature Geoscience"
+    title: "Global assessment of trends in wetting and drying over land"
+    authors: "Greve, P., et al."
+    date: "2014"
+    url: "https://www.researchgate.net/profile/Peter-Greve/publication/265611780_Global_assessment_of_trends_in_wetting_and_drying_over_land/links/56a5f7ce08ae232fb2098333/Global-assessment-of-trends-in-wetting-and-drying-over-land.pdf"
+    doi: "10.1038/ngeo2247"
+    scenes: ["land"]
+    clues: [rain, soil_moisture, evapotranspiration]
+    direction: mixed
+    period: "1948–2005"
+    finding:
+      en: "The rule 'wet gets wetter, dry gets drier' holds over only about a tenth of the world's land; many places do the opposite."
+      bn: "‘ভেজা আরও ভেজা, শুকনো আরও শুকনো’ নিয়মটি পৃথিবীর স্থলভাগের মাত্র প্রায় দশ ভাগের এক ভাগে খাটে; অনেক জায়গায় ঘটে উল্টোটা।"
+    verified: true
+    checked: "2026-10-29"
+
+  - id: lenssen_2019_gistemp
+    type: paper
+    outlet: "Journal of Geophysical Research: Atmospheres"
+    title: "Improvements in the GISTEMP uncertainty model"
+    authors: "Lenssen, N., et al."
+    date: "2019"
+    url: "https://data.giss.nasa.gov/gistemp/"
+    doi: "10.1029/2018JD029522"
+    scenes: ["world"]
+    clues: [global_temp_gistemp, air_temp]
+    direction: up
+    period: "1880–present"
+    finding:
+      en: "NASA's global temperature record and its uncertainty: the warming since 1880 is many times larger than the measurement uncertainty."
+      bn: "নাসার বৈশ্বিক তাপমাত্রার রেকর্ড ও তার অনিশ্চয়তা: ১৮৮০ সালের পর থেকে উষ্ণায়ন পরিমাপের অনিশ্চয়তার চেয়ে বহুগুণ বড়।"
+    verified: false
+    checked: null
+
+  - id: zhang_2019_china_clean_air
+    type: paper
+    outlet: "Proceedings of the National Academy of Sciences"
+    title: "Drivers of improved PM2.5 air quality in China from 2013 to 2017"
+    authors: "Zhang, Q., et al."
+    date: "2019"
+    url: "https://doi.org/10.1073/pnas.1907956116"
+    doi: "10.1073/pnas.1907956116"
+    scenes: ["country:CHN", "place:north_china_plain", "place:beijing"]
+    clues: [haze, haze_model, no2]
+    direction: down
+    period: "2013–2017"
+    finding:
+      en: "China's clean-air actions cut fine-particle pollution sharply between 2013 and 2017."
+      bn: "২০১৩ থেকে ২০১৭ সালের মধ্যে চীনের নির্মল-বায়ু পদক্ষেপগুলো সূক্ষ্ম কণা-দূষণ উল্লেখযোগ্যভাবে কমিয়েছে।"
+    verified: false
+    checked: null

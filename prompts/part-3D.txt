@@ -1,0 +1,35 @@
+You are building the remaining pages of the CaseFile Earth site. Read AGENTS.md, docs/04_UI.md §4.9, §4.11 and §4.13,
+templates/METHODS_PAGE.md, examples/cases/, examples/methods/tables.json, examples/prereg.json, examples/build.json,
+examples/input_manifest.json and docs/AI_USE.md.
+
+Build:
+1. Watch cases (04 §4.11): a stepper over the beats of cases/<case>.json, each beat showing its caption (from the
+   file) and the screen state its "at" names (question, place, lineup, series, difference, verdict, robustness, methods,
+   takeaway). The last screen follows the file's "ending" (schemas/casefile.schema.json): the examples have
+   "supported" and no ending; test the "cant_tell_yet" ending with a copy of a case file whose ending you change in
+   the test.
+2. Methods (04 §4.9; #/methods), one page, from methods/tables.json, prereg.json and build.json: the pre-registration's
+   SHA-256 and commit, both families with their sizes, every table (calibration, φ limit, stress, coverage, power,
+   leftover critical values, contrast), the golden summary, in the wording of templates/METHODS_PAGE.md. Put the
+   template's text into web/src/i18n/site.en.json and site.bn.json as keys (both languages, same keys).
+3. Data & credits (#/data) from catalog.json and input_manifest.json; AI use (#/ai) from docs/AI_USE.md's
+   statement; About (#/about).
+
+Checks:
+- npm run test:e2e: W-08 and W-09 of docs/07_TESTS.md §8
+- the string compile step passes (every key exists in both languages); config/i18n/ is unchanged
+- X-03: every variable's record card and every page reads correctly in Bangla (no missing key, no English leak)
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

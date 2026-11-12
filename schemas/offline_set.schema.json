@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/offline_set.schema.json",
+  "title": "Offline case set — the cases and files inlined into the offline build (M10)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/offline_set@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "files"
+        ]
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "bytes": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "bytes"
+        ]
+      }
+    },
+    "totalBytes": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "synthetic",
+    "cases",
+    "files",
+    "totalBytes"
+  ]
+}

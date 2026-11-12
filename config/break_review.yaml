@@ -1,0 +1,19 @@
+# Manual review of documented breaks for every headline case (docs/03_SCIENCE.md §6.2; build plan Part 4, step 4C).
+# A headline case is anything shown as a main result (preregistration.yaml →
+# headline_cases). For each one, a person looks at the region series (and the difference series for a
+# contrast) around every documented change in config/known_breaks.yaml for its sources, including the undated
+# MERRA-2 changes listed by A from the reference, and records what they saw.
+#
+# outcome: no_step_seen → a note on the card
+#          step_seen    → no verdict for that result (reason break_review)
+#          unclear      → the doubt "break_unreviewed" stays
+# A dated break inside the window with no entry here also gives the doubt "break_unreviewed".
+version: 3
+reviews: []
+# Example entry (fill one per headline case and break):
+# - case: { kind: contrast, pair: pair_<slug>, variable: rain, season: ANN }
+#   break: merra2_precip_correction_inputs
+#   reviewer: "<A or the outside reviewer>"
+#   looked_at: "series and difference series, whole window"
+#   outcome: no_step_seen
+#   note: "<one sentence>"

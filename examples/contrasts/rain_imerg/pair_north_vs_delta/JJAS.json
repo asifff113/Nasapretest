@@ -1,0 +1,499 @@
+{
+ "schema": "casefile/contrast@3",
+ "synthetic": true,
+ "id": "rain_imerg__pair_north_vs_delta__JJAS",
+ "pair": {
+  "id": "pair_north_vs_delta",
+  "a": "synthetic:north_plain",
+  "b": "synthetic:south_delta",
+  "preRegistered": true,
+  "lead": true
+ },
+ "variable": "rain_imerg",
+ "season": "JJAS",
+ "window": {
+  "id": "main",
+  "first": 1998,
+  "last": 2024
+ },
+ "family": "sensitivity",
+ "multiplicity": {
+  "method": "none",
+  "familySize": 0,
+  "pAdjusted": null,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "exploration",
+ "estimand": "trend_in_difference",
+ "difference": {
+  "years": [
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024
+  ],
+  "values": [
+   -45.34696682691424,
+   -130.2834328245542,
+   -442.823218111148,
+   -168.34299367193762,
+   -189.3079074079535,
+   -285.7983551301786,
+   -319.20156961705015,
+   -448.93787480630704,
+   -253.8602765361975,
+   -255.96977209970987,
+   -203.3611328648924,
+   -425.15376667732994,
+   -477.6130449361658,
+   -261.2765257849803,
+   -382.6159334656138,
+   -248.78518137968013,
+   -275.4982190179146,
+   -339.64960042778466,
+   -529.4588548376239,
+   -447.6396673503916,
+   -550.4050887664691,
+   -391.94284034371685,
+   -593.4064412813623,
+   -680.1339530108805,
+   -543.5271785033915,
+   -592.8100803836187,
+   -550.3792305941022
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": true,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain_imerg",
+    "limit": "air_temp, rain, rain_imerg"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "JJAS",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 27,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.1111102055401307,
+    "limit": 0.3
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": "A and B",
+    "limit": "both in the domain"
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 27,
+  "mk": {
+   "S": -209,
+   "varS": 2301.0,
+   "tau": -0.5954415954415955,
+   "z": -4.336157271940865,
+   "p": 1.4499521886883259e-05,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.020575360274926152,
+   "phi": 0.1111102055401307,
+   "vif": 1.2395811472305183,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 2852.2762197774227,
+   "z": -3.8946420127045474,
+   "p": 9.834386213393728e-05,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -17.137804479019508,
+   "intercept": 34081.50887384262,
+   "ciLowPerYear": -24.090640474192828,
+   "ciHighPerYear": -8.480998323429912,
+   "multiplier": 2.25,
+   "nPairs": 351
+  },
+  "change": {
+   "ratePerDecade": -171.37804479019508,
+   "rateLowPerDecade": -240.90640474192827,
+   "rateHighPerDecade": -84.80998323429912,
+   "total": -445.5829164545072,
+   "totalLow": -626.3566523290135,
+   "totalHigh": -220.5059564091777,
+   "span": 26,
+   "units": "mm",
+   "percent": null,
+   "baseline": null,
+   "residSd": 103.45412733971229,
+   "snr": 4.307057900081132
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -15.823845918485002,
+   "intercept": 31450.14195293786,
+   "se": 2.5935191237643647,
+   "r1": 0.019496339769253176,
+   "phi": 0.10984352929434069,
+   "nEff": 21.655507352765493,
+   "seAdj": 2.9249424790801344,
+   "t": -5.409968240969117,
+   "df": 19.655507352765493,
+   "p": 2.8609536043296224e-05,
+   "ciLowPerYear": -21.932031587181914,
+   "ciHighPerYear": -9.71566024978809,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -4.336157271940865,
+   "p": 1.4499521886883259e-05,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": null
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [
+   {
+    "id": "imerg_trmm_to_gpm_2014",
+    "year": 2014,
+    "label": {
+     "en": "IMERG moved from the TRMM era to the GPM era (June 2014)",
+     "bn": "IMERG, TRMM যুগ থেকে GPM যুগে যায় (জুন ২০১৪)"
+    },
+    "status": "unreviewed",
+    "review": null
+   }
+  ],
+  "loo": {
+   "status": "pass",
+   "year": 2001,
+   "pMax": 0.0010182856631038729,
+   "pMin": 8.491845974616094e-06
+  },
+  "windows": {
+   "status": "pass",
+   "agree": 5,
+   "ran": 5,
+   "items": [
+    {
+     "id": "s3",
+     "first": 2001,
+     "last": 2024,
+     "ran": true,
+     "ratePerDecade": -171.2063052593574,
+     "rateLowPerDecade": -264.0191255318594,
+     "rateHighPerDecade": -67.03515642311875,
+     "p": 0.001550140444835397,
+     "agrees": true
+    },
+    {
+     "id": "s6",
+     "first": 2004,
+     "last": 2024,
+     "ran": true,
+     "ratePerDecade": -164.0328227264061,
+     "rateLowPerDecade": -291.2536829651526,
+     "rateHighPerDecade": -26.15046969559785,
+     "p": 0.01086514250021554,
+     "agrees": true
+    },
+    {
+     "id": "e3",
+     "first": 1998,
+     "last": 2021,
+     "ran": true,
+     "ratePerDecade": -171.8295445923996,
+     "rateLowPerDecade": -260.64163713660406,
+     "rateHighPerDecade": -75.29161158510715,
+     "p": 0.0008800880812107404,
+     "agrees": true
+    },
+    {
+     "id": "e6",
+     "first": 1998,
+     "last": 2018,
+     "ran": true,
+     "ratePerDecade": -153.05759644718225,
+     "rateLowPerDecade": -264.0191255318594,
+     "rateHighPerDecade": -27.897781311721054,
+     "p": 0.007260849780542143,
+     "agrees": true
+    },
+    {
+     "id": "s3e3",
+     "first": 2001,
+     "last": 2021,
+     "ran": true,
+     "ratePerDecade": -171.8295445923996,
+     "rateLowPerDecade": -325.0377570137249,
+     "rateHighPerDecade": -27.047428102146398,
+     "p": 0.010272375771873477,
+     "agrees": true
+    }
+   ]
+  },
+  "pettitt": null
+ },
+ "doubts": [
+  "break_unreviewed"
+ ],
+ "regions": {
+  "a": {
+   "id": "synthetic:north_plain",
+   "verdict": "verdicts/rain_imerg/synthetic__north_plain/JJAS.json",
+   "ratePerDecade": -84.38926390442617,
+   "rateLowPerDecade": -169.66357986232953,
+   "rateHighPerDecade": 3.6111671607988107,
+   "pAdjusted": null,
+   "status": "no_verdict",
+   "grade": null,
+   "inDomain": true
+  },
+  "b": {
+   "id": "synthetic:south_delta",
+   "verdict": "verdicts/rain_imerg/synthetic__south_delta/JJAS.json",
+   "ratePerDecade": 77.76136089711653,
+   "rateLowPerDecade": -23.67295656101078,
+   "rateHighPerDecade": 192.31510559612616,
+   "pAdjusted": null,
+   "status": "no_verdict",
+   "grade": null,
+   "inDomain": true
+  }
+ },
+ "labels": {
+  "oppositeFittedDirections": true,
+  "supportedOppositeTrends": false,
+  "ratesDiffer": false
+ },
+ "sensitivity": null,
+ "practical": {
+  "threshold": 30.0,
+  "units": "mm per decade",
+  "position": "exceeds"
+ },
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "exploration",
+  "ratePerDecade": -171.37804479019508,
+  "rateLowPerDecade": -240.90640474192827,
+  "rateHighPerDecade": -84.80998323429912,
+  "units": "mm",
+  "family": "sensitivity",
+  "familySize": 0,
+  "inDomain": true
+ },
+ "chart": {
+  "values": [
+   326.26522230856244,
+   241.32875631092247,
+   -71.2110289756713,
+   203.26919546353906,
+   182.30428172752318,
+   85.81383400529808,
+   52.41061951842653,
+   -77.32568567083035,
+   117.7519125992792,
+   115.64241703576681,
+   168.2510562705843,
+   -53.54157754185326,
+   -106.00085580068912,
+   110.33566335049636,
+   -11.003744330137124,
+   122.82700775579656,
+   96.11397011756208,
+   31.96258870769202,
+   -157.84666570214722,
+   -76.02747821491494,
+   -178.79289963099245,
+   -20.33065120824017,
+   -221.7942521458856,
+   -308.52176387540385,
+   -171.9149893679148,
+   -221.197891248142,
+   -178.7670414586255
+  ],
+  "offset": -371.6121891354767,
+  "pivot": [
+   2011.0,
+   -11.003744330137124
+  ],
+  "line": [
+   [
+    1998,
+    211.78771389712233
+   ],
+   [
+    2024,
+    -233.7952025573843
+   ]
+  ],
+  "band": {
+   "low": [
+    [
+     1998,
+     302.17458183436963
+    ],
+    [
+     2024,
+     -324.1820704946439
+    ]
+   ],
+   "high": [
+    [
+     1998,
+     99.24923387445173
+    ],
+    [
+     2024,
+     -121.25672253472598
+    ]
+   ]
+  }
+ },
+ "split": {
+  "rule": "disjoint_cells_larger_fraction",
+  "grids": {
+   "merra2_native": {
+    "sharedCells": 0,
+    "effectiveCellsA": 24.0,
+    "effectiveCellsB": 24.0005,
+    "passes": true
+   },
+   "imerg_native": {
+    "sharedCells": 0,
+    "effectiveCellsA": 750.0,
+    "effectiveCellsB": 750.0,
+    "passes": true
+   }
+  },
+  "passes": true
+ },
+ "text": {
+  "en": {
+   "headline": "Sensitivity check (IMERG): the difference (North Plain (example) − South Delta (example)) changed by −171 mm per decade (95% range −241 mm to −85 mm). It is shown beside MERRA-2 and gets no verdict.",
+   "howMuch": [
+    "North Plain (example): −84 mm per decade (95% range −170 mm to +4 mm). South Delta (example): +78 mm per decade (95% range −24 mm to +192 mm).",
+    "Each place's own rate is shown beside the difference, never subtracted from it.",
+    "The two fitted lines point in opposite directions. On its own that does not show the trends differ."
+   ],
+   "howSure": [],
+   "checks": [
+    "No missing years.",
+    "A documented data change falls in 2014 (IMERG moved from the TRMM era to the GPM era (June 2014)) and has not been checked by a person yet.",
+    "No single year decides the answer.",
+    "5 of 5 other windows agree."
+   ],
+   "practical": [
+    "We decided in advance that a change of 30 mm per decade matters. The whole 95% range is beyond that."
+   ],
+   "overturn": [],
+   "notes": [
+    "Both records use rain-gauge and satellite inputs, so this is a sensitivity check, not an independent confirmation."
+   ]
+  },
+  "bn": {
+   "headline": "সংবেদনশীলতা-যাচাই (IMERG): পার্থক্য (উত্তর সমভূমি (উদাহরণ) − দক্ষিণ ব-দ্বীপ (উদাহরণ)) প্রতি দশকে −১৭১ মিমি বদলেছে (৯৫% পরিসর −২৪১ মিমি থেকে −৮৫ মিমি)। এটি MERRA-2-এর পাশে দেখানো হয়, এর কোনো রায় নেই।",
+   "howMuch": [
+    "উত্তর সমভূমি (উদাহরণ): প্রতি দশকে −৮৪ মিমি (৯৫% পরিসর −১৭০ মিমি থেকে +৪ মিমি)। দক্ষিণ ব-দ্বীপ (উদাহরণ): প্রতি দশকে +৭৮ মিমি (৯৫% পরিসর −২৪ মিমি থেকে +১৯২ মিমি)।",
+    "প্রতিটি জায়গার নিজস্ব হার পার্থক্যের পাশে দেখানো হয়, কখনো তা থেকে বিয়োগ করা হয় না।",
+    "মিলিয়ে নেওয়া রেখা দুটি উল্টো দিকে। শুধু এটুকু দিয়ে প্রমাণ হয় না যে প্রবণতা দুটি আলাদা।"
+   ],
+   "howSure": [],
+   "checks": [
+    "কোনো বছর অনুপস্থিত নয়।",
+    "২০১৪ সালে ডেটার একটি নথিভুক্ত পরিবর্তন আছে (IMERG, TRMM যুগ থেকে GPM যুগে যায় (জুন ২০১৪)), যা এখনো কেউ যাচাই করেননি।",
+    "কোনো একক বছর উত্তর ঠিক করে দিচ্ছে না।",
+    "অন্য ৫টি সময়সীমার মধ্যে ৫টি একমত।"
+   ],
+   "practical": [
+    "আমরা আগেই ঠিক করেছি যে প্রতি দশকে ৩০ মিমি পরিবর্তন গুরুত্বপূর্ণ। পুরো ৯৫% পরিসরটি তার বাইরে।"
+   ],
+   "overturn": [],
+   "notes": [
+    "দুটি রেকর্ডই বৃষ্টিমাপক ও স্যাটেলাইটের তথ্য ব্যবহার করে, তাই এটি সংবেদনশীলতা-যাচাই, স্বাধীন সমর্থন নয়।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "GPM IMERG Final Precipitation L3 1 month 0.1° V07",
+    "shortName": "GPM_3IMERGM",
+    "version": "07",
+    "doi": "10.5067/GPM/IMERG/3B-MONTH/07",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

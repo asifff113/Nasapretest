@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/mask.schema.json",
+  "title": "Contributing cells of one region on one grid (02_DATA §7.2)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/mask@3"
+    },
+    "region": {
+      "$ref": "common.schema.json#/$defs/regionId"
+    },
+    "grid": {
+      "type": "string"
+    },
+    "cells": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 3,
+        "prefixItems": [
+          {
+            "type": "integer",
+            "minimum": 0
+          },
+          {
+            "type": "integer",
+            "minimum": 0
+          },
+          {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1
+          }
+        ]
+      }
+    },
+    "areaKm2": {
+      "type": "number",
+      "minimum": 0
+    },
+    "effectiveCells": {
+      "type": "number",
+      "minimum": 0
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "region",
+    "grid",
+    "cells",
+    "areaKm2",
+    "effectiveCells",
+    "synthetic"
+  ]
+}

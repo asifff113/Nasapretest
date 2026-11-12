@@ -1,0 +1,52 @@
+# Watch cases (S2): "a couple of demonstration examples that the user could watch", on the two first-release
+# variables. Cases point at pre-registered results by role, never at numbers: captions are templates filled
+# from the result files the engine wrote, so the story always matches the data. Each case has two endings,
+# chosen by the result: `supported` (rates differ or a supported trend) and `cant_tell_yet` (everything else).
+# Placeholders: {A} {B} {in_A} {in_B} {variable} {Variable} {dataset} {from} {to} {rate} {lo} {hi}
+#               {rate_a} {rate_b} {rate_d} {lo_d} {hi_d} {n_years} {n_tests} {family_size} {headline}
+# Which cases are shown is the team's choice; the list below is what
+# the build supports.
+version: 3
+cases:
+  - id: lead_contrast_rain
+    uses: { kind: contrast, pair: lead, variable: rain, season: ANN }
+    title: { en: "Has rain changed differently in {A} and {B}?", bn: "{A} ও {B}-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?" }
+    summary:
+      en: "Our pre-registered comparison, on NASA MERRA-2 rain: we test the trend in the difference itself."
+      bn: "আমাদের আগে থেকে নিবন্ধিত তুলনা, নাসার MERRA-2 বৃষ্টি দিয়ে: আমরা পার্থক্যের প্রবণতাই সরাসরি যাচাই করি।"
+    beats:
+      - { at: question, caption: { en: "Has rainfall changed differently in {A} and {B}?", bn: "{A} ও {B}-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?" } }
+      - { at: place, caption: { en: "The two places, and the data cells that cover them.", bn: "দুটি জায়গা, আর যে ডেটা-ঘরগুলো এদের ঢাকে।" } }
+      - { at: series, caption: { en: "Yearly rain in each place, {from}–{to}, from {dataset}.", bn: "প্রতিটি জায়গার বার্ষিক বৃষ্টি, {from}–{to}, {dataset} থেকে।" } }
+      - { at: difference, caption: { en: "Now subtract: {A} minus {B}, year by year. Shared ups and downs cancel.", bn: "এবার বিয়োগ: প্রতি বছর {A} থেকে {B}। দুই জায়গার একসঙ্গে ওঠানামা কেটে যায়।" } }
+      - { at: verdict, ending: supported, caption: { en: "Yes. Since {from}, rain in {A} has changed by {rate_d} a decade relative to {B}.", bn: "হ্যাঁ। {from} থেকে {B}-এর তুলনায় {A}-এ বৃষ্টি প্রতি দশকে {rate_d} বদলেছে।" } }
+      - { at: verdict, ending: cant_tell_yet, caption: { en: "Not yet. {n_years} years of data can't tell these two apart, and that is not the same as no change.", bn: "এখনো বলা যাচ্ছে না। {n_years} বছরের ডেটা এ দুটিকে আলাদা করতে পারছে না — আর এর মানে ‘কোনো পরিবর্তন নেই’ নয়।" } }
+      - { at: robustness, caption: { en: "We try to break it: a missing year, other start and end years, known data changes.", bn: "আমরা এটি ভাঙার চেষ্টা করি: একটি বছর বাদ, অন্য শুরু ও শেষের বছর, ডেটার জানা পরিবর্তন।" } }
+      - { at: methods, caption: { en: "Every verdict shows its evidence: datasets, years, method and the {family_size} tests we registered in advance.", bn: "প্রতিটি রায় তার প্রমাণ দেখায়: ডেটাসেট, বছর, পদ্ধতি এবং আগে থেকে নিবন্ধিত {family_size}টি পরীক্ষা।" } }
+      - { at: takeaway, caption: { en: "Your turn: open the case and look at the seasons.", bn: "এবার আপনার পালা: কেসটি খুলুন, ঋতুগুলো দেখুন।" } }
+
+  - id: lead_contrast_heat
+    uses: { kind: contrast, pair: lead, variable: air_temp, season: ANN }
+    title: { en: "Has it warmed differently in {A} and {B}?", bn: "{A} ও {B}-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?" }
+    summary:
+      en: "The same pre-registered pair, for air temperature near the ground (NASA MERRA-2)."
+      bn: "একই আগে থেকে নিবন্ধিত জোড়া, ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রার জন্য (নাসার MERRA-2)।"
+    beats:
+      - { at: question, caption: { en: "Has it warmed differently in {A} and {B}?", bn: "{A} ও {B}-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?" } }
+      - { at: series, caption: { en: "Each place on its own: {A} {rate_a} a decade, {B} {rate_b} a decade.", bn: "প্রতিটি জায়গা আলাদাভাবে: {A} প্রতি দশকে {rate_a}, {B} প্রতি দশকে {rate_b}।" } }
+      - { at: difference, caption: { en: "The test is on the difference, {A} minus {B}, not on the two labels side by side.", bn: "পরীক্ষা হয় পার্থক্যের ওপর — {A} বিয়োগ {B} — দুটি আলাদা ফল পাশাপাশি রেখে নয়।" } }
+      - { at: verdict, ending: supported, caption: { en: "{headline}", bn: "{headline}" } }
+      - { at: verdict, ending: cant_tell_yet, caption: { en: "{headline} That is not the same as no difference.", bn: "{headline} এর মানে ‘কোনো পার্থক্য নেই’ নয়।" } }
+      - { at: takeaway, caption: { en: "Switch to the screening map to see where the planet is warming fastest.", bn: "পৃথিবীর কোথায় সবচেয়ে দ্রুত উষ্ণ হচ্ছে, দেখতে স্ক্রিনিং মানচিত্রে যান।" } }
+
+  - id: bangladesh_seasons
+    uses: { kind: lineup, region: "country:BGD" }
+    title: { en: "Which seasons changed in Bangladesh?", bn: "বাংলাদেশে কোন ঋতুগুলো বদলেছে?" }
+    summary:
+      en: "Temperature and rain by season, with the number of tests on screen."
+      bn: "ঋতুভেদে তাপমাত্রা ও বৃষ্টি, কতগুলো পরীক্ষা হলো তা পর্দায় দেখিয়ে।"
+    beats:
+      - { at: question, caption: { en: "Has one season changed more than the others?", bn: "একটি ঋতু কি অন্যগুলোর চেয়ে বেশি বদলেছে?" } }
+      - { at: lineup, caption: { en: "{n_tests} tests on one screen. Testing many things at once makes chance hits likely, so we correct for it.", bn: "এক পর্দায় {n_tests}টি পরীক্ষা। একসঙ্গে অনেক কিছু যাচাই করলে কাকতালীয় ফল আসতে পারে, তাই আমরা তা সংশোধন করি।" } }
+      - { at: verdict, caption: { en: "Season results are 'secondary': we registered them in advance, but the yearly tests come first.", bn: "ঋতুর ফলগুলো ‘দ্বিতীয় সারির’: আগে থেকে নিবন্ধিত, তবে বার্ষিক পরীক্ষাগুলো প্রধান।" } }
+      - { at: takeaway, caption: { en: "Open a season to see its own evidence.", bn: "একটি ঋতু খুলে তার নিজের প্রমাণ দেখুন।" } }

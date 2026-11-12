@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/lineup.schema.json",
+  "title": "Line-up — temperature and rain for one region, ANN and pre-registered seasons (M3; 03_SCIENCE §7.4)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/lineup@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "region": {
+      "$ref": "common.schema.json#/$defs/regionId"
+    },
+    "nTests": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "familySizes": {
+      "type": "object",
+      "properties": {
+        "confirmatory": {
+          "type": "integer"
+        },
+        "secondary": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "confirmatory",
+        "secondary"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "variable": {
+            "$ref": "common.schema.json#/$defs/analysedVariable"
+          },
+          "season": {
+            "$ref": "common.schema.json#/$defs/seasonId"
+          },
+          "family": {
+            "$ref": "common.schema.json#/$defs/family"
+          },
+          "status": {
+            "$ref": "common.schema.json#/$defs/status"
+          },
+          "grade": {
+            "enum": [
+              "strong",
+              "supported",
+              "cant_tell_yet",
+              null
+            ]
+          },
+          "reason": {
+            "enum": [
+              "outside_domain",
+              "short_record",
+              "too_short",
+              "missing_year",
+              "not_testable",
+              "break_review",
+              "exploration",
+              null
+            ]
+          },
+          "ratePerDecade": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rateLowPerDecade": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rateHighPerDecade": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "units": {
+            "type": "string"
+          },
+          "pAdjusted": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "qWithinLineup": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "variable",
+          "season",
+          "family",
+          "status",
+          "grade",
+          "reason",
+          "ratePerDecade",
+          "rateLowPerDecade",
+          "rateHighPerDecade",
+          "units",
+          "pAdjusted",
+          "qWithinLineup",
+          "path"
+        ]
+      }
+    },
+    "provenance": {
+      "$ref": "provenance.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "region",
+    "nTests",
+    "familySizes",
+    "items",
+    "provenance"
+  ]
+}

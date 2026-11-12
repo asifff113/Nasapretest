@@ -1,0 +1,122 @@
+{
+ "schema": "casefile/lineup@3",
+ "synthetic": true,
+ "region": "synthetic:north_plain",
+ "nTests": 6,
+ "familySizes": {
+  "confirmatory": 6,
+  "secondary": 12
+ },
+ "items": [
+  {
+   "variable": "air_temp",
+   "season": "ANN",
+   "family": "confirmatory",
+   "status": "verdict",
+   "grade": "strong",
+   "reason": null,
+   "ratePerDecade": 0.2907667741335695,
+   "rateLowPerDecade": 0.2351992569163515,
+   "rateHighPerDecade": 0.35792818104130764,
+   "units": "°C",
+   "pAdjusted": 4.402914562642273e-09,
+   "qWithinLineup": null,
+   "path": "verdicts/air_temp/synthetic__north_plain/ANN.json"
+  },
+  {
+   "variable": "air_temp",
+   "season": "MAM",
+   "family": "secondary",
+   "status": "verdict",
+   "grade": "strong",
+   "reason": null,
+   "ratePerDecade": 0.3825320919970224,
+   "rateLowPerDecade": 0.3291303930495223,
+   "rateHighPerDecade": 0.4468378202541867,
+   "units": "°C",
+   "pAdjusted": 1.3805692466243273e-11,
+   "qWithinLineup": null,
+   "path": "verdicts/air_temp/synthetic__north_plain/MAM.json"
+  },
+  {
+   "variable": "air_temp",
+   "season": "JJAS",
+   "family": "secondary",
+   "status": "verdict",
+   "grade": "strong",
+   "reason": null,
+   "ratePerDecade": 0.25901714862507186,
+   "rateLowPerDecade": 0.19954940575813546,
+   "rateHighPerDecade": 0.329749230235746,
+   "units": "°C",
+   "pAdjusted": 1.4614086392050365e-07,
+   "qWithinLineup": null,
+   "path": "verdicts/air_temp/synthetic__north_plain/JJAS.json"
+  },
+  {
+   "variable": "rain",
+   "season": "ANN",
+   "family": "confirmatory",
+   "status": "verdict",
+   "grade": "cant_tell_yet",
+   "reason": null,
+   "ratePerDecade": -50.98322727909557,
+   "rateLowPerDecade": -97.60836445246801,
+   "rateHighPerDecade": 0.5688266287985755,
+   "units": "mm",
+   "pAdjusted": 0.02873806996566506,
+   "qWithinLineup": null,
+   "path": "verdicts/rain/synthetic__north_plain/ANN.json"
+  },
+  {
+   "variable": "rain",
+   "season": "MAM",
+   "family": "secondary",
+   "status": "verdict",
+   "grade": "cant_tell_yet",
+   "reason": null,
+   "ratePerDecade": -1.2531200682846588,
+   "rateLowPerDecade": -10.643282070162464,
+   "rateHighPerDecade": 7.703135083104655,
+   "units": "mm",
+   "pAdjusted": 0.7188947481784793,
+   "qWithinLineup": null,
+   "path": "verdicts/rain/synthetic__north_plain/MAM.json"
+  },
+  {
+   "variable": "rain",
+   "season": "JJAS",
+   "family": "secondary",
+   "status": "verdict",
+   "grade": "strong",
+   "reason": null,
+   "ratePerDecade": -47.606119584665684,
+   "rateLowPerDecade": -83.64128584631732,
+   "rateHighPerDecade": -12.409686424719714,
+   "units": "mm",
+   "pAdjusted": 0.0070167303469349145,
+   "qWithinLineup": null,
+   "path": "verdicts/rain/synthetic__north_plain/JJAS.json"
+  }
+ ],
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

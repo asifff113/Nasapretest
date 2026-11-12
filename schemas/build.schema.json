@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/build.schema.json",
+  "title": "Results build manifest — results/<buildId>/build.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/build@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "gitSha": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "gitSha"
+      ]
+    },
+    "pipeline": {
+      "type": "object",
+      "properties": {
+        "gitSha": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "gitSha"
+      ]
+    },
+    "python": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "inputManifest": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ]
+    },
+    "prereg": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "committed",
+            "synthetic"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "commit",
+        "status"
+      ]
+    },
+    "configHashes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "required": [
+        "analysis",
+        "variables",
+        "regions",
+        "seasons",
+        "known_breaks",
+        "break_review",
+        "i18n_en",
+        "i18n_bn"
+      ]
+    },
+    "goldenTests": {
+      "type": "object",
+      "properties": {
+        "suite": {
+          "type": "string"
+        },
+        "total": {
+          "type": "integer"
+        },
+        "passed": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "total",
+        "passed"
+      ]
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "granules": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "shortName",
+          "version",
+          "granules"
+        ]
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "files": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer"
+        },
+        "bytes": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "count",
+        "bytes"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "created",
+    "synthetic",
+    "engine",
+    "pipeline",
+    "python",
+    "inputManifest",
+    "prereg",
+    "configHashes",
+    "goldenTests",
+    "products",
+    "counts",
+    "files"
+  ]
+}

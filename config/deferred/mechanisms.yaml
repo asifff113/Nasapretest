@@ -1,0 +1,471 @@
+# DEFERRED (spec pack v3): not read by any MUST or SHOULD code. Kept unchanged from v2 for the COULD items
+# (an SI matcher onto existing cards; deferred products). The v3 wording rule applies if it returns: "consistent with", never "caused by".
+# Processes ("suspects", F-20) and kinds of place ("archetypes", Scout F-18 and question flow F-03).
+# Wording rule: processes are "associated with" trends, never proven causes, unless the cited source says so.
+version: 2
+
+processes:
+  - id: greenhouse_warming
+    name: { en: "Heat-trapping greenhouse gases", bn: "তাপ আটকে রাখা গ্রিনহাউস গ্যাস" }
+    description:
+      en: "More carbon dioxide and methane trap heat near the surface, warming the lower air and oceans and adding water vapour."
+      bn: "বেশি কার্বন ডাই-অক্সাইড ও মিথেন ভূপৃষ্ঠের কাছে তাপ আটকে রাখে — নিচের বাতাস ও সমুদ্র উষ্ণ হয়, জলীয় বাষ্প বাড়ে।"
+    effects:
+      - { clue: air_temp, direction: up }
+      - { clue: surface_temp_airs, direction: up }
+      - { clue: global_temp_gistemp, direction: up }
+      - { clue: sea_surface_temp, direction: up }
+      - { clue: water_vapor, direction: up }
+      - { clue: air_temp_levels, direction: up, levels: [850, 500, 250] }
+      - { clue: air_temp_levels, direction: down, levels: [50, 10] }
+      - { clue: snow_water, direction: down }
+      - { clue: heatwave_days, direction: up }
+    opposite:
+      en: "The same gases warm the lower atmosphere but cool the stratosphere above it."
+      bn: "একই গ্যাস নিচের বায়ুমণ্ডলকে উষ্ণ করে, কিন্তু তার ওপরের স্ট্র্যাটোস্ফিয়ারকে শীতল করে।"
+    evidence: [santer_2023_stratosphere, lenssen_2019_gistemp]
+
+  - id: ozone_depletion_recovery
+    name: { en: "Ozone-destroying chemicals, then the Montreal Protocol", bn: "ওজোন-ধ্বংসকারী রাসায়নিক, তারপর মন্ট্রিয়ল প্রটোকল" }
+    description:
+      en: "CFCs thinned the ozone layer, most over Antarctica in spring; after they were banned, the layer began to recover."
+      bn: "সিএফসি ওজোন স্তর পাতলা করেছিল, সবচেয়ে বেশি অ্যান্টার্কটিকায় বসন্তকালে; নিষিদ্ধ হওয়ার পর স্তরটি সেরে উঠতে শুরু করেছে।"
+    effects:
+      - { clue: ozone, direction: down, when: "before about 2000" }
+      - { clue: ozone, direction: up, when: "after about 2000" }
+      - { clue: ozone_omi, direction: up, when: "after about 2000" }
+      - { clue: air_temp_levels, direction: down, levels: [50], when: "polar spring, ozone-loss years" }
+    opposite:
+      en: "One place, opposite trends in different periods: the trend turned around near 2000."
+      bn: "একই জায়গা, ভিন্ন সময়ে উল্টো প্রবণতা: প্রায় ২০০০ সালে প্রবণতার দিক ঘুরে যায়।"
+    evidence: [solomon_2016_ozone_healing]
+
+  - id: wildfire_smoke
+    name: { en: "Wildfire smoke", bn: "দাবানলের ধোঁয়া" }
+    description:
+      en: "Bigger, more frequent fires send smoke hundreds or thousands of kilometres downwind, mostly in summer."
+      bn: "বড় ও ঘন ঘন দাবানলের ধোঁয়া বাতাসে ভেসে শত শত, এমনকি হাজার কিলোমিটার দূরে যায়, বেশির ভাগ গ্রীষ্মকালে।"
+    effects:
+      - { clue: haze, direction: up, when: "fire season, downwind" }
+      - { clue: haze_model, direction: up, when: "fire season, downwind" }
+      - { clue: sunlight, direction: down }
+    opposite:
+      en: "Smoke can raise summer haze far away even while cleaner cars and factories lower it the rest of the year."
+      bn: "পরিষ্কার গাড়ি ও কারখানায় বছরের বাকি সময়ে ধোঁয়াশা কমলেও, দাবানলের ধোঁয়া দূরের জায়গায় গ্রীষ্মের ধোঁয়াশা বাড়াতে পারে।"
+    evidence: [eo_smoke_upper_midwest_2023, eo_canada_smoke_2025]
+
+  - id: pollution_growth
+    name: { en: "More traffic, power plants and industry", bn: "বেশি যানবাহন, বিদ্যুৎকেন্দ্র ও শিল্প" }
+    description:
+      en: "Growing cities burn more fuel, releasing NO₂ and particles."
+      bn: "বড় হতে থাকা শহরগুলো বেশি জ্বালানি পোড়ায়, ফলে NO₂ ও ক্ষুদ্র কণা বাড়ে।"
+    effects:
+      - { clue: no2, direction: up }
+      - { clue: haze, direction: up }
+      - { clue: haze_model, direction: up }
+      - { clue: sunlight, direction: down }
+    opposite:
+      en: "The same activity — burning fuel — is rising in some cities and being cleaned up in others."
+      bn: "একই কাজ — জ্বালানি পোড়ানো — কিছু শহরে বাড়ছে, আবার অন্য শহরে পরিষ্কার করা হচ্ছে।"
+    evidence: [eo_no2_decade_2016, krotkov_2016, li_2017_so2]
+
+  - id: clean_air_policy
+    name: { en: "Clean-air rules and cleaner technology", bn: "নির্মল-বায়ু আইন ও পরিষ্কার প্রযুক্তি" }
+    description:
+      en: "Cleaner fuels, filters and emission limits cut NO₂ and particles even as economies grow."
+      bn: "পরিষ্কার জ্বালানি, ফিল্টার ও নির্গমন-সীমা অর্থনীতি বড় হলেও NO₂ ও ক্ষুদ্র কণা কমায়।"
+    effects:
+      - { clue: no2, direction: down }
+      - { clue: haze, direction: down }
+      - { clue: haze_model, direction: down }
+      - { clue: sunlight, direction: up }
+    opposite:
+      en: "Cities that cleaned up show falling NO₂ while fast-growing cities show rising NO₂."
+      bn: "যেসব শহর দূষণ কমিয়েছে সেখানে NO₂ কমছে, আর দ্রুত বাড়তে থাকা শহরে NO₂ বাড়ছে।"
+    evidence: [eo_no2_decade_2016, krotkov_2016, zhang_2019_china_clean_air]
+
+  - id: dust
+    name: { en: "Desert dust", bn: "মরুভূমির ধুলা" }
+    description:
+      en: "Wind lifts dust from dry land; droughts and land degradation can add more, wetter years less."
+      bn: "বাতাস শুকনো ভূমি থেকে ধুলা তোলে; খরা ও ভূমি-ক্ষয় তা বাড়াতে পারে, ভেজা বছরে কমে।"
+    effects:
+      - { clue: haze, direction: either }
+      - { clue: haze_model, direction: either }
+    opposite:
+      en: "Dust can rise downwind of a drying region while falling where rains return."
+      bn: "শুকিয়ে যাওয়া এলাকার বাতাসের পথে ধুলা বাড়তে পারে, আবার যেখানে বৃষ্টি ফিরেছে সেখানে কমতে পারে।"
+    evidence: []
+
+  - id: irrigation_pumping
+    name: { en: "Pumping groundwater to irrigate crops", bn: "ফসলে সেচের জন্য ভূগর্ভের পানি তোলা" }
+    description:
+      en: "Wells pull water from underground faster than rain refills it, while the watered fields stay green."
+      bn: "নলকূপ বৃষ্টির পূরণের চেয়ে দ্রুত ভূগর্ভ থেকে পানি তোলে, আর সেচ পাওয়া মাঠ সবুজ থাকে।"
+    effects:
+      - { clue: water_storage, direction: down }
+      - { clue: greenness, direction: up, when: "dry season" }
+      - { clue: evapotranspiration, direction: up }
+      - { clue: soil_moisture, direction: up, when: "irrigated fields" }
+    opposite:
+      en: "Pumping drains the water underground but makes the fields above greener and cooler: opposite trends in two clues from one cause."
+      bn: "পানি তোলায় ভূগর্ভ খালি হয়, কিন্তু ওপরের মাঠ আরও সবুজ ও শীতল হয়: এক কারণ, দুই সূত্রে উল্টো প্রবণতা।"
+    evidence: [rodell_2009_india_groundwater, shamsudduha_2022_bengal_water_machine, chen_2019_greening]
+
+  - id: irrigation_cooling
+    name: { en: "Evaporative cooling from irrigation", bn: "সেচের বাষ্পীভবনজনিত শীতলতা" }
+    description:
+      en: "Watered fields release water vapour that cools the ground and the air above it, especially in the hot season."
+      bn: "সেচ পাওয়া মাঠ থেকে জলীয় বাষ্প বের হয়, যা মাটি ও তার ওপরের বাতাস শীতল করে — বিশেষ করে গরমের মৌসুমে।"
+    effects:
+      - { clue: land_surface_temp, direction: down }
+      - { clue: air_temp, direction: down, when: "locally, hot season" }
+      - { clue: air_temp_max, direction: down }
+    opposite:
+      en: "Irrigated farmland can cool while nearby cities and dry lands warm."
+      bn: "সেচের জমি শীতল হতে পারে, যখন কাছের শহর ও শুকনো জমি উষ্ণ হয়।"
+    evidence: []
+
+  - id: urban_heat
+    name: { en: "Cities storing heat", bn: "শহরে জমে থাকা তাপ" }
+    description:
+      en: "Concrete, asphalt and fewer trees make cities hotter than their surroundings, especially at night."
+      bn: "কংক্রিট, পিচ ও কম গাছপালার কারণে শহর আশপাশের চেয়ে বেশি গরম হয়, বিশেষ করে রাতে।"
+    effects:
+      - { clue: land_surface_temp, direction: up }
+      - { clue: air_temp_min, direction: up }
+      - { clue: air_temp, direction: up, when: "locally" }
+    opposite:
+      en: "A growing city can warm while farmland around it cools."
+      bn: "বড় হতে থাকা শহর উষ্ণ হতে পারে, যখন তার চারপাশের কৃষিজমি শীতল হয়।"
+    evidence: []
+
+  - id: greening_land_use
+    name: { en: "Tree planting and more intensive farming", bn: "বৃক্ষরোপণ ও নিবিড় চাষাবাদ" }
+    description:
+      en: "New forests and multiple harvests a year make land greener and move more water into the air."
+      bn: "নতুন বন ও বছরে একাধিক ফসল ভূমিকে আরও সবুজ করে এবং বাতাসে বেশি পানি পাঠায়।"
+    effects:
+      - { clue: greenness, direction: up }
+      - { clue: evapotranspiration, direction: up }
+      - { clue: land_surface_temp, direction: down }
+    opposite:
+      en: "Where trees are planted the ground cools; where forests are cleared it warms."
+      bn: "যেখানে গাছ লাগানো হয় সেখানে মাটি শীতল হয়; যেখানে বন কাটা হয় সেখানে উষ্ণ হয়।"
+    evidence: [chen_2019_greening]
+
+  - id: deforestation_urbanization
+    name: { en: "Clearing forests and building cities", bn: "বন উজাড় ও শহর গড়া" }
+    description:
+      en: "Removing vegetation makes land browner and hotter and sends less water into the air."
+      bn: "গাছপালা সরালে ভূমি বাদামি ও গরম হয়, বাতাসে কম পানি যায়।"
+    effects:
+      - { clue: greenness, direction: down }
+      - { clue: land_surface_temp, direction: up }
+      - { clue: evapotranspiration, direction: down }
+    opposite:
+      en: "The mirror image of tree planting: the same physics, the opposite direction."
+      bn: "বৃক্ষরোপণের আয়না-প্রতিচ্ছবি: একই পদার্থবিদ্যা, উল্টো দিক।"
+    evidence: []
+
+  - id: wet_wetter_dry_drier
+    name: { en: "Warmer air moves more water", bn: "উষ্ণ বাতাস বেশি পানি বহন করে" }
+    description:
+      en: "Warmer air holds about 7% more water vapour per °C, which can make heavy rain heavier and change where rain falls."
+      bn: "প্রতি ১ °C উষ্ণতায় বাতাস প্রায় ৭% বেশি জলীয় বাষ্প ধরে রাখে, ফলে ভারী বৃষ্টি আরও ভারী হতে পারে এবং বৃষ্টির জায়গা বদলাতে পারে।"
+    effects:
+      - { clue: water_vapor, direction: up }
+      - { clue: rain, direction: either }
+      - { clue: soil_moisture, direction: either }
+    opposite:
+      en: "Some regions get wetter while others get drier — but the simple 'wet gets wetter' rule fails over most land."
+      bn: "কিছু অঞ্চল আরও ভেজা হয়, অন্যগুলো আরও শুকনো — তবে ‘ভেজা আরও ভেজা’ সরল নিয়মটি বেশির ভাগ স্থলভাগে খাটে না।"
+    evidence: [greve_2014_wet_dry]
+
+  - id: monsoon_change
+    name: { en: "Changes in the monsoon", bn: "বর্ষার পরিবর্তন" }
+    description:
+      en: "Shifts in ocean and land heating can strengthen or weaken monsoon rain in different parts of a region."
+      bn: "সমুদ্র ও স্থলভাগের উষ্ণায়নের তারতম্য একই অঞ্চলের ভিন্ন অংশে বর্ষার বৃষ্টি বাড়াতে বা কমাতে পারে।"
+    effects:
+      - { clue: rain, direction: either, when: "monsoon season" }
+      - { clue: soil_moisture, direction: either }
+      - { clue: runoff, direction: either }
+    opposite:
+      en: "Monsoon rain can decrease in one part of South Asia and increase in another in the same decades."
+      bn: "একই দশকে দক্ষিণ এশিয়ার এক অংশে বর্ষার বৃষ্টি কমতে পারে, অন্য অংশে বাড়তে পারে।"
+    evidence: [roxy_2015_monsoon]
+
+  - id: enso
+    name: { en: "El Niño and La Niña", bn: "এল নিনো ও লা নিনা" }
+    description:
+      en: "A natural swing of Pacific Ocean temperatures every 2–7 years that shifts rain and heat around the world."
+      bn: "প্রতি ২–৭ বছরে প্রশান্ত মহাসাগরের তাপমাত্রার প্রাকৃতিক দোলা, যা সারা পৃথিবীতে বৃষ্টি ও তাপের বণ্টন বদলায়।"
+    effects:
+      - { clue: rain, direction: either }
+      - { clue: air_temp, direction: either }
+      - { clue: sea_surface_temp, direction: either }
+    opposite:
+      en: "El Niño brings drought to Indonesia and Australia but heavy rain to Peru — a natural example of one process, opposite effects. A few big El Niño years near the start or end of a record can tilt a trend (alibi AL7)."
+      bn: "এল নিনো ইন্দোনেশিয়া ও অস্ট্রেলিয়ায় খরা আনে, কিন্তু পেরুতে ভারী বৃষ্টি — এক প্রক্রিয়া, উল্টো ফলের প্রাকৃতিক উদাহরণ। রেকর্ডের শুরু বা শেষে কয়েকটি বড় এল নিনো বছর প্রবণতাকে কাত করতে পারে (অ্যালিবাই AL7)।"
+    evidence: []
+
+  - id: snow_loss
+    name: { en: "Warmer winters and springs", bn: "উষ্ণতর শীত ও বসন্ত" }
+    description:
+      en: "Less snow builds up and it melts earlier, changing when rivers carry the most water."
+      bn: "কম তুষার জমে এবং আগে গলে যায়, ফলে নদীতে সবচেয়ে বেশি পানি কখন থাকে তা বদলে যায়।"
+    effects:
+      - { clue: snow_water, direction: down }
+      - { clue: runoff, direction: up, when: "spring" }
+      - { clue: runoff, direction: down, when: "summer" }
+    opposite:
+      en: "Runoff can rise in spring and fall in summer at the same place — opposite trends in different seasons."
+      bn: "একই জায়গায় বসন্তে রানঅফ বাড়তে পারে আর গ্রীষ্মে কমতে পারে — ভিন্ন ঋতুতে উল্টো প্রবণতা।"
+    evidence: []
+
+  - id: evaporation_demand
+    name: { en: "Hotter air pulls more water from soil and plants", bn: "গরম বাতাস মাটি ও গাছ থেকে বেশি পানি টানে" }
+    description:
+      en: "Warmer, drier air increases evaporation, which can dry the soil even when rainfall does not change."
+      bn: "উষ্ণ ও শুকনো বাতাস বাষ্পীভবন বাড়ায়, ফলে বৃষ্টি না বদলালেও মাটি শুকিয়ে যেতে পারে।"
+    effects:
+      - { clue: evapotranspiration, direction: up }
+      - { clue: soil_moisture, direction: down }
+      - { clue: humidity, direction: down }
+    opposite:
+      en: "More evaporation can mean moister air in one place and drier soil in another."
+      bn: "বেশি বাষ্পীভবন মানে এক জায়গায় ভেজা বাতাস, অন্য জায়গায় শুকনো মাটি হতে পারে।"
+    evidence: []
+
+  - id: shrinking_lakes
+    name: { en: "Rivers diverted away from lakes", bn: "হ্রদ থেকে নদীর পানি সরিয়ে নেওয়া" }
+    description:
+      en: "When rivers are used for irrigation, the lakes they fed shrink and the water stored in the region falls."
+      bn: "নদীর পানি সেচে ব্যবহার করলে যেসব হ্রদ সেই নদী থেকে পানি পেত সেগুলো ছোট হয়, অঞ্চলে জমা পানিও কমে।"
+    effects:
+      - { clue: water_storage, direction: down }
+    opposite:
+      en: "Water taken from one basin can make farmland nearby greener while the lake dries."
+      bn: "একটি অববাহিকা থেকে নেওয়া পানি কাছের কৃষিজমিকে সবুজ করতে পারে, যখন হ্রদ শুকিয়ে যায়।"
+    evidence: [eo_aral_sea]
+
+  - id: ocean_stratification
+    name: { en: "Warmer surface water mixes less", bn: "উষ্ণ উপরিভাগের পানি কম মেশে" }
+    description:
+      en: "A warmer sea surface layer floats on colder water and brings up fewer nutrients, so tiny ocean plants can decline."
+      bn: "উষ্ণ উপরিভাগের স্তর ঠান্ডা পানির ওপর ভাসে এবং কম পুষ্টি ওপরে আনে, ফলে সমুদ্রের ক্ষুদ্র উদ্ভিদ কমতে পারে।"
+    effects:
+      - { clue: chlorophyll, direction: down, when: "subtropical gyres" }
+      - { clue: sea_surface_temp, direction: up }
+    opposite:
+      en: "Chlorophyll can fall in warm subtropical seas while rising in some cooler, high-latitude waters."
+      bn: "উষ্ণ উপক্রান্তীয় সমুদ্রে ক্লোরোফিল কমতে পারে, আবার কিছু ঠান্ডা উচ্চ-অক্ষাংশের পানিতে বাড়তে পারে।"
+    evidence: [polovina_2008_ocean_deserts, cael_2023_ocean_colour]
+
+  - id: amoc_slowdown
+    name: { en: "A slower Atlantic overturning circulation", bn: "আটলান্টিকের উল্টে-যাওয়া স্রোতের ধীরগতি" }
+    description:
+      en: "A weaker current carries less warm water north, leaving a cool patch south of Greenland."
+      bn: "দুর্বল স্রোত উত্তরে কম উষ্ণ পানি নেয়, ফলে গ্রিনল্যান্ডের দক্ষিণে একটি শীতল অংশ তৈরি হয়।"
+    effects:
+      - { clue: sea_surface_temp, direction: down, when: "North Atlantic south of Greenland" }
+      - { clue: air_temp, direction: down, when: "North Atlantic south of Greenland" }
+    opposite:
+      en: "A 'warming hole' cools while almost every other ocean warms."
+      bn: "প্রায় সব সমুদ্র উষ্ণ হলেও একটি ‘উষ্ণায়ন-গর্ত’ শীতল হয়।"
+    evidence: [rahmstorf_2015_warming_hole]
+
+  - id: volcanic_eruptions
+    name: { en: "Large volcanic eruptions", bn: "বড় আগ্নেয়গিরির অগ্ন্যুৎপাত" }
+    description:
+      en: "Big eruptions put sulfur high in the sky that cools the surface for a year or two and warms the stratosphere."
+      bn: "বড় অগ্ন্যুৎপাত আকাশের অনেক ওপরে সালফার ছড়ায়, যা এক-দুই বছর ভূপৃষ্ঠ শীতল করে এবং স্ট্র্যাটোস্ফিয়ার উষ্ণ করে।"
+    effects:
+      - { clue: air_temp, direction: down, when: "1–2 years after" }
+      - { clue: haze_model, direction: up, when: "1–2 years after" }
+      - { clue: air_temp_levels, direction: up, levels: [50, 10], when: "1–2 years after" }
+    opposite:
+      en: "An eruption cools the ground but warms the stratosphere — and a big one near the start of a record can make a trend look steeper."
+      bn: "অগ্ন্যুৎপাত ভূপৃষ্ঠ শীতল করে কিন্তু স্ট্র্যাটোস্ফিয়ার উষ্ণ করে — আর রেকর্ডের শুরুর দিকে বড় একটি অগ্ন্যুৎপাত প্রবণতাকে বেশি খাড়া দেখাতে পারে।"
+    evidence: []
+
+  - id: annular_mode_shift
+    name: { en: "Stronger winds around Antarctica", bn: "অ্যান্টার্কটিকার চারপাশে জোরালো বাতাস" }
+    description:
+      en: "Since about 1980 the westerly winds circling Antarctica have strengthened in southern summer, a change linked to the ozone hole and greenhouse gases."
+      bn: "প্রায় ১৯৮০ থেকে দক্ষিণ গোলার্ধের গ্রীষ্মে অ্যান্টার্কটিকা ঘিরে বয়ে চলা পশ্চিমা বাতাস জোরালো হয়েছে — এই পরিবর্তন ওজোন গহ্বর ও গ্রিনহাউস গ্যাসের সঙ্গে যুক্ত।"
+    effects:
+      - { clue: pressure, direction: down, when: "December–February, the ocean ring near Antarctica" }
+      - { clue: pressure, direction: up, when: "December–February, southern mid-latitudes" }
+      - { clue: wind, direction: up, when: "Southern Ocean" }
+    opposite:
+      en: "Air pressure falls near Antarctica while it rises farther north — one shift in the winds, opposite trends in two belts. The trend paused after about 2000 as the ozone layer began to heal."
+      bn: "অ্যান্টার্কটিকার কাছে বায়ুচাপ কমে, অথচ আরও উত্তরে বাড়ে — বাতাসের একটি পরিবর্তন, দুই বলয়ে উল্টো প্রবণতা। প্রায় ২০০০ সালের পর ওজোন স্তর সেরে উঠতে শুরু করায় প্রবণতাটি থেমে যায়।"
+    evidence: []     # A adds Thompson & Solomon (2002, Science 296, 895–899) and Banerjee et al. (2020, Nature 579, 544–548) after reading them
+
+archetypes:
+  # detect.rules use climatology over the scene from the cube (ANN aggregates over the clue's full record):
+  #   stat: mean_annual (mean of yearly values) | max_month_clim (max of the 12-month climatology) |
+  #         season_share (season total ÷ annual total; rule sum clues only) | abs_lat (scene centre) |
+  #         ocean_fraction (share of scene area that is ocean)
+  # A scene matches if it lies inside a place with this archetype OR all rules pass (rules skipped when data missing).
+  - id: desert
+    name: { en: "Desert", bn: "মরুভূমি" }
+    detect:
+      rules:
+        - { clue: rain, stat: mean_annual, op: lt, value: 250 }
+    suggest:
+      - { clue: haze, why: { en: "Dust storms change from year to year and with land use.", bn: "ধুলিঝড় বছর ও ভূমি-ব্যবহার অনুযায়ী বদলায়।" } }
+      - { clue: rain, why: { en: "Small changes in rare rain matter a lot in deserts.", bn: "মরুভূমিতে বিরল বৃষ্টির ছোট পরিবর্তনও অনেক গুরুত্বপূর্ণ।" } }
+      - { clue: land_surface_temp, why: { en: "Bare ground heats strongly in the sun.", bn: "খালি মাটি রোদে খুব গরম হয়।" } }
+  - id: rainforest
+    name: { en: "Rain forest", bn: "রেইনফরেস্ট" }
+    detect:
+      rules:
+        - { clue: rain, stat: mean_annual, op: gt, value: 1800 }
+        - { clue: greenness, stat: mean_annual, op: gt, value: 0.7 }
+    suggest:
+      - { clue: greenness, why: { en: "Forest clearing and drought show up as browning.", bn: "বন উজাড় ও খরা সবুজভাব কমায়।" } }
+      - { clue: evapotranspiration, why: { en: "Forests pump water into the air; losing them changes that.", bn: "বন বাতাসে পানি পাঠায়; বন হারালে তা বদলায়।" } }
+      - { clue: haze_model, why: { en: "Fire smoke rises in dry years.", bn: "শুকনো বছরে আগুনের ধোঁয়া বাড়ে।" } }
+  - id: tidal_estuary
+    name: { en: "Tidal estuary", bn: "জোয়ার-ভাটার মোহনা" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: chlorophyll, why: { en: "River nutrients and warming change the colour of coastal water.", bn: "নদীর পুষ্টি ও উষ্ণায়ন উপকূলের পানির রং বদলায়।" } }
+      - { clue: sea_surface_temp, why: { en: "Shallow coastal water warms quickly.", bn: "অগভীর উপকূলীয় পানি দ্রুত উষ্ণ হয়।" } }
+      - { clue: rain, why: { en: "Rain upstream controls how much fresh water reaches the estuary.", bn: "উজানের বৃষ্টি ঠিক করে মোহনায় কতটা মিঠা পানি পৌঁছাবে।" } }
+  - id: delta
+    name: { en: "River delta", bn: "ব-দ্বীপ" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: water_storage, why: { en: "Groundwater use and floods show up in water storage.", bn: "ভূগর্ভের পানি ব্যবহার ও বন্যা জমা পানিতে ধরা পড়ে।" } }
+      - { clue: rain, why: { en: "Monsoon rain drives floods and dry spells.", bn: "বর্ষার বৃষ্টি বন্যা ও খরার পেছনে।" } }
+      - { clue: sea_surface_temp, why: { en: "Warmer coastal seas feed stronger storms.", bn: "উষ্ণ উপকূলীয় সমুদ্র ঝড়কে শক্তিশালী করে।" } }
+  - id: mangrove
+    name: { en: "Mangrove coast", bn: "ম্যানগ্রোভ উপকূল" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: greenness, why: { en: "Mangrove health shows in greenness.", bn: "ম্যানগ্রোভের স্বাস্থ্য সবুজভাবে বোঝা যায়।" } }
+      - { clue: sea_surface_temp, why: { en: "Warming seas stress coastal ecosystems.", bn: "উষ্ণ সমুদ্র উপকূলের বাস্তুতন্ত্রে চাপ দেয়।" } }
+  - id: megacity
+    name: { en: "Atmosphere above a large city", bn: "বড় শহরের আকাশ" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: no2, why: { en: "Traffic and industry show up directly as NO₂.", bn: "যানবাহন ও শিল্প সরাসরি NO₂-তে ধরা পড়ে।" }, evidence: [eo_no2_decade_2016] }
+      - { clue: haze, why: { en: "Particles from burning fuel and dust make city air hazy.", bn: "জ্বালানি পোড়ানো ও ধুলার কণা শহরের বাতাস ঘোলাটে করে।" } }
+      - { clue: land_surface_temp, why: { en: "Cities trap heat (the urban heat island).", bn: "শহর তাপ আটকে রাখে (আরবান হিট আইল্যান্ড)।" } }
+      - { clue: air_temp_min, why: { en: "City nights warm fastest.", bn: "শহরের রাত সবচেয়ে দ্রুত উষ্ণ হয়।" } }
+  - id: coast
+    name: { en: "Coast", bn: "উপকূল" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: sea_surface_temp, why: { en: "Coastal seas warm and feed storms.", bn: "উপকূলীয় সমুদ্র উষ্ণ হয় এবং ঝড়ে শক্তি জোগায়।" } }
+      - { clue: rain, why: { en: "Coasts get the heaviest storm rain.", bn: "উপকূলে ঝড়ের সবচেয়ে ভারী বৃষ্টি হয়।" } }
+  - id: cyclone_coast
+    name: { en: "Cyclone coast", bn: "ঘূর্ণিঝড়প্রবণ উপকূল" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: sea_surface_temp, why: { en: "Warmer seas give cyclones more energy.", bn: "উষ্ণ সমুদ্র ঘূর্ণিঝড়কে বেশি শক্তি দেয়।" } }
+      - { clue: water_vapor, why: { en: "More water vapour means heavier storm rain.", bn: "বেশি জলীয় বাষ্প মানে ঝড়ে বেশি বৃষ্টি।" } }
+      - { clue: wind, why: { en: "Average winds can shift with storm tracks.", bn: "ঝড়ের পথ বদলালে গড় বাতাসও বদলাতে পারে।" } }
+  - id: mountain
+    name: { en: "Mountains", bn: "পাহাড়" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: snow_water, why: { en: "Mountain snow is a water tower for rivers below.", bn: "পাহাড়ের তুষার নিচের নদীর জন্য পানির ট্যাংক।" } }
+      - { clue: air_temp, why: { en: "Mountains often warm faster than lowlands.", bn: "পাহাড় প্রায়ই নিচু এলাকার চেয়ে দ্রুত উষ্ণ হয়।" } }
+  - id: mountain_snow
+    name: { en: "Snowy mountains", bn: "তুষারঢাকা পাহাড়" }
+    detect:
+      rules:
+        - { clue: snow_water, stat: max_month_clim, op: gt, value: 50 }
+    suggest:
+      - { clue: snow_water, why: { en: "Snow is the clearest signal of warming winters.", bn: "উষ্ণ শীতের সবচেয়ে স্পষ্ট চিহ্ন তুষার।" } }
+      - { clue: runoff, why: { en: "Earlier melt shifts runoff into spring.", bn: "আগে গলায় রানঅফ বসন্তে সরে আসে।" } }
+      - { clue: air_temp, why: { en: "Winter and spring temperatures decide snow.", bn: "শীত ও বসন্তের তাপমাত্রা তুষার ঠিক করে।" } }
+  - id: irrigated_plain
+    name: { en: "Irrigated farmland", bn: "সেচনির্ভর কৃষিজমি" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: water_storage, why: { en: "Pumping for irrigation can drain groundwater.", bn: "সেচের জন্য পানি তোলায় ভূগর্ভের পানি কমতে পারে।" }, evidence: [rodell_2009_india_groundwater] }
+      - { clue: greenness, why: { en: "Irrigated fields can green up even in dry years.", bn: "শুকনো বছরেও সেচের জমি সবুজ হতে পারে।" }, evidence: [chen_2019_greening] }
+      - { clue: evapotranspiration, why: { en: "Watered crops send more water into the air.", bn: "সেচ পাওয়া ফসল বাতাসে বেশি পানি পাঠায়।" } }
+  - id: drought_prone
+    name: { en: "Drought-prone land", bn: "খরাপ্রবণ ভূমি" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: soil_moisture, why: { en: "Drying soil is the first sign of drought.", bn: "মাটি শুকিয়ে যাওয়াই খরার প্রথম লক্ষণ।" } }
+      - { clue: rain, why: { en: "Rainfall changes decide drought risk.", bn: "বৃষ্টির পরিবর্তন খরার ঝুঁকি ঠিক করে।" } }
+      - { clue: water_storage, why: { en: "Groundwater buffers drought, until it runs low.", bn: "ভূগর্ভের পানি খরা সামলায়, যতক্ষণ না তা কমে যায়।" } }
+  - id: wetland
+    name: { en: "Wetland", bn: "জলাভূমি" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: rain, why: { en: "Wetlands live and die by seasonal rain and floods.", bn: "জলাভূমি ঋতুভিত্তিক বৃষ্টি ও বন্যার ওপর নির্ভর করে।" } }
+      - { clue: water_storage, why: { en: "Flood water stored in the basin shows in water storage.", bn: "অববাহিকায় জমা বন্যার পানি জমা-পানিতে ধরা পড়ে।" } }
+  - id: monsoon_land
+    name: { en: "Monsoon land", bn: "বর্ষাপ্রধান অঞ্চল" }
+    detect:
+      rules:
+        - { clue: rain, stat: season_share, season: JJAS, op: gt, value: 0.6 }
+    suggest:
+      - { clue: rain, why: { en: "Test the monsoon season on its own (Jun–Sep).", bn: "শুধু বর্ষাকাল (জুন–সেপ্টেম্বর) আলাদা করে যাচাই করুন।" } }
+      - { clue: soil_moisture, why: { en: "Soil moisture shows how the monsoon carries into the dry season.", bn: "মাটির আর্দ্রতা দেখায় বর্ষার প্রভাব শুষ্ক মৌসুমে কতটা থাকে।" } }
+      - { clue: air_temp, why: { en: "Test the pre-monsoon heat (Mar–May) on its own.", bn: "প্রাক-বর্ষার গরম (মার্চ–মে) আলাদা করে যাচাই করুন।" } }
+  - id: polar
+    name: { en: "Polar region", bn: "মেরু অঞ্চল" }
+    detect:
+      rules:
+        - { stat: abs_lat, op: gt, value: 60 }
+    suggest:
+      - { clue: air_temp, why: { en: "The Arctic warms faster than the rest of the world.", bn: "আর্কটিক বাকি পৃথিবীর চেয়ে দ্রুত উষ্ণ হয়।" } }
+      - { clue: ozone, why: { en: "Polar spring is where the ozone hole forms.", bn: "মেরুর বসন্তেই ওজোন-গর্ত তৈরি হয়।" }, evidence: [solomon_2016_ozone_healing] }
+      - { clue: snow_water, why: { en: "Snow and ice respond quickly to warming.", bn: "তুষার ও বরফ উষ্ণায়নে দ্রুত সাড়া দেয়।" } }
+  - id: ice_sheet
+    name: { en: "Ice sheet", bn: "বরফের চাদর" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: water_storage, why: { en: "GRACE weighs the ice sheet's mass loss.", bn: "GRACE বরফের চাদরের ভর হারানো ওজন করে মাপে।" } }
+      - { clue: air_temp, why: { en: "Summer melt follows air temperature.", bn: "গ্রীষ্মের গলন বাতাসের তাপমাত্রার সঙ্গে চলে।" } }
+  - id: boreal_forest
+    name: { en: "Northern (boreal) forest", bn: "উত্তরের (বোরিয়াল) বন" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: greenness, why: { en: "Northern forests can green with warming or brown after fires.", bn: "উত্তরের বন উষ্ণতায় সবুজ হতে পারে, আবার আগুনের পর বাদামি।" } }
+      - { clue: haze, why: { en: "Fire smoke rises in bad fire years.", bn: "খারাপ দাবানলের বছরে ধোঁয়া বাড়ে।" } }
+      - { clue: air_temp, why: { en: "High latitudes warm fast.", bn: "উচ্চ অক্ষাংশ দ্রুত উষ্ণ হয়।" } }
+  - id: wildfire
+    name: { en: "Wildfire country", bn: "দাবানলপ্রবণ অঞ্চল" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: haze, why: { en: "Smoke shows up as aerosol optical depth.", bn: "ধোঁয়া অ্যারোসল অপটিক্যাল ডেপথে ধরা পড়ে।" }, evidence: [eo_canada_smoke_2025] }
+      - { clue: soil_moisture, why: { en: "Dry soils make fires more likely.", bn: "শুকনো মাটি আগুনের ঝুঁকি বাড়ায়।" } }
+  - id: smoke_downwind
+    name: { en: "Downwind of big fires", bn: "বড় দাবানলের বাতাসের পথে" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: haze, why: { en: "Summer smoke can travel thousands of kilometres.", bn: "গ্রীষ্মের ধোঁয়া হাজার হাজার কিলোমিটার যেতে পারে।" }, evidence: [eo_smoke_upper_midwest_2023] }
+      - { clue: sunlight, why: { en: "Smoke dims the sunlight that reaches the ground.", bn: "ধোঁয়া ভূপৃষ্ঠে পৌঁছানো সূর্যালোক কমায়।" } }
+  - id: shrinking_lake
+    name: { en: "Shrinking lake", bn: "শুকিয়ে যাওয়া হ্রদ" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: water_storage, why: { en: "GRACE sees the water missing from the basin.", bn: "GRACE অববাহিকা থেকে হারানো পানি দেখতে পায়।" }, evidence: [eo_aral_sea] }
+      - { clue: evapotranspiration, why: { en: "Less water means less evaporation from the lake.", bn: "কম পানি মানে হ্রদ থেকে কম বাষ্পীভবন।" } }
+  - id: greening
+    name: { en: "Greening land", bn: "সবুজ হতে থাকা ভূমি" }
+    detect: { rules: [] }
+    suggest:
+      - { clue: greenness, why: { en: "Tree planting and farming show up as greening.", bn: "বৃক্ষরোপণ ও চাষাবাদ সবুজভাব বাড়ায়।" }, evidence: [chen_2019_greening] }
+      - { clue: land_surface_temp, why: { en: "More plants can cool the ground.", bn: "বেশি গাছপালা মাটি শীতল করতে পারে।" } }
+  - id: ocean
+    name: { en: "Open ocean", bn: "খোলা সমুদ্র" }
+    detect:
+      rules:
+        - { stat: ocean_fraction, op: gt, value: 0.8 }
+    suggest:
+      - { clue: sea_surface_temp, why: { en: "Most of the extra heat goes into the ocean.", bn: "বাড়তি তাপের বেশির ভাগ সমুদ্রে যায়।" } }
+      - { clue: chlorophyll, why: { en: "Ocean colour tells how much life floats near the surface.", bn: "সমুদ্রের রং বলে দেয় উপরিভাগে কতটা প্রাণ ভাসছে।" }, evidence: [cael_2023_ocean_colour] }
+      - { clue: water_vapor, why: { en: "Warmer oceans put more water vapour into the air.", bn: "উষ্ণ সমুদ্র বাতাসে বেশি জলীয় বাষ্প পাঠায়।" } }

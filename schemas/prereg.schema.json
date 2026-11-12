@@ -1,0 +1,437 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/prereg.schema.json",
+  "title": "Pre-registration (config/preregistration.yaml, compiled) — 03_SCIENCE §10",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/prereg@3"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "committed"
+      ]
+    },
+    "commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "signed_by": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 3
+    },
+    "hashes": {
+      "type": "object",
+      "properties": {
+        "analysis_yaml_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "input_manifest_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "regions_support_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "analysis_yaml_sha256",
+        "input_manifest_sha256",
+        "regions_support_sha256"
+      ]
+    },
+    "alpha": {
+      "type": "object",
+      "properties": {
+        "confirmatory": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 0.1
+        },
+        "secondary_q": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 0.1
+        },
+        "map_q": {
+          "const": 0.1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "confirmatory",
+        "secondary_q",
+        "map_q"
+      ]
+    },
+    "variables": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/analysedVariable"
+          },
+          "product": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "analysed",
+              "sensitivity"
+            ]
+          },
+          "main_window": {
+            "type": "object",
+            "properties": {
+              "first": {
+                "type": "integer",
+                "minimum": 1980
+              },
+              "last": {
+                "type": "integer",
+                "maximum": 2100
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "first",
+              "last"
+            ]
+          },
+          "practical_threshold": {
+            "type": "object",
+            "properties": {
+              "units": {
+                "type": "string"
+              },
+              "default": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "by_season": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "units",
+              "default",
+              "by_season",
+              "reason"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "product",
+          "role",
+          "main_window",
+          "practical_threshold"
+        ]
+      }
+    },
+    "seasons": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "const": "ANN"
+        },
+        "secondary": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/seasonId"
+          },
+          "uniqueItems": true
+        },
+        "djf_starts_one_year_later": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "main",
+        "secondary",
+        "djf_starts_one_year_later"
+      ]
+    },
+    "regions": {
+      "type": "object",
+      "properties": {
+        "support_rule": {
+          "type": "object",
+          "properties": {
+            "min_native_cells": {
+              "type": "number",
+              "minimum": 4
+            },
+            "max_spill_share": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 0.3334
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "min_native_cells"
+          ]
+        },
+        "set": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "common.schema.json#/$defs/regionId"
+              },
+              "role": {
+                "enum": [
+                  "home",
+                  "division",
+                  "comparison"
+                ]
+              },
+              "effective_native_cells": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "minimum": 4
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "role",
+              "effective_native_cells"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "support_rule",
+        "set"
+      ]
+    },
+    "pairs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/pairId"
+          },
+          "a": {
+            "$ref": "common.schema.json#/$defs/regionId"
+          },
+          "b": {
+            "$ref": "common.schema.json#/$defs/regionId"
+          },
+          "lead": {
+            "type": "boolean"
+          },
+          "question": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "split_support": {
+            "type": "object",
+            "description": "Effective native cells left for A and B after the disjoint split, per grid (02 §7.4)",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "effective_cells_a": {
+                  "type": [
+                    "number",
+                    "string"
+                  ]
+                },
+                "effective_cells_b": {
+                  "type": [
+                    "number",
+                    "string"
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "effective_cells_a",
+                "effective_cells_b"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "a",
+          "b",
+          "lead",
+          "question"
+        ]
+      }
+    },
+    "windows": {
+      "type": "object",
+      "properties": {
+        "alternatives": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+$"
+              },
+              "start_shift": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end_shift": {
+                "type": "integer",
+                "maximum": 0
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "start_shift",
+              "end_shift"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "alternatives"
+      ]
+    },
+    "headline_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "contrast",
+              "trend",
+              "lineup"
+            ]
+          },
+          "pair": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "variable": {
+            "$ref": "common.schema.json#/$defs/analysedVariable"
+          },
+          "season": {
+            "$ref": "common.schema.json#/$defs/seasonId"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "family_preview": {
+      "type": "object",
+      "properties": {
+        "confirmatory": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "secondary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "confirmatory",
+        "secondary"
+      ]
+    },
+    "amendments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "when": {
+            "enum": [
+              "before any real trend",
+              "after"
+            ]
+          },
+          "what": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "sha256_before": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "when",
+          "what",
+          "reason",
+          "sha256_before"
+        ]
+      }
+    },
+    "sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "commit",
+    "signed_by",
+    "hashes",
+    "alpha",
+    "variables",
+    "seasons",
+    "regions",
+    "pairs",
+    "windows",
+    "headline_cases",
+    "family_preview",
+    "amendments"
+  ]
+}

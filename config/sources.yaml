@@ -1,0 +1,248 @@
+# Products behind the variables. Source of truth for provenance, citations and the access checks.
+# Only fact-checked items are stated as facts (playbook v3 6.2). Anything marked VERIFY is checked in the
+# access-check table (docs/02_DATA.md §10) before it is relied on; doi_verified: false means the same.
+version: 3
+sources:
+  # ------------------------------------------------------------------ first release
+  - id: merra2_slv
+    status: first_release
+    name: "MERRA-2 monthly single-level diagnostics"
+    short_name: M2TMNXSLV
+    version: "5.12.4"
+    provider: GES_DISC (Earthdata Cloud)
+    kind: model
+    doi: "10.5067/AP1B0BA5PD2K"
+    doi_verified: true                   # fact-check #14 (v3 6.2)
+    temporal: { start: "1980-01", end: "latest complete month (VERIFY V-03)" }
+    grid: { id: merra2_native, native: "0.625° longitude × 0.5° latitude, 576 × 361 points (GMAO page, opened 2 Nov 2026)" }
+    access:
+      route: earthaccess
+      find: "CMR query by short name and version; never hard-coded file names (stream prefixes change over the record)"
+      method: cloud_opendap_subset       # fallback: whole-file download, subset locally
+      variables: [T2M]
+      fill: "VERIFY V-03 (v2 notes: _FillValue 1e15; mask > 1e14)"
+    citation: "Global Modeling and Assimilation Office (GMAO) (2015), MERRA-2 tavgM_2d_slv_Nx: 2d, Monthly mean, Time-Averaged, Single-Level, Assimilation, Single-Level Diagnostics V5.12.4, Greenbelt, MD, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/AP1B0BA5PD2K."
+    reference: "Gelaro, R., et al. (2017), The Modern-Era Retrospective Analysis for Research and Applications, Version 2 (MERRA-2), J. Climate, 30, 5419–5454."
+    licence: "NASA open data"
+    known_breaks: [merra2_observing_system]
+    traps: "Model output; observing-system changes shift reanalysis fields."
+
+  - id: merra2_precip
+    status: first_release
+    name: "MERRA-2 tavgM_2d_flx_Nx: monthly mean surface flux diagnostics (holds PRECTOTCORR, bias-corrected total precipitation)"
+    short_name: M2TMNXFLX
+    version: "5.12.4"
+    provider: GES_DISC (Earthdata Cloud)
+    kind: model
+    doi: "10.5067/0JRLVL8YV2Y4"
+    doi_verified: true                   # data.nasa.gov entry for M2TMNXFLX V5.12.4, read 3 Nov 2026; V-03 still opens one granule
+    temporal: { start: "1980-01", end: "latest complete month (VERIFY V-03)" }
+    grid: { id: merra2_native, native: "0.625° × 0.5°, 576 × 361" }
+    access:
+      route: earthaccess
+      find: "CMR query by short name and version; V-03 confirms PRECTOTCORR in one monthly granule (the MERRA-2 flux collection lists it: Earth Engine catalog, hourly flux collection)"
+      method: cloud_opendap_subset
+      variables: [PRECTOTCORR]
+      units: "kg m-2 s-1 (bias-corrected precipitation, fact-check #14); × 86 400 → mm/day"
+      fill: "VERIFY V-03"
+    citation: "Global Modeling and Assimilation Office (GMAO) (2015), MERRA-2 tavgM_2d_flx_Nx: 2d, Monthly mean, Time-Averaged, Single-Level, Assimilation, Surface Flux Diagnostics V5.12.4, Greenbelt, MD, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/0JRLVL8YV2Y4."
+    reference: "Reichle, R. H., et al. (2017), Land surface precipitation in MERRA-2, J. Climate, 30, 1643–1664 (VERIFY before citing)."
+    licence: "NASA open data"
+    known_breaks: [merra2_observing_system, merra2_precip_correction_inputs]
+    traps: "Model output corrected with gauge and satellite estimates whose inputs changed over time."
+
+  # ------------------------------------------------------------------ sensitivity check (rain)
+  - id: imerg_v07_final_monthly
+    status: sensitivity
+    name: "GPM IMERG Final Precipitation L3 1 month 0.1° V07"
+    short_name: GPM_3IMERGM
+    version: "07"
+    provider: GES_DISC (Earthdata Cloud)
+    kind: satellite
+    doi: "10.5067/GPM/IMERG/3B-MONTH/07"
+    doi_verified: true                   # fact-check #11c
+    temporal: { start: "1998-01", end: "2025-09" }   # Final record starts Jan 1998 (#11b) and ends Sep 2025 (#11a; GPM page re-checked 2 Nov 2026)
+    grid: { id: imerg_native, native: "0.1°; arrays arrive (time, lon, lat): transpose" }
+    access:
+      route: earthaccess
+      find: "CMR query by short name and version 07; pin V07; never append Late Run or V08 (V08 Final expected in fall 2026)"
+      method: cloud_opendap_subset       # HDF5 group "Grid"
+      variables: [precipitation]
+      units: "mm/hr (#11c; also shown in an HDF Group sample IMERG monthly file); × 24 → mm/day. V-04 confirms in a V07 granule"
+      fill: "-9999.9 in the same sample file; V-04 confirms in a V07 granule"
+      subset_bbox: [80.0, 15.0, 100.0, 30.0]   # region-set box (W, S, E, N); extend if a comparison region lies outside
+    citation: "Huffman, G.J., E.F. Stocker, D.T. Bolvin, E.J. Nelkin, J. Tan (2023), GPM IMERG Final Precipitation L3 1 month 0.1 degree x 0.1 degree V07, Greenbelt, MD, GES DISC, doi:10.5067/GPM/IMERG/3B-MONTH/07."
+    reference: "Huffman, G. J., et al., IMERG Algorithm Theoretical Basis Document, V07."
+    licence: "NASA open data"
+    known_breaks: [imerg_trmm_to_gpm_2014, imerg_v07_final_end]
+    traps: "A rate, not a total; annual trends end in 2024; never splice Late Run or V08."
+
+  # ------------------------------------------------------------------ reference and checks
+  - id: gistemp_v4
+    status: reference
+    name: "NASA GISS Surface Temperature Analysis, version 4 (global mean series only)"
+    short_name: GISTEMP
+    version: "v4"
+    provider: NASA GISS
+    kind: observations
+    doi: null
+    doi_verified: true
+    temporal: { start: "1880-01", end: "latest" }
+    grid: { id: series, native: "global mean series; grid and base period VERIFY V-08 (#22)" }
+    access: { route: csv, url: "https://data.giss.nasa.gov/gistemp/tabledata_v4/GLB.Ts+dSST.csv" }
+    citation: "GISTEMP Team (2026), GISS Surface Temperature Analysis (GISTEMP), version 4. NASA Goddard Institute for Space Studies. Dataset accessed <date>."
+    reference: "Lenssen, N., et al. (2024), A NASA GISTEMPv4 observational uncertainty ensemble, J. Geophys. Res. Atmos., doi:10.1029/2023JD040179 (fact-check #22)."
+    licence: "NASA open data"
+    known_breaks: []
+    traps: "Used only for the known-answer test and as a labelled reference line; never graded."
+
+  - id: power
+    status: check
+    name: "NASA Prediction Of Worldwide Energy Resources (POWER)"
+    short_name: POWER
+    version: "API version VERIFY V-07"
+    provider: NASA Langley Research Center
+    kind: model
+    doi: null
+    doi_verified: true
+    temporal: { start: "1981-01 (weather, from MERRA-2); IMERG_PRECTOT from 1998-06-01", end: "about 2 months (weather) and about 3.5 months (IMERG) before real time" }
+    grid: { id: power, native: "MERRA-2 grid for weather; a GEOS-IT tail with about two days' latency, later overwritten (#29a)" }
+    access:
+      route: power_api
+      endpoint: "/api/temporal/monthly/point on power.larc.nasa.gov; start and end are years; up to 20 parameters per point request, one per regional request (documentation, read 3 Nov 2026). VERIFY V-07: fill -999, annual key, licence (#30)"
+      parameters: [T2M, PRECTOTCORR]
+    citation: "These data were obtained from the NASA Langley Research Center (LaRC) POWER Project funded through the NASA Earth Science/Applied Science Program."
+    reference: "NASA POWER Data Methodology, https://power.larc.nasa.gov/docs/methodology/ ; daily T2M against GSOD stations: bias −0.53 °C, RMSE 2.10 °C, R² 0.97 (#29)."
+    licence: "VERIFY V-07"
+    known_breaks: []
+    traps: "Second-route check of one pipeline series and a fallback route only. POWER's weather is MERRA-2, so it is never a witness for MERRA-2, and POWER's IMERG never witnesses IMERG."
+
+  # ------------------------------------------------------------------ deferred (cards only; each returns one at a time with its own domain check)
+  - id: gldas_noah10_m
+    status: deferred
+    name: "GLDAS Noah Land Surface Model L4 monthly 1.0° V2.1"
+    short_name: GLDAS_NOAH10_M
+    version: "2.1"
+    provider: GES_DISC
+    kind: model
+    doi: null
+    doi_verified: false
+    temporal: { start: "VERIFY (#15)", end: present }
+    grid: { id: gldas_1deg, native: "1.0°" }
+    access: { route: earthaccess, method: download, variables: [SoilMoi0_10cm_inst, Evap_tavg, Qs_acc, Qsb_acc] }
+    citation: "Beaudoing, H. and M. Rodell, NASA/GSFC/HSL (2020), GLDAS Noah Land Surface Model L4 monthly 1.0 x 1.0 degree V2.1, GES DISC."
+    reference: "Rodell, M., et al. (2004), The Global Land Data Assimilation System, BAMS, 85, 381–394."
+    licence: "NASA open data"
+    known_breaks: [gldas21_forcing_changes]
+    traps: "Model; forcing changed over time."
+
+  - id: airs3stm
+    status: deferred
+    name: "AIRS/Aqua L3 Monthly Standard Physical Retrieval (AIRS-only) 1° V7.0"
+    short_name: AIRS3STM
+    version: "7.0"
+    provider: GES_DISC
+    kind: satellite
+    doi: null
+    doi_verified: false
+    temporal: { start: "2002-09", end: "VERIFY archive availability (#21)" }
+    grid: { id: airs_1deg, native: "1.0°" }
+    access: { route: earthaccess, method: cloud_opendap, variables: [Temperature_A, Temperature_D] }
+    citation: "AIRS project (2019), Aqua/AIRS L3 Monthly Standard Physical Retrieval (AIRS-only) 1 degree x 1 degree V7.0, GES DISC."
+    reference: "AIRS Version 7 Level 3 Product User Guide, JPL."
+    licence: "NASA open data"
+    known_breaks: [aqua_orbit_drift]
+    traps: "Levels below the ground are empty; Aqua's orbit is drifting (#21)."
+
+  - id: modis_myd08_m3
+    status: deferred
+    name: "MODIS/Aqua Atmosphere Monthly Global Product, Collection 6.1 (aerosol)"
+    short_name: MYD08_M3
+    version: "6.1"
+    provider: "LAADS; reduced in Google Earth Engine (needed only if this product returns)"
+    kind: satellite
+    doi: "VERIFY (#20)"
+    doi_verified: false
+    temporal: { start: "2002-07", end: present }
+    grid: { id: modis_1deg, native: "1.0°" }
+    access: { route: earth_engine, collection: "VERIFY (#20, #32)", band: "VERIFY" }
+    citation: "Platnick, S., et al. (2017), MODIS Atmosphere L3 Monthly Product (MYD08_M3), NASA MODIS Adaptive Processing System, GSFC."
+    reference: "Levy, R. C., et al. (2013), The Collection 6 MODIS aerosol products over land and ocean, AMT, 6, 2989–3034."
+    licence: "NASA open data"
+    known_breaks: [aqua_orbit_drift]
+    traps: "Overpass drift; monsoon cloud masks."
+
+  - id: modis_vegetation
+    status: deferred
+    name: "MODIS/Terra Vegetation Indices monthly, Collection 6.1"
+    short_name: "MOD13 (6.1; MOD13C2 Version 6 retired 31 Jul 2023, #20c)"
+    version: "6.1"
+    provider: "LP DAAC; reduced in Google Earth Engine (needed only if this product returns)"
+    kind: satellite
+    doi: "VERIFY (#20)"
+    doi_verified: false
+    temporal: { start: "2000-02", end: present }
+    grid: { id: modis, native: "VERIFY" }
+    access: { route: earth_engine, collection: "VERIFY (#20, #32)", band: NDVI }
+    citation: "Didan, K. (2021), MODIS/Terra Vegetation Indices Monthly V061, NASA EOSDIS LP DAAC."
+    reference: "Didan, K., MODIS Vegetation Index User's Guide (Collection 6.1)."
+    licence: "NASA open data"
+    known_breaks: [terra_orbit_drift]
+    traps: "Terra's orbit is drifting (#21)."
+
+  - id: grace_mascon_jpl
+    status: deferred
+    name: "JPL GRACE and GRACE-FO mascons (water stored on and under land); descriptive only"
+    short_name: "VERIFY (#16a: RL06.3Mv04 per one checker; the JPL page header read RL06.1Mv03 on 2 Nov 2026)"
+    version: "VERIFY (#16a)"
+    provider: PO.DAAC
+    kind: satellite
+    doi: "VERIFY (#16a)"
+    doi_verified: false
+    temporal: { start: "2002-04", end: present }
+    grid: { id: grace_05deg, native: "0.5° grid of 3° mascons; anomalies against 2004.0–2009.999, in cm (#16c)" }
+    access: { route: earthaccess, method: download, variables: [lwe_thickness] }
+    citation: "Wiese, D. N., et al., JPL GRACE and GRACE-FO Mascon Ocean, Ice, and Hydrology Equivalent Water Height, PO.DAAC (release VERIFY)."
+    reference: "Watkins, M. M., et al. (2015), Improved methods for observing Earth's time variable mass distribution with GRACE using spherical cap mascons, JGR Solid Earth, 120, 2648–2671."
+    licence: "NASA open data"
+    known_breaks: [grace_gap]
+    traps: "Coarse; the 2017–18 gap stays empty; no gain factors (unsuitable for trends, #18); no district claims."
+
+  - id: omi
+    status: deferred
+    name: "OMI/Aura OMNO2d (NO₂) and OMTO3e (ozone), L3 daily 0.25°"
+    short_name: "OMNO2d, OMTO3e"
+    version: "003"
+    provider: GES_DISC
+    kind: satellite
+    doi: null
+    doi_verified: false
+    temporal: { start: "2004-10", end: "VERIFY archive availability (#21)" }
+    grid: { id: omi_025deg, native: "0.25° daily" }
+    access: { route: earthaccess, method: download, variables: [ColumnAmountNO2TropCloudScreened, ColumnAmountO3] }
+    citation: "Krotkov, N. A., et al. (2019), OMI/Aura NO2 Cloud-Screened Total and Tropospheric Column L3 Global Gridded 0.25 degree V3, GES DISC; Bhartia, P. K. (2012), OMI/Aura TOMS-Like Ozone L3 V3, GES DISC."
+    reference: "Krotkov, N. A., et al. (2016), Aura OMI observations of regional SO2 and NO2 pollution changes from 2005 to 2015, ACP, 16, 4605–4629."
+    licence: "NASA open data"
+    known_breaks: [omi_row_anomaly]
+    traps: "Lost coverage from the row anomaly."
+
+  - id: jaxa_gsmap_v8
+    status: deferred
+    name: "GSMaP V8 (JAXA), partner-agency rain witness"
+    short_name: "VERIFY Earth Engine id, dates and bands (#32)"
+    version: "8"
+    provider: "JAXA EORC (via Google Earth Engine; needed only if this product returns)"
+    agency: JAXA
+    kind: satellite
+    doi: null
+    doi_verified: false
+    temporal: { start: "VERIFY (#32)", end: "VERIFY (#32)" }
+    grid: { id: gsmap_01deg, native: "0.1°, 60° N–60° S only" }
+    access: { route: earth_engine, collection: "VERIFY (#32)", band: "VERIFY (#32)" }
+    citation: "GSMaP V8, JAXA Earth Observation Research Center. Data provided by JAXA."
+    reference: "Kubota, T., et al. (2020), Global Satellite Mapping of Precipitation (GSMaP) products in the GPM era, doi:10.1007/978-3-030-24568-9_20."
+    licence: "JAXA terms: acknowledge JAXA in every publication (VERIFY)"
+    known_breaks: []
+    traps: "60° N–60° S only; credit JAXA."
+
+# Not used: Suomi NPP (delivery ends 2 Nov 2026, #21); SMAP, PACE and TEMPO (records too short for trends).

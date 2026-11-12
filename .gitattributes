@@ -1,0 +1,6 @@
+# Keep LF line endings on every OS: examples/ must stay byte-identical to what the engine builds (G-12).
+* text=auto eol=lf
+*.gz binary
+*.npz binary
+*.png binary
+*.woff2 binary

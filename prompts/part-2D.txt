@@ -1,0 +1,41 @@
+You are adding a dataset to the CaseFile Earth pipeline. Read AGENTS.md, docs/02_DATA.md §14, docs/01_ARCHITECTURE.md
+§5–§6.1, config/variables.yaml, config/sources.yaml and the existing readers in python/src/casefile_pipeline/sources/.
+
+The dataset: <name, where it is hosted, the variable, its units, its grid and time step — copied from its official
+documentation page: <link>>. The variable id to use: <id; an existing "deferred" entry of config/variables.yaml or a new one>.
+
+1. Run an access check on ONE file first and print the variable's dimensions and order, units, fill value, coordinate
+   ranges and time step. Stop and report if anything differs from the documentation.
+2. Write one reader in sources/ that returns monthly values on the dataset's own grid in the variable's monthly units
+   (aggregate daily or sub-monthly data to months first; mask fills to NaN). Register it under the source id.
+3. Give the grid an id and its definition (first latitude and longitude, steps, counts) so that `casefile-pipeline
+   regions` writes masks and support for it too. A region that fails the support rule on this grid has no series
+   for this variable.
+4. In config/sources.yaml and config/variables.yaml: fill the entry (names in English and Bangla, units, rule mean or
+   sum, valid_range, source, record card, status "analysed"). Never invent a DOI, a citation or a unit: copy them
+   from the official page, or leave the field null and say so.
+5. `casefile-pipeline bundle` then writes series/<variable id>/… for it. Run casefile-engine check-bundle.
+6. Tell the team to add the variable to config/preregistration.yaml (variables: id, product, role, main_window,
+   practical_threshold with a reason) — they choose those values, not you.
+7. Run `uv run casefile-engine examples` and commit the regenerated examples/ (only hashes change), because the
+   example build records the hash of the configuration files.
+The ordering rule holds: climatologies, units and ranges only.
+
+Checks:
+- the access-check output for the new product
+- uv run casefile-engine check-bundle <bundle>     → "bundle OK", with the new variable's rows in the table
+- uv run pytest tests/pipeline && uv run pytest -m "not slow"
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

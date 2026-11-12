@@ -1,0 +1,104 @@
+# CaseFile Earth — pre-registration (docs/03_SCIENCE.md §10; schema schemas/prereg.schema.json)
+#
+# ORDERING RULE: this file is committed with `status: committed` BEFORE anyone computes, prints, plots or
+# looks at a trend in real data. `casefile-engine results` refuses to run otherwise and writes this file's
+# SHA-256 into every result and onto the Methods page.
+#
+# How to fill it in (docs/05_BUILD_PLAN.md, step 4A):
+#   1. Replace every "<fill …>" value. The other values are recommendations: change any of them now, none later.
+#   2. `uv run casefile-engine prereg-check --bundle <bundle>` prints the hashes, the regions that pass the support
+#      rule with their effective cells, the pairs, and both families.
+#   3. Everyone on the team reads the printed families and is named under signed_by.
+#   4. Set `status: committed` and commit the file. The build reads the commit from git.
+#   5. After that, the file is only amended by adding tests (they become exploration), recorded under `amendments`.
+#
+# A variable from a new dataset is added here (and in config/variables.yaml) before the commit: docs/02_DATA.md §14.
+
+schema: casefile/prereg@3
+status: draft                      # draft | committed
+commit: null                       # leave null: the build reads the commit from git
+signed_by: ["<fill: name>", "<fill: name>", "<fill: name>"]
+
+hashes:                            # printed by prereg-check
+  analysis_yaml_sha256: "<fill>"
+  input_manifest_sha256: "<fill>"
+  regions_support_sha256: "<fill>"
+
+alpha:
+  confirmatory: 0.05               # Holm across the confirmatory family
+  secondary_q: 0.05                # Benjamini–Hochberg across the secondary family
+
+variables:
+  - id: air_temp
+    product: "MERRA-2 M2TMNXSLV 5.12.4, T2M"
+    role: analysed
+    main_window: { first: 1980, last: "<fill: last complete year in the bundle, as a number>" }
+    practical_threshold:
+      units: "°C per decade"
+      default: 0.1
+      by_season: {}
+      reason: "About half a degree over the record: the smallest shift we consider worth reporting to a general reader."
+  - id: rain
+    product: "MERRA-2 M2TMNXFLX 5.12.4, PRECTOTCORR"
+    role: analysed
+    main_window: { first: 1980, last: "<fill: the same year as air_temp, as a number>" }
+    practical_threshold:
+      units: "mm per decade"
+      default: "<fill: 2% of Bangladesh's mean yearly total (check-bundle prints it), rounded to 5, as a number>"
+      by_season: {}
+      reason: "Two percent of the mean yearly rain per decade: about a tenth of the yearly total over the record."
+  - id: rain_imerg
+    product: "GPM IMERG V07 Final monthly (GPM_3IMERGM)"
+    role: sensitivity
+    main_window: { first: 1998, last: 2024 }
+    practical_threshold:
+      units: "mm per decade"
+      default: "<fill: the same number as rain>"
+      by_season: {}
+      reason: "Same as rain."
+
+seasons:
+  primary: ANN
+  secondary: [MAM, JJAS, ON, DJF]  # pre-monsoon, monsoon, post-monsoon, winter
+
+regions:
+  support_rule: { min_native_cells: 4, max_spill_share: 0.333 }
+  set:                             # every region used by a pair. The build adds each region's effective cells
+    - { id: "country:BGD",     role: home }          # from the bundle (pinned by regions_support_sha256).
+    - { id: "cmp:west_bengal", role: comparison }
+    - { id: "bd_div:khulna",   role: division }
+    - { id: "bd_div:rajshahi", role: division }
+
+pairs:                             # each pair gives three confirmatory tests per analysed variable: A, B and A − B
+  - id: pair_bgd_vs_wb
+    a: "country:BGD"
+    b: "cmp:west_bengal"
+    lead: true
+    question:
+      en: "Has rain changed differently in Bangladesh and in West Bengal?"
+      bn: "বাংলাদেশ ও পশ্চিমবঙ্গে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+  - id: pair_khulna_vs_rajshahi
+    a: "bd_div:khulna"
+    b: "bd_div:rajshahi"
+    lead: false
+    question:
+      en: "Has rain changed differently in Khulna and in Rajshahi?"
+      bn: "খুলনা ও রাজশাহী বিভাগে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+
+windows:                           # five alternative windows, robustness checks only (03 §6.4)
+  alternatives:
+    - { id: s3,   start_shift: 3, end_shift: 0 }
+    - { id: s6,   start_shift: 6, end_shift: 0 }
+    - { id: e3,   start_shift: 0, end_shift: -3 }
+    - { id: e6,   start_shift: 0, end_shift: -6 }
+    - { id: s3e3, start_shift: 3, end_shift: -3 }
+
+headline_cases:
+  - { kind: contrast, pair: pair_bgd_vs_wb, variable: rain,     season: ANN }
+  - { kind: contrast, pair: pair_bgd_vs_wb, variable: air_temp, season: ANN }
+
+family_preview:                    # leave empty: the build fills it and prereg-check prints it
+  confirmatory: []
+  secondary: []
+
+amendments: []

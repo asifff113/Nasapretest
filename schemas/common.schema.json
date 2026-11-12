@@ -1,0 +1,1238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/common.schema.json",
+  "title": "Shared definitions for spec pack v3 schemas",
+  "$defs": {
+    "text2": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bn": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "en",
+        "bn"
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "variableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "analysedVariable": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "seasonId": {
+      "enum": [
+        "ANN",
+        "DJF",
+        "MAM",
+        "JJAS",
+        "ON",
+        "JJA",
+        "SON"
+      ]
+    },
+    "regionId": {
+      "type": "string",
+      "pattern": "^(country:[A-Z]{3}|bd_div:[a-z_]+|cmp:[a-z0-9_]+|cell:[0-9]{1,3}_[0-9]{1,3}|synthetic:[a-z0-9_]+)$"
+    },
+    "pairId": {
+      "type": "string",
+      "pattern": "^pair_[a-z0-9_]+$"
+    },
+    "family": {
+      "enum": [
+        "confirmatory",
+        "secondary",
+        "exploration",
+        "sensitivity"
+      ]
+    },
+    "grade": {
+      "enum": [
+        "strong",
+        "supported",
+        "cant_tell_yet"
+      ]
+    },
+    "reason": {
+      "enum": [
+        "outside_domain",
+        "short_record",
+        "too_short",
+        "missing_year",
+        "not_testable",
+        "break_review",
+        "exploration"
+      ]
+    },
+    "status": {
+      "enum": [
+        "verdict",
+        "no_verdict"
+      ]
+    },
+    "doubt": {
+      "enum": [
+        "loo_flip",
+        "windows_disagree",
+        "coverage_drift",
+        "break_unreviewed"
+      ]
+    },
+    "years": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1850,
+        "maximum": 2100
+      }
+    },
+    "values": {
+      "type": "array",
+      "items": {
+        "type": [
+          "number",
+          "null"
+        ]
+      }
+    },
+    "window": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "first": {
+          "type": "integer"
+        },
+        "last": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "first",
+        "last"
+      ]
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "lat0": {
+          "type": "number"
+        },
+        "dlat": {
+          "type": "number"
+        },
+        "nlat": {
+          "type": "integer"
+        },
+        "lon0": {
+          "type": "number"
+        },
+        "dlon": {
+          "type": "number"
+        },
+        "nlon": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "lat0",
+        "dlat",
+        "nlat",
+        "lon0",
+        "dlon",
+        "nlon"
+      ]
+    },
+    "multiplicity": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "enum": [
+            "holm",
+            "bh",
+            "bh_lineup",
+            "none"
+          ]
+        },
+        "familySize": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pAdjusted": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "alpha": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 0.2
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "familySize",
+        "pAdjusted",
+        "alpha"
+      ]
+    },
+    "domainCheck": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "enum": [
+            "D1",
+            "D2",
+            "D3",
+            "D4",
+            "D5",
+            "D6",
+            "D7"
+          ]
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "passed",
+        "value",
+        "limit"
+      ]
+    },
+    "domain": {
+      "type": "object",
+      "properties": {
+        "inDomain": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/domainCheck"
+          },
+          "minItems": 7,
+          "maxItems": 7
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "inDomain",
+        "checks"
+      ]
+    },
+    "stats": {
+      "type": "object",
+      "properties": {
+        "n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mk": {
+          "type": "object",
+          "properties": {
+            "S": {
+              "type": "integer"
+            },
+            "varS": {
+              "type": "number"
+            },
+            "tau": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "z": {
+              "type": "number"
+            },
+            "p": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "pKind": {
+              "const": "mk_normal_cc"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "S",
+            "varS",
+            "tau",
+            "z",
+            "p",
+            "pKind"
+          ]
+        },
+        "ar1": {
+          "type": "object",
+          "properties": {
+            "phiRaw": {
+              "type": "number"
+            },
+            "phi": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.95
+            },
+            "vif": {
+              "type": "number",
+              "minimum": 1
+            },
+            "estimator": {
+              "const": "ar1_regression_consecutive"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "phiRaw",
+            "phi",
+            "vif",
+            "estimator"
+          ]
+        },
+        "mkAr1": {
+          "type": "object",
+          "properties": {
+            "varSStar": {
+              "type": "number"
+            },
+            "z": {
+              "type": "number"
+            },
+            "p": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "pKind": {
+              "const": "mk_normal_cc"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "varSStar",
+            "z",
+            "p",
+            "pKind"
+          ]
+        },
+        "sen": {
+          "type": "object",
+          "properties": {
+            "slopePerYear": {
+              "type": "number"
+            },
+            "intercept": {
+              "type": "number"
+            },
+            "ciLowPerYear": {
+              "type": "number"
+            },
+            "ciHighPerYear": {
+              "type": "number"
+            },
+            "multiplier": {
+              "type": "number"
+            },
+            "nPairs": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "slopePerYear",
+            "intercept",
+            "ciLowPerYear",
+            "ciHighPerYear",
+            "multiplier",
+            "nPairs"
+          ]
+        },
+        "change": {
+          "type": "object",
+          "properties": {
+            "ratePerDecade": {
+              "type": "number"
+            },
+            "rateLowPerDecade": {
+              "type": "number"
+            },
+            "rateHighPerDecade": {
+              "type": "number"
+            },
+            "total": {
+              "type": "number"
+            },
+            "totalLow": {
+              "type": "number"
+            },
+            "totalHigh": {
+              "type": "number"
+            },
+            "span": {
+              "type": "integer"
+            },
+            "units": {
+              "type": "string"
+            },
+            "percent": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "baseline": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "residSd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "snr": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "ratePerDecade",
+            "rateLowPerDecade",
+            "rateHighPerDecade",
+            "total",
+            "totalLow",
+            "totalHigh",
+            "span",
+            "units",
+            "percent",
+            "baseline",
+            "residSd",
+            "snr"
+          ]
+        },
+        "ttest": {
+          "type": "object",
+          "properties": {
+            "available": {
+              "type": "boolean"
+            },
+            "slopePerYear": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "intercept": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "se": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "r1": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "phi": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "nEff": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "seAdj": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "t": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "df": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "p": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "ciLowPerYear": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "ciHighPerYear": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "role": {
+              "const": "display_only"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "available",
+            "slopePerYear",
+            "intercept",
+            "se",
+            "r1",
+            "phi",
+            "nEff",
+            "seAdj",
+            "t",
+            "df",
+            "p",
+            "ciLowPerYear",
+            "ciHighPerYear",
+            "role"
+          ]
+        },
+        "naive": {
+          "type": "object",
+          "properties": {
+            "z": {
+              "type": "number"
+            },
+            "p": {
+              "type": "number"
+            },
+            "label": {
+              "const": "naive_ignores_memory"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "z",
+            "p",
+            "label"
+          ]
+        },
+        "leftover": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "stat": {
+              "type": "number"
+            },
+            "m": {
+              "type": "integer"
+            },
+            "mEff": {
+              "type": "number"
+            },
+            "mEffStep": {
+              "type": "integer"
+            },
+            "rhoBar": {
+              "type": "number"
+            },
+            "phiCells": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.95
+            },
+            "critical": {
+              "type": "number"
+            },
+            "passed": {
+              "type": "boolean"
+            },
+            "source": {
+              "enum": [
+                "contributing_cells",
+                "neighbourhood_5x5",
+                "both_regions"
+              ]
+            }
+          },
+          "required": [
+            "stat",
+            "m",
+            "mEff",
+            "mEffStep",
+            "rhoBar",
+            "phiCells",
+            "critical",
+            "passed",
+            "source"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "n",
+        "mk",
+        "ar1",
+        "mkAr1",
+        "sen",
+        "change",
+        "ttest",
+        "naive",
+        "leftover"
+      ]
+    },
+    "breakNote": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "year": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "label": {
+          "$ref": "#/$defs/text2"
+        },
+        "status": {
+          "enum": [
+            "reviewed",
+            "unreviewed",
+            "step"
+          ]
+        },
+        "review": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "outcome": {
+              "enum": [
+                "no_step_seen",
+                "step_seen",
+                "unclear"
+              ]
+            },
+            "reviewer": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "outcome",
+            "reviewer",
+            "note"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "year",
+        "label",
+        "status",
+        "review"
+      ]
+    },
+    "windowItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "first": {
+          "type": "integer"
+        },
+        "last": {
+          "type": "integer"
+        },
+        "ran": {
+          "type": "boolean"
+        },
+        "ratePerDecade": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rateLowPerDecade": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rateHighPerDecade": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "p": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "agrees": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "first",
+        "last",
+        "ran",
+        "ratePerDecade",
+        "rateLowPerDecade",
+        "rateHighPerDecade",
+        "p",
+        "agrees"
+      ]
+    },
+    "robustness": {
+      "type": "object",
+      "properties": {
+        "gaps": {
+          "type": "object",
+          "properties": {
+            "missingYears": {
+              "$ref": "#/$defs/years"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "missingYears"
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "doubt",
+                "skip"
+              ]
+            },
+            "cmin": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "cmax": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "p": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "cmin",
+            "cmax",
+            "p"
+          ]
+        },
+        "breaks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/breakNote"
+          }
+        },
+        "loo": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "doubt",
+                "note",
+                "skip"
+              ]
+            },
+            "year": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "pMax": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "pMin": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "year",
+            "pMax",
+            "pMin"
+          ]
+        },
+        "windows": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "doubt",
+                "skip"
+              ]
+            },
+            "agree": {
+              "type": "integer"
+            },
+            "ran": {
+              "type": "integer"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/windowItem"
+              },
+              "maxItems": 5
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "agree",
+            "ran",
+            "items"
+          ]
+        },
+        "pettitt": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "flagged": {
+              "type": "boolean"
+            },
+            "year": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "U": {
+              "type": "number"
+            },
+            "p": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "method": {
+              "const": "pyhomogeneity.pettitt_test(sim=None)"
+            }
+          },
+          "required": [
+            "flagged",
+            "year",
+            "U",
+            "p",
+            "method"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "gaps",
+        "coverage",
+        "breaks",
+        "loo",
+        "windows",
+        "pettitt"
+      ]
+    },
+    "practical": {
+      "type": "object",
+      "properties": {
+        "threshold": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "units": {
+          "type": "string"
+        },
+        "position": {
+          "enum": [
+            "exceeds",
+            "overlaps",
+            "smaller",
+            null
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "threshold",
+        "units",
+        "position"
+      ]
+    },
+    "textBlock": {
+      "type": "object",
+      "properties": {
+        "headline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "howMuch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "howSure": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "practical": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "overturn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "headline",
+        "howMuch",
+        "howSure",
+        "checks",
+        "practical",
+        "overturn",
+        "notes"
+      ]
+    },
+    "text": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "$ref": "#/$defs/textBlock"
+        },
+        "bn": {
+          "$ref": "#/$defs/textBlock"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "en",
+        "bn"
+      ]
+    },
+    "pairSplit": {
+      "type": "object",
+      "properties": {
+        "rule": {
+          "const": "disjoint_cells_larger_fraction"
+        },
+        "grids": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "sharedCells": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "effectiveCellsA": {
+                "type": "number",
+                "minimum": 0
+              },
+              "effectiveCellsB": {
+                "type": "number",
+                "minimum": 0
+              },
+              "passes": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "sharedCells",
+              "effectiveCellsA",
+              "effectiveCellsB",
+              "passes"
+            ]
+          }
+        },
+        "passes": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rule",
+        "grids",
+        "passes"
+      ]
+    },
+    "point": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "segment": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/point"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "chart": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "$ref": "#/$defs/values"
+        },
+        "offset": {
+          "type": "number",
+          "description": "Subtracted from the stored values for display (the window mean of d for contrasts; 0 otherwise)"
+        },
+        "pivot": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/point"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "line": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/segment"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "band": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "low": {
+                  "$ref": "#/$defs/segment"
+                },
+                "high": {
+                  "$ref": "#/$defs/segment"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "low",
+                "high"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "values",
+        "offset",
+        "pivot",
+        "line",
+        "band"
+      ]
+    },
+    "spine": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "grade": {
+          "enum": [
+            "strong",
+            "supported",
+            "cant_tell_yet",
+            null
+          ]
+        },
+        "reason": {
+          "enum": [
+            "outside_domain",
+            "short_record",
+            "too_short",
+            "missing_year",
+            "not_testable",
+            "break_review",
+            "exploration",
+            null
+          ]
+        },
+        "ratePerDecade": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rateLowPerDecade": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rateHighPerDecade": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "units": {
+          "type": "string"
+        },
+        "family": {
+          "$ref": "#/$defs/family"
+        },
+        "familySize": {
+          "type": "integer"
+        },
+        "inDomain": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "grade",
+        "reason",
+        "ratePerDecade",
+        "rateLowPerDecade",
+        "rateHighPerDecade",
+        "units",
+        "family",
+        "familySize",
+        "inDomain"
+      ]
+    }
+  }
+}

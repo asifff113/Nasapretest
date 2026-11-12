@@ -1,0 +1,30 @@
+You are polishing the CaseFile Earth site. Read AGENTS.md, docs/04_UI.md §1, §8, §11 and §12, and
+docs/05_BUILD_PLAN.md Part 3 (design direction).
+
+1. Save Playwright screenshots of every screen at 360, 768 and 1280 px, light and dark, English and Bangla.
+2. Look at every screenshot against the 04 §12 checklist and the design direction: one clear headline per screen;
+   status badge before numbers; a 4 px spacing grid; no text under 14 px except axis labels; contrast at least
+   4.5:1; nothing cut off in Bangla; charts readable at 360 px; the spine visible and quiet; hatching
+   distinguishable without colour. List every problem with its screenshot.
+3. Fix them in small commits. Layout and style only: never a number, a verdict word or an i18n string.
+4. Measure the budgets of docs/01_ARCHITECTURE.md §8 on the built site and fix what exceeds them.
+5. Keep the final screenshots as visual-regression baselines.
+
+Checks:
+- X-01…X-07 of docs/07_TESTS.md §9 pass; no screen logs a console error
+- the budget numbers, measured, in a short table
+- before and after screenshots of the three screens that changed most
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

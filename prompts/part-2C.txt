@@ -1,0 +1,47 @@
+You are finishing the CaseFile Earth pipeline. Read AGENTS.md, docs/01_ARCHITECTURE.md §5 (the bundle is specified
+there, array by array), docs/02_DATA.md §4, and run `uv run casefile-engine synth-bundle /tmp/b` to see a complete
+example bundle (open its .npz files with numpy to copy the exact keys and shapes).
+
+Build series.py, mapfield.py, manifest.py and the command `casefile-pipeline bundle --bundle-id <id>`, which reads
+.cache/monthly/*.npz (step 2A) and .cache/bundle/<id>/regions/ (step 2B) and writes into .cache/bundle/<id>/:
+1. series/<variable>/<region>.npz for every region with inSet = true and for air_temp, rain (MERRA-2 grid) and
+   rain_imerg (IMERG grid): start, monthly, cells, area_km2, effective_cells, grid — exactly as 01 §5 defines them.
+   monthly = Σ w x / Σ w over the mask's cells with a finite value, w = fraction × cell area (02 §4);
+   NaN when cells holding more than 10% of Σ w are missing. cells = each mask cell's own values, in mask order;
+   more than 2 000 cells → keep every k-th.
+2. pairs/<variable>/<pair id>.npz for every pair of regions/index.json: start, a, b = the two monthly means on the
+   pair's disjoint cells (a cell both regions touch belongs to the region with the larger fraction; a tie drops it).
+3. map/air_temp__ANN.npz and map/rain__ANN.npz: regrid each month of the global MERRA-2 field to the 1° grid by the
+   conservative rule of 02 §4, then casefile_engine.bundle.annual_field(variable, start, field, first, last) gives
+   years and values [180][360][n_years].
+4. input_manifest.json: the product entries from step 2A plus "checks".
+Then run casefile-engine check-bundle on the result.
+
+The ordering rule: this stage handles monthly values and writes annual map values to a file, but prints
+climatologies only. Do not print, plot or summarise any yearly series, and do not open the map file to look at it.
+
+Tests (no network): on a tiny synthetic global field and two box regions, the bundle passes check-bundle; the
+region mean of a constant field is that constant; a pair with shared cells gets disjoint weights; the regridded
+field keeps the area-weighted global mean to 1e-4.
+
+Checks:
+- uv run casefile-pipeline bundle --bundle-id b1
+- uv run casefile-engine check-bundle ../.cache/bundle/b1     → "bundle OK"; read the table it prints: temperatures
+  in °C and rain in mm/day, the wettest months in the monsoon, no unexpected missing months
+- uv run pytest tests/pipeline                                → all pass
+- uv run casefile-engine prereg-check --bundle ../.cache/bundle/b1   → prints the three hashes (it will also say the
+  pre-registration is not filled yet: that is Part 4)
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

@@ -1,0 +1,343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/catalog.schema.json",
+  "title": "Catalog — variables with record cards, question cards and sources (M1)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/catalog@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "variables": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "status",
+          "group",
+          "kind",
+          "source",
+          "name",
+          "name_mid",
+          "definition",
+          "how_measured",
+          "units",
+          "rule",
+          "ratio_scale",
+          "record",
+          "record_card"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/variableId"
+          },
+          "status": {
+            "enum": [
+              "analysed",
+              "sensitivity",
+              "reference",
+              "deferred"
+            ]
+          },
+          "group": {
+            "enum": [
+              "heat",
+              "water",
+              "air",
+              "weather",
+              "land",
+              "sky"
+            ]
+          },
+          "kind": {
+            "enum": [
+              "satellite",
+              "model",
+              "observations"
+            ]
+          },
+          "agency": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "variable": {
+            "type": "string"
+          },
+          "conversion": {
+            "type": "string"
+          },
+          "name": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "name_mid": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "definition": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "how_measured": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "units": {
+            "type": "object",
+            "properties": {
+              "monthly": {
+                "type": "string"
+              },
+              "aggregated": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "monthly",
+              "aggregated"
+            ]
+          },
+          "rule": {
+            "enum": [
+              "mean",
+              "sum"
+            ]
+          },
+          "ratio_scale": {
+            "type": "boolean"
+          },
+          "record": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "integer"
+              },
+              "to": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "from",
+              "to"
+            ]
+          },
+          "record_card": {
+            "type": "object",
+            "properties": {
+              "gaps": {
+                "$ref": "common.schema.json#/$defs/text2"
+              },
+              "known_breaks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "$ref": "common.schema.json#/$defs/text2"
+                    },
+                    "date": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "verified": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "label",
+                    "date",
+                    "verified"
+                  ]
+                }
+              },
+              "observation_or_model": {
+                "$ref": "common.schema.json#/$defs/text2"
+              },
+              "cannot_answer": {
+                "$ref": "common.schema.json#/$defs/text2"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "gaps",
+              "known_breaks",
+              "observation_or_model",
+              "cannot_answer"
+            ]
+          },
+          "sensitivity": {
+            "type": "string"
+          },
+          "colormap": {
+            "type": "object",
+            "properties": {
+              "trend": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "valid_range": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "flow": {
+            "enum": [
+              "place",
+              "compare",
+              "none"
+            ]
+          },
+          "question": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "shortlist": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "variable": {
+                  "$ref": "common.schema.json#/$defs/variableId"
+                },
+                "why": {
+                  "$ref": "common.schema.json#/$defs/text2"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "variable",
+                "why"
+              ]
+            }
+          },
+          "also_deferred": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/variableId"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "flow",
+          "question",
+          "shortlist"
+        ]
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "short_name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "doi": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "doi_verified": {
+            "type": "boolean"
+          },
+          "citation": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          },
+          "licence": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "status",
+          "name",
+          "short_name",
+          "version",
+          "kind",
+          "doi",
+          "doi_verified",
+          "citation",
+          "reference",
+          "licence"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "created",
+    "synthetic",
+    "variables",
+    "questions",
+    "sources"
+  ]
+}

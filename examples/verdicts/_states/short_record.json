@@ -1,0 +1,328 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": true,
+ "id": "state__short_record",
+ "variable": {
+  "id": "air_temp",
+  "kind": "model",
+  "source": "merra2_slv",
+  "units": "°C",
+  "rule": "mean",
+  "ratioScale": false
+ },
+ "region": {
+  "id": "synthetic:north_plain",
+  "kind": "synthetic",
+  "areaKm2": 92335.4
+ },
+ "season": "ANN",
+ "window": {
+  "id": "main",
+  "first": 2008,
+  "last": 2025
+ },
+ "family": "confirmatory",
+ "multiplicity": {
+  "method": "holm",
+  "familySize": 6,
+  "pAdjusted": 0.5,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "short_record",
+ "series": {
+  "years": [
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   26.957553922488625,
+   27.248626868993295,
+   27.21022355954199,
+   27.065232574338243,
+   26.967178420637023,
+   27.148384789844272,
+   27.103709608323893,
+   26.971348778748293,
+   27.312659323338426,
+   27.231168748424533,
+   27.198496172522464,
+   27.502529731783582,
+   27.434666188273905,
+   27.60759736759286,
+   27.663015061578694,
+   27.600108050782506,
+   27.302095478593632,
+   27.40042333751853
+  ],
+  "units": "°C"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "air_temp",
+    "limit": "air_temp, rain, rain_imerg"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "ANN",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": false,
+    "value": 18,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": false,
+    "value": 0.5423103912103368,
+    "limit": 0.4
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": -0.15640372070350414,
+    "limit": -0.06294692045253497
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 18,
+  "mk": {
+   "S": 81,
+   "varS": 697.0,
+   "tau": 0.5294117647058824,
+   "z": 3.030216076314281,
+   "p": 0.0024437883543766015,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.3106858598302619,
+   "phi": 0.5423103912103368,
+   "vif": 3.0821291082790805,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 2148.243988470519,
+   "z": 1.726029382098088,
+   "p": 0.08434212690364536,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": 0.030501716233869658,
+   "intercept": -34.266812976889256,
+   "ciLowPerYear": -0.03267257590206896,
+   "ciHighPerYear": 0.07859490900427657,
+   "multiplier": 2.25,
+   "nPairs": 153
+  },
+  "change": {
+   "ratePerDecade": 0.3050171623386966,
+   "rateLowPerDecade": -0.32672575902068957,
+   "rateHighPerDecade": 0.7859490900427657,
+   "total": 0.5185291759757842,
+   "totalLow": -0.5554337903351723,
+   "totalHigh": 1.3361134530727017,
+   "span": 17,
+   "units": "°C",
+   "percent": null,
+   "baseline": null,
+   "residSd": 0.1489549627923906,
+   "snr": 3.48111379611095
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": 0.03130723166212699,
+   "intercept": -35.857420536494345,
+   "se": 0.006972547762661713,
+   "r1": 0.28799330053284583,
+   "phi": 0.5131342435422304,
+   "nEff": 5.791676220164313,
+   "seAdj": 0.014323061833700974,
+   "t": 2.185791838757805,
+   "df": 3.7916762201643133,
+   "p": 0.09787149789039437,
+   "ciLowPerYear": -0.009336646195002546,
+   "ciHighPerYear": 0.07195110951925653,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": 3.030216076314281,
+   "p": 0.0024437883543766015,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": -0.15640372070350414,
+   "m": 6,
+   "mEff": 5.9185418409523285,
+   "mEffStep": 5,
+   "rhoBar": 0.0524656348283148,
+   "phiCells": 0.329522599288998,
+   "critical": -0.06294692045253497,
+   "passed": true,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "practical": {
+  "threshold": null,
+  "units": "°C per decade",
+  "position": null
+ },
+ "overturn": [],
+ "sensitivity": null,
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "short_record",
+  "ratePerDecade": 0.3050171623386966,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "°C",
+  "family": "confirmatory",
+  "familySize": 6,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   26.957553922488625,
+   27.248626868993295,
+   27.21022355954199,
+   27.065232574338243,
+   26.967178420637023,
+   27.148384789844272,
+   27.103709608323893,
+   26.971348778748293,
+   27.312659323338426,
+   27.231168748424533,
+   27.198496172522464,
+   27.502529731783582,
+   27.434666188273905,
+   27.60759736759286,
+   27.663015061578694,
+   27.600108050782506,
+   27.302095478593632,
+   27.40042333751853
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2016.5,
+   27.239897808708914
+  ],
+  "line": [
+   [
+    2008,
+    26.980633220721018
+   ],
+   [
+    2025,
+    27.499162396696804
+   ]
+  ],
+  "band": null
+ },
+ "text": {
+  "en": {
+   "headline": "Exploratory: only 18 years (2008–2025). The fitted rate is +0.31 °C per decade. No verdict.",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "অনুসন্ধানমূলক: মাত্র ১৮ বছর (২০০৮–২০২৫)। মিলিয়ে নেওয়া হার প্রতি দশকে +০.৩১ °C। কোনো রায় নেই।",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

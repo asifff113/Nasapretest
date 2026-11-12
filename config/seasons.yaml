@@ -1,0 +1,15 @@
+# Season definitions (docs/03_SCIENCE.md §2.2). Labels live in config/i18n/*.json under "season.<id>".
+# A season that wraps the year end (DJF) is dated by the year in which it ENDS: DJF 2001 = Dec 2000 + Jan 2001 + Feb 2001.
+# The first release analyses ANN plus the seasons listed in config/preregistration.yaml → seasons.secondary.
+version: 3
+seasons:
+  ANN:  { months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }
+  DJF:  { months: [12, 1, 2] }     # Bangladesh: winter
+  MAM:  { months: [3, 4, 5] }      # Bangladesh: pre-monsoon
+  JJAS: { months: [6, 7, 8, 9] }   # Bangladesh: monsoon
+  ON:   { months: [10, 11] }       # Bangladesh: post-monsoon
+  JJA:  { months: [6, 7, 8] }      # available for comparison regions outside South Asia; not pre-registered by default
+  SON:  { months: [9, 10, 11] }
+
+ui_order: [ANN, MAM, JJAS, ON, DJF]   # order of season chips and line-up rows
+# Single months and custom seasons are not in the first release. The Bengali six-season (ritu) calendar is a COULD.

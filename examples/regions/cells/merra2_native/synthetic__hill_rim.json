@@ -1,0 +1,40 @@
+{
+ "schema": "casefile/mask@3",
+ "region": "synthetic:hill_rim",
+ "grid": "merra2_native",
+ "cells": [
+  [
+   190,
+   299,
+   0.4699
+  ],
+  [
+   190,
+   300,
+   0.17
+  ],
+  [
+   191,
+   299,
+   0.94
+  ],
+  [
+   191,
+   300,
+   0.34
+  ],
+  [
+   192,
+   299,
+   0.094
+  ],
+  [
+   192,
+   300,
+   0.034
+  ]
+ ],
+ "areaKm2": 7877.9,
+ "effectiveCells": 2.0479,
+ "synthetic": true
+}

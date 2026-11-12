@@ -1,0 +1,67 @@
+{
+ "schema": "casefile/cell_tiles@3",
+ "synthetic": true,
+ "variable": "air_temp",
+ "grid": {
+  "id": "global_1deg",
+  "lat0": 89.5,
+  "dlat": -1.0,
+  "nlat": 180,
+  "lon0": -179.5,
+  "dlon": 1.0,
+  "nlon": 360
+ },
+ "tile": {
+  "rows": 10,
+  "cols": 10
+ },
+ "seasons": [
+  "ANN"
+ ],
+ "years": {
+  "first": 1980,
+  "last": 2025
+ },
+ "units": "°C",
+ "dtype": "int16",
+ "byteOrder": "little",
+ "scale": 0.01,
+ "offset": 0.0,
+ "fill": -32768,
+ "layout": "[row][col][season][year]",
+ "path": "t/<tr>_<tc>.bin.gz",
+ "tilesPresent": [
+  [
+   3,
+   27
+  ],
+  [
+   8,
+   17
+  ],
+  [
+   8,
+   18
+  ]
+ ],
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}

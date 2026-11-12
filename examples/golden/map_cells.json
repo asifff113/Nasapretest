@@ -1,0 +1,82 @@
+{
+ "meta": {
+  "generator": "casefile_engine.mapbuild",
+  "rules": "docs/03_SCIENCE.md §7.5",
+  "map": "examples/maps/air_temp/ANN",
+  "nTestable": 55416,
+  "nSignificant": 51924,
+  "tolerances": "docs/07_TESTS.md §1"
+ },
+ "cells": [
+  {
+   "name": "hot_spot",
+   "row": 30,
+   "col": 270,
+   "flags": 3,
+   "testable": true,
+   "significant": true,
+   "ratePerDecade": 0.6654721088538287,
+   "p": 4.557264307980707e-09,
+   "q": 4.163680599755395e-06,
+   "pooledPhi": 0.3390938907869809,
+   "leftoverStat": -0.09757363844427702,
+   "mEff": 16.93771450118393
+  },
+  {
+   "name": "cold_spot",
+   "row": 38,
+   "col": 145,
+   "flags": 3,
+   "testable": true,
+   "significant": true,
+   "ratePerDecade": -0.3067971787820254,
+   "p": 2.06333268727676e-06,
+   "q": 2.6147185958867807e-05,
+   "pooledPhi": 0.3238272716844469,
+   "leftoverStat": -0.1105214863207591,
+   "mEff": 21.841686126564337
+  },
+  {
+   "name": "mixed_memory_patch",
+   "row": 117,
+   "col": 252,
+   "flags": 16,
+   "testable": false,
+   "significant": false,
+   "ratePerDecade": null,
+   "p": null,
+   "q": null,
+   "pooledPhi": 0.3249162225674924,
+   "leftoverStat": 0.00979144010023784,
+   "mEff": 24.996654266347974
+  },
+  {
+   "name": "missing_years",
+   "row": 170,
+   "col": 10,
+   "flags": 4,
+   "testable": false,
+   "significant": false,
+   "ratePerDecade": null,
+   "p": null,
+   "q": null,
+   "pooledPhi": null,
+   "leftoverStat": null,
+   "mEff": null
+  },
+  {
+   "name": "ordinary",
+   "row": 85,
+   "col": 182,
+   "flags": 3,
+   "testable": true,
+   "significant": true,
+   "ratePerDecade": 0.13000687183800944,
+   "p": 0.018256580674988542,
+   "q": 0.02262566643598714,
+   "pooledPhi": 0.3236503393270933,
+   "leftoverStat": -0.050133108659223075,
+   "mEff": 18.656067808383177
+  }
+ ]
+}

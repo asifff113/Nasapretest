@@ -1,0 +1,354 @@
+{
+ "bd_div:BD-B:Chittagong": {
+  "merra2_native": {
+   "areaKm2": 30579.0,
+   "cellsTouched": 24,
+   "effectiveCells": 8.58,
+   "effectiveCells5x5": 8.52,
+   "cellsMostlyInside": 6,
+   "interiorWeightShare": 0.504,
+   "kishEffectiveCells": 15.28,
+   "largestCellShare": 0.099
+  },
+  "imerg_native": {
+   "areaKm2": 30579.0,
+   "cellsTouched": 368,
+   "effectiveCells": 268.11,
+   "effectiveCells5x5": 267.76,
+   "cellsMostlyInside": 261,
+   "interiorWeightShare": 0.918,
+   "kishEffectiveCells": 295.8,
+   "largestCellShare": 0.004
+  }
+ },
+ "bd_div:BD-C:Dhaka": {
+  "merra2_native": {
+   "areaKm2": 20974.0,
+   "cellsTouched": 14,
+   "effectiveCells": 5.93,
+   "effectiveCells5x5": 5.96,
+   "cellsMostlyInside": 6,
+   "interiorWeightShare": 0.773,
+   "kishEffectiveCells": 8.73,
+   "largestCellShare": 0.169
+  },
+  "imerg_native": {
+   "areaKm2": 20973.0,
+   "cellsTouched": 241,
+   "effectiveCells": 185.44,
+   "effectiveCells5x5": 185.56,
+   "cellsMostlyInside": 185,
+   "interiorWeightShare": 0.949,
+   "kishEffectiveCells": 198.86,
+   "largestCellShare": 0.005
+  }
+ },
+ "bd_div:BD-H:Mymensingh": {
+  "merra2_native": {
+   "areaKm2": 10460.0,
+   "cellsTouched": 8,
+   "effectiveCells": 2.98,
+   "effectiveCells5x5": 2.84,
+   "cellsMostlyInside": 3,
+   "interiorWeightShare": 0.821,
+   "kishEffectiveCells": 4.22,
+   "largestCellShare": 0.31
+  },
+  "imerg_native": {
+   "areaKm2": 10459.0,
+   "cellsTouched": 125,
+   "effectiveCells": 93.23,
+   "effectiveCells5x5": 93.24,
+   "cellsMostlyInside": 95,
+   "interiorWeightShare": 0.948,
+   "kishEffectiveCells": 101.99,
+   "largestCellShare": 0.011
+  }
+ },
+ "bd_div:BD-E:Rajshani": {
+  "merra2_native": {
+   "areaKm2": 18560.0,
+   "cellsTouched": 12,
+   "effectiveCells": 5.28,
+   "effectiveCells5x5": 5.4,
+   "cellsMostlyInside": 5,
+   "interiorWeightShare": 0.81,
+   "kishEffectiveCells": 7.06,
+   "largestCellShare": 0.189
+  },
+  "imerg_native": {
+   "areaKm2": 18559.0,
+   "cellsTouched": 201,
+   "effectiveCells": 165.06,
+   "effectiveCells5x5": 165.16,
+   "cellsMostlyInside": 165,
+   "interiorWeightShare": 0.958,
+   "kishEffectiveCells": 175.07,
+   "largestCellShare": 0.006
+  }
+ },
+ "bd_div:BD-F:Rangpur": {
+  "merra2_native": {
+   "areaKm2": 16600.0,
+   "cellsTouched": 14,
+   "effectiveCells": 4.77,
+   "effectiveCells5x5": 4.76,
+   "cellsMostlyInside": 4,
+   "interiorWeightShare": 0.69,
+   "kishEffectiveCells": 7.03,
+   "largestCellShare": 0.21
+  },
+  "imerg_native": {
+   "areaKm2": 16600.0,
+   "cellsTouched": 195,
+   "effectiveCells": 149.09,
+   "effectiveCells5x5": 149.0,
+   "cellsMostlyInside": 149,
+   "interiorWeightShare": 0.944,
+   "kishEffectiveCells": 161.42,
+   "largestCellShare": 0.007
+  }
+ },
+ "bd_div:BD-G:Sylhet": {
+  "merra2_native": {
+   "areaKm2": 12250.0,
+   "cellsTouched": 8,
+   "effectiveCells": 3.49,
+   "effectiveCells5x5": 3.56,
+   "cellsMostlyInside": 4,
+   "interiorWeightShare": 0.861,
+   "kishEffectiveCells": 5.06,
+   "largestCellShare": 0.248
+  },
+  "imerg_native": {
+   "areaKm2": 12250.0,
+   "cellsTouched": 148,
+   "effectiveCells": 109.08,
+   "effectiveCells5x5": 108.92,
+   "cellsMostlyInside": 112,
+   "interiorWeightShare": 0.967,
+   "kishEffectiveCells": 117.03,
+   "largestCellShare": 0.009
+  }
+ },
+ "bd_div:BD-D:Khulna": {
+  "merra2_native": {
+   "areaKm2": 21540.0,
+   "cellsTouched": 14,
+   "effectiveCells": 6.05,
+   "effectiveCells5x5": 6.12,
+   "cellsMostlyInside": 5,
+   "interiorWeightShare": 0.693,
+   "kishEffectiveCells": 8.72,
+   "largestCellShare": 0.166
+  },
+  "imerg_native": {
+   "areaKm2": 21541.0,
+   "cellsTouched": 236,
+   "effectiveCells": 189.1,
+   "effectiveCells5x5": 189.0,
+   "cellsMostlyInside": 191,
+   "interiorWeightShare": 0.956,
+   "kishEffectiveCells": 202.48,
+   "largestCellShare": 0.005
+  }
+ },
+ "bd_div:BD-A:Barisal": {
+  "merra2_native": {
+   "areaKm2": 9581.0,
+   "cellsTouched": 8,
+   "effectiveCells": 2.68,
+   "effectiveCells5x5": 2.6,
+   "cellsMostlyInside": 2,
+   "interiorWeightShare": 0.5,
+   "kishEffectiveCells": 5.23,
+   "largestCellShare": 0.274
+  },
+  "imerg_native": {
+   "areaKm2": 9582.0,
+   "cellsTouched": 120,
+   "effectiveCells": 83.84,
+   "effectiveCells5x5": 83.52,
+   "cellsMostlyInside": 84,
+   "interiorWeightShare": 0.906,
+   "kishEffectiveCells": 96.14,
+   "largestCellShare": 0.012
+  }
+ },
+ "cmp:nepal": {
+  "merra2_native": {
+   "areaKm2": 147196.0,
+   "cellsTouched": 66,
+   "effectiveCells": 43.25,
+   "effectiveCells5x5": 43.16,
+   "cellsMostlyInside": 41,
+   "interiorWeightShare": 0.872,
+   "kishEffectiveCells": 50.2,
+   "largestCellShare": 0.023
+  },
+  "imerg_native": {
+   "areaKm2": 147194.0,
+   "cellsTouched": 1485,
+   "effectiveCells": 1351.61,
+   "effectiveCells5x5": 1351.48,
+   "cellsMostlyInside": 1347,
+   "interiorWeightShare": 0.979,
+   "kishEffectiveCells": 1387.8,
+   "largestCellShare": 0.001
+  }
+ },
+ "cmp:myanmar": {
+  "merra2_native": {
+   "areaKm2": 662758.0,
+   "cellsTouched": 256,
+   "effectiveCells": 184.32,
+   "effectiveCells5x5": 184.16,
+   "cellsMostlyInside": 184,
+   "interiorWeightShare": 0.925,
+   "kishEffectiveCells": 204.63,
+   "largestCellShare": 0.006
+  },
+  "imerg_native": {
+   "areaKm2": 662766.0,
+   "cellsTouched": 6235,
+   "effectiveCells": 5760.02,
+   "effectiveCells5x5": 5760.84,
+   "cellsMostlyInside": 5760,
+   "interiorWeightShare": 0.984,
+   "kishEffectiveCells": 5884.93,
+   "largestCellShare": 0.0
+  }
+ },
+ "country:BGD": {
+  "merra2_native": {
+   "areaKm2": 135650.0,
+   "cellsTouched": 66,
+   "effectiveCells": 38.4,
+   "effectiveCells5x5": 38.0,
+   "cellsMostlyInside": 38,
+   "interiorWeightShare": 0.851,
+   "kishEffectiveCells": 47.86,
+   "largestCellShare": 0.026
+  },
+  "imerg_native": {
+   "areaKm2": 135650.0,
+   "cellsTouched": 1401,
+   "effectiveCells": 1199.96,
+   "effectiveCells5x5": 1199.28,
+   "cellsMostlyInside": 1207,
+   "interiorWeightShare": 0.968,
+   "kishEffectiveCells": 1260.2,
+   "largestCellShare": 0.001
+  }
+ },
+ "cmp:west_bengal": {
+  "merra2_native": {
+   "areaKm2": 86561.0,
+   "cellsTouched": 51,
+   "effectiveCells": 24.49,
+   "effectiveCells5x5": 24.24,
+   "cellsMostlyInside": 24,
+   "interiorWeightShare": 0.829,
+   "kishEffectiveCells": 31.64,
+   "largestCellShare": 0.041
+  },
+  "imerg_native": {
+   "areaKm2": 86562.0,
+   "cellsTouched": 942,
+   "effectiveCells": 765.47,
+   "effectiveCells5x5": 765.48,
+   "cellsMostlyInside": 763,
+   "interiorWeightShare": 0.953,
+   "kishEffectiveCells": 814.99,
+   "largestCellShare": 0.001
+  }
+ },
+ "cmp:assam": {
+  "merra2_native": {
+   "areaKm2": 79676.0,
+   "cellsTouched": 47,
+   "effectiveCells": 23.02,
+   "effectiveCells5x5": 23.04,
+   "cellsMostlyInside": 23,
+   "interiorWeightShare": 0.843,
+   "kishEffectiveCells": 29.26,
+   "largestCellShare": 0.044
+  },
+  "imerg_native": {
+   "areaKm2": 79676.0,
+   "cellsTouched": 858,
+   "effectiveCells": 719.23,
+   "effectiveCells5x5": 719.6,
+   "cellsMostlyInside": 728,
+   "interiorWeightShare": 0.968,
+   "kishEffectiveCells": 757.75,
+   "largestCellShare": 0.001
+  }
+ },
+ "cmp:meghalaya": {
+  "merra2_native": {
+   "areaKm2": 23165.0,
+   "cellsTouched": 15,
+   "effectiveCells": 6.65,
+   "effectiveCells5x5": 6.72,
+   "cellsMostlyInside": 6,
+   "interiorWeightShare": 0.744,
+   "kishEffectiveCells": 9.38,
+   "largestCellShare": 0.151
+  },
+  "imerg_native": {
+   "areaKm2": 23167.0,
+   "cellsTouched": 260,
+   "effectiveCells": 207.66,
+   "effectiveCells5x5": 207.76,
+   "cellsMostlyInside": 204,
+   "interiorWeightShare": 0.937,
+   "kishEffectiveCells": 223.22,
+   "largestCellShare": 0.005
+  }
+ },
+ "cmp:bay_of_bengal(box)": {
+  "merra2_native": {
+   "areaKm2": 3054531.0,
+   "cellsTouched": 875,
+   "effectiveCells": 816.0,
+   "effectiveCells5x5": 804.44,
+   "cellsMostlyInside": 871,
+   "interiorWeightShare": 0.999,
+   "kishEffectiveCells": 845.26,
+   "largestCellShare": 0.001
+  },
+  "imerg_native": {
+   "areaKm2": 3054560.0,
+   "cellsTouched": 25972,
+   "effectiveCells": 25500.0,
+   "effectiveCells5x5": 25500.0,
+   "cellsMostlyInside": 25500,
+   "interiorWeightShare": 1.0,
+   "kishEffectiveCells": 25488.92,
+   "largestCellShare": 0.0
+  }
+ },
+ "cmp:bay_of_bengal(box minus land)": {
+  "merra2_native": {
+   "areaKm2": 2540609.0,
+   "cellsTouched": 747,
+   "effectiveCells": 675.57,
+   "effectiveCells5x5": 670.0,
+   "cellsMostlyInside": 700,
+   "interiorWeightShare": 0.986,
+   "kishEffectiveCells": 701.74,
+   "largestCellShare": 0.002
+  },
+  "imerg_native": {
+   "areaKm2": 2540623.0,
+   "cellsTouched": 21647,
+   "effectiveCells": 21111.65,
+   "effectiveCells5x5": 21112.16,
+   "cellsMostlyInside": 21119,
+   "interiorWeightShare": 0.997,
+   "kishEffectiveCells": 21192.67,
+   "largestCellShare": 0.0
+  }
+ }
+}

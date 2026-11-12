@@ -1,0 +1,3 @@
+cases compared: 19
+fields with relative difference > 1e-9: {'ar1.phiRaw': ('v_shape', 0.08094166524075652), 'ar1.phi': ('ar1_gaps_seed201', 0.06337094206895633), 'ar1.vif': ('ar1_gaps_seed201', 0.1922846672398201), 'mkAr1.varSStar': ('ar1_gaps_seed201', 0.19228466723982007), 'mkAr1.z': ('ar1_gaps_seed201', 0.0783573421041075), 'mkAr1.p': ('ar1_gaps_seed201', 0.042010357238433604), 'ttest.t': ('flat_constant', inf)}
+largest difference over all fields: inf

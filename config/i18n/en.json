@@ -1,0 +1,346 @@
+{
+  "meta": {
+    "lang": "en",
+    "name": "English",
+    "digits": "latin"
+  },
+  "app": {
+    "name": "CaseFile Earth",
+    "tagline": "Every trend is a suspect until the evidence says otherwise.",
+    "subtitle": "Has rain or heat changed where you live, and is it changing differently from somewhere else?",
+    "language_toggle": "বাংলা",
+    "skip_to_content": "Skip to content"
+  },
+  "nav": {
+    "home": "Home",
+    "question": "Ask a question",
+    "compare": "Compare two places",
+    "map": "Screening map",
+    "watch": "Watch a case",
+    "methods": "How we know",
+    "data": "Data & credits",
+    "ai_use": "AI use",
+    "offline": "Cases on this device",
+    "about": "About"
+  },
+  "banner": {
+    "synthetic": "Example data, not real measurements. Used only to build and test the site.",
+    "offline": "You are offline: showing the cases kept on this device.",
+    "results_unreachable": "Results are not reachable right now. The cases kept on this device still work."
+  },
+  "home": {
+    "hero_title": "Be an Earth trend detective",
+    "hero_body": "Pick a question and a place. We test whether temperature or rain really changed, using NASA data, and show the evidence.",
+    "cta_start": "Ask a question",
+    "cta_compare": "Compare two places",
+    "cta_watch": "Watch a case first",
+    "learning_goal": "In two minutes you can say how fast rain changed in two places, whether the two differ, and why “can't tell yet” is not “no change”.",
+    "credit_line": "Built with NASA data: MERRA-2 (model) and GPM IMERG (satellites and gauges)."
+  },
+  "question": {
+    "title": "What do you want to find out?",
+    "pick": "Pick a question",
+    "shortlist": "Data that can answer it",
+    "deferred_title": "Not analysed in this release",
+    "start": "Choose a place"
+  },
+  "record_card": {
+    "title": "Record card",
+    "record": "Record: {from}–{to}",
+    "gaps": "Gaps",
+    "known_breaks": "Known changes in the data",
+    "observation_or_model": "Measured or modelled?",
+    "cannot_answer": "What it cannot answer",
+    "not_analysed": "Not analysed in this release",
+    "badge_model": "Model",
+    "badge_satellite": "Satellite",
+    "badge_observations": "Observations",
+    "badge_sensitivity": "Sensitivity check"
+  },
+  "place": {
+    "title": "Where?",
+    "region_set": "Places we prepared",
+    "home": "Bangladesh",
+    "divisions": "Divisions of Bangladesh",
+    "comparison": "Comparison regions",
+    "pick_cell": "Or pick any 1° cell on the screening map",
+    "cells_shown": "Shaded squares are the data cells that cover this place.",
+    "support": "{cells} data cells cover this place.",
+    "not_in_set": "This division is too small for the data grid, so it is not in our set."
+  },
+  "lineup": {
+    "title": "What changed here?",
+    "intro": "Temperature and rain, for the whole year and each season. {n_tests} tests on this screen.",
+    "col_variable": "Data",
+    "col_season": "Season",
+    "col_rate": "Rate per decade",
+    "col_family": "Kind of test",
+    "col_p": "Adjusted p",
+    "adjusted_within": "adjusted within this list of {n_tests}",
+    "open": "Open"
+  },
+  "verdict": {
+    "headline": {
+      "up": "{Variable} {in_region}{season_phrase} rose by {total} over {from}–{to}.",
+      "down": "{Variable} {in_region}{season_phrase} fell by {total} over {from}–{to}.",
+      "cant_tell_yet": "Can't tell yet whether {variable} {in_region}{season_phrase} changed over {from}–{to}. That is not the same as no change."
+    },
+    "rate": "Rate: {rate} per decade (95% range {lo} to {hi}).",
+    "total": "Total change over {from}–{to}: {total_signed}.",
+    "total_pct": "Total change over {from}–{to}: {total_signed} ({pct} of the starting level).",
+    "snr": {
+      "small": "That is smaller than the usual year-to-year ups and downs.",
+      "similar": "That is about as big as the usual year-to-year ups and downs.",
+      "large": "That is bigger than the usual year-to-year ups and downs."
+    },
+    "sure": {
+      "confirmatory": "One of {family_size} tests we registered in advance; after correcting for all of them, {p_adj_expr}.",
+      "secondary": "A secondary result: one of {family_size} season tests registered in advance; after correcting for them, {p_adj_expr}.",
+      "mkar1": "Mann–Kendall test allowing for year-to-year memory, before correction: {p_expr}.",
+      "below": "That is below the {alpha} line we set in advance.",
+      "above": "That is above the {alpha} line we set in advance, so we can't tell yet.",
+      "doubts": "That is below the {alpha} line we set in advance, but {n_doubts} of our checks raise doubts, so we can't tell yet."
+    },
+    "secondary_note": "Secondary result (seasons).",
+    "labels": {
+      "how_much": "How much?",
+      "how_sure": "How sure?",
+      "checks": "Can we break it?",
+      "practical": "Is it big enough to matter?",
+      "overturn": "What would overturn this claim?",
+      "notes": "Notes",
+      "rate_short": "per decade",
+      "ci": "95% range",
+      "n_years": "Years used",
+      "memory": "Year-to-year memory (φ)",
+      "for_experts": "For experts",
+      "naive": "Naive test (ignores year-to-year memory)",
+      "ttest": "t-test with effective sample size (shown for comparison; it does not decide)",
+      "provenance": "Where these numbers come from"
+    }
+  },
+  "grade": {
+    "strong": {
+      "name": "Strong evidence",
+      "desc": "Clearly below our pre-set line, and none of our checks raises a doubt."
+    },
+    "supported": {
+      "name": "Supported trend",
+      "desc": "Below our pre-set line after correcting for all our tests, with at most one doubt."
+    },
+    "cant_tell_yet": {
+      "name": "Can't tell yet",
+      "desc": "This record can't tell. That is not the same as no change."
+    }
+  },
+  "reason": {
+    "outside_domain": "No verdict: outside the range this method was tested for. The fitted rate is {rate} per decade.",
+    "short_record": "Exploratory: only {n} years ({from}–{to}). The fitted rate is {rate} per decade. No verdict.",
+    "too_short": "Too short to test: only {n} years.",
+    "missing_year": "No verdict: years are missing from this record ({years}). A verdict needs every year.",
+    "not_testable": "Not testable: the test could not give a valid result for this record.",
+    "break_review": "No verdict: a known change in the data shows as a step here ({label}).",
+    "exploration": "Exploration: {rate} per decade (95% range {lo} to {hi}). This is not one of our pre-registered tests, so it gets no verdict.",
+    "sensitivity": "Sensitivity check: {rate} per decade (95% range {lo} to {hi}) in IMERG, a second rain record. It is shown beside MERRA-2 and gets no verdict."
+  },
+  "family": {
+    "confirmatory": "Pre-registered test",
+    "secondary": "Secondary (seasons)",
+    "exploration": "Exploration",
+    "sensitivity": "Sensitivity check"
+  },
+  "checks": {
+    "gaps": {
+      "title": "Gaps in the record?",
+      "pass": "No missing years."
+    },
+    "coverage": {
+      "title": "Did the data coverage change?",
+      "pass": "Coverage stayed steady.",
+      "doubt": "The share of the area with data changed over time ({cmin} to {cmax}); part of the trend could come from that."
+    },
+    "breaks": {
+      "title": "Instrument or Earth?",
+      "none": "No documented data change falls inside these years.",
+      "reviewed": "A documented data change falls in {year} ({label}); a person checked and saw no step there.",
+      "unreviewed": "A documented data change falls in {year} ({label}) and has not been checked by a person yet.",
+      "step": "A documented data change in {year} ({label}) shows as a step, so we give no verdict."
+    },
+    "loo": {
+      "title": "One unusual year?",
+      "pass": "No single year decides the answer.",
+      "doubt": "Remove {year} and the answer changes: one year matters a lot.",
+      "note": "Without {year} the result would look stronger; one year matters."
+    },
+    "windows": {
+      "title": "Other start and end years?",
+      "pass": "{agree} of {ran} other windows agree.",
+      "doubt": "Only {agree} of {ran} other windows agree: the answer depends on the years chosen.",
+      "label": "Robustness checks, not new claims."
+    },
+    "pettitt": {
+      "title": "A sudden jump?",
+      "flag": "A jump around {year} stands out (Pettitt test, a flag only: it does not change the verdict).",
+      "none": "No jump stands out."
+    },
+    "model_note": "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+  },
+  "practical": {
+    "exceeds": "We decided in advance that a change of {threshold} per decade matters. The whole 95% range is beyond that.",
+    "overlaps": "We decided in advance that a change of {threshold} per decade matters. The 95% range includes smaller changes, so it may or may not matter.",
+    "smaller": "We decided in advance that a change of {threshold} per decade matters. The whole 95% range is smaller than that."
+  },
+  "overturn": {
+    "O1": "If the data change in {year} ({label}) turned out to be a step, this would be a change in the data, not in the Earth.",
+    "O2": "The answer leans most on {year}: without it, {p_expr}.",
+    "O3": "The weakest of the other windows, {from}–{to}, gives {rate} per decade.",
+    "O4": "If year-to-year memory were stronger or slower than our model assumes, the test would be too eager. Our check found {finding} here.",
+    "O4_none": "no sign of that",
+    "O4_some": "a sign of that",
+    "O5": "IMERG, a different rain record, points {direction} over {from}–{to}.",
+    "O5_same": "the same way",
+    "O5_other": "the other way",
+    "O6": "Changes smaller than {threshold} per decade would not matter in practice; the 95% range {includes} them.",
+    "O6_includes": "includes",
+    "O6_excludes": "excludes",
+    "O7": "A longer record or a larger region could change this answer."
+  },
+  "contrast": {
+    "title": "Compare two places",
+    "estimand": "Trend in the difference ({A} − {B})",
+    "headline": {
+      "rates_differ": "{Variable}{season_phrase} changed at different rates in {A} and {B}: the trend in the difference ({A} − {B}) is {rate_d} per decade (95% range {lo_d} to {hi_d}).",
+      "cant_tell_yet": "Can't tell yet whether {variable}{season_phrase} changed differently in {A} and {B}. That is not the same as no difference.",
+      "no_verdict": "No verdict on the difference between {A} and {B}: {reason}",
+      "exploration": "Exploration: the difference ({A} − {B}) changed by {rate_d} per decade (95% range {lo_d} to {hi_d}). This pair is not pre-registered, so it gets no verdict.",
+      "sensitivity": "Sensitivity check (IMERG): the difference ({A} − {B}) changed by {rate_d} per decade (95% range {lo_d} to {hi_d}). It is shown beside MERRA-2 and gets no verdict."
+    },
+    "side": "{A}: {rate_a} per decade (95% range {lo_a} to {hi_a}). {B}: {rate_b} per decade (95% range {lo_b} to {hi_b}).",
+    "opposite_fitted": "The two fitted lines point in opposite directions. On its own that does not show the trends differ.",
+    "supported_opposite": "Both places have supported trends, in opposite directions: supported opposite trends.",
+    "not_subtracted": "Each place's own rate is shown beside the difference, never subtracted from it."
+  },
+  "sensitivity": {
+    "title": "Sensitivity check: IMERG",
+    "lineage": "Both records use rain-gauge and satellite inputs, so this is a sensitivity check, not an independent confirmation.",
+    "same": "Over {from}–{to}, IMERG gives the trend in the difference the same sign: {rate_i} per decade (MERRA-2: {rate_m}).",
+    "other": "Over {from}–{to}, IMERG gives the trend in the difference the opposite sign: {rate_i} per decade (MERRA-2: {rate_m}).",
+    "toggle": "Show the IMERG sensitivity check"
+  },
+  "spine": {
+    "label": "Current claim",
+    "text": "{status} · {rate} per decade [{lo}, {hi}] · {family} · {n_tests} tests"
+  },
+  "map": {
+    "title": "Screening map: where is it changing?",
+    "label": "Screening map: exploration, not a verdict.",
+    "legend_rate": "{units} per decade",
+    "legend_dot": "Dot: stands out after allowing for testing {n_tests} cells at once (false discovery rate 10%)",
+    "legend_hatch": "Hatched: can't test here",
+    "click_hint": "Pick a cell to see its record."
+  },
+  "cell": {
+    "title": "1° cell at {lat}, {lon}",
+    "exploration": "A single cell is exploration only: it gets no verdict."
+  },
+  "methods": {
+    "title": "How we know",
+    "intro": "Every number on this site comes from one tested piece of code. This page shows what it does and how well it works.",
+    "domain": "Where our verdicts are valid",
+    "stress": "Stress tests",
+    "family": "Our pre-registered tests",
+    "calibration": "False alarms when nothing changes",
+    "coverage": "How often the 95% range catches the true rate",
+    "power": "What a record this long can detect",
+    "golden": "Tests that guard the code",
+    "manifest": "The exact input files",
+    "prereg": "Pre-registration (committed before we looked at any trend)",
+    "property": "With no trend, it flags about {k} in 100 such records. This describes the method, not the chance that a verdict on this site is wrong.",
+    "power_sentence": "If year-to-year noise stays as it was, a change of {threshold} per decade would be caught in about {k} of 10 records this long."
+  },
+  "provenance": {
+    "dataset": "Dataset",
+    "version": "Version",
+    "years": "Years",
+    "values": "Values used / missing",
+    "build": "Build",
+    "prereg": "Pre-registration",
+    "manifest": "Input manifest",
+    "engine": "Engine"
+  },
+  "watch": {
+    "play": "Play",
+    "pause": "Pause",
+    "next": "Next step",
+    "prev": "Previous step",
+    "replay": "Replay",
+    "take_over": "Investigate this yourself"
+  },
+  "offline": {
+    "title": "Cases kept on this device",
+    "intro": "These cases work with no internet. Everything else needs a connection.",
+    "count": "{n} cases"
+  },
+  "errors": {
+    "generic": "Something went wrong. Error id: {id}",
+    "missing_file": "This result is not in this build.",
+    "bad_view": "This link is incomplete; we filled in sensible defaults."
+  },
+  "season": {
+    "ANN": {
+      "long": "Whole year",
+      "short": "",
+      "total": "yearly total"
+    },
+    "DJF": {
+      "long": "December–February (winter)",
+      "short": "Dec–Feb",
+      "total": "Dec–Feb total"
+    },
+    "MAM": {
+      "long": "March–May (pre-monsoon)",
+      "short": "Mar–May",
+      "total": "Mar–May total"
+    },
+    "JJAS": {
+      "long": "June–September (monsoon)",
+      "short": "Jun–Sep",
+      "total": "Jun–Sep total"
+    },
+    "ON": {
+      "long": "October–November (post-monsoon)",
+      "short": "Oct–Nov",
+      "total": "Oct–Nov total"
+    },
+    "JJA": {
+      "long": "June–August",
+      "short": "Jun–Aug",
+      "total": "Jun–Aug total"
+    },
+    "SON": {
+      "long": "September–November",
+      "short": "Sep–Nov",
+      "total": "Sep–Nov total"
+    }
+  },
+  "units": {
+    "°C": "°C",
+    "mm": "mm",
+    "mm/day": "mm/day"
+  },
+  "glossary": {
+    "trend": "A steady rise or fall over many years, not just one unusual year.",
+    "cant_tell_yet": "The record is too short or too noisy to decide. It does not mean nothing changed.",
+    "p_value": "How often random ups and downs alone would produce a trend at least this strong.",
+    "range_95": "A range of rates that fit the data. Ranges made this way catch the true rate about 95 times in 100; it is not a 95% chance for this one range.",
+    "mann_kendall": "A test that counts how often later years are higher than earlier years.",
+    "t_test": "A test of whether the best straight line slopes more than noise would allow.",
+    "sen_slope": "The middle value of all the slopes between pairs of years; one odd year cannot fool it.",
+    "memory": "When one year resembles the next, the record holds less information than its length suggests.",
+    "difference": "Region A minus region B, year by year. If the two changed at different rates, this difference has a trend.",
+    "pre_registered": "Written down and committed before we looked at any trend, so we cannot pick the results we like.",
+    "exploration": "Anything we did not register in advance. We show it, but give no verdict.",
+    "model": "A computer model that blends many observations into a complete picture, such as MERRA-2.",
+    "satellite": "A sensor in orbit that measures the Earth, such as the satellites behind IMERG."
+  }
+}

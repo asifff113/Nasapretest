@@ -1,0 +1,404 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/methods.schema.json",
+  "title": "Methods tables — the engine's own calibration, stress, coverage, power and critical values (03_SCIENCE §9)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/methods@3"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "created": {
+      "type": "string"
+    },
+    "engine": {
+      "type": "string"
+    },
+    "seedRule": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "calibration": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer"
+          },
+          "phi": {
+            "type": "number"
+          },
+          "reps": {
+            "type": "integer"
+          },
+          "falseAlarmPct": {
+            "type": "number"
+          },
+          "passDomainPct": {
+            "type": "number"
+          },
+          "falseAlarmAmongPassPct": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "n",
+          "phi",
+          "reps",
+          "falseAlarmPct",
+          "passDomainPct",
+          "falseAlarmAmongPassPct"
+        ]
+      }
+    },
+    "extraRows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "ties",
+              "growing_spread"
+            ]
+          },
+          "n": {
+            "type": "integer"
+          },
+          "reps": {
+            "type": "integer"
+          },
+          "falseAlarmPct": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "n",
+          "reps",
+          "falseAlarmPct"
+        ]
+      }
+    },
+    "phiMax": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer"
+          },
+          "phiMax": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "n",
+          "phiMax"
+        ]
+      }
+    },
+    "stress": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "family": {
+            "enum": [
+              "mixed_ar1_0.1_0.9",
+              "ar2_0.15_0.65"
+            ]
+          },
+          "n": {
+            "type": "integer"
+          },
+          "mEff": {
+            "type": "integer"
+          },
+          "reps": {
+            "type": "integer"
+          },
+          "falseAlarmPct": {
+            "type": "number"
+          },
+          "falseAlarmAfterDomainPct": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "family",
+          "n",
+          "mEff",
+          "reps",
+          "falseAlarmPct",
+          "falseAlarmAfterDomainPct"
+        ]
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer"
+          },
+          "phi": {
+            "type": "number"
+          },
+          "multiplier": {
+            "type": "number"
+          },
+          "reps": {
+            "type": "integer"
+          },
+          "coveragePct": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "n",
+          "phi",
+          "multiplier",
+          "reps",
+          "coveragePct"
+        ]
+      }
+    },
+    "power": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer"
+          },
+          "phi": {
+            "type": "number"
+          },
+          "effectSdPerYear": {
+            "type": "number"
+          },
+          "reps": {
+            "type": "integer"
+          },
+          "powerPct": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "n",
+          "phi",
+          "effectSdPerYear",
+          "reps",
+          "powerPct"
+        ]
+      }
+    },
+    "leftoverCritical": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer"
+          },
+          "mEff": {
+            "type": "integer"
+          },
+          "phi": {
+            "type": "number"
+          },
+          "critical": {
+            "type": "number"
+          },
+          "reps": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "n",
+          "mEff",
+          "phi",
+          "critical",
+          "reps"
+        ]
+      }
+    },
+    "contrast": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "case": {
+            "type": "string"
+          },
+          "reps": {
+            "type": "integer"
+          },
+          "ratesDifferPct": {
+            "type": "number"
+          },
+          "supportedOppositePct": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "case",
+          "reps",
+          "ratesDifferPct",
+          "supportedOppositePct"
+        ]
+      }
+    },
+    "mapNull": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "integer"
+          },
+          "cols": {
+            "type": "integer"
+          },
+          "reps": {
+            "type": "integer"
+          },
+          "mapsWithFalseDotPct": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rows",
+          "cols",
+          "reps",
+          "mapsWithFalseDotPct"
+        ]
+      }
+    },
+    "golden": {
+      "type": "object",
+      "properties": {
+        "suite": {
+          "type": "string"
+        },
+        "total": {
+          "type": "integer"
+        },
+        "passed": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "total",
+        "passed"
+      ]
+    },
+    "families": {
+      "type": "object",
+      "properties": {
+        "confirmatory": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "secondary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alpha": {
+          "type": "number"
+        },
+        "secondaryQ": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "confirmatory",
+        "secondary",
+        "alpha",
+        "secondaryQ"
+      ]
+    },
+    "prereg": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "sha256",
+        "commit"
+      ]
+    },
+    "inputManifest": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "sha256"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "synthetic",
+    "created",
+    "engine",
+    "seedRule",
+    "note",
+    "calibration",
+    "extraRows",
+    "phiMax",
+    "stress",
+    "coverage",
+    "power",
+    "leftoverCritical",
+    "contrast",
+    "mapNull",
+    "golden",
+    "families",
+    "prereg",
+    "inputManifest"
+  ]
+}

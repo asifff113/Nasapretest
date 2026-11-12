@@ -1,0 +1,113 @@
+# Known changes in the data records (docs/03_SCIENCE.md §6.2). Each break appears on the record card and on the
+# chart. Dated `type: data` breaks inside a window are checked against the manual review in
+# config/break_review.yaml; Pettitt is only a flag (03 §6.5) and never decides. Never invent a date: a break
+# whose date is not documented has `date: null` and appears on the record card only.
+# verified: false → confirm against the cited document before any headline case relies on it.
+version: 3
+breaks:
+  # ------------------------------------------------------------------ first-release variables
+  - id: merra2_observing_system
+    type: data
+    date: null                      # several changes over the record; A lists the dated ones from the reference before reviewing headline cases
+    gradual: true
+    sources: [merra2_slv, merra2_precip]
+    variables: [air_temp, rain]
+    label:
+      en: "MERRA-2 is a model: the satellite and ground observations it blends in changed over the record"
+      bn: "MERRA-2 একটি মডেল: এটি যে স্যাটেলাইট ও ভূমি-পর্যবেক্ষণ মেলায়, রেকর্ডজুড়ে সেগুলো বদলেছে"
+    ref: "Gelaro, R., et al. (2017), J. Climate, 30, 5419–5454 (observing-system timeline; VERIFY dates before use)."
+    verified: false
+
+  - id: merra2_precip_correction_inputs
+    type: data
+    date: null
+    gradual: true
+    sources: [merra2_precip]
+    variables: [rain]
+    label:
+      en: "MERRA-2's corrected rain uses gauge and satellite estimates whose inputs changed over time"
+      bn: "MERRA-2-এর সংশোধিত বৃষ্টি যে বৃষ্টিমাপক ও স্যাটেলাইট-অনুমান ব্যবহার করে, তার উৎস সময়ের সঙ্গে বদলেছে"
+    ref: "Reichle, R. H., et al. (2017), Land surface precipitation in MERRA-2, J. Climate (VERIFY)."
+    verified: false
+
+  - id: imerg_trmm_to_gpm_2014
+    type: data
+    date: "2014-06"
+    sources: [imerg_v07_final_monthly]
+    variables: [rain_imerg]
+    label:
+      en: "IMERG moved from the TRMM era to the GPM era (June 2014)"
+      bn: "IMERG, TRMM যুগ থেকে GPM যুগে যায় (জুন ২০১৪)"
+    ref: "NASA PPS / GES DISC, IMERG V07 documentation (VERIFY the month)."
+    verified: false
+
+  - id: imerg_v07_final_end
+    type: record_end
+    date: "2025-09"
+    sources: [imerg_v07_final_monthly]
+    variables: [rain_imerg]
+    label:
+      en: "The IMERG V07 Final record ends in September 2025; annual trends end in 2024. Never append Late Run or V08"
+      bn: "IMERG V07 Final রেকর্ড সেপ্টেম্বর ২০২৫-এ শেষ; বার্ষিক প্রবণতা ২০২৪-এ শেষ। Late Run বা V08 কখনো জোড়া হয় না"
+    ref: "GPM data page (opened 2 Nov 2026); fact-check #11a."
+    verified: true
+
+  # ------------------------------------------------------------------ deferred variables (cards only)
+  - id: gldas21_forcing_changes
+    type: data
+    date: null
+    gradual: true
+    sources: [gldas_noah10_m]
+    variables: [soil_moisture, evapotranspiration, runoff]
+    label:
+      en: "GLDAS-2.1 is driven by model and observation inputs that changed over time; it is not a climate data record"
+      bn: "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
+    ref: "GLDAS-2.1 README, GES DISC (#15)."
+    verified: false
+
+  - id: aqua_orbit_drift
+    type: data
+    date: null
+    gradual: true
+    sources: [airs3stm, modis_myd08_m3]
+    variables: [air_temp_levels, haze]
+    label:
+      en: "Aqua's orbit is drifting, so its overpass time changes"
+      bn: "অ্যাকুয়ার কক্ষপথ সরে যাচ্ছে, তাই এর পর্যবেক্ষণের সময় বদলায়"
+    ref: "Fact-check #21; NASA mission status pages (VERIFY dates)."
+    verified: false
+
+  - id: terra_orbit_drift
+    type: data
+    date: null
+    gradual: true
+    sources: [modis_vegetation]
+    variables: [greenness]
+    label:
+      en: "Terra's orbit is drifting, so its overpass time changes"
+      bn: "টেরার কক্ষপথ সরে যাচ্ছে, তাই এর পর্যবেক্ষণের সময় বদলায়"
+    ref: "Fact-check #21 (VERIFY dates)."
+    verified: false
+
+  - id: grace_gap
+    type: data
+    date: "2017-07"                 # exact months unconfirmed (#17): confirm before GRACE returns
+    end: "2018-05"
+    sources: [grace_mascon_jpl]
+    variables: [water_storage]
+    label:
+      en: "Gap between GRACE and GRACE-FO; the gap stays empty and is never interpolated"
+      bn: "GRACE ও GRACE-FO-এর মাঝের ফাঁক; ফাঁকটি ফাঁকাই থাকে, কখনো পূরণ করা হয় না"
+    ref: "JPL GRACE Tellus mascon documentation (#17, exact months unconfirmed)."
+    verified: false
+
+  - id: omi_row_anomaly
+    type: data
+    date: "2007-06"
+    sources: [omi]
+    variables: [no2, ozone_omi]
+    label:
+      en: "OMI's row anomaly reduced coverage from 2007"
+      bn: "২০০৭ থেকে OMI-এর ‘রো অ্যানোমালি’ কভারেজ কমিয়েছে"
+    ref: "KNMI/NASA OMI row anomaly documentation (VERIFY)."
+    verified: false

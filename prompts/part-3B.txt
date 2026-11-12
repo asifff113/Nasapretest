@@ -1,0 +1,40 @@
+You are building the core result screens of the CaseFile Earth site. Read AGENTS.md, docs/04_UI.md §4.4–§4.6, §4.10,
+§5, §6, §9–§10 and §11–§12, and the files in examples/lineups/, examples/verdicts/ (including _states/) and
+examples/contrasts/ with their schemas.
+
+Build:
+1. Line-up (04 §4.4): the table of tests for a place from lineups/<region>.json, with the number of tests on screen.
+2. Verdict card (04 §4.5) from verdicts/<variable>/<region>/<season>.json: status badge first; the sentences of
+   "text" in the current language; the chart drawn from the "chart" block only (display values, Sen line, range
+   band — the engine computed them; draw, do not compute); rate per decade with its range; the domain checks; the
+   robustness checks; "big enough to matter?" from "practical"; "what would overturn this claim" from "overturn";
+   the IMERG sensitivity toggle when "sensitivity" is set; the provenance panel (04 §4.10) from "provenance".
+3. Every state: verdict (each grade), can't tell yet, no verdict with each reason, exploration. examples/verdicts/
+   _states/ has one file per no-verdict reason: render each of them in a test.
+4. Compare (04 §4.6) from contrasts/…: the trend in the difference A − B as the headline, each place's own rate
+   beside it from "regions", the labels of "labels", the split note from "split", the sensitivity block.
+5. The confidence spine (04 §5) from "spine" on every result screen.
+Use the design direction of docs/05_BUILD_PLAN.md Part 3.
+
+Hard rule: no arithmetic on result values. "Can't tell yet" always carries its "not the same as no change" line.
+A comparison never shows two significance labels side by side as its answer.
+
+Checks:
+- npm run typecheck && npm run lint && npm test
+- npm run test:e2e: W-03, W-04, W-05, W-07, W-12 and W-13 of docs/07_TESTS.md §8, and one test per file of
+  examples/verdicts/_states/, at 1280 and 360 px, EN and BN
+- X-01 (axe: no serious or critical violation) and X-02 (keyboard only) on these screens
+Rules for this session:
+- Follow AGENTS.md. docs/01_ARCHITECTURE.md is the authority on modules, files and commands.
+- Start with a plan of at most 15 lines (files you will create, tests you will write), then build without waiting,
+  unless something is ambiguous or contradicts the documents: then stop and ask.
+- Work on this part's branch and change only the files this part owns (docs/05_BUILD_PLAN.md, "How the parts stay
+  independent"). Never edit python/src/casefile_engine/, schemas/, examples/ or config/ (except where this prompt
+  says so). Hard-code no variable, region or pair id.
+- Never invent a dataset name, variable name, URL, API parameter or number. If the documents do not say, stop and ask.
+- Write tests with the code. Never weaken or delete a test to get green.
+- Before you say "done": run every check of this step, paste the real output, re-read your diff against this
+  prompt's rules, and list anything unfinished or uncertain. "Done" without output is not done.
+- After two failed attempts at the same error, stop and report the exact error, what you tried, and two options.
+- End each commit message with: AI-assisted: <tool> (<model>). Add one row to this part's log, docs/ai_log/part-<n>.md
+  (date, step, tool and model, what was built, what a person checked).

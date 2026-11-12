@@ -1,0 +1,454 @@
+{
+ "schema": "casefile/contrast@3",
+ "synthetic": true,
+ "id": "rain__pair_north_vs_east__ANN",
+ "pair": {
+  "id": "pair_north_vs_east",
+  "a": "synthetic:north_plain",
+  "b": "synthetic:east_coast",
+  "preRegistered": false,
+  "lead": false
+ },
+ "variable": "rain",
+ "season": "ANN",
+ "window": {
+  "id": "main",
+  "first": 1980,
+  "last": 2025
+ },
+ "family": "exploration",
+ "multiplicity": {
+  "method": "none",
+  "familySize": 0,
+  "pAdjusted": null,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "missing_year",
+ "estimand": "trend_in_difference",
+ "difference": {
+  "years": [
+   1980,
+   1981,
+   1982,
+   1983,
+   1984,
+   1985,
+   1986,
+   1987,
+   1988,
+   1989,
+   1990,
+   1991,
+   1992,
+   1993,
+   1994,
+   1995,
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   108.48896682830946,
+   -154.82069877517597,
+   -182.46049338353032,
+   -276.0186838155796,
+   -119.00014314994405,
+   -123.3484475737323,
+   -25.1591012970639,
+   6.2483719649972045,
+   42.91665674213755,
+   -24.719137774367027,
+   -107.84064056382113,
+   -321.27240468486593,
+   -261.8049921802153,
+   144.1524972121806,
+   -127.83100266844303,
+   null,
+   -1.4931209896903965,
+   -111.4136451906902,
+   -57.67562120886032,
+   -68.59463062935947,
+   -105.51425024037553,
+   -268.44689251981345,
+   -141.45187315121848,
+   -105.48550441087627,
+   -151.43244122913256,
+   -337.6589664488147,
+   -180.9152060579454,
+   -308.8105730463865,
+   -398.11613284231,
+   -335.0916090857663,
+   -154.87886091561404,
+   -130.42683983654842,
+   1.7394050024090575,
+   -212.14574371798335,
+   -68.25145290747287,
+   -199.67830869972113,
+   -171.28962537137159,
+   -134.44621039069602,
+   -372.32967234845296,
+   -351.6993851540087,
+   -104.87375853189451,
+   -119.75690277430363,
+   -98.53142624549173,
+   -404.66412478422967,
+   -509.6631767593069,
+   -516.5227459974492
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain",
+    "limit": "air_temp, rain, rain_imerg"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "ANN",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 45,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": false,
+    "value": 1,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.42419349643857146,
+    "limit": 0.8
+   },
+   {
+    "id": "D6",
+    "passed": false,
+    "value": "A and B",
+    "limit": "both in the domain"
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 45,
+  "mk": {
+   "S": -298,
+   "varS": 10450.0,
+   "tau": -0.301010101010101,
+   "z": -2.90534896898444,
+   "p": 0.0036684384354314,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.34204296342180956,
+   "phi": 0.42419349643857146,
+   "vif": 2.41652622732252,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 25252.699075520333,
+   "z": -1.8689709350217916,
+   "p": 0.061626858197964034,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -4.97987472299507,
+   "intercept": 9840.24285976843,
+   "ciLowPerYear": -11.539565163947929,
+   "ciHighPerYear": 0.7788644774049658,
+   "multiplier": 2.25,
+   "nPairs": 990
+  },
+  "change": {
+   "ratePerDecade": -49.7987472299507,
+   "rateLowPerDecade": -115.39565163947928,
+   "rateHighPerDecade": 7.788644774049658,
+   "total": -224.09436253477813,
+   "totalLow": -519.2804323776568,
+   "totalHigh": 35.04890148322346,
+   "span": 45,
+   "units": "mm",
+   "percent": null,
+   "baseline": null,
+   "residSd": 129.89815643716148,
+   "snr": 1.7251542953435546
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -5.333516831481269,
+   "intercept": 10513.656628966432,
+   "se": 1.4635329430131636,
+   "r1": 0.3249522927917832,
+   "phi": 0.4054354433080548,
+   "nEff": 19.037092865796655,
+   "seAdj": 2.325085806313777,
+   "t": -2.2939010753917506,
+   "df": 17.037092865796655,
+   "p": 0.0347781168810876,
+   "ciLowPerYear": -10.238205636299025,
+   "ciHighPerYear": -0.4288280266635125,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -2.90534896898444,
+   "p": 0.0036684384354314,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": null
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": [
+    1995
+   ]
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "regions": {
+  "a": {
+   "id": "synthetic:north_plain",
+   "verdict": "verdicts/rain/synthetic__north_plain/ANN.json",
+   "ratePerDecade": -50.98322727909557,
+   "rateLowPerDecade": -97.60836445246801,
+   "rateHighPerDecade": 0.5688266287985755,
+   "pAdjusted": 0.02873806996566506,
+   "status": "verdict",
+   "grade": "cant_tell_yet",
+   "inDomain": true
+  },
+  "b": {
+   "id": "synthetic:east_coast",
+   "verdict": "verdicts/rain/synthetic__east_coast/ANN.json",
+   "ratePerDecade": 3.5944295249035436,
+   "rateLowPerDecade": -38.55026440073903,
+   "rateHighPerDecade": 48.13697580295002,
+   "pAdjusted": null,
+   "status": "no_verdict",
+   "grade": null,
+   "inDomain": false
+  }
+ },
+ "labels": {
+  "oppositeFittedDirections": true,
+  "supportedOppositeTrends": false,
+  "ratesDiffer": false
+ },
+ "sensitivity": null,
+ "practical": {
+  "threshold": null,
+  "units": "mm per decade",
+  "position": null
+ },
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "missing_year",
+  "ratePerDecade": -49.7987472299507,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "mm",
+  "family": "exploration",
+  "familySize": 0,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   276.0887123750315,
+   12.779046771546035,
+   -14.860747836808315,
+   -108.4189382688576,
+   48.599602396777954,
+   44.251297972989704,
+   142.4406442496581,
+   173.8481175117192,
+   210.51640228885955,
+   142.88060777235498,
+   59.75910498290088,
+   -153.67265913814393,
+   -94.20524663349332,
+   311.75224275890264,
+   39.76874287827897,
+   null,
+   166.1066245570316,
+   56.1861003560318,
+   109.92412433786168,
+   99.00511491736253,
+   62.08549530634647,
+   -100.84714697309144,
+   26.147872395503526,
+   62.11424113584573,
+   16.16730431758944,
+   -170.05922090209268,
+   -13.315460511223392,
+   -141.21082749966448,
+   -230.51638729558798,
+   -167.49186353904432,
+   12.720884631107964,
+   37.17290571017358,
+   169.33915054913106,
+   -44.545998171261346,
+   99.34829263924914,
+   -32.07856315299912,
+   -3.68987982464958,
+   33.15353515602598,
+   -204.72992680173095,
+   -184.09963960728672,
+   62.725987014827496,
+   47.84284277241838,
+   69.06831930123028,
+   -237.06437923750767,
+   -342.0634312125849,
+   -348.92300045072716
+  ],
+  "offset": -167.599745546722,
+  "pivot": [
+   2003.0,
+   33.15353515602598
+  ],
+  "line": [
+   [
+    1980,
+    147.69065378491334
+   ],
+   [
+    2025,
+    -76.40370874986391
+   ]
+  ],
+  "band": null
+ },
+ "split": {
+  "rule": "disjoint_cells_larger_fraction",
+  "grids": {
+   "merra2_native": {
+    "sharedCells": 0,
+    "effectiveCellsA": 24.0,
+    "effectiveCellsB": 19.2003,
+    "passes": true
+   },
+   "imerg_native": {
+    "sharedCells": 0,
+    "effectiveCellsA": 750.0,
+    "effectiveCellsB": 600.0,
+    "passes": true
+   }
+  },
+  "passes": true
+ },
+ "text": {
+  "en": {
+   "headline": "No verdict on the difference between North Plain (example) and East Coast (example): No verdict: years are missing from this record (1995). A verdict needs every year.",
+   "howMuch": [
+    "North Plain (example): −51 mm per decade (95% range −98 mm to +1 mm). East Coast (example): +3.6 mm per decade (95% range −38.6 mm to +48.1 mm).",
+    "Each place's own rate is shown beside the difference, never subtracted from it.",
+    "The two fitted lines point in opposite directions. On its own that does not show the trends differ."
+   ],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "উত্তর সমভূমি (উদাহরণ) ও পূর্ব উপকূল (উদাহরণ)-এর পার্থক্য নিয়ে কোনো রায় নেই: কোনো রায় নেই: এই রেকর্ডে কিছু বছর অনুপস্থিত (১৯৯৫)। রায়ের জন্য প্রতিটি বছর লাগে।",
+   "howMuch": [
+    "উত্তর সমভূমি (উদাহরণ): প্রতি দশকে −৫১ মিমি (৯৫% পরিসর −৯৮ মিমি থেকে +১ মিমি)। পূর্ব উপকূল (উদাহরণ): প্রতি দশকে +৩.৬ মিমি (৯৫% পরিসর −৩৮.৬ মিমি থেকে +৪৮.১ মিমি)।",
+    "প্রতিটি জায়গার নিজস্ব হার পার্থক্যের পাশে দেখানো হয়, কখনো তা থেকে বিয়োগ করা হয় না।",
+    "মিলিয়ে নেওয়া রেখা দুটি উল্টো দিকে। শুধু এটুকু দিয়ে প্রমাণ হয় না যে প্রবণতা দুটি আলাদা।"
+   ],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 tavgM_2d_flx_Nx: monthly mean surface flux diagnostics (holds PRECTOTCORR, bias-corrected total precipitation)",
+    "shortName": "M2TMNXFLX",
+    "version": "5.12.4",
+    "doi": "10.5067/0JRLVL8YV2Y4",
+    "route": "synthetic",
+    "granules": null,
+    "accessed": null,
+    "note": "SYNTHETIC example values; not real measurements"
+   }
+  ],
+  "inputManifestSha256": "62211ba9871ab170a98faa6989e13f340b2d6964967058094c6a51cb99304d4a",
+  "preregSha256": "7ad79505faf4eecc9921b525ccdaccc9a40f93ef8856946a8967611b26ea0f2e",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0 (synthetic examples)",
+  "buildId": "synthetic-v3",
+  "created": "2026-11-02T00:00:00Z"
+ }
+}
