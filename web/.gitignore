@@ -1,0 +1,7 @@
+node_modules/
+dist/
+dist-offline/
+src/generated/
+playwright-report/
+test-results/
+tests/screens/*.png
