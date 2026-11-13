@@ -1,0 +1,102 @@
+{
+ "schema": "casefile/map@3",
+ "synthetic": false,
+ "variable": "water_vapor",
+ "season": "ANN",
+ "grid": {
+  "id": "global_1deg",
+  "lat0": 89.5,
+  "dlat": -1.0,
+  "nlat": 180,
+  "lon0": -179.5,
+  "dlon": 1.0,
+  "nlon": 360
+ },
+ "window": {
+  "id": "main",
+  "first": 1980,
+  "last": 2025
+ },
+ "label": "exploration",
+ "units": "mm",
+ "nCells": 64800,
+ "nTestable": 55455,
+ "nSignificant": 36335,
+ "fdrQ": 0.1,
+ "colourLimit": 0.7644159113875532,
+ "file": "cells.bin.gz",
+ "byteOrder": "little",
+ "layout": "field-major: each field is a [nlat][nlon] block, in the order listed",
+ "fields": [
+  {
+   "name": "rate",
+   "dtype": "int16",
+   "scale": 0.1,
+   "offset": 0.0,
+   "fill": -32768
+  },
+  {
+   "name": "rate_low",
+   "dtype": "int16",
+   "scale": 0.1,
+   "offset": 0.0,
+   "fill": -32768
+  },
+  {
+   "name": "rate_high",
+   "dtype": "int16",
+   "scale": 0.1,
+   "offset": 0.0,
+   "fill": -32768
+  },
+  {
+   "name": "p",
+   "dtype": "float32",
+   "scale": 1.0,
+   "offset": 0.0,
+   "fill": null
+  },
+  {
+   "name": "q",
+   "dtype": "float32",
+   "scale": 1.0,
+   "offset": 0.0,
+   "fill": null
+  },
+  {
+   "name": "flags",
+   "dtype": "uint8",
+   "scale": 1.0,
+   "offset": 0.0,
+   "fill": null
+  }
+ ],
+ "flagBits": {
+  "testable": 1,
+  "significant": 2,
+  "short_or_missing": 4,
+  "phi_out_of_range": 8,
+  "leftover_memory": 16,
+  "not_finite": 32
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "earthaccess",
+    "granules": 552,
+    "accessed": "2026-11-13T09:47:32Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "4ec1e6e9122f07891639bf904b6a35c13a126035931f3b964685cfd537a4f767",
+  "preregSha256": "5cfaa6e4e08679c7f3541e59bd7f5ad5d1905398d290e2bac0ec2642d9543070",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r2",
+  "created": "2026-11-13T10:00:21Z"
+ }
+}

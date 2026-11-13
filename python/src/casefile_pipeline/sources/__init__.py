@@ -69,9 +69,9 @@ class Reader:
     def path(self, name: str) -> str:
         return f"/{self.group}/{name}" if self.group else f"/{name}"
 
-    def constraint(self) -> str:
-        """DAP4 constraint naming the variables and their coordinates, separated by ';' (docs/02_DATA.md §2)."""
-        return ";".join([self.path(v) for v in self.file_variables()] + [self.path(c) for c in (self.time, self.lat, self.lon)])
+    def constraint(self, variable: str) -> str:
+        """DAP4 constraint naming one variable and its coordinates, separated by ';' (docs/02_DATA.md §2)."""
+        return ";".join([self.path(variable)] + [self.path(c) for c in (self.time, self.lat, self.lon)])
 
     # ------------------------------------------------------------------ decoding one monthly file
     def decode(self, ds, variable: dict, box: tuple[int, int, int, int] | None = None) -> tuple[np.ndarray, dict]:

@@ -1,0 +1,393 @@
+{
+ "schema": "casefile/contrast@3",
+ "synthetic": false,
+ "id": "rain_imerg__pair_bgd_vs_wb__ON",
+ "pair": {
+  "id": "pair_bgd_vs_wb",
+  "a": "country:BGD",
+  "b": "cmp:west_bengal",
+  "preRegistered": true,
+  "lead": true
+ },
+ "variable": "rain_imerg",
+ "season": "ON",
+ "window": {
+  "id": "main",
+  "first": 1998,
+  "last": 2024
+ },
+ "family": "sensitivity",
+ "multiplicity": {
+  "method": "none",
+  "familySize": 0,
+  "pAdjusted": null,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "outside_domain",
+ "estimand": "trend_in_difference",
+ "difference": {
+  "years": [
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024
+  ],
+  "values": [
+   -47.23831827621828,
+   34.76885110217191,
+   124.5691017241571,
+   86.02503314932792,
+   66.38033749808629,
+   -47.55521849991726,
+   71.3982068174609,
+   38.77946014836971,
+   13.3669477629238,
+   230.8297738493195,
+   129.92529413068092,
+   34.906901471248545,
+   110.63044833751763,
+   19.82876568306174,
+   105.98892658594976,
+   -69.41602707634422,
+   4.933451132873714,
+   64.61757012027799,
+   102.5168308507456,
+   90.85582998992493,
+   49.24950831156505,
+   51.43652822071522,
+   154.9160299381149,
+   18.926474417374635,
+   84.63349117213647,
+   128.3757154467268,
+   46.44467432633243
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain_imerg",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "ON",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 27,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.02392035015442697,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": false,
+    "value": "A and B",
+    "limit": "both in the domain"
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 27,
+  "mk": {
+   "S": 29,
+   "varS": 2301.0,
+   "tau": 0.08262108262108261,
+   "z": 0.5837134789151165,
+   "p": 0.5594130972023401,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": -0.05369747949808073,
+   "phi": 0.02392035015442697,
+   "vif": 1.0471533239172235,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 2409.499798333531,
+   "z": 0.5704197897240342,
+   "p": 0.5683930103587228,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": 0.9126576837025091,
+   "intercept": -1770.7370318054677,
+   "ciLowPerYear": -2.980556613101522,
+   "ciHighPerYear": 5.219863945040874,
+   "multiplier": 2.25,
+   "nPairs": 351
+  },
+  "change": {
+   "ratePerDecade": 9.126576837025091,
+   "rateLowPerDecade": -29.80556613101522,
+   "rateHighPerDecade": 52.19863945040874,
+   "total": 23.729099776265237,
+   "totalLow": -77.49447194063957,
+   "totalHigh": 135.71646257106272,
+   "span": 26,
+   "units": "mm",
+   "percent": null,
+   "baseline": null,
+   "residSd": 64.57557060867242,
+   "snr": 0.36746248701484097
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": 1.3245996340003297,
+   "intercept": -2600.8033977400473,
+   "se": 1.6250642889748281,
+   "r1": -0.05553950366466231,
+   "phi": 0.021757973958874677,
+   "nEff": 25.850089136836505,
+   "seAdj": 1.6637786530025467,
+   "t": 0.7961393371707733,
+   "df": 23.850089136836505,
+   "p": 0.4338044621876708,
+   "ciLowPerYear": -2.110413284306726,
+   "ciHighPerYear": 4.759612552307385,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": 0.5837134789151165,
+   "p": 0.5594130972023401,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": null
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "regions": {
+  "a": {
+   "id": "country:BGD",
+   "verdict": "verdicts/rain_imerg/country__BGD/ON.json",
+   "ratePerDecade": -9.509153108599346,
+   "rateLowPerDecade": -59.41241908335613,
+   "rateHighPerDecade": 34.231514750374856,
+   "pAdjusted": null,
+   "status": "no_verdict",
+   "grade": null,
+   "inDomain": false
+  },
+  "b": {
+   "id": "cmp:west_bengal",
+   "verdict": "verdicts/rain_imerg/cmp__west_bengal/ON.json",
+   "ratePerDecade": -23.51627768879382,
+   "rateLowPerDecade": -87.14170137762756,
+   "rateHighPerDecade": 32.730895976777084,
+   "pAdjusted": null,
+   "status": "no_verdict",
+   "grade": null,
+   "inDomain": true
+  }
+ },
+ "labels": {
+  "oppositeFittedDirections": false,
+  "supportedOppositeTrends": false,
+  "ratesDiffer": false
+ },
+ "sensitivity": null,
+ "practical": {
+  "threshold": null,
+  "units": "mm per decade",
+  "position": null
+ },
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "outside_domain",
+  "ratePerDecade": 9.126576837025091,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "mm",
+  "family": "sensitivity",
+  "familySize": 0,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   -110.2047845108325,
+   -28.1976151324423,
+   61.602635489542884,
+   23.058566914713715,
+   3.413871263472082,
+   -110.52168473453148,
+   8.431740582846693,
+   -24.1870060862445,
+   -49.59951847169041,
+   167.8633076147053,
+   66.95882789606671,
+   -28.059564763365664,
+   47.663982102903425,
+   -43.13770055155247,
+   43.022460351335546,
+   -132.38249331095844,
+   -58.033015101740496,
+   1.6511038856637796,
+   39.5503646161314,
+   27.88936375531072,
+   -13.716957923049158,
+   -11.529938013898992,
+   91.94956370350067,
+   -44.039991817239574,
+   21.667024937522264,
+   65.40924921211257,
+   -16.521791908281777
+  ],
+  "offset": 62.96646623461421,
+  "pivot": [
+   2011.0,
+   1.6511038856637796
+  ],
+  "line": [
+   [
+    1998,
+    -10.213446002468764
+   ],
+   [
+    2024,
+    13.515653773796465
+   ]
+  ],
+  "band": null
+ },
+ "split": {
+  "rule": "disjoint_cells_larger_fraction",
+  "grids": {
+   "merra2_native": {
+    "sharedCells": 14,
+    "effectiveCellsA": 36.76,
+    "effectiveCellsB": 22.32,
+    "passes": true
+   },
+   "imerg_native": {
+    "sharedCells": 98,
+    "effectiveCellsA": 1190.84,
+    "effectiveCellsB": 752.12,
+    "passes": true
+   }
+  },
+  "passes": true
+ },
+ "text": {
+  "en": {
+   "headline": "No verdict on the difference between Bangladesh and West Bengal (India): No verdict: outside the range this method was tested for. The fitted rate is +9.1 mm per decade.",
+   "howMuch": [
+    "Bangladesh: −9.5 mm per decade (95% range −59.4 mm to +34.2 mm). West Bengal (India): −24 mm per decade (95% range −87 mm to +33 mm).",
+    "Each place's own rate is shown beside the difference, never subtracted from it."
+   ],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "Both records use rain-gauge and satellite inputs, so this is a sensitivity check, not an independent confirmation."
+   ]
+  },
+  "bn": {
+   "headline": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এর পার্থক্য নিয়ে কোনো রায় নেই: কোনো রায় নেই: এই পদ্ধতি যে পরিসরে যাচাই করা হয়েছে, এটি তার বাইরে। মিলিয়ে নেওয়া হার প্রতি দশকে +৯.১ মিমি।",
+   "howMuch": [
+    "বাংলাদেশ: প্রতি দশকে −৯.৫ মিমি (৯৫% পরিসর −৫৯.৪ মিমি থেকে +৩৪.২ মিমি)। পশ্চিমবঙ্গ (ভারত): প্রতি দশকে −২৪ মিমি (৯৫% পরিসর −৮৭ মিমি থেকে +৩৩ মিমি)।",
+    "প্রতিটি জায়গার নিজস্ব হার পার্থক্যের পাশে দেখানো হয়, কখনো তা থেকে বিয়োগ করা হয় না।"
+   ],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "দুটি রেকর্ডই বৃষ্টিমাপক ও স্যাটেলাইটের তথ্য ব্যবহার করে, তাই এটি সংবেদনশীলতা-যাচাই, স্বাধীন সমর্থন নয়।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "GPM IMERG Final Precipitation L3 1 month 0.1° V07",
+    "shortName": "GPM_3IMERGM",
+    "version": "07",
+    "doi": "10.5067/GPM/IMERG/3B-MONTH/07",
+    "route": "earthaccess",
+    "granules": 333,
+    "accessed": "2026-11-13T09:47:32Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "4ec1e6e9122f07891639bf904b6a35c13a126035931f3b964685cfd537a4f767",
+  "preregSha256": "5cfaa6e4e08679c7f3541e59bd7f5ad5d1905398d290e2bac0ec2642d9543070",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r2",
+  "created": "2026-11-13T10:00:21Z"
+ }
+}

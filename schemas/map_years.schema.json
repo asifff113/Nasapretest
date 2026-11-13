@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/map_years.schema.json",
+  "title": "Yearly map frames — one [180][360] int16 frame per year for the globe's year slider (exploration)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/map_years@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/analysedVariable"
+    },
+    "season": {
+      "$ref": "common.schema.json#/$defs/seasonId"
+    },
+    "label": {
+      "const": "exploration"
+    },
+    "grid": {
+      "$ref": "common.schema.json#/$defs/grid"
+    },
+    "units": {
+      "type": "string"
+    },
+    "rule": {
+      "enum": [
+        "mean",
+        "sum"
+      ]
+    },
+    "years": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1
+    },
+    "file": {
+      "type": "string"
+    },
+    "dtype": {
+      "const": "int16"
+    },
+    "byteOrder": {
+      "const": "little"
+    },
+    "layout": {
+      "const": "[year][row][col]"
+    },
+    "scale": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "offset": {
+      "type": "number"
+    },
+    "fill": {
+      "const": -32768
+    },
+    "range": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "source": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "synthetic",
+    "variable",
+    "season",
+    "label",
+    "grid",
+    "units",
+    "rule",
+    "years",
+    "file",
+    "dtype",
+    "byteOrder",
+    "layout",
+    "scale",
+    "offset",
+    "fill",
+    "range",
+    "source"
+  ]
+}
