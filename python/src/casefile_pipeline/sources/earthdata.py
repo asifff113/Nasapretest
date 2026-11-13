@@ -40,14 +40,21 @@ class LoginFailed(RuntimeError):
 
 
 # ============================================================================ login
+def netrc_file() -> Path | None:
+    """The netrc file to use: $NETRC, else ~/.netrc or ~/_netrc (Windows tools use either name). Not read here."""
+    if os.environ.get("NETRC"):
+        return Path(os.environ["NETRC"])
+    for n in (".netrc", "_netrc"):
+        if (Path.home() / n).exists():
+            return Path.home() / n
+    return None
+
+
 def credential_source() -> str | None:
     """Where a login would come from: 'environment', 'netrc' or None. Reads no credential value."""
     if os.environ.get("EARTHDATA_USERNAME") and os.environ.get("EARTHDATA_PASSWORD"):
         return "environment"
-    home = Path.home()
-    if any((home / n).exists() for n in (".netrc", "_netrc")) or os.environ.get("NETRC"):
-        return "netrc"
-    return None
+    return "netrc" if netrc_file() is not None else None
 
 
 def login():
@@ -58,6 +65,10 @@ def login():
     if strategy is None:
         raise LoginFailed("no Earthdata login found: set EARTHDATA_USERNAME and EARTHDATA_PASSWORD, or create ~/.netrc "
                           "with a line for urs.earthdata.nasa.gov (build plan, Part 0)")
+    if strategy == "netrc":
+        # earthaccess reads ~/_netrc on Windows and ~/.netrc elsewhere, unless NETRC names the file: point it at the
+        # file that exists, for this process only.
+        os.environ["NETRC"] = str(netrc_file())
     try:
         auth = earthaccess.login(strategy=strategy)
     except Exception as e:  # noqa: BLE001  (earthaccess never puts the password in a message)
