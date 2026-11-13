@@ -744,11 +744,11 @@
   },
   {
    "id": "greenness",
-   "status": "deferred",
+   "status": "analysed",
    "group": "land",
    "kind": "satellite",
    "source": "modis_vegetation",
-   "variable": "NDVI",
+   "variable": "CMG_0_05_Deg_Monthly_NDVI",
    "name": {
     "en": "Plant greenness (NDVI)",
     "bn": "গাছপালার সবুজভাব (NDVI)"
@@ -765,20 +765,21 @@
     "en": "Measured by MODIS on NASA's Terra satellite (Collection 6.1).",
     "bn": "নাসার টেরা স্যাটেলাইটের MODIS যন্ত্রে মাপা (সংকলন ৬.১)।"
    },
+   "conversion": "stored integer × 0.0001 → NDVI, an index with no unit (MOD13 User Guide v3.10, Table 19); 0.05° cells averaged to 0.5° by area; yearly value = mean of the months",
    "units": {
     "monthly": "",
     "aggregated": ""
    },
    "rule": "mean",
-   "ratio_scale": true,
+   "ratio_scale": false,
    "record": {
     "from": 2000,
-    "to": null
+    "to": 2025
    },
    "record_card": {
     "gaps": {
-     "en": "Monsoon clouds leave gaps.",
-     "bn": "বর্ষার মেঘে ফাঁক থাকে।"
+     "en": "Cloudy months are filled with the long-term MODIS average, so where clouds persist the values lean toward their usual level. No values over the sea. The record starts in February 2000.",
+     "bn": "মেঘে ঢাকা মাসগুলো MODIS-এর দীর্ঘমেয়াদি গড় দিয়ে পূরণ করা হয়, তাই যেখানে প্রায়ই মেঘ থাকে সেখানে মানগুলো স্বাভাবিক স্তরের দিকে ঝুঁকে থাকে। সমুদ্রের ওপর কোনো মান নেই। রেকর্ড শুরু ২০০০ সালের ফেব্রুয়ারিতে।"
     },
     "known_breaks": [
      {
@@ -792,14 +793,22 @@
      }
     ],
     "observation_or_model": {
-     "en": "Satellite measurement.",
-     "bn": "স্যাটেলাইটের মাপ।"
+     "en": "Satellite measurement, with cloudy months filled from the long-term average.",
+     "bn": "স্যাটেলাইটের মাপ; মেঘে ঢাকা মাসগুলো দীর্ঘমেয়াদি গড় দিয়ে পূরণ করা।"
     },
     "cannot_answer": {
      "en": "Not analysed in this release.",
      "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
     }
    },
+   "colormap": {
+    "trend": "BrBG",
+    "value": "Greens"
+   },
+   "valid_range": [
+    -0.2,
+    1.0
+   ],
    "tags": [
     "land"
    ]
@@ -1252,6 +1261,19 @@
    "licence": "NASA open data"
   },
   {
+   "id": "modis_vegetation",
+   "status": "exploration",
+   "name": "MODIS/Terra Vegetation Indices Monthly L3 Global 0.05Deg CMG V061",
+   "short_name": "MOD13C2",
+   "version": "061",
+   "kind": "satellite",
+   "doi": "10.5067/MODIS/MOD13C2.061",
+   "doi_verified": true,
+   "citation": "Didan, K. (2021), MODIS/Terra Vegetation Indices Monthly L3 Global 0.05Deg CMG V061, NASA Land Processes Distributed Active Archive Center, Sioux Falls, South Dakota, USA, doi:10.5067/MODIS/MOD13C2.061.",
+   "reference": "Didan, K. and A. Barreto Munoz (2019), MODIS Vegetation Index User's Guide (MOD13 Series), Version 3.10, Collection 6.1, Vegetation Index and Phenology Lab, The University of Arizona.",
+   "licence": "NASA open data (Earthdata data use policy, CMR UseConstraints)"
+  },
+  {
    "id": "airs3stm",
    "status": "deferred",
    "name": "AIRS/Aqua L3 Monthly Standard Physical Retrieval (AIRS-only) 1° V7.0",
@@ -1275,19 +1297,6 @@
    "doi_verified": false,
    "citation": "Platnick, S., et al. (2017), MODIS Atmosphere L3 Monthly Product (MYD08_M3), NASA MODIS Adaptive Processing System, GSFC.",
    "reference": "Levy, R. C., et al. (2013), The Collection 6 MODIS aerosol products over land and ocean, AMT, 6, 2989–3034.",
-   "licence": "NASA open data"
-  },
-  {
-   "id": "modis_vegetation",
-   "status": "deferred",
-   "name": "MODIS/Terra Vegetation Indices monthly, Collection 6.1",
-   "short_name": "MOD13 (6.1; MOD13C2 Version 6 retired 31 Jul 2023, #20c)",
-   "version": "6.1",
-   "kind": "satellite",
-   "doi": "VERIFY (#20)",
-   "doi_verified": false,
-   "citation": "Didan, K. (2021), MODIS/Terra Vegetation Indices Monthly V061, NASA EOSDIS LP DAAC.",
-   "reference": "Didan, K., MODIS Vegetation Index User's Guide (Collection 6.1).",
    "licence": "NASA open data"
   },
   {

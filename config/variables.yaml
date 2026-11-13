@@ -305,26 +305,33 @@ variables:
     tags: [air]
 
   - id: greenness
-    status: deferred
+    status: analysed                     # exploration layer only: not in the pre-registration, so no verdicts
     group: land
     kind: satellite
     source: modis_vegetation
-    variable: NDVI
+    variable: CMG_0_05_Deg_Monthly_NDVI
     name: { en: "Plant greenness (NDVI)", bn: "গাছপালার সবুজভাব (NDVI)" }
     name_mid: { en: "plant greenness", bn: "গাছপালার সবুজভাব" }
     definition:
       en: "How green and leafy the land looks from space."
       bn: "মহাকাশ থেকে ভূমি কতটা সবুজ ও পাতায় ভরা দেখায়।"
     how_measured: { en: "Measured by MODIS on NASA's Terra satellite (Collection 6.1).", bn: "নাসার টেরা স্যাটেলাইটের MODIS যন্ত্রে মাপা (সংকলন ৬.১)।" }
+    conversion: "stored integer × 0.0001 → NDVI, an index with no unit (MOD13 User Guide v3.10, Table 19); 0.05° cells averaged to 0.5° by area; yearly value = mean of the months"
     units: { monthly: "", aggregated: "" }
     rule: mean
-    ratio_scale: true
-    record: { from: 2000, to: null }
+    ratio_scale: false                   # an index that can be zero or negative: a percentage change is not meaningful
+    record: { from: 2000, to: null }     # first month 2000-02
     record_card:
-      gaps: { en: "Monsoon clouds leave gaps.", bn: "বর্ষার মেঘে ফাঁক থাকে।" }
+      gaps:
+        en: "Cloudy months are filled with the long-term MODIS average, so where clouds persist the values lean toward their usual level. No values over the sea. The record starts in February 2000."
+        bn: "মেঘে ঢাকা মাসগুলো MODIS-এর দীর্ঘমেয়াদি গড় দিয়ে পূরণ করা হয়, তাই যেখানে প্রায়ই মেঘ থাকে সেখানে মানগুলো স্বাভাবিক স্তরের দিকে ঝুঁকে থাকে। সমুদ্রের ওপর কোনো মান নেই। রেকর্ড শুরু ২০০০ সালের ফেব্রুয়ারিতে।"
       known_breaks: [terra_orbit_drift]
-      observation_or_model: { en: "Satellite measurement.", bn: "স্যাটেলাইটের মাপ।" }
+      observation_or_model:
+        en: "Satellite measurement, with cloudy months filled from the long-term average."
+        bn: "স্যাটেলাইটের মাপ; মেঘে ঢাকা মাসগুলো দীর্ঘমেয়াদি গড় দিয়ে পূরণ করা।"
       cannot_answer: { en: "Not analysed in this release.", bn: "এই সংস্করণে বিশ্লেষণ করা হয়নি।" }
+    colormap: { trend: BrBG, value: Greens }
+    valid_range: [-0.2, 1.0]             # the documented valid range −2000…10000 × 0.0001: a unit check
     tags: [land]
 
   - id: water_storage

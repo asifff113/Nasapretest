@@ -12,6 +12,8 @@ listed stops the pipeline: a unit is never guessed.
 - kg m⁻² per 3 hours → mm/day: x × 8. GLDAS-2 monthly "_acc" fields (Qs_acc, Qsb_acc) are the average 3-hour
   accumulation over the month, "kg/m²/3hr", although the file's attribute says only kg m-2 (GLDAS-2 README §3.5,
   item 6: monthly total = value × 8 (3 h per day) × days). The reader names this unit (`Reader.rate_units`).
+- NDVI → "" (a dimensionless index): x. The MOD13C2 reader has already applied the documented scale 0.0001 to the
+  stored integers (MOD13 User Guide v3.10, Table 19), so the value is the index itself.
 """
 from __future__ import annotations
 
@@ -26,6 +28,7 @@ CONVERT: dict[tuple[str, str], Callable[[np.ndarray], np.ndarray]] = {
     ("kg m-2", "mm"): lambda x: x * 1.0,
     ("Pa", "hPa"): lambda x: x / 100.0,
     ("kg m-2 3hr-1", "mm/day"): lambda x: x * 8.0,
+    ("NDVI", ""): lambda x: x * 1.0,
 }
 
 
