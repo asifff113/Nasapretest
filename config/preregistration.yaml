@@ -5,7 +5,7 @@
 # SHA-256 into every result and onto the Methods page.
 #
 # How to fill it in (docs/05_BUILD_PLAN.md, step 4A):
-#   1. Replace every "<fill …>" value. The other values are recommendations: change any of them now, none later.
+#   1. Replace every placeholder value (done on 2026-11-13). The other values are recommendations: change any of them now, none later.
 #   2. `uv run casefile-engine prereg-check --bundle <bundle>` prints the hashes, the regions that pass the support
 #      rule with their effective cells, the pairs, and both families.
 #   3. Everyone on the team reads the printed families and is named under signed_by.
@@ -15,14 +15,14 @@
 # A variable from a new dataset is added here (and in config/variables.yaml) before the commit: docs/02_DATA.md §14.
 
 schema: casefile/prereg@3
-status: draft                      # draft | committed
+status: committed                  # draft | committed
 commit: null                       # leave null: the build reads the commit from git
-signed_by: ["<fill: name>", "<fill: name>", "<fill: name>"]
+signed_by: ["asifff113", "hirok121", "Shakilkhan24"]
 
 hashes:                            # printed by prereg-check
-  analysis_yaml_sha256: "<fill>"
-  input_manifest_sha256: "<fill>"
-  regions_support_sha256: "<fill>"
+  analysis_yaml_sha256: "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159"
+  input_manifest_sha256: "a7d1aebdddf38804ab15a6cdacdba4e1cd01275079e9c5f21552b4c7b1794bcc"
+  regions_support_sha256: "51898fe0f5a05adfa1cfb3c16af7141cb5847bba9f132148b75653c5952dd9cc"
 
 alpha:
   confirmatory: 0.05               # Holm across the confirmatory family
@@ -32,7 +32,7 @@ variables:
   - id: air_temp
     product: "MERRA-2 M2TMNXSLV 5.12.4, T2M"
     role: analysed
-    main_window: { first: 1980, last: "<fill: last complete year in the bundle, as a number>" }
+    main_window: { first: 1980, last: 2025 }
     practical_threshold:
       units: "°C per decade"
       default: 0.1
@@ -41,10 +41,10 @@ variables:
   - id: rain
     product: "MERRA-2 M2TMNXFLX 5.12.4, PRECTOTCORR"
     role: analysed
-    main_window: { first: 1980, last: "<fill: the same year as air_temp, as a number>" }
+    main_window: { first: 1980, last: 2025 }
     practical_threshold:
       units: "mm per decade"
-      default: "<fill: 2% of Bangladesh's mean yearly total (check-bundle prints it), rounded to 5, as a number>"
+      default: 40                    # 2% of 1888.5 mm (Bangladesh, MERRA-2 1980-2025, check-bundle) = 37.8, rounded to 5
       by_season: {}
       reason: "Two percent of the mean yearly rain per decade: about a tenth of the yearly total over the record."
   - id: rain_imerg
@@ -53,7 +53,7 @@ variables:
     main_window: { first: 1998, last: 2024 }
     practical_threshold:
       units: "mm per decade"
-      default: "<fill: the same number as rain>"
+      default: 40
       by_season: {}
       reason: "Same as rain."
 
