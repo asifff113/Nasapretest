@@ -151,7 +151,7 @@
    },
    "valid_range": [
     0,
-    80
+    300
    ],
    "tags": [
     "water",
@@ -233,7 +233,7 @@
    },
    "valid_range": [
     0,
-    80
+    300
    ],
    "tags": [
     "water",
