@@ -13,7 +13,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Install
         working-directory: python
-        run: uv sync
+        run: uv sync --extra pipeline     # the pipeline tests need xarray, shapely, earthaccess (build plan, integration check)
       - name: Engine golden self-check (60/60)
         working-directory: python
         run: uv run casefile-engine selfcheck
