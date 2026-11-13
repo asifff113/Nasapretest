@@ -1,0 +1,412 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": false,
+ "id": "rain__country__BGD__JJAS",
+ "variable": {
+  "id": "rain",
+  "kind": "model",
+  "source": "merra2_precip",
+  "units": "mm",
+  "rule": "sum",
+  "ratioScale": true
+ },
+ "region": {
+  "id": "country:BGD",
+  "kind": "country",
+  "areaKm2": 134231.5
+ },
+ "season": "JJAS",
+ "window": {
+  "id": "main",
+  "first": 1980,
+  "last": 2025
+ },
+ "family": "secondary",
+ "multiplicity": {
+  "method": "bh",
+  "familySize": 48,
+  "pAdjusted": 1.0,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "outside_domain",
+ "series": {
+  "years": [
+   1980,
+   1981,
+   1982,
+   1983,
+   1984,
+   1985,
+   1986,
+   1987,
+   1988,
+   1989,
+   1990,
+   1991,
+   1992,
+   1993,
+   1994,
+   1995,
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   1451.8373816967464,
+   1141.6342227446746,
+   980.9866251547379,
+   636.1666322477313,
+   965.6809263104572,
+   781.6031179778747,
+   874.9189676064465,
+   912.5173452852545,
+   819.2995351923141,
+   580.7587700343823,
+   735.1827449251275,
+   687.9420576522442,
+   518.0468914526775,
+   709.5096173241063,
+   548.2001767309467,
+   812.6765443224415,
+   627.4348959015989,
+   1202.1947123775544,
+   1346.4537333122157,
+   1259.2848646179928,
+   1119.0015336510949,
+   1172.5223925391094,
+   1235.3260274734662,
+   1023.3763430386686,
+   1415.0675795021045,
+   1116.2432428639747,
+   1123.8726466627113,
+   1706.0156374985486,
+   1177.4211665118219,
+   1465.5955234569815,
+   1251.9195944000282,
+   1514.4480594367192,
+   1259.135446536804,
+   1177.9882378419136,
+   1460.4731718826774,
+   1875.0001511297498,
+   2051.1977671076997,
+   3035.2516628409603,
+   1999.1573452241873,
+   2561.3867516497885,
+   2056.7606785821013,
+   1921.7873993178755,
+   1463.312619175051,
+   1819.0598035813346,
+   2317.867963604841,
+   1902.8179766713642
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "JJAS",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 46,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.5160661708227213,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": false,
+    "value": 0.050692315243145235,
+    "limit": 0.050581754169136836
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 46,
+  "mk": {
+   "S": 593,
+   "varS": 11155.0,
+   "tau": 0.5729468599033817,
+   "z": 5.605145871611543,
+   "p": 2.0807964486532186e-08,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.42771259075118034,
+   "phi": 0.5160661708227213,
+   "vif": 3.0369875848722754,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 33877.59650925023,
+   "z": 3.2163656191516727,
+   "p": 0.001298253182278278,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": 30.30777089643456,
+   "intercept": -59501.21974500047,
+   "ciLowPerYear": 12.565472404813136,
+   "ciHighPerYear": 47.20064210102955,
+   "multiplier": 2.25,
+   "nPairs": 1035
+  },
+  "change": {
+   "ratePerDecade": 303.07770896434556,
+   "rateLowPerDecade": 125.65472404813136,
+   "rateHighPerDecade": 472.0064210102955,
+   "total": 1363.849690339555,
+   "totalLow": 565.4462582165911,
+   "totalHigh": 2124.02889454633,
+   "span": 45,
+   "units": "mm",
+   "percent": 268.3863146426396,
+   "baseline": 508.1666299399585,
+   "residSd": 361.2600385116208,
+   "snr": 3.775257556741039
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": 31.933141030543833,
+   "intercept": -62645.803250945595,
+   "se": 4.0500741460869065,
+   "r1": 0.4274575542475975,
+   "phi": 0.5157868451283211,
+   "nEff": 14.694549695878651,
+   "seAdj": 7.540161748256636,
+   "t": 4.235073742009196,
+   "df": 12.694549695878651,
+   "p": 0.001024863682377214,
+   "ciLowPerYear": 15.603679071806084,
+   "ciHighPerYear": 48.26260298928158,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": 5.605145871611543,
+   "p": 2.0807964486532186e-08,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": 0.050692315243145235,
+   "m": 62,
+   "mEff": 2.0346159975856315,
+   "mEffStep": 2,
+   "rhoBar": 0.6950950001301405,
+   "phiCells": 0.45827165059585084,
+   "critical": 0.050581754169136836,
+   "passed": false,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "practical": {
+  "threshold": null,
+  "units": "mm per decade",
+  "position": null
+ },
+ "overturn": [],
+ "sensitivity": "verdicts/rain_imerg/country__BGD/JJAS.json",
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "outside_domain",
+  "ratePerDecade": 303.07770896434556,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "mm",
+  "family": "secondary",
+  "familySize": 48,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   1451.8373816967464,
+   1141.6342227446746,
+   980.9866251547379,
+   636.1666322477313,
+   965.6809263104572,
+   781.6031179778747,
+   874.9189676064465,
+   912.5173452852545,
+   819.2995351923141,
+   580.7587700343823,
+   735.1827449251275,
+   687.9420576522442,
+   518.0468914526775,
+   709.5096173241063,
+   548.2001767309467,
+   812.6765443224415,
+   627.4348959015989,
+   1202.1947123775544,
+   1346.4537333122157,
+   1259.2848646179928,
+   1119.0015336510949,
+   1172.5223925391094,
+   1235.3260274734662,
+   1023.3763430386686,
+   1415.0675795021045,
+   1116.2432428639747,
+   1123.8726466627113,
+   1706.0156374985486,
+   1177.4211665118219,
+   1465.5955234569815,
+   1251.9195944000282,
+   1514.4480594367192,
+   1259.135446536804,
+   1177.9882378419136,
+   1460.4731718826774,
+   1875.0001511297498,
+   2051.1977671076997,
+   3035.2516628409603,
+   1999.1573452241873,
+   2561.3867516497885,
+   2056.7606785821013,
+   1921.7873993178755,
+   1463.312619175051,
+   1819.0598035813346,
+   2317.867963604841,
+   1902.8179766713642
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2002.5,
+   1190.091475109734
+  ],
+  "line": [
+   [
+    1980,
+    508.1666299399585
+   ],
+   [
+    2025,
+    1872.0163202795156
+   ]
+  ],
+  "band": null
+ },
+ "text": {
+  "en": {
+   "headline": "No verdict: outside the range this method was tested for. The fitted rate is +303 mm per decade.",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "কোনো রায় নেই: এই পদ্ধতি যে পরিসরে যাচাই করা হয়েছে, এটি তার বাইরে। মিলিয়ে নেওয়া হার প্রতি দশকে +৩০৩ মিমি।",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 tavgM_2d_flx_Nx: monthly mean surface flux diagnostics (holds PRECTOTCORR, bias-corrected total precipitation)",
+    "shortName": "M2TMNXFLX",
+    "version": "5.12.4",
+    "doi": "10.5067/0JRLVL8YV2Y4",
+    "route": "earthaccess",
+    "granules": 552,
+    "accessed": "2026-11-13T09:47:32Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "4ec1e6e9122f07891639bf904b6a35c13a126035931f3b964685cfd537a4f767",
+  "preregSha256": "5cfaa6e4e08679c7f3541e59bd7f5ad5d1905398d290e2bac0ec2642d9543070",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r2",
+  "created": "2026-11-13T10:00:21Z"
+ }
+}

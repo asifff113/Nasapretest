@@ -1,0 +1,800 @@
+{
+ "schema": "casefile/region_index@3",
+ "buildId": "b1",
+ "synthetic": false,
+ "grids": [
+  {
+   "id": "merra2_native",
+   "lat0": -90.0,
+   "dlat": 0.5,
+   "nlat": 361,
+   "lon0": -180.0,
+   "dlon": 0.625,
+   "nlon": 576
+  },
+  {
+   "id": "imerg_native",
+   "lat0": -89.95,
+   "dlat": 0.1,
+   "nlat": 1800,
+   "lon0": -179.95,
+   "dlon": 0.1,
+   "nlon": 3600
+  },
+  {
+   "id": "global_1deg",
+   "lat0": 89.5,
+   "dlat": -1.0,
+   "nlat": 180,
+   "lon0": -179.5,
+   "dlon": 1.0,
+   "nlon": 360
+  }
+ ],
+ "minNativeCells": 4,
+ "maxSpillShare": 0.333,
+ "cellIdPattern": "cell:<row>_<col>",
+ "regions": [
+  {
+   "id": "country:BGD",
+   "kind": "country",
+   "role": "home",
+   "name": {
+    "en": "Bangladesh",
+    "bn": "বাংলাদেশ"
+   },
+   "in": {
+    "en": "in Bangladesh",
+    "bn": "বাংলাদেশে"
+   },
+   "bbox": [
+    88.0234,
+    20.7904,
+    92.6316,
+    26.5715
+   ],
+   "centroid": [
+    90.2381,
+    23.8673
+   ],
+   "areaKm2": 134231.5,
+   "boundary": {
+    "source": "Natural Earth 1:50m Admin 0 – Countries (ne_50m_admin_0_countries.geojson, Natural Earth v5.1.2)",
+    "licence": "Everything here is public domain."
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 38.0,
+     "spillShare": 0.2012,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 1199.28,
+     "spillShare": 0.0467,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/country__BGD.json",
+    "imerg_native": "regions/cells/imerg_native/country__BGD.json"
+   },
+   "geom": null,
+   "pairs": [
+    "pair_bgd_vs_wb"
+   ]
+  },
+  {
+   "id": "bd_div:barishal",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Barishal division",
+    "bn": "বরিশাল বিভাগ"
+   },
+   "in": {
+    "en": "in Barishal division",
+    "bn": "বরিশাল বিভাগে"
+   },
+   "bbox": [
+    89.875,
+    21.7868,
+    90.9903,
+    23.0453
+   ],
+   "centroid": [
+    90.3451,
+    22.4317
+   ],
+   "areaKm2": 9284.7,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": false,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 2.6,
+     "spillShare": 0.4836,
+     "passes": false
+    },
+    "imerg_native": {
+     "effectiveCells": 83.52,
+     "spillShare": 0.1263,
+     "passes": true
+    }
+   },
+   "cells": {},
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "bd_div:chattogram",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Chattogram division",
+    "bn": "চট্টগ্রাম বিভাগ"
+   },
+   "in": {
+    "en": "in Chattogram division",
+    "bn": "চট্টগ্রাম বিভাগে"
+   },
+   "bbox": [
+    90.5771,
+    20.6215,
+    92.6909,
+    24.2444
+   ],
+   "centroid": [
+    91.7656,
+    22.7019
+   ],
+   "areaKm2": 30364.4,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": false,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 8.52,
+     "spillShare": 0.4485,
+     "passes": false
+    },
+    "imerg_native": {
+     "effectiveCells": 267.76,
+     "spillShare": 0.092,
+     "passes": true
+    }
+   },
+   "cells": {},
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "bd_div:dhaka",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Dhaka division",
+    "bn": "ঢাকা বিভাগ"
+   },
+   "in": {
+    "en": "in Dhaka division",
+    "bn": "ঢাকা বিভাগে"
+   },
+   "bbox": [
+    89.2553,
+    22.8335,
+    91.2569,
+    24.7916
+   ],
+   "centroid": [
+    90.2523,
+    23.8298
+   ],
+   "areaKm2": 21065.3,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 5.96,
+     "spillShare": 0.3108,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 185.56,
+     "spillShare": 0.0651,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/bd_div__dhaka.json",
+    "imerg_native": "regions/cells/imerg_native/bd_div__dhaka.json"
+   },
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "bd_div:khulna",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Khulna division",
+    "bn": "খুলনা বিভাগ"
+   },
+   "in": {
+    "en": "in Khulna division",
+    "bn": "খুলনা বিভাগে"
+   },
+   "bbox": [
+    88.5565,
+    21.6226,
+    89.9815,
+    24.1885
+   ],
+   "centroid": [
+    89.305,
+    22.8775
+   ],
+   "areaKm2": 21783.4,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 6.12,
+     "spillShare": 0.2982,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 189.0,
+     "spillShare": 0.0641,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/bd_div__khulna.json",
+    "imerg_native": "regions/cells/imerg_native/bd_div__khulna.json"
+   },
+   "geom": null,
+   "pairs": [
+    "pair_khulna_vs_rajshahi"
+   ]
+  },
+  {
+   "id": "bd_div:mymensingh",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Mymensingh division",
+    "bn": "ময়মনসিংহ বিভাগ"
+   },
+   "in": {
+    "en": "in Mymensingh division",
+    "bn": "ময়মনসিংহ বিভাগে"
+   },
+   "bbox": [
+    89.6612,
+    24.2816,
+    91.2596,
+    25.3909
+   ],
+   "centroid": [
+    90.4105,
+    24.85
+   ],
+   "areaKm2": 9957.6,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": false,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 2.84,
+     "spillShare": 0.2865,
+     "passes": false
+    },
+    "imerg_native": {
+     "effectiveCells": 93.24,
+     "spillShare": 0.0851,
+     "passes": true
+    }
+   },
+   "cells": {},
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "bd_div:rajshahi",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Rajshahi division",
+    "bn": "রাজশাহী বিভাগ"
+   },
+   "in": {
+    "en": "in Rajshahi division",
+    "bn": "রাজশাহী বিভাগে"
+   },
+   "bbox": [
+    88.0208,
+    23.7602,
+    89.8182,
+    25.2713
+   ],
+   "centroid": [
+    89.0575,
+    24.5774
+   ],
+   "areaKm2": 18975.1,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 5.4,
+     "spillShare": 0.2454,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 165.16,
+     "spillShare": 0.0544,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/bd_div__rajshahi.json",
+    "imerg_native": "regions/cells/imerg_native/bd_div__rajshahi.json"
+   },
+   "geom": null,
+   "pairs": [
+    "pair_khulna_vs_rajshahi"
+   ]
+  },
+  {
+   "id": "bd_div:rangpur",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Rangpur division",
+    "bn": "রংপুর বিভাগ"
+   },
+   "in": {
+    "en": "in Rangpur division",
+    "bn": "রংপুর বিভাগে"
+   },
+   "bbox": [
+    88.0774,
+    25.0288,
+    89.8827,
+    26.621
+   ],
+   "centroid": [
+    89.0534,
+    25.7672
+   ],
+   "areaKm2": 16560.8,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 4.76,
+     "spillShare": 0.3192,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 149.0,
+     "spillShare": 0.0758,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/bd_div__rangpur.json",
+    "imerg_native": "regions/cells/imerg_native/bd_div__rangpur.json"
+   },
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "bd_div:sylhet",
+   "kind": "division",
+   "role": "division",
+   "name": {
+    "en": "Sylhet division",
+    "bn": "সিলেট বিভাগ"
+   },
+   "in": {
+    "en": "in Sylhet division",
+    "bn": "সিলেট বিভাগে"
+   },
+   "bbox": [
+    90.967,
+    23.992,
+    92.4897,
+    25.2162
+   ],
+   "centroid": [
+    91.6714,
+    24.7301
+   ],
+   "areaKm2": 12496.4,
+   "boundary": {
+    "source": "geoBoundaries gbOpen BGD ADM1 (boundaryID BGD-ADM1-32408957, boundary year 2015, 8 units; source: geoBoundaries, Wikimedia Commons) (geoBoundaries-BGD-ADM1.geojson, geoBoundaries gbOpen (main))",
+    "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+   },
+   "inSet": false,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 3.56,
+     "spillShare": 0.3302,
+     "passes": false
+    },
+    "imerg_native": {
+     "effectiveCells": 108.92,
+     "spillShare": 0.067,
+     "passes": true
+    }
+   },
+   "cells": {},
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "cmp:west_bengal",
+   "kind": "comparison",
+   "role": "comparison",
+   "name": {
+    "en": "West Bengal (India)",
+    "bn": "পশ্চিমবঙ্গ (ভারত)"
+   },
+   "in": {
+    "en": "in West Bengal",
+    "bn": "পশ্চিমবঙ্গে"
+   },
+   "bbox": [
+    85.8224,
+    21.5236,
+    89.8885,
+    27.2492
+   ],
+   "centroid": [
+    87.9726,
+    23.8052
+   ],
+   "areaKm2": 85657.6,
+   "boundary": {
+    "source": "Natural Earth 1:10m Admin 1 – States, provinces (ne_10m_admin_1_states_provinces.geojson, Natural Earth v5.1.2)",
+    "licence": "Everything here is public domain."
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 24.24,
+     "spillShare": 0.223,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 765.48,
+     "spillShare": 0.0598,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/cmp__west_bengal.json",
+    "imerg_native": "regions/cells/imerg_native/cmp__west_bengal.json"
+   },
+   "geom": null,
+   "pairs": [
+    "pair_bgd_vs_wb"
+   ]
+  },
+  {
+   "id": "cmp:assam",
+   "kind": "comparison",
+   "role": "comparison",
+   "name": {
+    "en": "Assam (India)",
+    "bn": "আসাম (ভারত)"
+   },
+   "in": {
+    "en": "in Assam",
+    "bn": "আসামে"
+   },
+   "bbox": [
+    89.6558,
+    24.1278,
+    96.0118,
+    27.9933
+   ],
+   "centroid": [
+    92.8313,
+    26.3569
+   ],
+   "areaKm2": 79767.0,
+   "boundary": {
+    "source": "Natural Earth 1:10m Admin 1 – States, provinces (ne_10m_admin_1_states_provinces.geojson, Natural Earth v5.1.2)",
+    "licence": "Everything here is public domain."
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 23.04,
+     "spillShare": 0.208,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 719.6,
+     "spillShare": 0.05,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/cmp__assam.json",
+    "imerg_native": "regions/cells/imerg_native/cmp__assam.json"
+   },
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "cmp:meghalaya",
+   "kind": "comparison",
+   "role": "comparison",
+   "name": {
+    "en": "Meghalaya (India)",
+    "bn": "মেঘালয় (ভারত)"
+   },
+   "in": {
+    "en": "in Meghalaya",
+    "bn": "মেঘালয়ে"
+   },
+   "bbox": [
+    89.795,
+    25.0048,
+    92.8116,
+    26.0893
+   ],
+   "centroid": [
+    91.287,
+    25.5361
+   ],
+   "areaKm2": 23426.1,
+   "boundary": {
+    "source": "Natural Earth 1:10m Admin 1 – States, provinces (ne_10m_admin_1_states_provinces.geojson, Natural Earth v5.1.2)",
+    "licence": "Everything here is public domain."
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 6.72,
+     "spillShare": 0.2948,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 207.76,
+     "spillShare": 0.0689,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/cmp__meghalaya.json",
+    "imerg_native": "regions/cells/imerg_native/cmp__meghalaya.json"
+   },
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "cmp:myanmar",
+   "kind": "comparison",
+   "role": "comparison",
+   "name": {
+    "en": "Myanmar",
+    "bn": "মিয়ানমার"
+   },
+   "in": {
+    "en": "in Myanmar",
+    "bn": "মিয়ানমারে"
+   },
+   "bbox": [
+    92.1796,
+    9.8754,
+    101.1473,
+    28.517
+   ],
+   "centroid": [
+    96.4884,
+    21.1857
+   ],
+   "areaKm2": 662219.3,
+   "boundary": {
+    "source": "Natural Earth 1:50m Admin 0 – Countries (ne_50m_admin_0_countries.geojson, Natural Earth v5.1.2)",
+    "licence": "Everything here is public domain."
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 184.16,
+     "spillShare": 0.0978,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 5760.84,
+     "spillShare": 0.0211,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/cmp__myanmar.json",
+    "imerg_native": "regions/cells/imerg_native/cmp__myanmar.json"
+   },
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "cmp:nepal",
+   "kind": "comparison",
+   "role": "comparison",
+   "name": {
+    "en": "Nepal",
+    "bn": "নেপাল"
+   },
+   "in": {
+    "en": "in Nepal",
+    "bn": "নেপালে"
+   },
+   "bbox": [
+    80.0517,
+    26.3603,
+    88.1615,
+    30.3875
+   ],
+   "centroid": [
+    83.9158,
+    28.2489
+   ],
+   "areaKm2": 146888.5,
+   "boundary": {
+    "source": "Natural Earth 1:50m Admin 0 – Countries (ne_50m_admin_0_countries.geojson, Natural Earth v5.1.2)",
+    "licence": "Everything here is public domain."
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 43.16,
+     "spillShare": 0.135,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 1351.48,
+     "spillShare": 0.0256,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/cmp__nepal.json",
+    "imerg_native": "regions/cells/imerg_native/cmp__nepal.json"
+   },
+   "geom": null,
+   "pairs": []
+  },
+  {
+   "id": "cmp:bay_of_bengal",
+   "kind": "comparison",
+   "role": "comparison",
+   "name": {
+    "en": "Bay of Bengal",
+    "bn": "বঙ্গোপসাগর"
+   },
+   "in": {
+    "en": "over the Bay of Bengal",
+    "bn": "বঙ্গোপসাগরে"
+   },
+   "bbox": [
+    80.0,
+    5.0,
+    95.0,
+    22.0
+   ],
+   "centroid": [
+    88.0425,
+    12.5187
+   ],
+   "areaKm2": 2519336.2,
+   "boundary": {
+    "source": "fixed box [80.0, 5.0, 95.0, 22.0] minus land (Natural Earth 1:50m Land (or the union of Admin 0 polygons): the union of Natural Earth 1:50m Admin 0 – Countries (ne_50m_admin_0_countries.geojson, Natural Earth v5.1.2))",
+    "licence": "Everything here is public domain."
+   },
+   "inSet": true,
+   "support": {
+    "merra2_native": {
+     "effectiveCells": 670.0,
+     "spillShare": 0.0364,
+     "passes": true
+    },
+    "imerg_native": {
+     "effectiveCells": 21112.16,
+     "spillShare": 0.0041,
+     "passes": true
+    }
+   },
+   "cells": {
+    "merra2_native": "regions/cells/merra2_native/cmp__bay_of_bengal.json",
+    "imerg_native": "regions/cells/imerg_native/cmp__bay_of_bengal.json"
+   },
+   "geom": null,
+   "pairs": []
+  }
+ ],
+ "pairs": [
+  {
+   "id": "pair_bgd_vs_wb",
+   "a": "country:BGD",
+   "b": "cmp:west_bengal",
+   "lead": true,
+   "preRegistered": true,
+   "question": {
+    "en": "Has rain changed differently in Bangladesh and in West Bengal?",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   },
+   "split": {
+    "rule": "disjoint_cells_larger_fraction",
+    "grids": {
+     "merra2_native": {
+      "sharedCells": 14,
+      "effectiveCellsA": 36.76,
+      "effectiveCellsB": 22.32,
+      "passes": true
+     },
+     "imerg_native": {
+      "sharedCells": 98,
+      "effectiveCellsA": 1190.84,
+      "effectiveCellsB": 752.12,
+      "passes": true
+     }
+    },
+    "passes": true
+   }
+  },
+  {
+   "id": "pair_khulna_vs_rajshahi",
+   "a": "bd_div:khulna",
+   "b": "bd_div:rajshahi",
+   "lead": false,
+   "preRegistered": true,
+   "question": {
+    "en": "Has rain changed differently in Khulna and in Rajshahi?",
+    "bn": "খুলনা ও রাজশাহী বিভাগে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   },
+   "split": {
+    "rule": "disjoint_cells_larger_fraction",
+    "grids": {
+     "merra2_native": {
+      "sharedCells": 2,
+      "effectiveCellsA": 5.96,
+      "effectiveCellsB": 5.28,
+      "passes": true
+     },
+     "imerg_native": {
+      "sharedCells": 8,
+      "effectiveCellsA": 187.28,
+      "effectiveCellsB": 164.72,
+      "passes": true
+     }
+    },
+    "passes": true
+   }
+  }
+ ]
+}
