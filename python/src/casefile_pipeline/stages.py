@@ -15,7 +15,7 @@ import numpy as np
 from casefile_engine.base import ROOT, VARS
 
 from . import boundaries, manifest, mapfield, regions, series
-from .grids import GRIDS, index_box, lat_bounds, lon_bounds, row_areas
+from .grids import GRIDS, NATIVE_GRIDS, index_box, lat_bounds, lon_bounds, row_areas
 from .series import MonthlyField
 from .sources import Reader, used_readers
 
@@ -178,6 +178,12 @@ def regions_stage(bundle_id: str = "b1", boundary_dir: Path | None = None, log=p
 
 
 # ============================================================================ bundle
+def index_support(index: dict, region_id: str, grid_id: str) -> bool:
+    """True if the region passes the support rule on this grid (02 §14 step 5: otherwise no series there)."""
+    r = next(x for x in index["regions"] if x["id"] == region_id)
+    return bool(r["support"].get(grid_id, {}).get("passes"))
+
+
 def _last_complete_year(months: list[str]) -> int:
     y, m = int(months[-1][:4]), int(months[-1][5:7])
     return y if m == 12 else y - 1
@@ -219,10 +225,11 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
             vid = var["id"]
             field = load_field(reader, str(var["variable"]), cache)
             n = 0
-            for rid in in_set:
+            ok = [rid for rid in in_set if index_support(index, rid, reader.grid_id)]
+            for rid in ok:
                 series.write_series(out, vid, rid, field, masks[(rid, reader.grid_id)][0])
                 n += 1
-            for p in index["pairs"]:
+            for p in index["pairs"] if reader.grid_id in NATIVE_GRIDS else []:
                 series.write_pair(out, vid, p["id"], field, masks[(p["a"], reader.grid_id)][0], masks[(p["b"], reader.grid_id)][0])
             log(f"  {vid}: {n} region series, {len(index['pairs'])} pair series, {field.months[0]}..{field.months[-1]} on {reader.grid_id}")
             g = GRIDS[reader.grid_id]

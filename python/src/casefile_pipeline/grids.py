@@ -15,7 +15,16 @@ import numpy as np
 from casefile_engine.base import IMERG, MERRA2, ONE, RE, edges
 
 GRIDS: dict[str, dict] = {g["id"]: g for g in (MERRA2, IMERG, ONE)}
-NATIVE_GRIDS: tuple[str, ...] = (MERRA2["id"], IMERG["id"])     # grids that carry region masks and the support rule
+NATIVE_GRIDS: tuple[str, ...] = (MERRA2["id"], IMERG["id"])     # first-release grids: they decide whether a region is in the set
+
+
+def mask_grids() -> tuple[str, ...]:
+    """Every grid that gets region masks: the first-release grids, then the grid of any other registered reader.
+    A region that fails the support rule on an added grid simply gets no series for that grid's variables."""
+    from .sources import READERS
+
+    extra = sorted({r.grid_id for r in READERS.values()} - set(NATIVE_GRIDS))
+    return NATIVE_GRIDS + tuple(extra)
 
 
 def lat_centres(g: dict) -> np.ndarray:

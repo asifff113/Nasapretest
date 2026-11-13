@@ -19,7 +19,7 @@ import shapely
 from casefile_engine.base import CFG, box_weights, fpath, load_yaml, pair_split, spill_share
 
 from .boundaries import RegionDef
-from .grids import GRIDS, NATIVE_GRIDS, lat_bounds, lon_bounds, row_areas
+from .grids import GRIDS, NATIVE_GRIDS, lat_bounds, lon_bounds, mask_grids, row_areas
 
 SUBSAMPLE = 5
 
@@ -71,13 +71,15 @@ def support_for(cells: list[list], g: dict, eff: float) -> dict:
 
 
 def build_regions(defs: list[RegionDef], out: Path, bundle_id: str, prereg: dict | None = None,
-                  grid_ids: tuple[str, ...] = NATIVE_GRIDS, log=print) -> tuple[dict, dict]:
+                  grid_ids: tuple[str, ...] | None = None, log=print) -> tuple[dict, dict]:
     """Write regions/cells/<grid>/<region>.json and regions/index.json under `out` (the bundle folder).
 
     Returns (index, masks) with masks[(region id, grid id)] = (cells, area_km2, effective_cells)."""
     prereg = prereg if prereg is not None else load_yaml("config/preregistration.yaml")
     out = Path(out)
+    grid_ids = grid_ids or mask_grids()
     grids = [GRIDS[i] for i in grid_ids]
+    core = [g for g in grids if g["id"] in NATIVE_GRIDS] or grids     # the grids that decide inSet and S3
     pairs_cfg = prereg.get("pairs") or []
     ids = {d.id for d in defs}
     for p in pairs_cfg:
@@ -98,7 +100,7 @@ def build_regions(defs: list[RegionDef], out: Path, bundle_id: str, prereg: dict
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes((json.dumps({"schema": "casefile/mask@3", "region": d.id, "grid": g["id"], "cells": cells,
                                      "areaKm2": round(area, 1), "effectiveCells": eff, "synthetic": False})).encode("utf-8"))
-        in_set = all(v["passes"] for v in support.values())
+        in_set = all(support[g["id"]]["passes"] for g in core)
         b = d.geometry.bounds
         c = d.geometry.centroid
         entries.append({"id": d.id, "kind": d.kind, "role": d.role, "name": d.name, "in": d.in_,
@@ -112,7 +114,7 @@ def build_regions(defs: list[RegionDef], out: Path, bundle_id: str, prereg: dict
     pairs = []
     for p in pairs_cfg:
         pairs.append({"id": p["id"], "a": p["a"], "b": p["b"], "lead": bool(p.get("lead", False)), "preRegistered": True,
-                      "question": p["question"], "split": pair_split(masks, p["a"], p["b"], grids)})
+                      "question": p["question"], "split": pair_split(masks, p["a"], p["b"], core)})
     s = CFG["support"]
     index = {"schema": "casefile/region_index@3", "buildId": bundle_id, "synthetic": False, "grids": list(GRIDS.values()),
              "minNativeCells": s["min_native_cells"], "maxSpillShare": s["max_spill_share"], "cellIdPattern": "cell:<row>_<col>",

@@ -109,3 +109,21 @@ def test_p18_split_larger_fraction_keeps_a_tie_drops():
     split = M.pair_split(masks, "a", "b")["grids"]["merra2_native"]
     assert split["effectiveCellsA"] == pytest.approx(sum(f for *_, f in ka))
     assert split["effectiveCellsB"] == pytest.approx(sum(f for *_, f in kb))
+
+
+def test_an_added_coarse_grid_never_changes_the_set(tmp_path):
+    """02 §14 step 5: a new dataset's grid gets masks and support, but inSet and the pair split stay those of the
+    first-release grids; a region that fails on the new grid gets no series for its variables."""
+    r = _box_region("cmp:mid", (90.25, 22.25, 91.75, 23.75))         # 1.5° box: passes on MERRA-2, fails S1 on 1°
+    index, _ = regions.build_regions([r], tmp_path, "t", prereg={"pairs": []},
+                                     grid_ids=("merra2_native", "imerg_native", "global_1deg"), log=lambda *_: None)
+    e = index["regions"][0]
+    assert e["support"]["merra2_native"]["passes"] and not e["support"]["global_1deg"]["passes"]
+    assert e["inSet"] is True
+    from casefile_pipeline.stages import index_support
+    assert index_support(index, "cmp:mid", "merra2_native") and not index_support(index, "cmp:mid", "global_1deg")
+
+
+def test_mask_grids_start_with_the_first_release_grids():
+    from casefile_pipeline.grids import NATIVE_GRIDS, mask_grids
+    assert mask_grids()[:2] == NATIVE_GRIDS
