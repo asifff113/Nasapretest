@@ -3,7 +3,7 @@
 // slowest to the fastest change, the squares rising and falling fastest, and simple counts of the squares by
 // their flags. Every value is the map file's own; the squares are only sorted and counted, never averaged. A
 // single answer for the whole country needs its own result file (exploration until it is pre-registered).
-import { ArrowDownRight, ArrowUpRight, Compass, Info } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Compass, Info } from 'lucide-react';
 import { pick, useT } from '../i18n';
 import { int, rate as fmtRate } from '../i18n/format';
 import type { CatalogVariable } from '../data/types';
@@ -32,6 +32,7 @@ export function CountryPanel({
   variable,
   onPickCell,
   understood,
+  reportHref,
 }: {
   name: string;
   cells: number[];
@@ -39,6 +40,8 @@ export function CountryPanel({
   variable: CatalogVariable;
   onPickCell: (row: number, col: number) => void;
   understood?: Understood;
+  /** The country's full report (yearly values of every record), when the build has one. */
+  reportHref?: string;
 }) {
   const t = useT();
   const lang = useLang();
@@ -91,6 +94,19 @@ export function CountryPanel({
           {t('family.exploration')}
         </Badge>
       </div>
+      {reportHref ? (
+        <a
+          href={reportHref}
+          className="group flex items-center justify-between gap-3 rounded-[8px] border border-accent/60 bg-accent/10 px-4 py-3 text-[15px] font-semibold hover:bg-accent/20"
+          data-testid="country-report-link"
+        >
+          <span>
+            {t('site.report.open', { place: name })}
+            <span className="block text-[13px] font-normal text-muted">{t('site.report.open_note')}</span>
+          </span>
+          <ArrowRight className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+        </a>
+      ) : null}
       {squares.length === 0 ? (
         <p className="text-[16px]">{t('site.country.none')}</p>
       ) : (

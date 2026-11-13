@@ -4,10 +4,10 @@
 // a pin opens a registered place (graded verdicts), and the ask box routes a free-text question with the smart
 // matcher (no AI). The globe library loads only on this screen, so the first view of the site stays small.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { BarChart3, Globe2, Minus, Plus, Search, X } from 'lucide-react';
+import { BarChart3, Globe2, History, Minus, Pause, Play, Plus, Search, X } from 'lucide-react';
 import { groupIcon } from '../components/atlas/icons';
 import { pick, useT } from '../i18n';
-import { int, rate as fmtRate } from '../i18n/format';
+import { int, num, rate as fmtRate } from '../i18n/format';
 import type { CatalogVariable, Region } from '../data/types';
 import { loadMapLayer, type MapLayer } from '../data/results';
 import { useAsync, useBuild, useCatalog, usePrereg, useRegionIndex } from '../data/hooks';
@@ -15,11 +15,13 @@ import { CITIES } from '../data/places';
 import { cellId, route, understand, type MatchContext, type Understood } from '../data/matcher';
 import { IS_OFFLINE_BUILD } from '../data/offline';
 import { useLang } from '../state/prefs';
-import { toHash, useView } from '../state/view';
-import { diverging, scalePos } from '../map/colours';
+import { href, toHash, useView } from '../state/view';
+import { diverging, scalePos, sequential } from '../map/colours';
 import { ScreeningMap } from '../map/ScreeningMap';
 import { loadOutlines, type Outlines } from '../map/outlines';
-import { composeTexture, countryAt, loadCountries, loadEarthImage } from './texture';
+import { composeTexture, countryAt, loadCountries, loadEarthImage, YearPainter } from './texture';
+import { exploreForCountryName, useExploreIndex, useMapYears, type MapYears } from '../data/explore';
+import type { LoadStatus } from '../data/hooks';
 import { CellPanel, NoPlacePanel, RegionPanel, VariablePanel } from './ExplorePanels';
 import { CountryPanel } from './CountryPanel';
 import { cellsInCountry, findCountry, fitAltitude } from './country';
@@ -71,6 +73,7 @@ interface GlobeLike {
   pauseAnimation(): GlobeLike;
   resumeAnimation(): GlobeLike;
   renderer(): { setPixelRatio(r: number): void };
+  globeMaterial(): { map: { image: unknown; needsUpdate: boolean } | null };
   _destructor(): void;
 }
 
@@ -207,6 +210,89 @@ function Legend({ layer, colormap, opacity, onOpacity, columns = false }: { laye
   );
 }
 
+/** The time-lapse panel: the year, play and pause, the slider, and the value scale of the yearly frames. */
+function YearsPanel({
+  status,
+  years,
+  frame,
+  onFrame,
+  playing,
+  onPlay,
+  colormap,
+  name,
+}: {
+  status: LoadStatus;
+  years: MapYears | undefined;
+  frame: number;
+  onFrame: (i: number) => void;
+  playing: boolean;
+  onPlay: (on: boolean) => void;
+  colormap: string | undefined;
+  name: string;
+}) {
+  const t = useT();
+  const lang = useLang();
+  const box = 'pointer-events-auto flex w-[min(560px,calc(100vw-88px))] flex-col gap-2.5 rounded-[6px] border border-line bg-surface/90 p-3 text-xs backdrop-blur-md';
+  if (status === 'loading') return <p className={box}>{t('site.years.loading')}</p>;
+  if (!years) return <p className={box}>{t('site.years.missing')}</p>;
+  const m = years.meta;
+  const ys = m.years;
+  const interp = sequential(colormap);
+  const stops = Array.from({ length: 9 }, (_, i) => interp(i / 8)).join(', ');
+  const [lo, hi] = m.range ?? [Number.NaN, Number.NaN];
+  const year = ys[frame] ?? ys[ys.length - 1] ?? 0;
+  return (
+    <div className={box} data-testid="years-panel">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => onPlay(!playing)}
+          aria-label={playing ? t('site.years.pause') : t('site.years.play')}
+          className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-ocean hover:brightness-110"
+          data-testid="years-play"
+        >
+          {playing ? <Pause className="size-5" aria-hidden="true" /> : <Play className="size-5" aria-hidden="true" />}
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="m-0 truncate text-[12px] text-muted">{t('site.years.title', { record: name })}</p>
+          <p className="m-0 font-display text-[34px] leading-none tabular" aria-live="polite" data-testid="years-year">
+            {int(year, lang)}
+          </p>
+        </div>
+      </div>
+      <label className="flex flex-col gap-1" htmlFor="years-slider">
+        <span className="sr-only">{t('site.years.slider')}</span>
+        <input
+          id="years-slider"
+          type="range"
+          min={0}
+          max={ys.length - 1}
+          step={1}
+          value={frame}
+          onChange={(e) => {
+            onPlay(false);
+            onFrame(Number(e.target.value));
+          }}
+          aria-valuetext={int(year, lang)}
+          className="w-full accent-[var(--accent)]"
+          data-testid="years-slider"
+        />
+        <span className="flex justify-between font-mono text-[11px] text-muted tabular" aria-hidden="true">
+          <span>{int(ys[0] ?? 0, lang)}</span>
+          <span>{int(ys[ys.length - 1] ?? 0, lang)}</span>
+        </span>
+      </label>
+      <p className="m-0 text-[12.5px] font-semibold">{t(m.rule === 'sum' ? 'site.years.legend_sum' : 'site.years.legend_mean', { units: m.units })}</p>
+      <div className="h-2.5 rounded-full" style={{ background: `linear-gradient(90deg, ${stops})` }} aria-hidden="true" />
+      <div className="flex justify-between font-mono text-[11px] text-muted tabular">
+        <span>{num(lo, lang)}</span>
+        <span>{num(hi, lang)}</span>
+      </div>
+      <p className="m-0 text-[12px] leading-snug text-muted">{t('site.years.note')}</p>
+    </div>
+  );
+}
+
 export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: ReactNode }) {
   const t = useT();
   const lang = useLang();
@@ -229,6 +315,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const layer = useAsync<MapLayer>(layerKey, () => loadMapLayer(root ?? '', variable?.id ?? '', season));
   const activeLayer = layer.status === 'ok' ? (layer.data ?? null) : null;
   const countries = useAsync('countries', () => loadCountries());
+  const exploreIndex = useExploreIndex();
   const [opacity, setOpacity] = useState(0.6);
   const [flat, setFlat] = useState(false);
   const [outlines, setOutlines] = useState<Outlines | null>(null);
@@ -238,6 +325,15 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const [failed, setFailed] = useState(false);
   const [question, setQuestion] = useState('');
   const [columns, setColumns] = useState(false);
+  const [yearsOn, setYearsOn] = useState(false);
+  const [frame, setFrame] = useState<number | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const flatView = flat || failed || IS_OFFLINE_BUILD;
+  const years = useMapYears(variable?.id, season, yearsOn && !flatView);
+  const yearsData = years.status === 'ok' ? years.data : undefined;
+  const yearsActive = yearsOn && !flatView && Boolean(yearsData);
+  const nYears = yearsData?.meta.years.length ?? 0;
+  const fi = frame === null ? Math.max(0, nYears - 1) : Math.min(frame, Math.max(0, nYears - 1));
 
   const host = useRef<HTMLDivElement>(null);
   const globeRef = useRef<GlobeLike | null>(null);
@@ -396,18 +492,65 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   useEffect(() => {
     const g = globeRef.current;
     const earth = earthRef.current;
-    if (!ready || !g || !earth || layer.status === 'loading' || countries.status === 'loading') return;
+    if (!ready || !g || !earth || yearsActive || layer.status === 'loading' || countries.status === 'loading') return;
     const id = window.setTimeout(() => {
       g.globeImageUrl(composeTexture(earth, activeLayer, variable?.colormap?.trend, columns ? opacity * 0.3 : opacity, countries.data ?? [], focusSet));
     }, 60);
     return () => window.clearTimeout(id);
-  }, [ready, activeLayer, layer.status, countries.status, countries.data, opacity, variable?.colormap?.trend, focusSet, columns]);
+  }, [ready, activeLayer, layer.status, countries.status, countries.data, opacity, variable?.colormap?.trend, focusSet, columns, yearsActive]);
+
+  // ---- the time-lapse: each year's frame painted into the globe's own texture -------------------------
+  const painterRef = useRef<{ years: MapYears; countries: unknown; focus: unknown; painter: YearPainter } | null>(null);
+  const savedImage = useRef<unknown>(null);
+  useEffect(() => {
+    const g = globeRef.current;
+    const earth = earthRef.current;
+    if (!ready || !g || !earth || !yearsActive || !yearsData) return;
+    let p = painterRef.current;
+    if (!p || p.years !== yearsData || p.countries !== countries.data || p.focus !== focusSet) {
+      p = { years: yearsData, countries: countries.data, focus: focusSet, painter: new YearPainter(earth, countries.data ?? [], focusSet, yearsData) };
+      painterRef.current = p;
+    }
+    const cv = p.painter.paint(fi, sequential(variable?.colormap?.value), Math.min(0.95, opacity + 0.25));
+    const mat = g.globeMaterial();
+    if (mat.map) {
+      if (savedImage.current === null) savedImage.current = mat.map.image;
+      mat.map.image = cv;
+      mat.map.needsUpdate = true;
+    } else {
+      g.globeImageUrl(cv.toDataURL('image/jpeg', 0.85));
+    }
+  }, [ready, yearsActive, yearsData, fi, countries.data, focusSet, opacity, variable?.colormap?.value]);
+  // Leaving the time-lapse puts the trend surface back.
+  useEffect(() => {
+    if (!yearsActive) return;
+    return () => {
+      const mat = globeRef.current?.globeMaterial();
+      if (mat?.map && savedImage.current !== null) {
+        mat.map.image = savedImage.current;
+        mat.map.needsUpdate = true;
+      }
+      savedImage.current = null;
+    };
+  }, [yearsActive]);
+  useEffect(() => {
+    if (!playing || !yearsActive) return;
+    const end = fi >= nYears - 1;
+    const id = window.setTimeout(
+      () => {
+        if (end) setPlaying(false);
+        else setFrame(fi + 1);
+      },
+      end ? 0 : 650,
+    );
+    return () => window.clearTimeout(id);
+  }, [playing, yearsActive, fi, nYears]);
 
   // ---- 3D columns: each square that stands out rises by how fast it changes (height from the map's rate) ----
   useEffect(() => {
     const g = globeRef.current;
     if (!ready || !g) return;
-    if (!columns || !activeLayer) {
+    if (!columns || !activeLayer || yearsOn) {
       g.pointsData([]);
       return;
     }
@@ -444,7 +587,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
       const p = g.pointOfView();
       if (p.altitude < 1.9) g.pointOfView({ ...p, altitude: 2.1 }, reduce ? 0 : 900);
     }
-  }, [ready, columns, activeLayer, variable?.colormap?.trend, focusSet, reduce]);
+  }, [ready, columns, activeLayer, variable?.colormap?.trend, focusSet, reduce, yearsOn]);
 
   // ---- pins for registered places, and city names ------------------------------------------------
   useEffect(() => {
@@ -576,6 +719,10 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
         layer={activeLayer}
         variable={variable}
         understood={current.understood}
+        reportHref={(() => {
+          const r = exploreForCountryName(exploreIndex.data, current.feature.properties.name);
+          return r ? href({ screen: 'place', region: r.id, variable: variable.id }) : undefined;
+        })()}
         onPickCell={(row, col) => {
           if (!grid) return;
           selectCell(grid.lat0 + row * grid.dlat, grid.lon0 + col * grid.dlon);
@@ -615,7 +762,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     panel = <NoPlacePanel understood={current.understood} />;
   }
 
-  const showFlat = flat || failed || IS_OFFLINE_BUILD;
+  const showFlat = flatView;
 
   return (
     <section
@@ -726,6 +873,24 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
               {!showFlat && activeLayer ? (
                 <button
                   type="button"
+                  aria-pressed={yearsOn}
+                  onClick={() => {
+                    setYearsOn((y) => !y);
+                    setPlaying(false);
+                  }}
+                  className={cn(
+                    'inline-flex min-h-10 items-center gap-2 rounded-[6px] border px-3 text-[13px] font-semibold backdrop-blur-md',
+                    yearsOn ? 'border-accent bg-accent text-ocean' : 'border-line bg-surface/85 hover:border-accent',
+                  )}
+                  data-testid="view-years"
+                >
+                  <History className="size-4" aria-hidden="true" />
+                  {t('site.years.toggle')}
+                </button>
+              ) : null}
+              {!showFlat && activeLayer && !yearsOn ? (
+                <button
+                  type="button"
                   aria-pressed={columns}
                   onClick={() => setColumns((c) => !c)}
                   className={cn(
@@ -755,7 +920,23 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
           {!showFlat ? (
             <>
               <div className="pointer-events-none absolute bottom-3 left-3 z-10 sm:bottom-4 sm:left-4">
-                {activeLayer ? <Legend layer={activeLayer} colormap={variable?.colormap?.trend} opacity={opacity} onOpacity={setOpacity} columns={columns} /> : null}
+                {yearsOn ? (
+                  <YearsPanel
+                    status={years.status}
+                    years={yearsData}
+                    frame={fi}
+                    onFrame={setFrame}
+                    playing={playing}
+                    onPlay={(on) => {
+                      if (on && fi >= nYears - 1) setFrame(0);
+                      setPlaying(on);
+                    }}
+                    colormap={variable?.colormap?.value}
+                    name={variable ? pick(variable.name, lang) : ''}
+                  />
+                ) : activeLayer ? (
+                  <Legend layer={activeLayer} colormap={variable?.colormap?.trend} opacity={opacity} onOpacity={setOpacity} columns={columns} />
+                ) : null}
               </div>
               <div className="absolute bottom-3 right-3 z-10 flex flex-col gap-1.5 sm:bottom-4 sm:right-4">
                 <button type="button" onClick={() => zoom(0.6)} aria-label={t('site.map.zoom_in')} className="grid size-10 place-items-center rounded-[6px] border border-line bg-surface/85 backdrop-blur-md hover:border-accent">
@@ -773,7 +954,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
                   <Globe2 className="size-5" aria-hidden="true" />
                 </button>
               </div>
-              {ready && !panelOpen ? (
+              {ready && !panelOpen && !yearsOn ? (
                 <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 rounded-full bg-black/45 px-3 py-1.5 text-[13px] text-white md:block">
                   {t('site.explore.hint')}
                 </p>

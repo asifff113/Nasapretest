@@ -3,7 +3,8 @@
 // then three chapters — the data cells behind the place, the line-up as an evidence board, and the evidence for
 // one result (chart, and the verdict on an ivory answer sheet).
 // A 1° cell (region=cell:<row>_<col>) opens the cell page instead (exploration only).
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { Search } from 'lucide-react';
 import { pick, tOr, useT } from '../i18n';
 import { int, num } from '../i18n/format';
 import type { Lineup, Mask, Region, RegionIndex, Verdict } from '../data/types';
@@ -22,6 +23,10 @@ import { SquaresExplainer } from '../components/atlas/SquaresExplainer';
 import { LineupTable } from '../components/LineupTable';
 import { VerdictView } from '../components/VerdictView';
 import { SegmentedControl } from '../ui/common/toggle-group';
+import { useExploreIndex, useExploreRegion, type ExploreIndex } from '../data/explore';
+import { RegionReport } from '../report/RegionReport';
+import { ReportBody, continentName } from '../report/ReportBody';
+import { href } from '../state/view';
 
 const CellPage = lazy(() => import('./CellPage'));
 
@@ -63,6 +68,65 @@ function placeMarks(regions: Region[], lang: 'en' | 'bn', labels = true) {
   return regions.map((r) => ({ lon: r.centroid[0], lat: r.centroid[1], bbox: r.bbox, label: labels ? pick(r.name, lang) : undefined }));
 }
 
+/** Every country and region with a detail file, grouped by continent, with a search box. */
+function Directory({ index }: { index: ExploreIndex }) {
+  const t = useT();
+  const lang = useLang();
+  const { view } = useView();
+  const [q, setQ] = useState('');
+  const groups = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    const out = new Map<string, ExploreIndex['regions']>();
+    for (const r of index.regions) {
+      if (needle && !pick(r.name, 'en').toLowerCase().includes(needle) && !pick(r.name, 'bn').includes(q.trim())) continue;
+      const g = r.kind === 'country' ? continentName(t, r.continent) : t(`site.report.kind_${r.kind}`);
+      out.set(g, [...(out.get(g) ?? []), r]);
+    }
+    for (const list of out.values()) list.sort((a, b) => pick(a.name, lang).localeCompare(pick(b.name, lang)));
+    return [...out.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [index, q, lang, t]);
+  const shown = groups.reduce((n, [, l]) => n + l.length, 0);
+  return (
+    <div className="flex flex-col gap-5" data-testid="place-directory">
+      <label className="relative block max-w-[460px]">
+        <span className="sr-only">{t('site.directory.search')}</span>
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={t('site.directory.search')}
+          className="min-h-11 w-full rounded-[8px] border border-line-strong bg-surface pl-9 pr-3 text-[15px] focus:border-accent"
+          data-testid="directory-search"
+        />
+      </label>
+      <p className="m-0 font-mono text-[11px] uppercase tracking-[0.1em] text-muted">{t('site.directory.count', { n: int(shown, lang) })}</p>
+      {shown === 0 ? <p className="m-0 text-[15px] text-muted">{t('site.directory.none', { q })}</p> : null}
+      <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
+        {groups.map(([g, list]) => (
+          <section key={g} aria-label={g}>
+            <h3 className="mb-2 border-b border-line pb-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-accent-ink">{g}</h3>
+            <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+              {list.map((r) => (
+                <li key={r.id}>
+                  <a
+                    href={href({ screen: 'place', region: r.id, variable: view.variable })}
+                    className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-line px-3 text-[13.5px] hover:border-accent hover:bg-accent/10"
+                    title={r.passesSupport ? undefined : t('site.directory.small')}
+                  >
+                    {pick(r.name, lang)}
+                    {r.passesSupport ? null : <span className="size-1.5 rounded-full bg-muted/60" aria-hidden="true" />}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** No place chosen yet: the gallery of places. */
 function Gallery({ badLink }: { badLink: boolean }) {
   const t = useT();
@@ -70,6 +134,7 @@ function Gallery({ badLink }: { badLink: boolean }) {
   const index = useRegionIndex();
   const { view } = useView();
   const inSet = index.data?.regions.filter((r) => r.inSet) ?? [];
+  const explore = useExploreIndex();
   return (
     <>
       <Hero
@@ -98,6 +163,12 @@ function Gallery({ badLink }: { badLink: boolean }) {
             {(idx) => <PlacePicker index={idx} linkFor={(id) => ({ screen: 'place', region: id, variable: view.variable, season: view.season })} />}
           </WithData>
         </section>
+        {explore.status === 'ok' && explore.data ? (
+          <section id="step-directory" className="mt-16">
+            <StepHeading n={2} title={t('site.directory.title')} lead={t('site.directory.lead', { n: int(explore.data.regions.length, lang) })} />
+            <Directory index={explore.data} />
+          </section>
+        ) : null}
       </Body>
     </>
   );
@@ -139,6 +210,7 @@ function RegionScreen() {
   const { view, badLink, flagBadLink } = useView();
   const index = useRegionIndex();
   const catalog = useCatalog();
+  const explore = useExploreIndex();
   const [step, setStep] = useState(0);
 
   const region = view.region ? index.data?.regions.find((r) => r.id === view.region) : undefined;
@@ -152,9 +224,10 @@ function RegionScreen() {
   const verdict = useResult<Verdict>(selected ? selected.path : null);
 
   // Unknown ids fall back to defaults with a notice (errors.bad_view).
+  const reportInfo = view.region && explore.status === 'ok' ? explore.data?.regions.find((r) => r.id === view.region) : undefined;
   useEffect(() => {
-    if (index.status === 'ok' && view.region && !validRegion) flagBadLink();
-  }, [index.status, view.region, validRegion, flagBadLink]);
+    if (index.status === 'ok' && explore.status !== 'loading' && view.region && !validRegion && !reportInfo) flagBadLink();
+  }, [index.status, explore.status, view.region, validRegion, reportInfo, flagBadLink]);
   useEffect(() => {
     if (lineup.status === 'ok' && (view.variable || view.season) && !asked) flagBadLink();
   }, [lineup.status, view.variable, view.season, asked, flagBadLink]);
@@ -171,7 +244,8 @@ function RegionScreen() {
   );
 
   if (!validRegion || !index.data) {
-    if (index.status === 'loading') return <Loading className="mx-auto max-w-[1280px] px-4 py-8" />;
+    if (index.status === 'loading' || (view.region && explore.status === 'loading')) return <Loading className="mx-auto max-w-[1280px] px-4 py-8" />;
+    if (reportInfo && explore.data) return <RegionReport id={reportInfo.id} index={explore.data} />;
     return <Gallery badLink={badLink} />;
   }
   const regionName = pick(validRegion.name, lang);
@@ -212,9 +286,26 @@ function RegionScreen() {
             <Loading />
           ) : null}
         </section>
+        {reportInfo && explore.data ? (
+          <section id="step-report" className="mt-16 scroll-mt-28">
+            <RegionReportChapters id={reportInfo.id} index={explore.data} />
+          </section>
+        ) : null}
         <StepBar steps={steps} current={step} onGo={(i) => goToStep(steps[i]?.id ?? '')} />
       </Body>
     </>
+  );
+}
+
+/** The report's chapters (every record year by year, the rhythm, comparisons) below a tested place's verdict. */
+function RegionReportChapters({ id, index }: { id: string; index: ExploreIndex }) {
+  const { view, patch } = useView();
+  const catalog = useCatalog();
+  const res = useExploreRegion(id);
+  return (
+    <WithData res={res}>
+      {(data) => <ReportBody data={data} index={index} catalog={catalog.data} variable={view.variable} onVariable={(v) => patch({ variable: v }, { replace: true })} first={4} />}
+    </WithData>
   );
 }
 
