@@ -59,7 +59,7 @@ variables:
 
 seasons:
   primary: ANN
-  secondary: [MAM, JJAS, ON, DJF]  # pre-monsoon, monsoon, post-monsoon, winter
+  secondary: [MAM, JJAS, "ON", DJF]  # pre-monsoon, monsoon, post-monsoon, winter. "ON" is quoted: bare ON is the boolean true in YAML
 
 regions:
   support_rule: { min_native_cells: 4, max_spill_share: 0.333 }
