@@ -29,7 +29,7 @@ for (const theme of ['light', 'dark'] as const) {
       await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' });
       const problems: string[] = [];
       for (const s of SCREENS) {
-        await open(page, s, lang);
+        await open(page, s, lang, theme);
         await page.waitForLoadState('networkidle');
         const res = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
         for (const v of res.violations) {

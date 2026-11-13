@@ -7,6 +7,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { feature, mesh } from 'topojson-client';
+import { geoCentroid } from 'd3-geo';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -28,6 +29,17 @@ const borderGeo = mesh(countries, countries.objects.countries, (a, b) => a !== b
 const borders = borderGeo.coordinates.map(line);
 
 const out = { source: 'Natural Earth 1:110m via world-atlas 2.0.2 (public domain / ISC)', land: rings, borders };
+
+// Countries with names and centres, for the globe's place names and the ask box.
+const named = feature(countries, countries.objects.countries).features
+  .filter((f) => f.geometry)
+  .map((f) => {
+    const [lon, lat] = geoCentroid(f);
+    const g = JSON.parse(JSON.stringify(f.geometry, (k, v) => (typeof v === 'number' ? r(v) : v)));
+    return { type: 'Feature', properties: { name: f.properties.name, lon: r(lon), lat: r(lat) }, geometry: g };
+  });
+fs.writeFileSync(path.resolve(here, '..', 'public', 'outlines', 'countries_110m.json'), JSON.stringify({ type: 'FeatureCollection', features: named }));
+console.log(`countries: ${named.length}`);
 const target = path.resolve(here, '..', 'public', 'outlines', 'world_110m.json');
 fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.writeFileSync(target, JSON.stringify(out));

@@ -49,14 +49,18 @@ export const synthetic = Boolean(current.synthetic);
 export type Lang = 'en' | 'bn';
 
 /** Opens a view in a language (the language lives in localStorage, never in the URL). */
-export async function open(page: Page, hash: string, lang: Lang = 'en'): Promise<void> {
-  await page.addInitScript((l) => {
-    try {
-      window.localStorage.setItem('cfe.lang', l);
-    } catch {
-      /* ignore */
-    }
-  }, lang);
+export async function open(page: Page, hash: string, lang: Lang = 'en', theme?: 'light' | 'dark'): Promise<void> {
+  await page.addInitScript(
+    ([l, th]) => {
+      try {
+        window.localStorage.setItem('cfe.lang', l as string);
+        if (th) window.localStorage.setItem('cfe.theme', th as string);
+      } catch {
+        /* ignore */
+      }
+    },
+    [lang, theme ?? ''],
+  );
   // A fresh document each time: going to the same URL with only a new hash would not reload the page.
   await page.goto('about:blank');
   await page.goto(`/${hash}`);

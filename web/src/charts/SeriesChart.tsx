@@ -1,6 +1,7 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
 // A plain series: values as dots joined by a line, gaps where values are missing. No trend line:
 // used for cell pages (the map file holds no line) and the "every month" view.
+import { useRef } from 'react';
 import * as Plot from '@observablehq/plot';
 import type { Lang } from '../data/types';
 import { num, tick, yearTick } from '../i18n/format';
@@ -28,9 +29,11 @@ export function SeriesChart({
   testId?: string;
   xFormat?: (v: number) => string;
 }) {
-  const tokens = useTokens();
+  const scope = useRef<HTMLDivElement>(null);
+  const tokens = useTokens(scope);
   const pts = x.map((v, i) => ({ x: v, y: y[i] ?? null }));
   return (
+    <div ref={scope} className="contents">
     <PlotFigure
       label={label}
       testId={testId}
@@ -56,5 +59,6 @@ export function SeriesChart({
         };
       }}
     />
+    </div>
   );
 }

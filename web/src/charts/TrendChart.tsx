@@ -2,6 +2,7 @@
 // TrendChart (docs/04_UI.md §6.1). It draws what the engine wrote in the result's "chart" block:
 // display values, the Sen line as two end points, the 95% range as a bow-tie through the pivot.
 // The only arithmetic is scaling to pixels.
+import { useRef } from 'react';
 import * as Plot from '@observablehq/plot';
 import type { BreakItem, ChartBlock, Lang } from '../data/types';
 import { num, tick, yearTick } from '../i18n/format';
@@ -39,12 +40,14 @@ export function bandArea(chart: ChartBlock): { x: number; y1: number; y2: number
 }
 
 export function TrendChart(p: TrendChartProps) {
-  const tokens = useTokens();
+  const scope = useRef<HTMLDivElement>(null);
+  const tokens = useTokens(scope);
   const points = p.years.map((x, i) => ({ x, y: p.chart.values[i] ?? null }));
   const line = p.chart.line ? p.chart.line.map(([x, y]) => ({ x, y })) : [];
   const band = bandArea(p.chart);
   const breaks = (p.breaks ?? []).filter((b) => b.year !== null);
   return (
+    <div ref={scope} className="contents">
     <PlotFigure
       label={p.label}
       testId={p.testId ?? 'trend-chart'}
@@ -100,5 +103,6 @@ export function TrendChart(p: TrendChartProps) {
         };
       }}
     />
+    </div>
   );
 }

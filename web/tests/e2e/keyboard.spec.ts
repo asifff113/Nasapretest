@@ -43,12 +43,18 @@ test('X-02 keyboard only', async ({ page }) => {
   }
 
   await open(page, '#/map');
+  // A segmented control takes one Tab stop; the arrow keys move between its options.
+  await tabTo(page, '[data-testid="view-globe"]');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('Enter');
+  await expect(page.getByTestId('flat-map')).toBeVisible();
   await tabTo(page, '[data-testid="map-canvas"]');
   await page.keyboard.press('ArrowRight');
   await page.keyboard.press('ArrowDown');
   await expect(page.getByTestId('map-announce')).not.toBeEmpty();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/region=cell:/);
+  await expect(page.getByTestId('explore-cell')).toBeVisible();
 
   await open(page, '#/');
   await tabTo(page, 'header a[href="#/methods"], footer a[href="#/methods"]');

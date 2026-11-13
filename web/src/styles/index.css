@@ -4,79 +4,111 @@
 @import 'tailwindcss';
 
 /* Fonts are bundled (nothing is fetched from another origin). unicode-range means a browser downloads
-   a file only when its characters appear: the Bangla font loads in Bangla mode only. */
-@import '@fontsource/inter/latin-400.css';
-@import '@fontsource/inter/latin-500.css';
-@import '@fontsource/inter/latin-600.css';
-@import '@fontsource/inter/latin-700.css';
+   a file only when its characters appear: the Bangla fonts load in Bangla mode only. */
+@import '@fontsource/instrument-serif/latin-400.css';
+@import '@fontsource/instrument-serif/latin-400-italic.css';
+@import '@fontsource/inter-tight/latin-400.css';
+@import '@fontsource/inter-tight/latin-500.css';
+@import '@fontsource/inter-tight/latin-600.css';
+@import '@fontsource/inter-tight/latin-700.css';
 @import '@fontsource/inter/greek-400.css';
 @import '@fontsource/inter/greek-600.css';
 @import '@fontsource/noto-sans-bengali/bengali-400.css';
 @import '@fontsource/noto-sans-bengali/bengali-500.css';
 @import '@fontsource/noto-sans-bengali/bengali-600.css';
 @import '@fontsource/noto-sans-bengali/bengali-700.css';
+@import '@fontsource/noto-serif-bengali/bengali-500.css';
+@import '@fontsource/noto-serif-bengali/bengali-600.css';
 @import '@fontsource/ibm-plex-mono/latin-400.css';
 @import '@fontsource/ibm-plex-mono/latin-500.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Direction "Atlas" (chosen 2026-11-13): an explorer's atlas. Deep ocean navy and printed ivory, one gold accent,
+   serif headlines. Dark (ocean) is the default; light is the ivory paper of the same atlas. */
 :root {
-  /* docs/04_UI.md §11 */
-  --bg: #f7f5f0;
-  --surface: #ffffff;
-  --ink: #1e2430;
-  --muted: #5b6472;
-  --accent: #b87514;
-  --link: #1f5aa6;
-  --grade-strong: #0e6b5c;
-  --grade-supported: #1f8a7a;
-  --grade-cant-tell: #5b6472;
-  --no-verdict: #9c3b2b;
-  --exploration: #6b5ca5;
+  --bg: #f3ecdd;
+  --surface: #fbf7ee;
+  --ink: #13283f;
+  --muted: #55667a;
+  --accent: #c48a24;
+  --link: #1b5c93;
+  --grade-strong: #17694f;
+  --grade-supported: #22846a;
+  --grade-cant-tell: #55667a;
+  --no-verdict: #a43a23;
+  --exploration: #5b4d9a;
 
-  /* Derived tokens (same hues): text-safe accent, hairlines, tints, the synthetic banner. */
-  --accent-ink: #8a5510;
-  --accent-soft: #f3e6cf;
-  --surface-2: #fbfaf7;
-  --line: #e2ddd2;
-  --line-strong: #cfc8b9;
-  --banner: #f6dc7a;
-  --banner-ink: #3b2f05;
-  --ring: #b87514;
-  --shadow: 0 1px 2px rgb(30 36 48 / 0.06), 0 4px 16px -6px rgb(30 36 48 / 0.12);
-  --shadow-lg: 0 2px 4px rgb(30 36 48 / 0.06), 0 18px 40px -16px rgb(30 36 48 / 0.28);
-  --grain-opacity: 0.35;
+  --accent-ink: #855610;
+  --accent-soft: #f0e0bd;
+  --surface-2: #f7f1e4;
+  --line: #ded3bd;
+  --line-strong: #c9b998;
+  --banner: #f1c94d;
+  --banner-ink: #3a2c03;
+  --ring: #c48a24;
+  --ocean: #0b2240;
+  --ocean-2: #174c7c;
+  --on-ocean: #f4ecdc;
+  --shadow: 0 1px 2px rgb(19 40 63 / 0.06), 0 6px 18px -8px rgb(19 40 63 / 0.18);
+  --shadow-lg: 0 2px 4px rgb(19 40 63 / 0.06), 0 24px 48px -20px rgb(19 40 63 / 0.35);
+  --grain-opacity: 0.3;
 
-  --radius: 10px;
-  --header-h: 56px;
+  --radius: 6px;
+  --header-h: 60px;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .dark {
-  --bg: #0f141c;
-  --surface: #171e29;
-  --ink: #e8e6e1;
-  --muted: #a3acb9;
-  --accent: #e0a33a;
-  --link: #7fb0ff;
-  --grade-strong: #36b39c;
-  --grade-supported: #5cc9b5;
-  --grade-cant-tell: #a3acb9;
-  --no-verdict: #e07a66;
-  --exploration: #a99be0;
+  --bg: #0b2240;
+  --surface: #10304f;
+  --ink: #f4ecdc;
+  --muted: #b3c0cd;
+  --accent: #e9b44c;
+  --link: #8cc4ef;
+  --grade-strong: #4fcfa4;
+  --grade-supported: #7fdbbf;
+  --grade-cant-tell: #b3c0cd;
+  --no-verdict: #f28b6d;
+  --exploration: #b9abf2;
 
-  --accent-ink: #e0a33a;
-  --accent-soft: #2a2416;
-  --surface-2: #131a24;
-  --line: #263142;
-  --line-strong: #34425a;
-  --banner: #5c4a0c;
+  --accent-ink: #e9b44c;
+  --accent-soft: #2c3f45;
+  --surface-2: #0d2846;
+  --line: #22426a;
+  --line-strong: #2f5784;
+  --banner: #6a5310;
   --banner-ink: #fbefc4;
-  --ring: #e0a33a;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 6px 18px -8px rgb(0 0 0 / 0.6);
-  --shadow-lg: 0 2px 6px rgb(0 0 0 / 0.4), 0 24px 48px -20px rgb(0 0 0 / 0.8);
-  --grain-opacity: 0.18;
+  --ring: #e9b44c;
+  --ocean: #071a33;
+  --ocean-2: #174c7c;
+  --on-ocean: #f4ecdc;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.35), 0 8px 22px -10px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 2px 6px rgb(0 0 0 / 0.35), 0 28px 56px -22px rgb(0 0 0 / 0.75);
+  --grain-opacity: 0.12;
   color-scheme: dark;
+}
+
+.paper {
+  /* The atlas's printed sheet: light tokens inside any theme (the explorer's answer panel). */
+  --bg: #f3ecdd;
+  --surface: #fbf7ee;
+  --ink: #13283f;
+  --muted: #55667a;
+  --accent: #c48a24;
+  --link: #1b5c93;
+  --grade-strong: #17694f;
+  --grade-supported: #22846a;
+  --grade-cant-tell: #55667a;
+  --no-verdict: #a43a23;
+  --exploration: #5b4d9a;
+  --accent-ink: #855610;
+  --accent-soft: #f0e0bd;
+  --surface-2: #f7f1e4;
+  --line: #ded3bd;
+  --line-strong: #c9b998;
+  --ring: #c48a24;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -99,22 +131,19 @@
   --color-banner: var(--banner);
   --color-banner-ink: var(--banner-ink);
   --color-ring: var(--ring);
+  --color-ocean: var(--ocean);
+  --color-ocean-2: var(--ocean-2);
+  --color-on-ocean: var(--on-ocean);
 
-  --font-sans: 'Inter', 'Noto Sans Bengali', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-bn: 'Noto Sans Bengali', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Tight', 'Noto Sans Bengali', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-bn: 'Noto Sans Bengali', 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Instrument Serif', 'Noto Serif Bengali', Georgia, 'Times New Roman', serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
   --radius-card: var(--radius);
   --shadow-card: var(--shadow);
   --shadow-lift: var(--shadow-lg);
   --ease-out: var(--ease-out);
-
-  --text-h1: 28px;
-  --text-h1--line-height: 1.2;
-  --text-h2: 22px;
-  --text-h2--line-height: 1.3;
-  --text-h3: 18px;
-  --text-h3--line-height: 1.4;
 }
 
 @layer base {
@@ -134,7 +163,7 @@
     font-family: var(--font-sans);
     font-size: 16px;
     line-height: 1.5;
-    font-feature-settings: 'cv11', 'ss01';
+    font-feature-settings: 'ss01';
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -159,7 +188,20 @@
   h2,
   h3 {
     text-wrap: balance;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.01em;
+  }
+  h1,
+  h2,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis: none;
+  }
+  html:lang(bn) h1,
+  html:lang(bn) h2,
+  html:lang(bn) .font-display {
+    font-family: 'Noto Serif Bengali', var(--font-display);
+    font-weight: 600;
   }
   html:lang(bn) h1,
   html:lang(bn) h2,
@@ -202,14 +244,12 @@
     font-feature-settings: 'tnum';
   }
   .text-h1 {
-    font-size: clamp(24px, 2.2vw + 14px, 34px);
-    line-height: 1.15;
-    font-weight: 650;
+    font-size: clamp(32px, 3vw + 18px, 52px);
+    line-height: 1.04;
   }
   .text-h2 {
-    font-size: 22px;
-    line-height: 1.3;
-    font-weight: 650;
+    font-size: 27px;
+    line-height: 1.15;
   }
   .text-h3 {
     font-size: 18px;
@@ -256,6 +296,71 @@ figure.cfe-plot svg {
 figure.cfe-plot [aria-label='tip'] path {
   fill: var(--surface);
   stroke: var(--line-strong);
+}
+
+/* Globe markers (HTML over the WebGL globe, so Bangla names render too). */
+.globe-city {
+  pointer-events: none;
+  transform: translate(6px, -50%);
+  font: 500 12px/1.2 var(--font-sans);
+  color: #fff;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.9), 0 0 6px rgb(0 0 0 / 0.6);
+  white-space: nowrap;
+}
+.globe-city::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5);
+}
+html:lang(bn) .globe-city {
+  font-family: var(--font-bn);
+}
+.globe-pin {
+  pointer-events: auto;
+  transform: translate(-50%, -130%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 4px 11px 4px 9px;
+  border-radius: 999px;
+  border: 1px solid #e9b44c;
+  background: #f6efe1;
+  color: #13283f;
+  font: 600 12.5px/1 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.6);
+}
+.globe-pin::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c48a24;
+  box-shadow: 0 0 0 3px rgb(196 138 36 / 0.3);
+}
+.globe-pin--dot {
+  min-height: 0;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+}
+.globe-pin--dot::before {
+  margin: 0;
+}
+.globe-pin:focus-visible {
+  outline: 3px solid #e9b44c;
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

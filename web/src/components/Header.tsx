@@ -17,7 +17,7 @@ const NAV: { screen: Screen; key: string; href: string }[] = [
   { screen: 'methods', key: 'nav.methods', href: '#/methods' },
 ];
 
-const NEXT_THEME: Record<Theme, Theme> = { system: 'light', light: 'dark', dark: 'system' };
+const NEXT_THEME: Record<Theme, Theme> = { dark: 'light', light: 'system', system: 'dark' };
 
 export function LanguageToggle({ className }: { className?: string }) {
   const t = useT();

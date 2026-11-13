@@ -109,23 +109,42 @@ for (const lang of LANGS) {
       }
     });
 
-    test('W-06 map: exploration label, number of tests, hatching; a cell page has no verdict words', async ({ page }) => {
+    test('W-06 map: exploration label, number of tests, hatching; a square has no verdict words', async ({ page }) => {
       const maps = list('maps').filter((p) => p.endsWith('meta.json'));
       test.skip(maps.length === 0, 'no map in this build');
       await open(page, '#/map', lang);
-      await expect(page.getByTestId('map-label')).toContainText(t(lang, 'map.label'));
-      await expect(page.getByTestId('map-tests')).toBeVisible();
-      await expect(page.getByTestId('map-legend')).toContainText(t(lang, 'map.legend_hatch'));
+      await expect(page.getByTestId('globe-explorer')).toBeVisible();
+      await expect(page.getByTestId('map-tests')).toContainText(t(lang, 'map.label'));
+      await expect(page.getByTestId('map-label')).toBeVisible();
+      // The flat map: the same layer, with a keyboard cursor; a click opens the square in the side panel.
+      await page.getByTestId('view-flat').click();
       const canvas = page.getByTestId('map-canvas');
       await expect(canvas).toBeVisible();
+      await expect(page.getByTestId('flat-map').getByTestId('map-legend')).toContainText(t(lang, 'map.legend_hatch'));
       const box = await canvas.boundingBox();
-      // A mouse click opens the cell under the pointer; a tap selects it first, a second tap opens it.
       await canvas.click({ position: { x: (box!.width * 3) / 4, y: box!.height / 3 } });
-      if (!/region=cell:/.test(page.url())) await page.getByTestId('open-cell').click();
+      if ((await page.getByTestId('explore-cell').count()) === 0) await page.getByTestId('open-cell').click();
+      const panel = page.getByTestId('explore-cell');
+      await expect(panel).toBeVisible();
       await expect(page).toHaveURL(/region=cell:\d+_\d+/);
+      for (const w of VERDICT_WORDS(strings[lang])) expect(await panel.innerText()).not.toContain(w);
+      // Its full page is exploration too.
+      await page.getByTestId('explore-open-cell').click();
       await expect(page.getByTestId('cell-status')).toHaveText(t(lang, 'family.exploration'));
       const text = await page.locator('main').innerText();
       for (const w of VERDICT_WORDS(strings[lang])) expect(text).not.toContain(w);
+    });
+
+    test('ASK the ask box understands a question and opens the place that answers it', async ({ page }) => {
+      const maps = list('maps').filter((p) => p.endsWith('meta.json'));
+      test.skip(maps.length === 0, 'no map in this build');
+      await open(page, '#/map', lang);
+      await page.getByTestId('view-flat').click();
+      await page.getByTestId('ask-input').fill(t(lang, 'site.explore.try_1'));
+      await page.getByTestId('ask-submit').click();
+      await expect(page.getByTestId('understood')).toBeVisible();
+      await expect(page.getByTestId('explore-cell')).toBeVisible();
+      await expect(page).toHaveURL(/region=cell:\d+_\d+/);
     });
 
     test('W-07 the provenance panel shows dataset, version, years, values, build, pre-registration and manifest', async ({ page }) => {

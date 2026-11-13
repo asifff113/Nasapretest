@@ -106,7 +106,9 @@ function inlineScriptHashes(html: string): string[] {
   const re = /<script>([\s\S]*?)<\/script>/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(html)) !== null) {
-    out.push(`'sha256-${createHash('sha256').update(m[1] ?? '', 'utf8').digest('base64')}'`);
+    // Browsers turn CR LF into LF before hashing, so hash the text the way the browser sees it.
+    const text = (m[1] ?? '').replace(/\r\n?/g, '\n');
+    out.push(`'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`);
   }
   return out;
 }
@@ -116,7 +118,8 @@ export function siteCsp(): Plugin {
   return {
     name: 'casefile-csp',
     apply: 'build',
-    transformIndexHtml(html) {
+    // After Vite's own rewrites, so the hashes match the page as it is served.
+    transformIndexHtml: { order: 'post', handler(html) {
       const policy = [
         "default-src 'self'",
         "connect-src 'self'",
@@ -128,7 +131,7 @@ export function siteCsp(): Plugin {
         "base-uri 'self'",
       ].join('; ');
       return html.replace('<!--csp-->', `<meta http-equiv="Content-Security-Policy" content="${policy}" />`);
-    },
+    } },
   };
 }
 

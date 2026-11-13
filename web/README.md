@@ -39,16 +39,22 @@ The tests read every id from that folder, so the same suite runs on the examples
 | `src/i18n/` | `t()`, `format.ts` (03 §12.3, checked against `examples/golden/format_cases.json`), the site's own strings |
 | `src/components/` | VerdictCard, CompareView, LineupTable, PlacePicker, ContributingCells, ConfidenceSpine, ProvenancePanel, ExpertPanel, RecordCard, … (04 §5) |
 | `src/charts/` | TrendChart, PairChart and DifferenceChart (Observable Plot), Sparkline (plain SVG). They draw the engine's `chart` block |
-| `src/map/` | The screening map on a canvas, equirectangular, with the bundled outlines; colour scales |
+| `src/explore/` | The globe explorer: globe, surface texture (Earth + layer + borders), side panels |
+| `src/map/` | The flat screening map on a canvas, equirectangular, with the bundled outlines; colour scales |
 | `src/screens/` | Home, Question, Place, CellPage, Compare, MapScreen, Methods, Watch, Offline, DataCredits, AiUse, About |
 | `src/ui/common/` | shadcn/ui components on Radix, re-themed to the tokens of 04 §11 |
-| `public/outlines/world_110m.json` | Natural Earth 1:110m (public domain), from `scripts/build-outlines.mjs` |
+| `public/outlines/` | Natural Earth 1:110m land, borders and named countries (public domain), from `scripts/build-outlines.mjs` |
+| `public/textures/` | NASA Blue Marble and a relief map (public domain), as shipped in the three-globe examples |
 | `build/plugins.ts` | Dev server for the results folder, the offline data module, the Content Security Policy |
 
-Design direction (05 Part 3): a calm case file. Paper background, ink text, one amber accent; the verdict card is
-a folder with an amber tab carrying the case id, then the status as a quiet stamp before any number, one plain
-sentence, then the numbers in tabular figures. Fonts (Inter, Noto Sans Bengali, IBM Plex Mono) and icons are
-bundled; the site fetches nothing from another origin, and the offline file makes no request at all.
+Design direction "Atlas" (ADR-24): ocean navy (default) and ivory paper, one gold accent, serif headlines. The home
+page and the map are a 3D globe explorer (ADR-23, `src/explore/`): NASA's Blue Marble image with the chosen record's
+map draped over it, click anywhere for that 1° square, pins for registered places, and an ask box backed by the
+no-AI smart matcher (ADR-25, `src/data/matcher.ts`, `src/data/places.ts`). The flat map stays one switch away for the
+keyboard and weak devices. The verdict card is still a case folder: a gold tab with the case id, the status as a
+stamp before any number, one plain sentence, then the numbers. Fonts (Instrument Serif, Inter Tight, Noto Serif and
+Sans Bengali, IBM Plex Mono), icons, the Earth image and the outlines are bundled; the site fetches nothing from
+another origin, and the offline file makes no request at all.
 
 ## Where the site needs nothing more from the engine, and where it cannot go further
 

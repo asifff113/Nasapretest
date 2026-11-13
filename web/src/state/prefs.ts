@@ -30,9 +30,10 @@ function initialLang(): Lang {
 }
 
 function initialTheme(): Theme {
-  if (typeof window === 'undefined') return 'system';
+  if (typeof window === 'undefined') return 'dark';
   const t = read('cfe.theme');
-  return t === 'light' || t === 'dark' ? t : 'system';
+  // The atlas opens on the ocean (dark); light paper and "same as this device" are one tap away.
+  return t === 'light' || t === 'system' ? t : 'dark';
 }
 
 export function applyTheme(theme: Theme): void {

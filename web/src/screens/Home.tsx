@@ -1,7 +1,8 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
 // Home (docs/04_UI.md §4.1): hero, learning goal, three buttons, the lead case card, and the way to the map.
 // Everything ships with the build: no background video and no image from another site.
-import { ArrowRight, CircleCheck, CircleHelp, Compass, Grid3x3, MapPin, Play, ShieldCheck, Scale, ArrowLeftRight, HelpCircle } from 'lucide-react';
+import { ArrowRight, CircleCheck, CircleHelp, Compass, MapPin, Play, ShieldCheck, Scale, ArrowLeftRight, HelpCircle } from 'lucide-react';
+import { lazy, Suspense } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { pick, useT } from '../i18n';
 import type { CaseFile, Contrast, Lineup, Verdict } from '../data/types';
@@ -15,6 +16,8 @@ import { toneColour, useTokens } from '../charts/tokens';
 import { CaseFolder } from '../components/CaseFolder';
 import { StatusBadge, statusInfo } from '../components/StatusBadge';
 import { OfflineList } from './Offline';
+
+const GlobeExplorer = lazy(() => import('../explore/GlobeExplorer').then((m) => ({ default: m.GlobeExplorer })));
 import { buttonVariants } from '../ui/common/button';
 import { Skeleton } from '../ui/common/skeleton';
 import { cn } from '../ui/common/utils';
@@ -102,40 +105,51 @@ export function Home() {
     reduce
       ? {}
       : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.45, delay: 0.06 * i, ease: [0.2, 0.8, 0.2, 1] as const } };
+  const intro = (
+    <div className="flex flex-col gap-3">
+      <motion.p {...fade(0)} className="eyebrow">
+        {t('app.tagline')}
+      </motion.p>
+      <motion.h1 {...fade(1)} className="text-[clamp(36px,3.2vw+12px,54px)] leading-[1.02]">
+        {t('home.hero_title')}
+      </motion.h1>
+      <motion.p {...fade(2)} className="text-[16px] leading-relaxed text-muted">
+        {t('site.home.globe_lead')}
+      </motion.p>
+      <motion.p {...fade(3)} className="flex flex-wrap gap-x-4 gap-y-1 text-[14px]">
+        <a href="#/compare" className="inline-flex min-h-9 items-center gap-1.5 font-medium" data-testid="cta-compare">
+          <ArrowLeftRight className="size-4" aria-hidden="true" />
+          {t('home.cta_compare')}
+        </a>
+        <a href={lead ? href({ screen: 'watch', case: lead.id }) : '#/watch'} className="inline-flex min-h-9 items-center gap-1.5 font-medium" data-testid="cta-watch">
+          <Play className="size-4" aria-hidden="true" />
+          {t('home.cta_watch')}
+        </a>
+        <a href="#/question" className="inline-flex min-h-9 items-center gap-1.5 font-medium" data-testid="cta-start">
+          {t('home.cta_start')}
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </a>
+      </motion.p>
+    </div>
+  );
   return (
+    <>
+      {IS_OFFLINE_BUILD ? null : (
+        <Suspense fallback={<div className="dark grid h-[620px] place-items-center bg-ocean font-mono text-xs uppercase tracking-[0.12em] text-muted">{t('site.explore.loading')}</div>}>
+          <GlobeExplorer mode="home" intro={intro} />
+        </Suspense>
+      )}
     <div className="mx-auto w-full max-w-[1280px] px-4 pb-10 sm:px-6">
-      <section className="grid items-center gap-10 pb-12 pt-10 sm:pt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14 lg:pt-20">
+      <section className="grid items-center gap-10 py-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14" aria-labelledby="lead-title">
         <div>
-          <motion.p {...fade(0)} className="eyebrow mb-4">
-            {t('app.tagline')}
-          </motion.p>
-          <motion.h1 {...fade(1)} className="max-w-[16ch] text-[clamp(34px,5vw+10px,60px)] font-bold leading-[1.02] tracking-[-0.03em]">
-            {t('home.hero_title')}
-          </motion.h1>
-          <motion.p {...fade(2)} className="mt-5 max-w-[56ch] text-[18px] leading-relaxed text-muted">
-            {t('home.hero_body')}
-          </motion.p>
-          <motion.p {...fade(3)} className="mt-4 max-w-[56ch] border-l-2 border-accent pl-4 text-[16px] leading-relaxed">
-            {t('home.learning_goal')}
-          </motion.p>
-          <motion.div {...fade(4)} className="mt-7 flex flex-wrap gap-3">
-            <a href="#/question" className={buttonVariants({ variant: 'primary', size: 'lg' })} data-testid="cta-start">
-              {t('home.cta_start')}
-              <ArrowRight aria-hidden="true" />
-            </a>
-            <a href="#/compare" className={buttonVariants({ variant: 'outline', size: 'lg' })} data-testid="cta-compare">
-              <ArrowLeftRight aria-hidden="true" />
-              {t('home.cta_compare')}
-            </a>
-            <a href={lead ? href({ screen: 'watch', case: lead.id }) : '#/watch'} className={buttonVariants({ variant: 'ghost', size: 'lg' })} data-testid="cta-watch">
-              <Play aria-hidden="true" />
-              {t('home.cta_watch')}
-            </a>
-          </motion.div>
+          <p className="eyebrow mb-3">{t('site.home.lead_case')}</p>
+          <h2 id="lead-title" className="text-h1 max-w-[18ch]">
+            {IS_OFFLINE_BUILD ? t('home.hero_title') : t('site.home.lead_title')}
+          </h2>
+          <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed text-muted">{t('home.hero_body')}</p>
+          <p className="mt-4 max-w-[56ch] border-l-2 border-accent pl-4 text-[16px] leading-relaxed">{t('home.learning_goal')}</p>
         </div>
-        <motion.div {...fade(3)} className="lg:pl-4">
-          {lead ? <LeadCase c={lead} /> : <Skeleton className="h-[360px] w-full rounded-[10px]" />}
-        </motion.div>
+        <motion.div {...fade(3)}>{lead ? <LeadCase c={lead} /> : <Skeleton className="h-[360px] w-full rounded-[10px]" />}</motion.div>
       </section>
 
       {IS_OFFLINE_BUILD ? (
@@ -172,49 +186,7 @@ export function Home() {
         <GradeLegend />
       </section>
 
-      {!IS_OFFLINE_BUILD ? (
-        <section className="border-t border-line py-12">
-          <a
-            href="#/map"
-            className="group grid items-center gap-6 overflow-hidden rounded-[14px] border border-line bg-surface p-6 text-ink no-underline shadow-card transition-shadow hover:no-underline hover:shadow-lift sm:grid-cols-[1fr_auto] sm:p-8"
-            data-testid="home-map-link"
-          >
-            <div>
-              <p className="eyebrow">{t('map.label')}</p>
-              <h2 className="mt-2 text-h2">{t('site.home.where_title')}</h2>
-              <p className="mt-2 max-w-[56ch] text-[16px] text-muted">{t('site.home.where_body')}</p>
-              <span className="mt-4 inline-flex items-center gap-2 font-semibold text-link">
-                <Grid3x3 className="size-5" aria-hidden="true" />
-                {t('site.home.open_map')}
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-              </span>
-            </div>
-            <MapTeaser />
-          </a>
-        </section>
-      ) : null}
     </div>
-  );
-}
-
-/** A decorative grid in the map's own colours and hatching; it carries no data. */
-function MapTeaser() {
-  const cells = Array.from({ length: 8 * 14 }, (_, i) => i);
-  return (
-    <div className="hidden grid-cols-[repeat(14,14px)] gap-[2px] sm:grid" aria-hidden="true">
-      {cells.map((i) => {
-        const r = Math.floor(i / 14);
-        const c = i % 14;
-        const v = Math.sin(r * 0.9 + c * 0.45) + Math.cos(c * 0.3 - r * 0.6);
-        const hatch = (r * 7 + c * 3) % 11 === 0;
-        return (
-          <span
-            key={i}
-            className={cn('size-[14px] rounded-[2px]', hatch && 'hatch')}
-            style={hatch ? undefined : { background: v > 0 ? `color-mix(in srgb, var(--no-verdict) ${Math.min(85, 25 + v * 30)}%, var(--surface))` : `color-mix(in srgb, var(--link) ${Math.min(85, 25 - v * 30)}%, var(--surface))` }}
-          />
-        );
-      })}
-    </div>
+    </>
   );
 }

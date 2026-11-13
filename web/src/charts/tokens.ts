@@ -1,6 +1,6 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
 // Reads the colour tokens as plain colours for charts and the map canvas, and follows theme changes.
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 import { usePrefs } from '../state/prefs';
 
 export interface Tokens {
@@ -36,23 +36,25 @@ const NAMES: Record<keyof Omit<Tokens, 'dark'>, string> = {
   exploration: '--exploration',
 };
 
-export function readTokens(): Tokens {
-  const cs = getComputedStyle(document.documentElement);
-  const out = { dark: document.documentElement.classList.contains('dark') } as Tokens;
+export function readTokens(scope?: HTMLElement | null): Tokens {
+  const el = scope ?? document.documentElement;
+  const cs = getComputedStyle(el);
+  const out = { dark: Boolean(el.closest('.dark')) && !el.closest('.paper') } as Tokens;
   for (const [k, v] of Object.entries(NAMES)) (out as unknown as Record<string, string>)[k] = cs.getPropertyValue(v).trim() || '#888';
   return out;
 }
 
-export function useTokens(): Tokens {
+/** Colours as they apply where the chart sits (a chart on the ivory answer sheet takes the sheet's colours). */
+export function useTokens(scope?: RefObject<HTMLElement | null>): Tokens {
   const theme = usePrefs((s) => s.theme);
   const [tokens, setTokens] = useState<Tokens>(() => readTokens());
   useEffect(() => {
-    const update = () => setTokens(readTokens());
+    const update = () => setTokens(readTokens(scope?.current));
     update();
     const mo = new MutationObserver(update);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     return () => mo.disconnect();
-  }, [theme]);
+  }, [theme, scope]);
   return tokens;
 }
 
