@@ -1,0 +1,172 @@
+{
+ "schema": "casefile/offline_set@3",
+ "buildId": "r3",
+ "synthetic": false,
+ "cases": [
+  {
+   "id": "lead_contrast_rain",
+   "title": {
+    "en": "Has rain changed differently in Bangladesh and West Bengal (India)?",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   },
+   "files": [
+    "cases/lead_contrast_rain.json",
+    "contrasts/rain/pair_bgd_vs_wb/ANN.json",
+    "verdicts/rain/country__BGD/ANN.json",
+    "verdicts/rain/cmp__west_bengal/ANN.json"
+   ]
+  },
+  {
+   "id": "lead_contrast_heat",
+   "title": {
+    "en": "Has it warmed differently in Bangladesh and West Bengal (India)?",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?"
+   },
+   "files": [
+    "cases/lead_contrast_heat.json",
+    "contrasts/air_temp/pair_bgd_vs_wb/ANN.json",
+    "verdicts/air_temp/country__BGD/ANN.json",
+    "verdicts/air_temp/cmp__west_bengal/ANN.json"
+   ]
+  },
+  {
+   "id": "bangladesh_seasons",
+   "title": {
+    "en": "Which seasons changed in Bangladesh?",
+    "bn": "বাংলাদেশে কোন ঋতুগুলো বদলেছে?"
+   },
+   "files": [
+    "cases/bangladesh_seasons.json",
+    "lineups/country__BGD.json",
+    "verdicts/air_temp/country__BGD/ANN.json",
+    "verdicts/air_temp/country__BGD/MAM.json",
+    "verdicts/air_temp/country__BGD/JJAS.json",
+    "verdicts/air_temp/country__BGD/ON.json",
+    "verdicts/air_temp/country__BGD/DJF.json",
+    "verdicts/rain/country__BGD/ANN.json",
+    "verdicts/rain/country__BGD/MAM.json",
+    "verdicts/rain/country__BGD/JJAS.json",
+    "verdicts/rain/country__BGD/ON.json",
+    "verdicts/rain/country__BGD/DJF.json"
+   ]
+  }
+ ],
+ "files": [
+  {
+   "path": "build.json",
+   "sha256": "24645e6c8678da40007f420202482b8786fa843087d40b19775e8d4be3941c5f",
+   "bytes": 2056
+  },
+  {
+   "path": "cases/bangladesh_seasons.json",
+   "sha256": "09beb067c70d542d9fb3e7fd69ab8eac8d499bc5c7ed70013c348ce3bac05eeb",
+   "bytes": 2371
+  },
+  {
+   "path": "cases/lead_contrast_heat.json",
+   "sha256": "9bdcc983fb4eb9e68a824975ef7be296f585003395d61b29eca3fca2a7d0cab7",
+   "bytes": 3210
+  },
+  {
+   "path": "cases/lead_contrast_rain.json",
+   "sha256": "39e457277abbe60c7bfe73165eda395479823532692c35e5204b4e420a2da408",
+   "bytes": 3721
+  },
+  {
+   "path": "catalog.json",
+   "sha256": "dc8e87decdafa091b5cbb01e7ff7c032503e7f60aa8f7eae8a59c60c60d58fb5",
+   "bytes": 51739
+  },
+  {
+   "path": "contrasts/air_temp/pair_bgd_vs_wb/ANN.json",
+   "sha256": "087f239f42216d47cfe310e71ef3f1883ac330ac37644c948ba9a710830f44f5",
+   "bytes": 15991
+  },
+  {
+   "path": "contrasts/rain/pair_bgd_vs_wb/ANN.json",
+   "sha256": "4a90d6a94aaa7595c8aef35284a6d72a7e0b9728553ff7128c1352d7ed2b8e67",
+   "bytes": 16439
+  },
+  {
+   "path": "lineups/country__BGD.json",
+   "sha256": "4eb94f7203cf3f0b493f0a4549a98a7533d66b15b56c622a6234bdaa9f35e50f",
+   "bytes": 4841
+  },
+  {
+   "path": "methods/tables.json",
+   "sha256": "3208f800a3b9e5fdb00403e1254bf7d5271ae302ccf3784a8baee159be18d344",
+   "bytes": 56829
+  },
+  {
+   "path": "prereg.json",
+   "sha256": "3e994b665f9716f204f403fafb5b3c89977341bb5bb1dfc7b68e9c151b65d7c1",
+   "bytes": 9156
+  },
+  {
+   "path": "regions/index.json",
+   "sha256": "329adbac2dd7d30f0927b193feb0bcbc5551b09f3f8bc21da1caf0ccec4311eb",
+   "bytes": 18531
+  },
+  {
+   "path": "verdicts/air_temp/cmp__west_bengal/ANN.json",
+   "sha256": "947eb2cac54326ce7ffba58c85c38e941ac96c3a01fe1d31120dd50b602f3cb4",
+   "bytes": 14758
+  },
+  {
+   "path": "verdicts/air_temp/country__BGD/ANN.json",
+   "sha256": "c83cf4fd1f9d8371c570866972dad7427532aadae23e398a686c437c7d343ab2",
+   "bytes": 14701
+  },
+  {
+   "path": "verdicts/air_temp/country__BGD/DJF.json",
+   "sha256": "6ed4304d4d1dde42c5c4bb2e657240f0c1670123feec7535b558d22aa8683d38",
+   "bytes": 13907
+  },
+  {
+   "path": "verdicts/air_temp/country__BGD/JJAS.json",
+   "sha256": "12979d7dedf030dc0c1a732fd026d3908265294aef57737ba863f49d56dba5af",
+   "bytes": 8719
+  },
+  {
+   "path": "verdicts/air_temp/country__BGD/MAM.json",
+   "sha256": "b469485e7451b793dbb0a30f2a6c109e7a91a37d79e83d88b766dffb9d3be049",
+   "bytes": 14691
+  },
+  {
+   "path": "verdicts/air_temp/country__BGD/ON.json",
+   "sha256": "ec457332e048794ee5594fa49d7665954e048237b7a543946b951acff4636a6d",
+   "bytes": 14373
+  },
+  {
+   "path": "verdicts/rain/cmp__west_bengal/ANN.json",
+   "sha256": "3ef1af800f45fef8a8905b751f700d1e544aaf25da97d12bcc2f0003eea82d60",
+   "bytes": 14100
+  },
+  {
+   "path": "verdicts/rain/country__BGD/ANN.json",
+   "sha256": "8fccd2f8d6464de81d6c795bb4905c44e5bd896f1716e839aabb535eb96dee19",
+   "bytes": 14407
+  },
+  {
+   "path": "verdicts/rain/country__BGD/DJF.json",
+   "sha256": "0f5ee27690021bb84ed00956a4ba09dc7336b69f30e00915170605b049edf174",
+   "bytes": 13910
+  },
+  {
+   "path": "verdicts/rain/country__BGD/JJAS.json",
+   "sha256": "0b60de5246b76c05e099cb211692e885207fba71215769230c1f94f723df920a",
+   "bytes": 8823
+  },
+  {
+   "path": "verdicts/rain/country__BGD/MAM.json",
+   "sha256": "38e96e242925f49eaffed4d6cae5c3a0fb3f135ee495512a580d57b40e57f877",
+   "bytes": 13986
+  },
+  {
+   "path": "verdicts/rain/country__BGD/ON.json",
+   "sha256": "7b09f514a8b68414cab8fd27d42bd137a8498b5c5a5deb2e7c2850c4e58f9a36",
+   "bytes": 8782
+  }
+ ],
+ "totalBytes": 340041
+}

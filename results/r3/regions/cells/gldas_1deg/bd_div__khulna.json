@@ -1,0 +1,1 @@
+{"schema": "casefile/mask@3", "region": "bd_div:khulna", "grid": "gldas_1deg", "cells": [[81, 269, 0.16], [82, 268, 0.04], [82, 269, 0.88], [83, 268, 0.24], [83, 269, 0.48], [84, 268, 0.04]], "areaKm2": 20963.7, "effectiveCells": 1.84, "synthetic": false}

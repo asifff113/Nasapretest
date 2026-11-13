@@ -1,0 +1,565 @@
+{
+ "schema": "casefile/contrast@3",
+ "synthetic": false,
+ "id": "air_temp__pair_bgd_vs_wb__ANN",
+ "pair": {
+  "id": "pair_bgd_vs_wb",
+  "a": "country:BGD",
+  "b": "cmp:west_bengal",
+  "preRegistered": true,
+  "lead": true
+ },
+ "variable": "air_temp",
+ "season": "ANN",
+ "window": {
+  "id": "main",
+  "first": 1980,
+  "last": 2025
+ },
+ "family": "confirmatory",
+ "multiplicity": {
+  "method": "holm",
+  "familySize": 12,
+  "pAdjusted": 0.3649889260846583,
+  "alpha": 0.05
+ },
+ "status": "verdict",
+ "grade": "cant_tell_yet",
+ "reason": null,
+ "estimand": "trend_in_difference",
+ "difference": {
+  "years": [
+   1980,
+   1981,
+   1982,
+   1983,
+   1984,
+   1985,
+   1986,
+   1987,
+   1988,
+   1989,
+   1990,
+   1991,
+   1992,
+   1993,
+   1994,
+   1995,
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   0.09310472002305303,
+   0.580330408537737,
+   0.3139434520203004,
+   0.17474613762727742,
+   0.3526275701556152,
+   0.36061732537119795,
+   0.47091423328621573,
+   0.3983938421152402,
+   0.44289824542649825,
+   0.613567543253648,
+   0.8034220678824084,
+   0.5155055603828949,
+   0.7491952513586355,
+   0.5639401008219274,
+   0.904526663126834,
+   0.7249171922643285,
+   0.6208437930292696,
+   0.20692274821263013,
+   0.22798637250179965,
+   0.43626792555403426,
+   0.18766799580884808,
+   0.11420858449424642,
+   0.15480647246811685,
+   0.1325632729533801,
+   0.1911398812766727,
+   0.18381842348295407,
+   0.28941298080162525,
+   0.23761890623206838,
+   0.4404970880191783,
+   0.22591786551859272,
+   0.03056910304959004,
+   0.2552173851345394,
+   0.2371459208842701,
+   0.3864297652043831,
+   0.5278444766390678,
+   0.12032269327314538,
+   0.05394710593203911,
+   -0.13946841854907532,
+   0.016225775006446952,
+   0.0636837278523501,
+   0.28078637267494244,
+   0.21121403422214158,
+   0.28393608142552296,
+   -0.09550528871254471,
+   -0.10208098305563951,
+   0.44369147468792036
+  ],
+  "units": "°C"
+ },
+ "domain": {
+  "inDomain": true,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "air_temp",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure, evapotranspiration, runoff"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "ANN",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 46,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.512014316712335,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": "A and B",
+    "limit": "both in the domain"
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 46,
+  "mk": {
+   "S": -315,
+   "varS": 11155.0,
+   "tau": -0.30434782608695654,
+   "z": -2.972999668388555,
+   "p": 0.002949047699755249,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.4240130717808276,
+   "phi": 0.512014316712335,
+   "vif": 3.0049962878850818,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 33520.73359135809,
+   "z": -1.7150346185165761,
+   "p": 0.08633888010091945,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -0.008902942689558253,
+   "intercept": 18.096144614745143,
+   "ciLowPerYear": -0.019503511123459827,
+   "ciHighPerYear": 0.0030173958759911624,
+   "multiplier": 2.25,
+   "nPairs": 1035
+  },
+  "change": {
+   "ratePerDecade": -0.08902942689558253,
+   "rateLowPerDecade": -0.19503511123459827,
+   "rateHighPerDecade": 0.030173958759911624,
+   "total": -0.40063242103012137,
+   "totalLow": -0.8776580005556922,
+   "totalHigh": 0.1357828144196023,
+   "span": 45,
+   "units": "°C",
+   "percent": null,
+   "baseline": null,
+   "residSd": 0.20778901633608415,
+   "snr": 1.9280731392564394
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -0.009053216387347152,
+   "intercept": 18.439637160220865,
+   "se": 0.002333665275807382,
+   "r1": 0.4004435864697823,
+   "phi": 0.48620011851452344,
+   "nEff": 15.902834519993986,
+   "seAdj": 0.004151578226388817,
+   "t": -2.18066862616291,
+   "df": 13.902834519993986,
+   "p": 0.04689059769810452,
+   "ciLowPerYear": -0.017963307917700275,
+   "ciHighPerYear": -0.0001431248569940275,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -2.972999668388555,
+   "p": 0.002949047699755249,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": null
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "note",
+   "year": 1983,
+   "pMax": 0.15139882815154465,
+   "pMin": 0.04653070762357902
+  },
+  "windows": {
+   "status": "pass",
+   "agree": 1,
+   "ran": 5,
+   "items": [
+    {
+     "id": "s3",
+     "first": 1983,
+     "last": 2025,
+     "ran": true,
+     "ratePerDecade": -0.10372248190803196,
+     "rateLowPerDecade": -0.21908573032619216,
+     "rateHighPerDecade": 0.03080533328515713,
+     "p": 0.07873686386201936,
+     "agrees": false
+    },
+    {
+     "id": "s6",
+     "first": 1986,
+     "last": 2025,
+     "ran": true,
+     "ratePerDecade": -0.1354600581939077,
+     "rateLowPerDecade": -0.2552297143859499,
+     "rateHighPerDecade": 0.011920429624389516,
+     "p": 0.03816472953205203,
+     "agrees": true
+    },
+    {
+     "id": "e3",
+     "first": 1980,
+     "last": 2022,
+     "ran": true,
+     "ratePerDecade": -0.08092686364769008,
+     "rateLowPerDecade": -0.20688998164874542,
+     "rateHighPerDecade": 0.05352377267000569,
+     "p": 0.1676988169509397,
+     "agrees": false
+    },
+    {
+     "id": "e6",
+     "first": 1980,
+     "last": 2019,
+     "ran": true,
+     "ratePerDecade": -0.0949432095387083,
+     "rateLowPerDecade": -0.2456725136950766,
+     "rateHighPerDecade": 0.07195557266690228,
+     "p": 0.14323250751126543,
+     "agrees": false
+    },
+    {
+     "id": "s3e3",
+     "first": 1983,
+     "last": 2022,
+     "ran": true,
+     "ratePerDecade": -0.09780717933304153,
+     "rateLowPerDecade": -0.2599883506442611,
+     "rateHighPerDecade": 0.06998883344823643,
+     "p": 0.16136889182784453,
+     "agrees": false
+    }
+   ]
+  },
+  "pettitt": {
+   "flagged": true,
+   "year": 1997,
+   "U": 367.0,
+   "p": 0.0005915747045341976,
+   "method": "pyhomogeneity.pettitt_test(sim=None)"
+  }
+ },
+ "doubts": [],
+ "regions": {
+  "a": {
+   "id": "country:BGD",
+   "verdict": "verdicts/air_temp/country__BGD/ANN.json",
+   "ratePerDecade": -0.1718690147890064,
+   "rateLowPerDecade": -0.40775989446567606,
+   "rateHighPerDecade": 0.06998449183951369,
+   "pAdjusted": 0.3649889260846583,
+   "status": "verdict",
+   "grade": "cant_tell_yet",
+   "inDomain": true
+  },
+  "b": {
+   "id": "cmp:west_bengal",
+   "verdict": "verdicts/air_temp/cmp__west_bengal/ANN.json",
+   "ratePerDecade": -0.13027343076419232,
+   "rateLowPerDecade": -0.27080347743671596,
+   "rateHighPerDecade": 0.013709005997977803,
+   "pAdjusted": 0.22682168609644834,
+   "status": "verdict",
+   "grade": "cant_tell_yet",
+   "inDomain": true
+  }
+ },
+ "labels": {
+  "oppositeFittedDirections": false,
+  "supportedOppositeTrends": false,
+  "ratesDiffer": false
+ },
+ "sensitivity": null,
+ "practical": {
+  "threshold": 0.1,
+  "units": "°C per decade",
+  "position": "overlaps"
+ },
+ "spine": {
+  "status": "verdict",
+  "grade": "cant_tell_yet",
+  "reason": null,
+  "ratePerDecade": -0.08902942689558253,
+  "rateLowPerDecade": -0.19503511123459827,
+  "rateHighPerDecade": 0.030173958759911624,
+  "units": "°C",
+  "family": "confirmatory",
+  "familySize": 12,
+  "inDomain": true
+ },
+ "chart": {
+  "values": [
+   -0.217466624535128,
+   0.26975906397955596,
+   0.003372107462119356,
+   -0.1358252069309036,
+   0.04205622559743416,
+   0.05004598081301692,
+   0.1603428887280347,
+   0.08782249755705918,
+   0.13232690086831722,
+   0.302996198695467,
+   0.4928507233242274,
+   0.20493421582471383,
+   0.4386239068004545,
+   0.25336875626374633,
+   0.593955318568653,
+   0.41434584770614746,
+   0.3102724484710886,
+   -0.1036485963455509,
+   -0.08258497205638138,
+   0.12569658099585324,
+   -0.12290334874933295,
+   -0.1963627600639346,
+   -0.15576487209006418,
+   -0.17800807160480092,
+   -0.11943146328150833,
+   -0.12675292107522695,
+   -0.021158363756555776,
+   -0.07295243832611265,
+   0.12992574346099728,
+   -0.08465347903958831,
+   -0.280002241508591,
+   -0.05535395942364163,
+   -0.07342542367391092,
+   0.07585842064620207,
+   0.21727313208088672,
+   -0.19024865128503565,
+   -0.2566242386261419,
+   -0.45003976310725635,
+   -0.2943455695517341,
+   -0.24688761670583093,
+   -0.029784971883238587,
+   -0.09935731033603945,
+   -0.02663526313265807,
+   -0.40607663327072574,
+   -0.41265232761382054,
+   0.13312013012973933
+  ],
+  "offset": 0.31057134455818103,
+  "pivot": [
+   2002.5,
+   -0.04256946565344011
+  ],
+  "line": [
+   [
+    1980,
+    0.1577467448616221
+   ],
+   [
+    2025,
+    -0.24288567616850232
+   ]
+  ],
+  "band": {
+   "low": [
+    [
+     1980,
+     0.396259534624406
+    ],
+    [
+     2025,
+     -0.4813984659312862
+    ]
+   ],
+   "high": [
+    [
+     1980,
+     -0.11046087286324126
+    ],
+    [
+     2025,
+     0.02532194155636104
+    ]
+   ]
+  }
+ },
+ "split": {
+  "rule": "disjoint_cells_larger_fraction",
+  "grids": {
+   "merra2_native": {
+    "sharedCells": 14,
+    "effectiveCellsA": 36.76,
+    "effectiveCellsB": 22.32,
+    "passes": true
+   },
+   "imerg_native": {
+    "sharedCells": 98,
+    "effectiveCellsA": 1190.84,
+    "effectiveCellsB": 752.12,
+    "passes": true
+   }
+  },
+  "passes": true
+ },
+ "text": {
+  "en": {
+   "headline": "Can't tell yet whether air temperature near the ground changed differently in Bangladesh and West Bengal (India). That is not the same as no difference.",
+   "howMuch": [
+    "Bangladesh: −0.17 °C per decade (95% range −0.41 °C to +0.07 °C). West Bengal (India): −0.13 °C per decade (95% range −0.27 °C to +0.01 °C).",
+    "Each place's own rate is shown beside the difference, never subtracted from it."
+   ],
+   "howSure": [
+    "One of 12 tests we registered in advance; after correcting for all of them, p = 0.36.",
+    "Mann–Kendall test allowing for year-to-year memory, before correction: p = 0.086.",
+    "That is above the 0.05 line we set in advance, so we can't tell yet."
+   ],
+   "checks": [
+    "No missing years.",
+    "No documented data change falls inside these years.",
+    "Without 1983 the result would look stronger; one year matters.",
+    "1 of 5 other windows agree.",
+    "A jump around 1997 stands out (Pettitt test, a flag only: it does not change the verdict)."
+   ],
+   "practical": [
+    "We decided in advance that a change of 0.10 °C per decade matters. The 95% range includes smaller changes, so it may or may not matter."
+   ],
+   "overturn": [
+    "The answer leans most on 1983: without it, p = 0.047.",
+    "The weakest of the other windows, 1980–2022, gives −0.081 °C per decade.",
+    "If year-to-year memory were stronger or slower than our model assumes, the test would be too eager. Our check found no sign of that here."
+   ],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা ভিন্নভাবে বদলেছে কি না, এখনো বলা যাচ্ছে না। এর মানে ‘কোনো পার্থক্য নেই’ নয়।",
+   "howMuch": [
+    "বাংলাদেশ: প্রতি দশকে −০.১৭ °C (৯৫% পরিসর −০.৪১ °C থেকে +০.০৭ °C)। পশ্চিমবঙ্গ (ভারত): প্রতি দশকে −০.১৩ °C (৯৫% পরিসর −০.২৭ °C থেকে +০.০১ °C)।",
+    "প্রতিটি জায়গার নিজস্ব হার পার্থক্যের পাশে দেখানো হয়, কখনো তা থেকে বিয়োগ করা হয় না।"
+   ],
+   "howSure": [
+    "আগে থেকে নিবন্ধিত ১২টি পরীক্ষার একটি; সবগুলোর জন্য সংশোধনের পর p = ০.৩৬।",
+    "বছর-থেকে-বছরের স্মৃতি বিবেচনা করা ম্যান–কেন্ডাল পরীক্ষা, সংশোধনের আগে: p = ০.০৮৬।",
+    "এটি আমাদের আগে থেকে ঠিক করা ০.০৫ সীমার ওপরে, তাই এখনো বলা যাচ্ছে না।"
+   ],
+   "checks": [
+    "কোনো বছর অনুপস্থিত নয়।",
+    "এই বছরগুলোর মধ্যে ডেটার কোনো নথিভুক্ত পরিবর্তন নেই।",
+    "১৯৮৩ বাদ দিলে ফলটি আরও জোরালো দেখাত; একটি বছরের প্রভাব আছে।",
+    "অন্য ৫টি সময়সীমার মধ্যে ১টি একমত।",
+    "১৯৯৭-এর কাছাকাছি একটি লাফ চোখে পড়ে (পেটিট পরীক্ষা, শুধু সংকেত: রায় বদলায় না)।"
+   ],
+   "practical": [
+    "আমরা আগেই ঠিক করেছি যে প্রতি দশকে ০.১০ °C পরিবর্তন গুরুত্বপূর্ণ। ৯৫% পরিসরে এর চেয়ে ছোট পরিবর্তনও আছে, তাই এটি গুরুত্বপূর্ণ হতেও পারে, না-ও পারে।"
+   ],
+   "overturn": [
+    "উত্তরটি সবচেয়ে বেশি নির্ভর করে ১৯৮৩-এর ওপর: সেটি বাদ দিলে p = ০.০৪৭।",
+    "অন্য সময়সীমাগুলোর মধ্যে সবচেয়ে দুর্বলটি, ১৯৮০–২০২২, প্রতি দশকে −০.০৮১ °C দেয়।",
+    "বছর-থেকে-বছরের স্মৃতি আমাদের মডেলের ধারণার চেয়ে জোরালো বা ধীর হলে পরীক্ষাটি অতি-উৎসাহী হতো। আমাদের যাচাই অনুযায়ী এখানে তেমন কোনো চিহ্ন নেই।"
+   ],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "earthaccess",
+    "granules": 552,
+    "accessed": "2026-11-13T13:15:26Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "ecfe408fc9d10ee41aea3af7c872be6f5aedb7dd0f9bc3cd1bd1ffb70a87d71b",
+  "preregSha256": "2f78c41e9f74e32fdabe5e6832ca51f80e393a7100b5aa27a484b94ed9730177",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r3",
+  "created": "2026-11-13T15:29:20Z"
+ }
+}

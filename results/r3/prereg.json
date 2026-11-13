@@ -1,0 +1,275 @@
+{
+ "schema": "casefile/prereg@3",
+ "status": "committed",
+ "commit": "613ddab2369dab1b6487fc94937b67191e0c2696",
+ "signed_by": [
+  "asifff113",
+  "hirok121",
+  "Shakilkhan24"
+ ],
+ "hashes": {
+  "analysis_yaml_sha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "input_manifest_sha256": "ecfe408fc9d10ee41aea3af7c872be6f5aedb7dd0f9bc3cd1bd1ffb70a87d71b",
+  "regions_support_sha256": "329adbac2dd7d30f0927b193feb0bcbc5551b09f3f8bc21da1caf0ccec4311eb"
+ },
+ "alpha": {
+  "confirmatory": 0.05,
+  "secondary_q": 0.05,
+  "map_q": 0.1
+ },
+ "variables": [
+  {
+   "id": "air_temp",
+   "product": "MERRA-2 M2TMNXSLV 5.12.4, T2M",
+   "role": "analysed",
+   "main_window": {
+    "first": 1980,
+    "last": 2025
+   },
+   "practical_threshold": {
+    "units": "°C per decade",
+    "default": 0.1,
+    "by_season": {},
+    "reason": "About half a degree over the record: the smallest shift we consider worth reporting to a general reader."
+   }
+  },
+  {
+   "id": "rain",
+   "product": "MERRA-2 M2TMNXFLX 5.12.4, PRECTOTCORR",
+   "role": "analysed",
+   "main_window": {
+    "first": 1980,
+    "last": 2025
+   },
+   "practical_threshold": {
+    "units": "mm per decade",
+    "default": 40,
+    "by_season": {},
+    "reason": "Two percent of the mean yearly rain per decade: about a tenth of the yearly total over the record."
+   }
+  },
+  {
+   "id": "rain_imerg",
+   "product": "GPM IMERG V07 Final monthly (GPM_3IMERGM)",
+   "role": "sensitivity",
+   "main_window": {
+    "first": 1998,
+    "last": 2024
+   },
+   "practical_threshold": {
+    "units": "mm per decade",
+    "default": 40,
+    "by_season": {},
+    "reason": "Same as rain."
+   }
+  }
+ ],
+ "seasons": {
+  "main": "ANN",
+  "secondary": [
+   "MAM",
+   "JJAS",
+   "ON",
+   "DJF"
+  ],
+  "djf_starts_one_year_later": true
+ },
+ "regions": {
+  "support_rule": {
+   "min_native_cells": 4,
+   "max_spill_share": 0.333
+  },
+  "set": [
+   {
+    "id": "country:BGD",
+    "role": "home",
+    "effective_native_cells": {
+     "merra2_native": 38.0,
+     "imerg_native": 1199.28
+    }
+   },
+   {
+    "id": "cmp:west_bengal",
+    "role": "comparison",
+    "effective_native_cells": {
+     "merra2_native": 24.24,
+     "imerg_native": 765.48
+    }
+   },
+   {
+    "id": "bd_div:khulna",
+    "role": "division",
+    "effective_native_cells": {
+     "merra2_native": 6.12,
+     "imerg_native": 189.0
+    }
+   },
+   {
+    "id": "bd_div:rajshahi",
+    "role": "division",
+    "effective_native_cells": {
+     "merra2_native": 5.4,
+     "imerg_native": 165.16
+    }
+   }
+  ]
+ },
+ "pairs": [
+  {
+   "id": "pair_bgd_vs_wb",
+   "a": "country:BGD",
+   "b": "cmp:west_bengal",
+   "lead": true,
+   "question": {
+    "en": "Has rain changed differently in Bangladesh and in West Bengal?",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   }
+  },
+  {
+   "id": "pair_khulna_vs_rajshahi",
+   "a": "bd_div:khulna",
+   "b": "bd_div:rajshahi",
+   "lead": false,
+   "question": {
+    "en": "Has rain changed differently in Khulna and in Rajshahi?",
+    "bn": "খুলনা ও রাজশাহী বিভাগে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   }
+  }
+ ],
+ "windows": {
+  "alternatives": [
+   {
+    "id": "s3",
+    "start_shift": 3,
+    "end_shift": 0
+   },
+   {
+    "id": "s6",
+    "start_shift": 6,
+    "end_shift": 0
+   },
+   {
+    "id": "e3",
+    "start_shift": 0,
+    "end_shift": -3
+   },
+   {
+    "id": "e6",
+    "start_shift": 0,
+    "end_shift": -6
+   },
+   {
+    "id": "s3e3",
+    "start_shift": 3,
+    "end_shift": -3
+   }
+  ]
+ },
+ "headline_cases": [
+  {
+   "kind": "contrast",
+   "pair": "pair_bgd_vs_wb",
+   "variable": "rain",
+   "season": "ANN"
+  },
+  {
+   "kind": "contrast",
+   "pair": "pair_bgd_vs_wb",
+   "variable": "air_temp",
+   "season": "ANN"
+  }
+ ],
+ "family_preview": {
+  "confirmatory": [
+   "air_temp | country:BGD | ANN | main",
+   "air_temp | cmp:west_bengal | ANN | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | ANN | main",
+   "rain | country:BGD | ANN | main",
+   "rain | cmp:west_bengal | ANN | main",
+   "rain | country:BGD-minus-cmp:west_bengal | ANN | main",
+   "air_temp | bd_div:khulna | ANN | main",
+   "air_temp | bd_div:rajshahi | ANN | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | ANN | main",
+   "rain | bd_div:khulna | ANN | main",
+   "rain | bd_div:rajshahi | ANN | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | ANN | main"
+  ],
+  "secondary": [
+   "air_temp | country:BGD | MAM | main",
+   "air_temp | country:BGD | JJAS | main",
+   "air_temp | country:BGD | ON | main",
+   "air_temp | country:BGD | DJF | main",
+   "air_temp | cmp:west_bengal | MAM | main",
+   "air_temp | cmp:west_bengal | JJAS | main",
+   "air_temp | cmp:west_bengal | ON | main",
+   "air_temp | cmp:west_bengal | DJF | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | MAM | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | JJAS | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | ON | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | DJF | main",
+   "rain | country:BGD | MAM | main",
+   "rain | country:BGD | JJAS | main",
+   "rain | country:BGD | ON | main",
+   "rain | country:BGD | DJF | main",
+   "rain | cmp:west_bengal | MAM | main",
+   "rain | cmp:west_bengal | JJAS | main",
+   "rain | cmp:west_bengal | ON | main",
+   "rain | cmp:west_bengal | DJF | main",
+   "rain | country:BGD-minus-cmp:west_bengal | MAM | main",
+   "rain | country:BGD-minus-cmp:west_bengal | JJAS | main",
+   "rain | country:BGD-minus-cmp:west_bengal | ON | main",
+   "rain | country:BGD-minus-cmp:west_bengal | DJF | main",
+   "air_temp | bd_div:khulna | MAM | main",
+   "air_temp | bd_div:khulna | JJAS | main",
+   "air_temp | bd_div:khulna | ON | main",
+   "air_temp | bd_div:khulna | DJF | main",
+   "air_temp | bd_div:rajshahi | MAM | main",
+   "air_temp | bd_div:rajshahi | JJAS | main",
+   "air_temp | bd_div:rajshahi | ON | main",
+   "air_temp | bd_div:rajshahi | DJF | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | MAM | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | JJAS | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | ON | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | DJF | main",
+   "rain | bd_div:khulna | MAM | main",
+   "rain | bd_div:khulna | JJAS | main",
+   "rain | bd_div:khulna | ON | main",
+   "rain | bd_div:khulna | DJF | main",
+   "rain | bd_div:rajshahi | MAM | main",
+   "rain | bd_div:rajshahi | JJAS | main",
+   "rain | bd_div:rajshahi | ON | main",
+   "rain | bd_div:rajshahi | DJF | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | MAM | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | JJAS | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | ON | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | DJF | main"
+  ]
+ },
+ "amendments": [
+  {
+   "when": "before any real trend",
+   "what": "secondary seasons: \"ON\" quoted",
+   "reason": "YAML reads a bare ON as true; the build stopped before any statistic. The season is unchanged (post-monsoon, Oct-Nov).",
+   "sha256_before": "93c5e55d3ca4b7014dbfcebf6914dd613fc5d86cdf43b4ee873896d66c54eebb"
+  },
+  {
+   "when": "after",
+   "what": "key names as schemas/prereg.schema.json requires (seasons.main, djf_starts_one_year_later, alpha.map_q = analysis.yaml map.fdr_q) and the manifest hash",
+   "reason": "The first build's prereg.json failed its schema and the manifest provider was renamed to the provenance route 'earthaccess'. No window, threshold, season, pair or alpha changed; no verdict had been read.",
+   "sha256_before": "f1c54e324728abbf6bff0515fb85ba357b1e03e1074bfe26c825ec93c08317b5"
+  },
+  {
+   "when": "after",
+   "what": "input_manifest_sha256 updated: MERRA-2 TQV (water vapour) and SLP (air pressure) added as exploration inputs",
+   "reason": "New exploration layers for the globe only: no test is added to either family. The 552 M2TMNXSLV T2M files, the 552 PRECTOTCORR files and the 333 IMERG files keep their SHA-256 (listed per file in the manifest).",
+   "sha256_before": "c830182d372dc31258231ef020899d87884e5e70471bb6b4efab6616f68d3e17"
+  },
+  {
+   "when": "after",
+   "what": "input_manifest_sha256 and regions_support_sha256 updated: GLDAS_NOAH10_M 2.1 Evap_tavg, Qs_acc and Qsb_acc (evaporation, runoff) added as exploration inputs, and the definition of its 1-degree land grid (gldas_1deg) added to the grid list of regions/index.json",
+   "reason": "Exploration inputs added; pre-registered files unchanged. New exploration layers for the globe and place reports only: no test is added to either family. The 1656 M2TMNXSLV, 552 M2TMNXFLX and 333 IMERG manifest entries are identical (per-file SHA-256). In regions/index.json only the grid definition is added: every region entry (support, inSet, masks) and both pair splits are identical; support on the new grid is applied from its mask files when the bundle is written.",
+   "sha256_before": "5cfaa6e4e08679c7f3541e59bd7f5ad5d1905398d290e2bac0ec2642d9543070"
+  }
+ ],
+ "sha256": "2f78c41e9f74e32fdabe5e6832ca51f80e393a7100b5aa27a484b94ed9730177"
+}

@@ -1,8 +1,9 @@
 {
  "schema": "casefile/current@3",
- "buildId": "r2",
- "path": "results/r2/",
+ "buildId": "r3",
+ "path": "results/r3/",
  "previous": [
+  "r2",
   "r1"
  ],
  "synthetic": false

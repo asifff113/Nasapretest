@@ -1,0 +1,62 @@
+{
+ "schema": "casefile/casefile@3",
+ "synthetic": false,
+ "id": "lead_contrast_heat",
+ "uses": {
+  "kind": "contrast",
+  "pair": "pair_bgd_vs_wb",
+  "variable": "air_temp",
+  "season": "ANN"
+ },
+ "ending": "cant_tell_yet",
+ "title": {
+  "en": "Has it warmed differently in Bangladesh and West Bengal (India)?",
+  "bn": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?"
+ },
+ "summary": {
+  "en": "The same pre-registered pair, for air temperature near the ground (NASA MERRA-2).",
+  "bn": "একই আগে থেকে নিবন্ধিত জোড়া, ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রার জন্য (নাসার MERRA-2)।"
+ },
+ "results": [
+  "contrasts/air_temp/pair_bgd_vs_wb/ANN.json",
+  "verdicts/air_temp/country__BGD/ANN.json",
+  "verdicts/air_temp/cmp__west_bengal/ANN.json"
+ ],
+ "beats": [
+  {
+   "at": "question",
+   "caption": {
+    "en": "Has it warmed differently in Bangladesh and West Bengal (India)?",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ কি উষ্ণতা ভিন্নভাবে বেড়েছে?"
+   }
+  },
+  {
+   "at": "series",
+   "caption": {
+    "en": "Each place on its own: Bangladesh −0.17 °C a decade, West Bengal (India) −0.13 °C a decade.",
+    "bn": "প্রতিটি জায়গা আলাদাভাবে: বাংলাদেশ প্রতি দশকে −০.১৭ °C, পশ্চিমবঙ্গ (ভারত) প্রতি দশকে −০.১৩ °C।"
+   }
+  },
+  {
+   "at": "difference",
+   "caption": {
+    "en": "The test is on the difference, Bangladesh minus West Bengal (India), not on the two labels side by side.",
+    "bn": "পরীক্ষা হয় পার্থক্যের ওপর — বাংলাদেশ বিয়োগ পশ্চিমবঙ্গ (ভারত) — দুটি আলাদা ফল পাশাপাশি রেখে নয়।"
+   }
+  },
+  {
+   "at": "verdict",
+   "caption": {
+    "en": "Can't tell yet whether air temperature near the ground changed differently in Bangladesh and West Bengal (India). That is not the same as no difference. That is not the same as no difference.",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা ভিন্নভাবে বদলেছে কি না, এখনো বলা যাচ্ছে না। এর মানে ‘কোনো পার্থক্য নেই’ নয়। এর মানে ‘কোনো পার্থক্য নেই’ নয়।"
+   }
+  },
+  {
+   "at": "takeaway",
+   "caption": {
+    "en": "Switch to the screening map to see where the planet is warming fastest.",
+    "bn": "পৃথিবীর কোথায় সবচেয়ে দ্রুত উষ্ণ হচ্ছে, দেখতে স্ক্রিনিং মানচিত্রে যান।"
+   }
+  }
+ ]
+}
