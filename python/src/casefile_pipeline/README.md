@@ -1,39 +1,41 @@
 # `casefile_pipeline` — Part 2 (backend / data pipeline)
 
-**Status: skeleton only.** Each module has a docstring saying what it will do; no logic is written yet.
-The CLI (`cli.py`) is still the stub that exits with "not built yet".
+Fetches NASA data and writes the input bundle `.cache/bundle/<id>/` in the format of `docs/01_ARCHITECTURE.md` §5,
+which `uv run casefile-engine check-bundle <bundle>` accepts. It computes no trend, no p-value and no yearly series
+for display, and it prints counts, units, ranges and climatologies only.
 
-## What this package must produce
+## Commands (run in `python/`, after `uv sync --extra pipeline`)
 
-`casefile-pipeline bundle` writes `.cache/bundle/<id>/` in the exact format of `docs/01_ARCHITECTURE.md` §5,
-and `uv run casefile-engine check-bundle <bundle>` accepts it. That bundle is the only thing the engine reads.
-The format reference is the synthetic bundle: `uv run casefile-engine synth-bundle <dir>`.
+```bash
+uv run casefile-pipeline access-check                 # log in; one granule per product: route, dims, units, fill, ranges
+uv run casefile-pipeline fetch                        # every month of every product → .cache/monthly/ (resumes if stopped)
+uv run casefile-pipeline fetch --first 2020-01 --last 2022-12      # a small window (each product's record still bounds it)
+uv run casefile-pipeline regions --bundle-id b1       # boundary files → masks, support rule, pair splits → regions/
+uv run casefile-pipeline bundle  --bundle-id b1       # series, pairs, map fields, input_manifest.json; then check-bundle
+uv run casefile-engine check-bundle ../.cache/bundle/b1
+uv run casefile-engine prereg-check --bundle ../.cache/bundle/b1
+```
 
-## Before you start
+Login: a free NASA Earthdata account (urs.earthdata.nasa.gov) with **NASA GESDISC DATA ARCHIVE** approved, given as
+`EARTHDATA_USERNAME` / `EARTHDATA_PASSWORD` in the environment or a `~/.netrc` line for `urs.earthdata.nasa.gov`.
+An api.nasa.gov key does not work. Credentials never enter the repository, a log or the bundle.
 
-1. Read `AGENTS.md` (the hard rules), `docs/01_ARCHITECTURE.md` §5–§6, and Part 2 of `docs/05_BUILD_PLAN.md`.
-2. Get a NASA Earthdata Login and approve **NASA GESDISC DATA ARCHIVE** (build plan, Part 0).
-   Credentials go only in Codespaces secrets `EARTHDATA_USERNAME` / `EARTHDATA_PASSWORD`: never in a file or commit.
-3. Work on the branch **`part-2-pipeline`**. You own only `python/src/casefile_pipeline/`,
-   `python/tests/pipeline/` and `docs/ai_log/part-2.md`.
-4. `cd python && uv sync --extra pipeline`, then `uv run casefile-engine selfcheck` (expects 60/60).
+## Modules
 
-## Steps (each has a ready prompt in `prompts/`)
+| Module | Does |
+|---|---|
+| `sources/earthdata.py` | Login, CMR search through earthaccess, month bookkeeping, the three routes (OPeNDAP subset, remote read, whole file), the cache in `.cache/raw/` |
+| `sources/__init__.py`, `merra2.py`, `imerg.py` | The `Reader` (group, axis order, units as documented, grid, box) and one registered reader per product |
+| `sources/boundary_files.py` | Downloads the boundary files and their licence statements into `.cache/boundaries/` |
+| `units.py`, `grids.py` | Unit conversions to each variable's monthly unit; the grid list (the engine's definitions) |
+| `boundaries.py`, `regions.py` | Region outlines from `config/regions.yaml`; 5 × 5 masks, S1–S2, pair splits (S3), `regions/index.json` |
+| `series.py`, `mapfield.py`, `manifest.py` | Region and pair series; the conservative 1° regrid and annual field; `input_manifest.json` |
+| `stages.py`, `cli.py` | The four stages and the command line |
 
-| Step | Prompt | Modules | Command |
-|---|---|---|---|
-| 2A Access check and fetch | `prompts/part-2A.txt` | `sources/earthdata.py`, `sources/merra2.py`, `sources/imerg.py`, `manifest.py`, `cli.py` | `casefile-pipeline access-check`, `fetch` |
-| 2B Regions, masks, support rule (parallel with 2A) | `prompts/part-2B.txt` | `boundaries.py`, `regions.py`, `cli.py` | `casefile-pipeline regions` |
-| 2C Series, pairs, map field, bundle (after 2A + 2B) | `prompts/part-2C.txt` | `series.py`, `mapfield.py`, `manifest.py`, `cli.py` | `casefile-pipeline bundle --bundle-id b1` |
-| 2D Add or swap a dataset (later) | `prompts/part-2D.txt` | one new reader in `sources/` | — |
+A new dataset is one more reader in `sources/` plus its entries in `config/` (`docs/02_DATA.md` §14).
 
-Tests go in `python/tests/pipeline/` (ids P-01…P-19 in `docs/07_TESTS.md` §4); none may use the network.
+## Tests
 
-## Rules that matter most here
-
-- Never edit `python/src/casefile_engine/`, `schemas/`, `examples/` or `config/` (except what step 2D names).
-- The pipeline prepares, it does not test: no trend, p-value or yearly series is computed or printed.
-  Until `config/preregistration.yaml` is committed, print climatologies, counts, units and ranges only.
-- Never build NASA file names or `*.gesdisc.eosdis.nasa.gov` URLs by hand; find files through `earthaccess`/CMR.
-- No hard-coded variable, region or pair id: read them from `config/`.
-- Commit messages end with `AI-assisted: <tool> (<model>)`; log each session in `docs/ai_log/part-2.md`.
+`uv run pytest tests/pipeline` (no network). P-04 runs on the real boundary files once `regions` has downloaded them.
+On Windows with the repository on another drive than the temporary folder, run the full suite with
+`uv run pytest -m "not slow" --basetemp=../.cache/pytest-tmp` (an engine test uses `os.path.relpath`).
