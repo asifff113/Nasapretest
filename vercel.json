@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd web && npm ci",
+  "buildCommand": "bash tools/vercel_build.sh",
+  "outputDirectory": "web/dist",
+  "cleanUrls": false
+}
