@@ -207,9 +207,19 @@ def explore_stage(bundle_id: str, results: Path, cache: Path = CACHE, log=print)
 
 
 def index_support(index: dict, region_id: str, grid_id: str) -> bool:
-    """True if the region passes the support rule on this grid (02 §14 step 5: otherwise no series there)."""
+    """True if the region passes the support rule on this first-release grid, as regions/index.json records it."""
     r = next(x for x in index["regions"] if x["id"] == region_id)
     return bool(r["support"].get(grid_id, {}).get("passes"))
+
+
+def grid_passes(index: dict, masks: dict, region_id: str, grid_id: str) -> bool:
+    """True if the region passes the support rule on this grid (02 §14 step 5: otherwise no series there). A
+    first-release grid is read from regions/index.json; an added grid (not listed there, see casefile_pipeline.regions)
+    from the region's mask on that grid, by the same rule and thresholds."""
+    if grid_id in NATIVE_GRIDS:
+        return index_support(index, region_id, grid_id)
+    cells, _, eff = masks.get((region_id, grid_id), ([], 0.0, 0.0))
+    return bool(cells) and regions.support_for(cells, GRIDS[grid_id], eff)["passes"]
 
 
 def _last_complete_year(months: list[str]) -> int:
@@ -256,7 +266,7 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
                 log(f"  {vid}: not in {monthly_path(reader, cache).name} yet (run fetch), skipped")
                 continue
             n, empty = 0, []
-            ok = [rid for rid in in_set if index_support(index, rid, reader.grid_id)]
+            ok = [rid for rid in in_set if grid_passes(index, masks, rid, reader.grid_id)]
             for rid in ok:
                 if series.write_series(out, vid, rid, field, masks[(rid, reader.grid_id)][0]) is None:
                     empty.append(rid)

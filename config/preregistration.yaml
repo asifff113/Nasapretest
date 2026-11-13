@@ -22,7 +22,7 @@ signed_by: ["asifff113", "hirok121", "Shakilkhan24"]
 hashes:                            # printed by prereg-check
   analysis_yaml_sha256: "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159"
   input_manifest_sha256: "ecfe408fc9d10ee41aea3af7c872be6f5aedb7dd0f9bc3cd1bd1ffb70a87d71b"
-  regions_support_sha256: "58d2cc966557e422a7755ca1a8d6883ebb429298165b16d69a869a719b2cd18c"
+  regions_support_sha256: "329adbac2dd7d30f0927b193feb0bcbc5551b09f3f8bc21da1caf0ccec4311eb"
 
 alpha:
   confirmatory: 0.05               # Holm across the confirmatory family
@@ -117,6 +117,6 @@ amendments:
     reason: "New exploration layers for the globe only: no test is added to either family. The 552 M2TMNXSLV T2M files, the 552 PRECTOTCORR files and the 333 IMERG files keep their SHA-256 (listed per file in the manifest)."
     sha256_before: "c830182d372dc31258231ef020899d87884e5e70471bb6b4efab6616f68d3e17"
   - when: "after"
-    what: "input_manifest_sha256 and regions_support_sha256 updated: GLDAS_NOAH10_M 2.1 Evap_tavg, Qs_acc and Qsb_acc (evaporation, runoff) added as exploration inputs, and its 1-degree land grid (gldas_1deg) added to regions/index.json"
-    reason: "Exploration inputs added; pre-registered files unchanged. New exploration layers for the globe and place reports only: no test is added to either family. The 1656 M2TMNXSLV, 552 M2TMNXFLX and 333 IMERG manifest entries are identical (per-file SHA-256). In regions/index.json only the new grid and each region's support on it are added: the region set, every inSet decision and both pair splits are unchanged (they use the MERRA-2 and IMERG grids only)."
+    what: "input_manifest_sha256 and regions_support_sha256 updated: GLDAS_NOAH10_M 2.1 Evap_tavg, Qs_acc and Qsb_acc (evaporation, runoff) added as exploration inputs, and the definition of its 1-degree land grid (gldas_1deg) added to the grid list of regions/index.json"
+    reason: "Exploration inputs added; pre-registered files unchanged. New exploration layers for the globe and place reports only: no test is added to either family. The 1656 M2TMNXSLV, 552 M2TMNXFLX and 333 IMERG manifest entries are identical (per-file SHA-256). In regions/index.json only the grid definition is added: every region entry (support, inSet, masks) and both pair splits are identical; support on the new grid is applied from its mask files when the bundle is written."
     sha256_before: "5cfaa6e4e08679c7f3541e59bd7f5ad5d1905398d290e2bac0ec2642d9543070"

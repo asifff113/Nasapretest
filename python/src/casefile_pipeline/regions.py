@@ -5,6 +5,10 @@
   respected, through shapely). A region that is exactly a box uses the engine's exact overlap (`box_weights`).
 - Support: S1 effective cells Σf ≥ min_native_cells and S2 spill share ≤ max_spill_share on every native grid
   (`casefile_engine.base.spill_share`); inSet = passes on every grid. Thresholds from config/analysis.yaml.
+- regions/index.json lists support and mask files for the first-release grids only: the engine copies every grid
+  there into prereg.json as the region's effective native cells (schema minimum 4). An added grid (GLDAS) gets its
+  mask files under regions/cells/<grid>/ all the same; `casefile_pipeline.stages.grid_passes` applies the support
+  rule to them when the bundle is written.
 - Pairs: every pair of config/preregistration.yaml, split with `casefile_engine.base.pair_split` (S3).
 Everything here is computed from boundaries alone, before any data are read.
 """
@@ -88,14 +92,17 @@ def build_regions(defs: list[RegionDef], out: Path, bundle_id: str, prereg: dict
                 raise ValueError(f"pair {p['id']}: region {p[side]} is not in config/regions.yaml")
     masks, entries = {}, []
     for d in defs:
-        support, cells_ref = {}, {}
+        support, cells_ref, logged = {}, {}, {}
+        core_ids = {c["id"] for c in core}
         for g in grids:
             cells = region_cells(d, g)
             area, eff = mask_summary(cells, g)
             masks[(d.id, g["id"])] = (cells, area, eff)
-            support[g["id"]] = support_for(cells, g, eff) if cells else {"effectiveCells": 0.0, "spillShare": 1.0, "passes": False}
+            logged[g["id"]] = support_for(cells, g, eff) if cells else {"effectiveCells": 0.0, "spillShare": 1.0, "passes": False}
             rel = f"regions/cells/{g['id']}/{fpath(d.id)}.json"
-            cells_ref[g["id"]] = rel
+            if g["id"] in core_ids:
+                support[g["id"]] = logged[g["id"]]
+                cells_ref[g["id"]] = rel
             p = out / rel
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes((json.dumps({"schema": "casefile/mask@3", "region": d.id, "grid": g["id"], "cells": cells,
@@ -110,7 +117,7 @@ def build_regions(defs: list[RegionDef], out: Path, bundle_id: str, prereg: dict
                         "cells": cells_ref if in_set else {}, "geom": None,
                         "pairs": [p["id"] for p in pairs_cfg if d.id in (p["a"], p["b"])]})
         log(f"  {d.id:22s} " + "  ".join(f"{gid}: eff {s['effectiveCells']:8.2f} spill {s['spillShare']:.3f} {'pass' if s['passes'] else 'FAIL'}"
-                                          for gid, s in support.items()))
+                                          for gid, s in logged.items()))
     pairs = []
     for p in pairs_cfg:
         pairs.append({"id": p["id"], "a": p["a"], "b": p["b"], "lead": bool(p.get("lead", False)), "preRegistered": True,
