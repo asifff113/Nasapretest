@@ -21,7 +21,7 @@ signed_by: ["asifff113", "hirok121", "Shakilkhan24"]
 
 hashes:                            # printed by prereg-check
   analysis_yaml_sha256: "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159"
-  input_manifest_sha256: "4d7a50e4f469a46de86f05ae76634a733970254885b1640f80f0214e164b34dd"
+  input_manifest_sha256: "4ec1e6e9122f07891639bf904b6a35c13a126035931f3b964685cfd537a4f767"
   regions_support_sha256: "51898fe0f5a05adfa1cfb3c16af7141cb5847bba9f132148b75653c5952dd9cc"
 
 alpha:
@@ -103,4 +103,16 @@ family_preview:                    # leave empty: the build fills it and prereg-
   confirmatory: []
   secondary: []
 
-amendments: []
+amendments:
+  - when: "before any real trend"
+    what: 'secondary seasons: "ON" quoted'
+    reason: "YAML reads a bare ON as true; the build stopped before any statistic. The season is unchanged (post-monsoon, Oct-Nov)."
+    sha256_before: "93c5e55d3ca4b7014dbfcebf6914dd613fc5d86cdf43b4ee873896d66c54eebb"
+  - when: "after"
+    what: "key names as schemas/prereg.schema.json requires (seasons.main, djf_starts_one_year_later, alpha.map_q = analysis.yaml map.fdr_q) and the manifest hash"
+    reason: "The first build's prereg.json failed its schema and the manifest provider was renamed to the provenance route 'earthaccess'. No window, threshold, season, pair or alpha changed; no verdict had been read."
+    sha256_before: "f1c54e324728abbf6bff0515fb85ba357b1e03e1074bfe26c825ec93c08317b5"
+  - when: "after"
+    what: "input_manifest_sha256 updated: MERRA-2 TQV (water vapour) and SLP (air pressure) added as exploration inputs"
+    reason: "New exploration layers for the globe only: no test is added to either family. The 552 M2TMNXSLV T2M files, the 552 PRECTOTCORR files and the 333 IMERG files keep their SHA-256 (listed per file in the manifest)."
+    sha256_before: "c830182d372dc31258231ef020899d87884e5e70471bb6b4efab6616f68d3e17"
