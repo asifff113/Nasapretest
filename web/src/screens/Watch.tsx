@@ -10,6 +10,7 @@ import { pick, useT } from '../i18n';
 import { int, shortHash } from '../i18n/format';
 import type { CaseFile, Contrast, Lineup, Mask, RegionIndex, Verdict } from '../data/types';
 import { caseResultPath, useCases } from '../data/cases';
+import { PlaceStory } from '../report/StoryPlayer';
 import { paths } from '../data/results';
 import { useCatalog, useRegionIndex, useResult, useResults } from '../data/hooks';
 import { useLang } from '../state/prefs';
@@ -505,7 +506,19 @@ export default function WatchScreen() {
       <>
         <Hero eyebrow={t('site.watch.eyebrow')} title={t('nav.watch')} lead={t('site.watch.lead')} />
         <Body>
+          <section className="mb-10 grid gap-3 rounded-card border border-line bg-surface-2 p-5 sm:grid-cols-3" aria-labelledby="what-case" data-testid="what-case">
+            <h2 id="what-case" className="m-0 text-[20px] font-semibold sm:col-span-3">
+              {t('site.story.what_title')}
+            </h2>
+            <p className="m-0 text-[14.5px] leading-relaxed">{t('site.story.what_1')}</p>
+            <p className="m-0 text-[14.5px] leading-relaxed">{t('site.story.what_2')}</p>
+            <p className="m-0 text-[14.5px] leading-relaxed">{t('site.story.what_3')}</p>
+          </section>
+          <h2 className="mb-4 text-chapter">{t('site.story.cases_title')}</h2>
           <CaseList />
+          <div className="mt-16">
+            <PlaceStory />
+          </div>
         </Body>
       </>
     );

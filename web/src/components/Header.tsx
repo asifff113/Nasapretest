@@ -13,6 +13,7 @@ const NAV: { screen: Screen; key: string; href: string }[] = [
   { screen: 'question', key: 'nav.question', href: '#/question' },
   { screen: 'compare', key: 'nav.compare', href: '#/compare' },
   { screen: 'map', key: 'nav.map', href: '#/map' },
+  { screen: 'trends', key: 'site.title.trends', href: '#/trends' },
   { screen: 'watch', key: 'nav.watch', href: '#/watch' },
   { screen: 'methods', key: 'nav.methods', href: '#/methods' },
 ];

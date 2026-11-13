@@ -68,11 +68,23 @@ export function yearValue(y: MapYears, frame: number, cell: number): number {
   return v * y.meta.scale + y.meta.offset;
 }
 
+/** The exploration files are written by the data pipeline for real builds only; the synthetic examples have none. */
+const NOT_IN_BUILD = { status: 'missing', data: undefined, error: undefined } as const;
+
 export function useMapYears(variable: string | undefined, season: string, enabled: boolean): Loaded<MapYears> {
   const build = useBuild();
   const root = build.data?.root;
-  const key = enabled && root !== undefined && variable ? `years|${root}|${variable}|${season}` : null;
-  return useAsync<MapYears>(key, () => loadMapYears(root ?? '', variable ?? '', season));
+  const synthetic = build.data?.synthetic === true;
+  const key = enabled && !synthetic && root !== undefined && variable ? `years|${root}|${variable}|${season}` : null;
+  const res = useAsync<MapYears>(key, () => loadMapYears(root ?? '', variable ?? '', season));
+  return synthetic && enabled ? (NOT_IN_BUILD as Loaded<MapYears>) : res;
+}
+
+function useExplore<T>(path: string | null): Loaded<T> {
+  const build = useBuild();
+  const synthetic = build.data?.synthetic === true;
+  const res = useResult<T>(synthetic ? null : path);
+  return synthetic && path ? (NOT_IN_BUILD as Loaded<T>) : res;
 }
 
 export type ExploreKind = 'country' | 'division' | 'comparison';
@@ -121,8 +133,8 @@ export interface ExploreRegion {
   variables: Record<string, ExploreVariable>;
 }
 
-export const useExploreIndex = () => useResult<ExploreIndex>(explorePaths.index);
-export const useExploreRegion = (id: string | null) => useResult<ExploreRegion>(id ? explorePaths.region(id) : null);
+export const useExploreIndex = () => useExplore<ExploreIndex>(explorePaths.index);
+export const useExploreRegion = (id: string | null) => useExplore<ExploreRegion>(id ? explorePaths.region(id) : null);
 
 /** Finds the detail entry for a country outline's name (the outlines carry names, not ISO codes). */
 export function exploreForCountryName(index: ExploreIndex | undefined, name: string): ExploreRegionInfo | undefined {

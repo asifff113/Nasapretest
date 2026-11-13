@@ -182,7 +182,7 @@ function usePlayer(years: number[]) {
   };
 }
 
-function YearByYear({ data, id, catalog, compare }: { data: ExploreRegion; id: string; catalog: Catalog | undefined; compare?: ExploreRegion }) {
+export function YearByYear({ data, id, catalog, compare }: { data: ExploreRegion; id: string; catalog: Catalog | undefined; compare?: ExploreRegion }) {
   const t = useT();
   const lang = useLang();
   const v = data.variables[id];
@@ -282,7 +282,7 @@ function YearByYear({ data, id, catalog, compare }: { data: ExploreRegion; id: s
   );
 }
 
-function Rhythm({ data, id, catalog, compare }: { data: ExploreRegion; id: string; catalog: Catalog | undefined; compare?: ExploreRegion }) {
+export function Rhythm({ data, id, catalog, compare }: { data: ExploreRegion; id: string; catalog: Catalog | undefined; compare?: ExploreRegion }) {
   const t = useT();
   const lang = useLang();
   const v = data.variables[id];
@@ -382,7 +382,7 @@ export function RegionSelect({ index, value, exclude, onPick, label, testId }: {
   );
 }
 
-function CompareGlance({ a, b, ids, catalog }: { a: ExploreRegion; b: ExploreRegion; ids: string[]; catalog: Catalog | undefined }) {
+export function CompareGlance({ a, b, ids, catalog }: { a: ExploreRegion; b: ExploreRegion; ids: string[]; catalog: Catalog | undefined }) {
   const t = useT();
   const lang = useLang();
   return (

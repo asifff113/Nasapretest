@@ -4,9 +4,9 @@
 // screen against the result files (unknown ids fall back to defaults with a notice).
 import { create } from 'zustand';
 
-export type Screen = 'home' | 'question' | 'place' | 'compare' | 'map' | 'methods' | 'watch' | 'offline' | 'data' | 'ai' | 'about';
+export type Screen = 'home' | 'question' | 'place' | 'compare' | 'map' | 'trends' | 'methods' | 'watch' | 'offline' | 'data' | 'ai' | 'about';
 
-export const SCREENS: readonly Screen[] = ['home', 'question', 'place', 'compare', 'map', 'methods', 'watch', 'offline', 'data', 'ai', 'about'];
+export const SCREENS: readonly Screen[] = ['home', 'question', 'place', 'compare', 'map', 'trends', 'methods', 'watch', 'offline', 'data', 'ai', 'about'];
 
 export interface View {
   screen: Screen;
@@ -17,6 +17,9 @@ export interface View {
   sensitivity?: 'imerg';
   case?: string;
   question?: string;
+  /** Any-two compare (exploration): the two places. */
+  a?: string;
+  b?: string;
 }
 
 const REGION_RE = /^(country:[A-Z]{3}|bd_div:[a-z_]+|cmp:[a-z0-9_]+|cell:[0-9]{1,3}_[0-9]{1,3}|synthetic:[a-z0-9_]+)$/;
@@ -48,6 +51,8 @@ export function parseHash(hash: string): ParsedView {
     else bad = true;
   };
   take('region', (v) => REGION_RE.test(v));
+  take('a', (v) => REGION_RE.test(v));
+  take('b', (v) => REGION_RE.test(v));
   take('pair', (v) => SLUG_RE.test(v));
   take('variable', (v) => ID_RE.test(v));
   take('season', (v) => SEASONS.includes(v));
@@ -65,9 +70,9 @@ export function parseHash(hash: string): ParsedView {
 
 export function toHash(view: View): string {
   if (view.screen === 'home') return '#/';
-  if (view.screen === 'watch') return view.case ? `#/watch/${view.case}` : '#/watch';
+  if (view.screen === 'watch') return view.case ? `#/watch/${view.case}` : view.region ? `#/watch?region=${view.region}` : '#/watch';
   const params = new URLSearchParams();
-  const order: (keyof View)[] = ['question', 'region', 'pair', 'variable', 'season', 'sensitivity'];
+  const order: (keyof View)[] = ['question', 'region', 'a', 'b', 'pair', 'variable', 'season', 'sensitivity'];
   for (const k of order) {
     const v = view[k];
     if (typeof v === 'string' && v) params.set(k, v);

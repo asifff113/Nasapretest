@@ -9,6 +9,7 @@ import { paths } from '../data/results';
 import { useCatalog, usePrereg, useRegionIndex, useResult, useResults } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { href, useView } from '../state/view';
+import { AnyCompareScreen, CompareModes } from '../report/AnyCompare';
 import { BadLinkNotice, WithData } from '../components/LoadState';
 import { Body, StepBar, StepHeading, goToStep, useStepObserver } from '../components/Page';
 import { Hero } from '../components/atlas/Hero';
@@ -130,6 +131,11 @@ function PairCells({ pair, index }: { pair: Pair; index: RegionIndex }) {
 }
 
 export default function CompareScreen() {
+  const anyMode = useView((s) => Boolean(s.view.a || s.view.b));
+  return anyMode ? <AnyCompareScreen /> : <TestedCompareScreen />;
+}
+
+function TestedCompareScreen() {
   const t = useT();
   const lang = useLang();
   const { view, badLink, flagBadLink, patch } = useView();
@@ -169,7 +175,12 @@ export default function CompareScreen() {
   return (
     <>
       <Hero
-        top={badLink ? <BadLinkNotice show={badLink} /> : undefined}
+        top={
+          <div className="flex flex-col gap-3">
+            <CompareModes any={false} />
+            {badLink ? <BadLinkNotice show={badLink} /> : null}
+          </div>
+        }
         eyebrow={t('site.compare.eyebrow')}
         title={pair && index.data ? <VersusTitle pair={pair} index={index.data} /> : t('contrast.title')}
         lead={t('site.compare.lead_text')}

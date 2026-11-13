@@ -10,7 +10,8 @@
       "offline": "Cases on this device",
       "data": "Data & credits",
       "ai": "AI use",
-      "about": "About"
+      "about": "About",
+      "trends": "Trends"
     },
     "header": {
       "main_nav": "Main",
@@ -293,7 +294,7 @@
       "map_null_none": "This build has no pure-noise map test.",
       "tests_plain": "Golden tests assert values, tolerances and verdicts, and any mismatch fails the build.",
       "breaks_plain": "Known changes in how each record was made. A person reviews each one that falls inside a headline case's years; the outcome is shown on that result.",
-      "limits_plain": "No forecasts. No claims about causes: at most, a result is “consistent with” a process. Linear trends only; jumps are flagged. Places smaller than the data cells are not in our set. Variables other than temperature and rain are not analysed in this release.",
+      "limits_plain": "No forecasts. No claims about causes: at most, a result is “consistent with” a process. Linear trends only; jumps are flagged. Places smaller than the data cells are not in our set. Only temperature and rain get tested verdicts; water vapour and air pressure are shown as exploration layers, and other records are not in this release.",
       "reproduce_plain": "Every result file is public and carries its build id, the input-manifest hash and the pre-registration hash. The same pinned inputs, pre-registration and code give the same files.",
       "property_row": "(records of {n} years with memory {phi})",
       "metric": "What the table shows",
@@ -424,11 +425,11 @@
       "try_1": "Is Dhaka getting hotter?",
       "try_2": "Has rain changed in Lagos?",
       "try_3": "Heat in Moscow",
-      "try_4": "Soil moisture in Kenya",
+      "try_4": "Water vapour over India",
       "understood": "Understood as",
       "kind_compare": "Comparison",
       "choose_record": "Choose what the globe shows",
-      "group_tested": "Tested in this release",
+      "group_tested": "NASA records in this build",
       "group_checks": "Cross-checks",
       "group_later": "Coming in later releases",
       "layer_line": "change per decade, {from}–{to} · {n} squares tested",
@@ -524,7 +525,10 @@
       "missing": "This build has no yearly maps for this record.",
       "legend_mean": "Yearly average ({units})",
       "legend_sum": "Yearly total ({units})",
-      "note": "Each frame is one year's values on the 1° grid, made with the same yearly rules as every result. Values, not trends: exploration."
+      "note": "Each frame is one year's values on the 1° grid, made with the same yearly rules as every result. Values, not trends: exploration.",
+      "prev": "Previous year",
+      "next": "Next year",
+      "timeline": "Years: click one to show it on the globe"
     },
     "month": {
       "1": "January",
@@ -631,6 +635,47 @@
       "glance": "{place}, year by year",
       "loading": "Loading {place}…",
       "no_file": "No yearly file for this place in this build."
+    },
+    "story": {
+      "title": "The story of any place",
+      "lead": "Pick any country or region and watch its NASA records play year by year: each yearly value, its stripes and the year's rhythm. Values, not tests.",
+      "pick": "Place",
+      "play": "Play the story",
+      "stop": "Pause the story",
+      "prev": "Previous step",
+      "next": "Next step",
+      "step": "{n} / {total}",
+      "intro": "{place}, in {continent}: its yearly values from NASA's MERRA-2 records, {from} to {to}.",
+      "years": "{record}: {latest} {units} in {year}. Highest year: {high}. Lowest year: {low}.",
+      "rhythm": "The year's rhythm of {record}: highest in {peak}, lowest in {low}.",
+      "end": "These are yearly values, not tests: a tested answer exists only for the pre-registered places. Open the full report to explore further.",
+      "open_report": "Open the full report",
+      "what_title": "What is a case?",
+      "what_1": "A case is one question the engine answered, played as a short film on the real screens: the question, the place, the data, the test and the answer, step by step.",
+      "what_2": "These three are the pre-registered headline questions, so every number in them comes from a tested result, including an honest \"can't tell yet\".",
+      "what_3": "Below the cases you can also watch the story of any country or region: its yearly values, shown without a test.",
+      "cases_title": "Tested cases"
+    },
+    "trends": {
+      "eyebrow": "Exploration · every square counted",
+      "lead": "How each NASA record is changing across the world, a continent or a country: every 1° square carries the engine's rate of change per decade, and this page counts them — how many rise, how many fall, and how many stand out after allowing for all the tests.",
+      "level": "Area",
+      "world": "The world",
+      "continent": "Continent",
+      "country": "Country",
+      "headline": "{scope}: {record} is rising in {up} and falling in {down} of {tested} tested squares since 1980.",
+      "tested": "Squares tested",
+      "sig_up": "Stand out, rising",
+      "sig_down": "Stand out, falling",
+      "untestable": "Can't be tested",
+      "legend": "Bar, left to right: rising and standing out, rising, falling, falling and standing out.",
+      "histogram_note": "How many squares change at each rate per decade (the engine's rate for each square; bars are counts).",
+      "rank_title": "Places ranked by their squares",
+      "rank_lead": "Each place with at least three tested squares, ordered by how many of its squares show {record} rising.",
+      "row": "{up} of {tested} rising",
+      "note_squares": "Squares are counted, not weighted by area: a 1° square near the poles is much smaller than one at the equator, and a country's squares are those whose centre lies inside its outline.",
+      "note_tested": "These counts read the engine's screening map (exploration). One tested trend for a whole country, continent or the world would need its own engine run; only the pre-registered places have tested verdicts.",
+      "note_missing": "Sea level is not in this build: it needs another NASA record (sea surface height), which the data pipeline can add later."
     }
   }
 }

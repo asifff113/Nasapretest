@@ -15,6 +15,51 @@ import { Badge } from '../ui/common/badge';
 import { cn } from '../ui/common/utils';
 import type { Understood } from '../data/matcher';
 import { UnderstoodChips } from './ExplorePanels';
+import { CITIES } from '../data/places';
+import { useExploreRegion } from '../data/explore';
+import { YearsChart } from '../charts/YearsChart';
+import { ClimateStripes } from '../charts/ClimateStripes';
+
+type T = ReturnType<typeof useT>;
+
+/** A readable name for a square: the nearest gazetteer city of the same country within 1.5°, else
+ * the part of the country it lies in, from its position relative to the middle of the country's squares. Layout
+ * arithmetic only: no value is computed. */
+function squareName(t: T, lang: 'en' | 'bn', s: { lat: number; lon: number }, country: string, mid: { lat: number; lon: number; dLat: number; dLon: number }): string {
+  const k = Math.cos((s.lat * Math.PI) / 180);
+  let best: { name: string; d: number; same: boolean } | undefined;
+  for (const c of CITIES) {
+    const d = Math.hypot((c.lon - s.lon) * k, c.lat - s.lat);
+    if (d > 1.5) continue;
+    if (c.country.toLowerCase() !== country.toLowerCase()) continue; // a city across a border would mislead
+    if (!best || d < best.d) best = { name: lang === 'bn' && c.bn ? c.bn : c.name, d, same: true };
+  }
+  if (best) return t('site.squares.near', { city: best.name });
+  const x = mid.dLon > 0 ? (s.lon - mid.lon) / mid.dLon : 0;
+  const y = mid.dLat > 0 ? (s.lat - mid.lat) / mid.dLat : 0;
+  const ns = y > 0.33 ? 'n' : y < -0.33 ? 's' : '';
+  const ew = x > 0.33 ? 'e' : x < -0.33 ? 'w' : '';
+  const part = ns + ew || 'c';
+  return t('site.squares.part', { part: t(`site.squares.part_${part}`), country });
+}
+
+/** The country's own yearly values of the record shown on the globe (its detail file), as a chart and stripes. */
+function CountryGlance({ regionId, variableId, name, record, colormap }: { regionId: string; variableId: string; name: string; record: string; colormap: string | undefined }) {
+  const t = useT();
+  const lang = useLang();
+  const res = useExploreRegion(regionId);
+  if (res.status === 'loading') return <p className="m-0 text-[13px] text-muted">{t('site.countrypanel.loading', { place: name })}</p>;
+  const v = res.data?.variables[variableId];
+  if (!v) return <p className="m-0 text-[13px] text-muted">{t('site.countrypanel.no_file')}</p>;
+  return (
+    <section className="flex flex-col gap-2 rounded-[8px] border border-line bg-surface p-3" data-testid="country-glance">
+      <h3 className="m-0 text-[14px] font-semibold">{t('site.countrypanel.glance', { place: name })}</h3>
+      <p className="m-0 text-[12px] text-muted">{t(v.rule === 'sum' ? 'site.years.legend_sum' : 'site.years.legend_mean', { units: v.units })}</p>
+      <YearsChart series={[{ label: name, years: v.years, values: v.annual, tone: 'a' }]} units={v.units} lang={lang} label={t('site.report.chart_alt', { record, place: name })} testId="country-glance-chart" />
+      <ClimateStripes years={v.years} values={v.annual} units={v.units} colormap={colormap} lang={lang} label={t('site.report.stripes_alt', { record })} height={28} testId="country-glance-stripes" />
+    </section>
+  );
+}
 
 interface Square {
   row: number;
@@ -33,6 +78,7 @@ export function CountryPanel({
   onPickCell,
   understood,
   reportHref,
+  regionId,
 }: {
   name: string;
   cells: number[];
@@ -42,6 +88,8 @@ export function CountryPanel({
   understood?: Understood;
   /** The country's full report (yearly values of every record), when the build has one. */
   reportHref?: string;
+  /** The country's detail file id, for its own yearly chart. */
+  regionId?: string;
 }) {
   const t = useT();
   const lang = useLang();
@@ -64,6 +112,11 @@ export function CountryPanel({
   const outUp = squares.filter((s) => s.significant && s.rate > 0).length;
   const outDown = squares.filter((s) => s.significant && s.rate < 0).length;
   const varName = pick(variable.name, lang);
+  const lats = squares.map((x) => x.lat);
+  const lons = squares.map((x) => x.lon);
+  const mid = squares.length
+    ? { lat: (Math.max(...lats) + Math.min(...lats)) / 2, lon: (Math.max(...lons) + Math.min(...lons)) / 2, dLat: (Math.max(...lats) - Math.min(...lats)) / 2, dLon: (Math.max(...lons) - Math.min(...lons)) / 2 }
+    : { lat: 0, lon: 0, dLat: 0, dLon: 0 };
 
   const item = (s: Square) => (
     <li key={`${s.row}_${s.col}`}>
@@ -73,7 +126,10 @@ export function CountryPanel({
         className="flex min-h-10 w-full items-center gap-3 rounded-[6px] border border-line px-3 py-1.5 text-left hover:border-accent hover:bg-accent/[0.06]"
       >
         <span className="inline-block size-3.5 shrink-0 rounded-[3px]" style={{ background: interp(scalePos(s.rate, layer.meta.colourLimit)), opacity: s.significant ? 1 : 0.5 }} aria-hidden="true" />
-        <span className="flex-1 font-mono text-[12.5px] text-muted">{latLon(s.lat, s.lon, lang)}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[13.5px] font-medium">{squareName(t, lang, s, name, mid)}</span>
+          <span className="block font-mono text-[11px] text-muted">{latLon(s.lat, s.lon, lang)}</span>
+        </span>
         <span className="font-semibold tabular">
           {fmtRate(s.rate, lang)} {units}
         </span>
@@ -107,6 +163,7 @@ export function CountryPanel({
           <ArrowRight className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </a>
       ) : null}
+      {regionId ? <CountryGlance regionId={regionId} variableId={variable.id} name={name} record={varName} colormap={variable.colormap?.trend} /> : null}
       {squares.length === 0 ? (
         <p className="text-[16px]">{t('site.country.none')}</p>
       ) : (
@@ -148,7 +205,7 @@ export function CountryPanel({
                   tabIndex={-1}
                   aria-hidden="true"
                   onClick={() => onPickCell(s.row, s.col)}
-                  title={`${latLon(s.lat, s.lon, lang)}: ${fmtRate(s.rate, lang)} ${units}`}
+                  title={`${squareName(t, lang, s, name, mid)} (${latLon(s.lat, s.lon, lang)}): ${fmtRate(s.rate, lang)} ${units}`}
                   className="h-full min-w-px flex-1 hover:brightness-125"
                   style={{ background: interp(scalePos(s.rate, layer.meta.colourLimit)), opacity: s.significant ? 1 : 0.45 }}
                 />

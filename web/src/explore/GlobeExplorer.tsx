@@ -4,7 +4,7 @@
 // a pin opens a registered place (graded verdicts), and the ask box routes a free-text question with the smart
 // matcher (no AI). The globe library loads only on this screen, so the first view of the site stays small.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { BarChart3, Globe2, History, Minus, Pause, Play, Plus, Search, X } from 'lucide-react';
+import { BarChart3, ChevronLeft, ChevronRight, Globe2, History, Minus, Pause, Play, Plus, Search, X } from 'lucide-react';
 import { groupIcon } from '../components/atlas/icons';
 import { pick, useT } from '../i18n';
 import { int, num, rate as fmtRate } from '../i18n/format';
@@ -122,8 +122,7 @@ function VariableRail({ variables, value, onPick }: { variables: CatalogVariable
   const lang = useLang();
   const groups: [string, (v: CatalogVariable) => boolean][] = [
     ['site.explore.group_tested', (v) => v.status === 'analysed'],
-    ['site.explore.group_checks', (v) => v.status === 'sensitivity' || v.status === 'reference'],
-    ['site.explore.group_later', (v) => v.status === 'deferred'],
+    ['site.explore.group_checks', (v) => v.status === 'sensitivity'],
   ];
   return (
     <nav aria-label={t('site.explore.choose_record')} className="flex flex-col gap-4" data-testid="variable-rail">
@@ -232,7 +231,7 @@ function YearsPanel({
 }) {
   const t = useT();
   const lang = useLang();
-  const box = 'pointer-events-auto flex w-[min(560px,calc(100vw-88px))] flex-col gap-2.5 rounded-[6px] border border-line bg-surface/90 p-3 text-xs backdrop-blur-md';
+  const box = 'pointer-events-auto flex w-[min(760px,calc(100vw-88px))] flex-col gap-2.5 rounded-[6px] border border-line bg-surface/90 p-3 text-xs backdrop-blur-md';
   if (status === 'loading') return <p className={box}>{t('site.years.loading')}</p>;
   if (!years) return <p className={box}>{t('site.years.missing')}</p>;
   const m = years.meta;
@@ -259,6 +258,63 @@ function YearsPanel({
             {int(year, lang)}
           </p>
         </div>
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              onPlay(false);
+              onFrame(Math.max(0, frame - 1));
+            }}
+            disabled={frame <= 0}
+            aria-label={t('site.years.prev')}
+            className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
+            data-testid="years-prev"
+          >
+            <ChevronLeft className="size-4" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onPlay(false);
+              onFrame(Math.min(ys.length - 1, frame + 1));
+            }}
+            disabled={frame >= ys.length - 1}
+            aria-label={t('site.years.next')}
+            className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
+            data-testid="years-next"
+          >
+            <ChevronRight className="size-4" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+      <div role="group" aria-label={t('site.years.timeline')} className="flex h-10 items-end gap-[2px]" data-testid="years-timeline">
+        {ys.map((y, i) => (
+          <button
+            key={y}
+            type="button"
+            onClick={() => {
+              onPlay(false);
+              onFrame(i);
+            }}
+            aria-label={int(y, lang)}
+            aria-pressed={i === frame}
+            title={int(y, lang)}
+            className={
+              'min-w-0 flex-1 rounded-[2px] transition-[height,background-color] duration-150 ' +
+              (i === frame ? 'h-10 bg-accent' : i < frame ? 'h-4 bg-accent/45 hover:h-7 hover:bg-accent/80' : 'h-4 bg-ink/25 hover:h-7 hover:bg-accent/70')
+            }
+            data-testid={`years-year-${y}`}
+          />
+        ))}
+      </div>
+      <div className="relative h-4 font-mono text-[11px] text-muted tabular" aria-hidden="true">
+        {ys.map((y, i) =>
+          y % 10 === 0 || i === 0 || i === ys.length - 1 ? (
+            <span key={y} className="absolute -translate-x-1/2" style={{ left: `${((i + 0.5) / ys.length) * 100}%` }}>
+              {int(y, lang)}
+            </span>
+          ) : null,
+        )}
       </div>
       <label className="flex flex-col gap-1" htmlFor="years-slider">
         <span className="sr-only">{t('site.years.slider')}</span>
@@ -274,13 +330,9 @@ function YearsPanel({
             onFrame(Number(e.target.value));
           }}
           aria-valuetext={int(year, lang)}
-          className="w-full accent-[var(--accent)]"
+          className="sr-only"
           data-testid="years-slider"
         />
-        <span className="flex justify-between font-mono text-[11px] text-muted tabular" aria-hidden="true">
-          <span>{int(ys[0] ?? 0, lang)}</span>
-          <span>{int(ys[ys.length - 1] ?? 0, lang)}</span>
-        </span>
       </label>
       <p className="m-0 text-[12.5px] font-semibold">{t(m.rule === 'sum' ? 'site.years.legend_sum' : 'site.years.legend_mean', { units: m.units })}</p>
       <div className="h-2.5 rounded-full" style={{ background: `linear-gradient(90deg, ${stops})` }} aria-hidden="true" />
@@ -719,6 +771,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
         layer={activeLayer}
         variable={variable}
         understood={current.understood}
+        regionId={exploreForCountryName(exploreIndex.data, current.feature.properties.name)?.id}
         reportHref={(() => {
           const r = exploreForCountryName(exploreIndex.data, current.feature.properties.name);
           return r ? href({ screen: 'place', region: r.id, variable: variable.id }) : undefined;

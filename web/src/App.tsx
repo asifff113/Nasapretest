@@ -16,6 +16,7 @@ const screens: Record<Exclude<Screen, 'home'>, ComponentType> = {
   place: lazy(() => import('./screens/Place')),
   compare: lazy(() => import('./screens/Compare')),
   map: lazy(() => import('./screens/MapScreen')),
+  trends: lazy(() => import('./screens/Trends')),
   methods: lazy(() => import('./screens/Methods')),
   watch: lazy(() => import('./screens/Watch')),
   offline: lazy(() => import('./screens/Offline')),
