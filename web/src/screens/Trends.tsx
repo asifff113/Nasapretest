@@ -285,6 +285,7 @@ export default function TrendsScreen() {
                     up: int(total.up, lang),
                     down: int(total.down, lang),
                     tested: int(total.tested, lang),
+                    since: int(layer.data?.meta.window.first ?? 0, lang),
                   })}
                 </p>
                 <Split t={total} testId="trends-split" />
