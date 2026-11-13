@@ -39,5 +39,5 @@ def write_manifest(out: Path, manifest_id: str, created: str, products: list[dic
            "products": products, "checks": checks}
     p = Path(out) / "input_manifest.json"
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
+    p.write_bytes((json.dumps(doc, ensure_ascii=False, indent=1)).encode("utf-8"))
     return p

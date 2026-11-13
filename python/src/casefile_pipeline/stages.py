@@ -100,7 +100,7 @@ def access_check(products: list[str] | None = None, log=print) -> dict:
                                                 "routesFailed": rec.get("routesTried", {}), "facts": rec["facts"],
                                                 "opendapHost": url.split("/")[2] if url else None}
     CACHE.mkdir(exist_ok=True)
-    (CACHE / "access_check.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
+    (CACHE / "access_check.json").write_bytes((json.dumps(result, indent=1)).encode("utf-8"))
     log(f"\nwritten: {CACHE / 'access_check.json'}")
     return result
 
@@ -119,8 +119,7 @@ def store_monthly(reader: Reader, fields: dict[str, list], months: list[str], bo
     np.savez(monthly_path(reader, cache), months=np.array(months), grid=reader.grid_id, row0=box[0] if box else 0,
              col0=box[2] if box else 0, **arrays)
     entry = manifest.product_entry(reader.source_id, records, months[0], months[-1], bbox, f"earthaccess/CMR; route {route}")
-    (cache / "monthly" / f"{reader.short_name}.product.json").write_text(json.dumps({"fetched": _now(), "entry": entry}, indent=1),
-                                                                          encoding="utf-8")
+    (cache / "monthly" / f"{reader.short_name}.product.json").write_bytes((json.dumps({"fetched": _now(), "entry": entry}, indent=1)).encode("utf-8"))
     for v, a in arrays.items():
         fin = np.isfinite(a)
         log(f"  stored {monthly_path(reader, cache).name} {v[8:]}: {a.shape[0]} months x {a.shape[1]} x {a.shape[2]}, "

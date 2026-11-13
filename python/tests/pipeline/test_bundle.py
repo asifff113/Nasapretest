@@ -138,6 +138,8 @@ def test_p19_tiny_end_to_end_bundle_passes_check_bundle(tmp_path):
     mp = np.load(out / "map/air_temp__ANN.npz")
     assert mp["values"].shape == (180, 360, 2) and mp["years"].tolist() == [2001, 2002]
     assert (out / "map/rain__ANN.npz").exists() and not (out / "map/rain_imerg__ANN.npz").exists()
+    for f in (out / "input_manifest.json", out / "regions/index.json", *sorted((out / "regions/cells").glob("*/*.json"))):
+        assert b"\r\n" not in f.read_bytes(), f          # LF on every OS: the pre-registration pins these hashes
     man = json.loads((out / "input_manifest.json").read_text(encoding="utf-8"))
     assert man["synthetic"] is False and len(man["products"]) == 3
     assert {p["shortName"] for p in man["products"]} == {"M2TMNXSLV", "M2TMNXFLX", "GPM_3IMERGM"}

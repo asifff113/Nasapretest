@@ -289,7 +289,7 @@ def fetch_month(reader: Reader, month: str, granule, route: str, box=None, root:
         raise ValueError(f"unknown route {route}")
     rec["valuesSha256"] = values_sha256(np.stack([fields[k] for k in sorted(fields)]))
     rec["facts"] = facts
-    record_path(reader, month, root).write_text(json.dumps(rec, indent=1), encoding="utf-8")
+    record_path(reader, month, root).write_bytes((json.dumps(rec, indent=1)).encode("utf-8"))
     return rec
 
 

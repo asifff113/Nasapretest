@@ -56,5 +56,5 @@ def ensure(folder: Path, keys=None, log=print) -> dict:
                 lic = lic.strip().splitlines()[0].lstrip("# ").strip()
             meta[key] = {"file": spec["file"], "url": spec["url"], "version": spec["version"],
                          "sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "licence": lic}
-    meta_path.write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
+    meta_path.write_bytes((json.dumps(meta, indent=1, ensure_ascii=False)).encode("utf-8"))
     return meta

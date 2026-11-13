@@ -71,7 +71,7 @@ variables:
         bn: "এটি একক ঝড়, বন্যা বা একটি শহরের বৃষ্টি দেখাতে পারে না, আর এটি বৃষ্টিমাপক যন্ত্রের রেকর্ডও নয়।"
     sensitivity: rain_imerg
     colormap: { trend: BrBG, value: Blues }
-    valid_range: [0, 80]
+    valid_range: [0, 300]                # mm/day; a unit check, not a weather limit: real monthly grid values reach 151 (MERRA-2, 1980-2025)
     tags: [water, everyday, monsoon]
 
   # ---------------------------------------------------------------- sensitivity
@@ -104,7 +104,7 @@ variables:
         en: "It is a sensitivity check, not an independent confirmation, and it gives no verdict of its own."
         bn: "এটি একটি সংবেদনশীলতা-যাচাই, স্বাধীন সমর্থন নয়, আর এর নিজের কোনো রায় নেই।"
     colormap: { trend: BrBG, value: Blues }
-    valid_range: [0, 80]
+    valid_range: [0, 300]                # mm/day; a unit check, not a weather limit: real monthly grid values reach 151 (MERRA-2, 1980-2025)
     tags: [water, monsoon, sensitivity]
 
   # ---------------------------------------------------------------- reference

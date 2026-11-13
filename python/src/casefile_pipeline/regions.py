@@ -96,8 +96,8 @@ def build_regions(defs: list[RegionDef], out: Path, bundle_id: str, prereg: dict
             cells_ref[g["id"]] = rel
             p = out / rel
             p.parent.mkdir(parents=True, exist_ok=True)
-            p.write_text(json.dumps({"schema": "casefile/mask@3", "region": d.id, "grid": g["id"], "cells": cells,
-                                     "areaKm2": round(area, 1), "effectiveCells": eff, "synthetic": False}), encoding="utf-8")
+            p.write_bytes((json.dumps({"schema": "casefile/mask@3", "region": d.id, "grid": g["id"], "cells": cells,
+                                     "areaKm2": round(area, 1), "effectiveCells": eff, "synthetic": False})).encode("utf-8"))
         in_set = all(v["passes"] for v in support.values())
         b = d.geometry.bounds
         c = d.geometry.centroid
@@ -118,7 +118,7 @@ def build_regions(defs: list[RegionDef], out: Path, bundle_id: str, prereg: dict
              "minNativeCells": s["min_native_cells"], "maxSpillShare": s["max_spill_share"], "cellIdPattern": "cell:<row>_<col>",
              "regions": entries, "pairs": pairs}
     (out / "regions").mkdir(parents=True, exist_ok=True)
-    (out / "regions/index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
+    (out / "regions/index.json").write_bytes((json.dumps(index, ensure_ascii=False, indent=1)).encode("utf-8"))
     return index, masks
 
 
