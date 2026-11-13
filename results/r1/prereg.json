@@ -1,0 +1,250 @@
+{
+ "schema": "casefile/prereg@3",
+ "status": "committed",
+ "commit": "e2fbc93a77381c4357eb73be78e89c2f6cdecd1e",
+ "signed_by": [
+  "asifff113",
+  "hirok121",
+  "Shakilkhan24"
+ ],
+ "hashes": {
+  "analysis_yaml_sha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "input_manifest_sha256": "4d7a50e4f469a46de86f05ae76634a733970254885b1640f80f0214e164b34dd",
+  "regions_support_sha256": "51898fe0f5a05adfa1cfb3c16af7141cb5847bba9f132148b75653c5952dd9cc"
+ },
+ "alpha": {
+  "confirmatory": 0.05,
+  "secondary_q": 0.05,
+  "map_q": 0.1
+ },
+ "variables": [
+  {
+   "id": "air_temp",
+   "product": "MERRA-2 M2TMNXSLV 5.12.4, T2M",
+   "role": "analysed",
+   "main_window": {
+    "first": 1980,
+    "last": 2025
+   },
+   "practical_threshold": {
+    "units": "°C per decade",
+    "default": 0.1,
+    "by_season": {},
+    "reason": "About half a degree over the record: the smallest shift we consider worth reporting to a general reader."
+   }
+  },
+  {
+   "id": "rain",
+   "product": "MERRA-2 M2TMNXFLX 5.12.4, PRECTOTCORR",
+   "role": "analysed",
+   "main_window": {
+    "first": 1980,
+    "last": 2025
+   },
+   "practical_threshold": {
+    "units": "mm per decade",
+    "default": 40,
+    "by_season": {},
+    "reason": "Two percent of the mean yearly rain per decade: about a tenth of the yearly total over the record."
+   }
+  },
+  {
+   "id": "rain_imerg",
+   "product": "GPM IMERG V07 Final monthly (GPM_3IMERGM)",
+   "role": "sensitivity",
+   "main_window": {
+    "first": 1998,
+    "last": 2024
+   },
+   "practical_threshold": {
+    "units": "mm per decade",
+    "default": 40,
+    "by_season": {},
+    "reason": "Same as rain."
+   }
+  }
+ ],
+ "seasons": {
+  "main": "ANN",
+  "secondary": [
+   "MAM",
+   "JJAS",
+   "ON",
+   "DJF"
+  ],
+  "djf_starts_one_year_later": true
+ },
+ "regions": {
+  "support_rule": {
+   "min_native_cells": 4,
+   "max_spill_share": 0.333
+  },
+  "set": [
+   {
+    "id": "country:BGD",
+    "role": "home",
+    "effective_native_cells": {
+     "merra2_native": 38.0,
+     "imerg_native": 1199.28
+    }
+   },
+   {
+    "id": "cmp:west_bengal",
+    "role": "comparison",
+    "effective_native_cells": {
+     "merra2_native": 24.24,
+     "imerg_native": 765.48
+    }
+   },
+   {
+    "id": "bd_div:khulna",
+    "role": "division",
+    "effective_native_cells": {
+     "merra2_native": 6.12,
+     "imerg_native": 189.0
+    }
+   },
+   {
+    "id": "bd_div:rajshahi",
+    "role": "division",
+    "effective_native_cells": {
+     "merra2_native": 5.4,
+     "imerg_native": 165.16
+    }
+   }
+  ]
+ },
+ "pairs": [
+  {
+   "id": "pair_bgd_vs_wb",
+   "a": "country:BGD",
+   "b": "cmp:west_bengal",
+   "lead": true,
+   "question": {
+    "en": "Has rain changed differently in Bangladesh and in West Bengal?",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   }
+  },
+  {
+   "id": "pair_khulna_vs_rajshahi",
+   "a": "bd_div:khulna",
+   "b": "bd_div:rajshahi",
+   "lead": false,
+   "question": {
+    "en": "Has rain changed differently in Khulna and in Rajshahi?",
+    "bn": "খুলনা ও রাজশাহী বিভাগে কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   }
+  }
+ ],
+ "windows": {
+  "alternatives": [
+   {
+    "id": "s3",
+    "start_shift": 3,
+    "end_shift": 0
+   },
+   {
+    "id": "s6",
+    "start_shift": 6,
+    "end_shift": 0
+   },
+   {
+    "id": "e3",
+    "start_shift": 0,
+    "end_shift": -3
+   },
+   {
+    "id": "e6",
+    "start_shift": 0,
+    "end_shift": -6
+   },
+   {
+    "id": "s3e3",
+    "start_shift": 3,
+    "end_shift": -3
+   }
+  ]
+ },
+ "headline_cases": [
+  {
+   "kind": "contrast",
+   "pair": "pair_bgd_vs_wb",
+   "variable": "rain",
+   "season": "ANN"
+  },
+  {
+   "kind": "contrast",
+   "pair": "pair_bgd_vs_wb",
+   "variable": "air_temp",
+   "season": "ANN"
+  }
+ ],
+ "family_preview": {
+  "confirmatory": [
+   "air_temp | country:BGD | ANN | main",
+   "air_temp | cmp:west_bengal | ANN | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | ANN | main",
+   "rain | country:BGD | ANN | main",
+   "rain | cmp:west_bengal | ANN | main",
+   "rain | country:BGD-minus-cmp:west_bengal | ANN | main",
+   "air_temp | bd_div:khulna | ANN | main",
+   "air_temp | bd_div:rajshahi | ANN | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | ANN | main",
+   "rain | bd_div:khulna | ANN | main",
+   "rain | bd_div:rajshahi | ANN | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | ANN | main"
+  ],
+  "secondary": [
+   "air_temp | country:BGD | MAM | main",
+   "air_temp | country:BGD | JJAS | main",
+   "air_temp | country:BGD | ON | main",
+   "air_temp | country:BGD | DJF | main",
+   "air_temp | cmp:west_bengal | MAM | main",
+   "air_temp | cmp:west_bengal | JJAS | main",
+   "air_temp | cmp:west_bengal | ON | main",
+   "air_temp | cmp:west_bengal | DJF | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | MAM | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | JJAS | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | ON | main",
+   "air_temp | country:BGD-minus-cmp:west_bengal | DJF | main",
+   "rain | country:BGD | MAM | main",
+   "rain | country:BGD | JJAS | main",
+   "rain | country:BGD | ON | main",
+   "rain | country:BGD | DJF | main",
+   "rain | cmp:west_bengal | MAM | main",
+   "rain | cmp:west_bengal | JJAS | main",
+   "rain | cmp:west_bengal | ON | main",
+   "rain | cmp:west_bengal | DJF | main",
+   "rain | country:BGD-minus-cmp:west_bengal | MAM | main",
+   "rain | country:BGD-minus-cmp:west_bengal | JJAS | main",
+   "rain | country:BGD-minus-cmp:west_bengal | ON | main",
+   "rain | country:BGD-minus-cmp:west_bengal | DJF | main",
+   "air_temp | bd_div:khulna | MAM | main",
+   "air_temp | bd_div:khulna | JJAS | main",
+   "air_temp | bd_div:khulna | ON | main",
+   "air_temp | bd_div:khulna | DJF | main",
+   "air_temp | bd_div:rajshahi | MAM | main",
+   "air_temp | bd_div:rajshahi | JJAS | main",
+   "air_temp | bd_div:rajshahi | ON | main",
+   "air_temp | bd_div:rajshahi | DJF | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | MAM | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | JJAS | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | ON | main",
+   "air_temp | bd_div:khulna-minus-bd_div:rajshahi | DJF | main",
+   "rain | bd_div:khulna | MAM | main",
+   "rain | bd_div:khulna | JJAS | main",
+   "rain | bd_div:khulna | ON | main",
+   "rain | bd_div:khulna | DJF | main",
+   "rain | bd_div:rajshahi | MAM | main",
+   "rain | bd_div:rajshahi | JJAS | main",
+   "rain | bd_div:rajshahi | ON | main",
+   "rain | bd_div:rajshahi | DJF | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | MAM | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | JJAS | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | ON | main",
+   "rain | bd_div:khulna-minus-bd_div:rajshahi | DJF | main"
+  ]
+ },
+ "amendments": [],
+ "sha256": "c830182d372dc31258231ef020899d87884e5e70471bb6b4efab6616f68d3e17"
+}

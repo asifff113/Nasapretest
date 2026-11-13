@@ -1,0 +1,83 @@
+{
+ "schema": "casefile/casefile@3",
+ "synthetic": false,
+ "id": "lead_contrast_rain",
+ "uses": {
+  "kind": "contrast",
+  "pair": "pair_bgd_vs_wb",
+  "variable": "rain",
+  "season": "ANN"
+ },
+ "ending": "cant_tell_yet",
+ "title": {
+  "en": "Has rain changed differently in Bangladesh and West Bengal (India)?",
+  "bn": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+ },
+ "summary": {
+  "en": "Our pre-registered comparison, on NASA MERRA-2 rain: we test the trend in the difference itself.",
+  "bn": "আমাদের আগে থেকে নিবন্ধিত তুলনা, নাসার MERRA-2 বৃষ্টি দিয়ে: আমরা পার্থক্যের প্রবণতাই সরাসরি যাচাই করি।"
+ },
+ "results": [
+  "contrasts/rain/pair_bgd_vs_wb/ANN.json",
+  "verdicts/rain/country__BGD/ANN.json",
+  "verdicts/rain/cmp__west_bengal/ANN.json"
+ ],
+ "beats": [
+  {
+   "at": "question",
+   "caption": {
+    "en": "Has rainfall changed differently in Bangladesh and West Bengal (India)?",
+    "bn": "বাংলাদেশ ও পশ্চিমবঙ্গ (ভারত)-এ কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   }
+  },
+  {
+   "at": "place",
+   "caption": {
+    "en": "The two places, and the data cells that cover them.",
+    "bn": "দুটি জায়গা, আর যে ডেটা-ঘরগুলো এদের ঢাকে।"
+   }
+  },
+  {
+   "at": "series",
+   "caption": {
+    "en": "Yearly rain in each place, 1980–2025, from MERRA-2.",
+    "bn": "প্রতিটি জায়গার বার্ষিক বৃষ্টি, ১৯৮০–২০২৫, MERRA-2 থেকে।"
+   }
+  },
+  {
+   "at": "difference",
+   "caption": {
+    "en": "Now subtract: Bangladesh minus West Bengal (India), year by year. Shared ups and downs cancel.",
+    "bn": "এবার বিয়োগ: প্রতি বছর বাংলাদেশ থেকে পশ্চিমবঙ্গ (ভারত)। দুই জায়গার একসঙ্গে ওঠানামা কেটে যায়।"
+   }
+  },
+  {
+   "at": "verdict",
+   "caption": {
+    "en": "Not yet. 46 years of data can't tell these two apart, and that is not the same as no change.",
+    "bn": "এখনো বলা যাচ্ছে না। ৪৬ বছরের ডেটা এ দুটিকে আলাদা করতে পারছে না — আর এর মানে ‘কোনো পরিবর্তন নেই’ নয়।"
+   }
+  },
+  {
+   "at": "robustness",
+   "caption": {
+    "en": "We try to break it: a missing year, other start and end years, known data changes.",
+    "bn": "আমরা এটি ভাঙার চেষ্টা করি: একটি বছর বাদ, অন্য শুরু ও শেষের বছর, ডেটার জানা পরিবর্তন।"
+   }
+  },
+  {
+   "at": "methods",
+   "caption": {
+    "en": "Every verdict shows its evidence: datasets, years, method and the 12 tests we registered in advance.",
+    "bn": "প্রতিটি রায় তার প্রমাণ দেখায়: ডেটাসেট, বছর, পদ্ধতি এবং আগে থেকে নিবন্ধিত ১২টি পরীক্ষা।"
+   }
+  },
+  {
+   "at": "takeaway",
+   "caption": {
+    "en": "Your turn: open the case and look at the seasons.",
+    "bn": "এবার আপনার পালা: কেসটি খুলুন, ঋতুগুলো দেখুন।"
+   }
+  }
+ ]
+}
