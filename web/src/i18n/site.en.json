@@ -176,7 +176,20 @@
       "step_place": "Place",
       "step_lineup": "Line-up",
       "step_verdict": "Verdict",
-      "step_verdict_title": "The evidence"
+      "step_verdict_title": "The evidence",
+      "open_case": "Open the case",
+      "cells_title": "The data cells behind this place",
+      "fact_cells": "Data cells",
+      "fact_tests": "Tests run",
+      "fact_area": "Area",
+      "km2": "square kilometres",
+      "fact_centre": "Centre",
+      "locator_alt": "A globe turned to show where {place} lies.",
+      "locator_all": "A globe showing the places we prepared.",
+      "other_places": "Other places",
+      "fact_places": "Places tested",
+      "fact_pairs": "Comparisons",
+      "fact_grid": "Data grids"
     },
     "lineup": {
       "col_status": "Result"
@@ -203,7 +216,8 @@
       "label_opposite_fitted": "Opposite fitted directions",
       "no_labels": "None of the comparison labels applies here.",
       "split_title": "How the cells were split",
-      "split": "On the {grid}, {shared} cells were shared; after the split, the two places keep {a} and {b} effective cells."
+      "split": "On the {grid}, {shared} cells were shared; after the split, the two places keep {a} and {b} effective cells.",
+      "locator_alt": "A globe showing the two places and the arc between them."
     },
     "map": {
       "eyebrow": "Exploration",
@@ -312,7 +326,8 @@
       "golden": "This build: {passed} of {total} golden tests passed.",
       "months": "Months",
       "granules": "Files found",
-      "files": "Files pinned"
+      "files": "Files pinned",
+      "eyebrow": "Methods"
     },
     "references": {
       "r1": "Mann, H. B. (1945), Nonparametric tests against trend, Econometrica, 13, 245–259. Kendall, M. G. (1975), Rank Correlation Methods.",

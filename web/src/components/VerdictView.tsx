@@ -76,11 +76,11 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
   const solid = verdict.status === 'verdict' && verdict.grade !== 'cant_tell_yet';
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
-      <Card className="p-4 sm:p-5 lg:sticky lg:top-[calc(var(--header-h)+56px)]">
-        <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
+      <Card className="p-4 sm:p-6 lg:sticky lg:top-[calc(var(--header-h)+56px)]">
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
           <div>
-            <p className="text-[15px] font-semibold">{varName}</p>
-            <p className="text-sm text-muted">
+            <p className="font-display text-[26px] leading-tight">{varName}</p>
+            <p className="mt-1 font-mono text-[12.5px] text-muted">
               {regionName} · {t(`season.${verdict.season}.long`)} · {int(verdict.window.first, lang)}–{int(verdict.window.last, lang)}
             </p>
           </div>

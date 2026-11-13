@@ -8,7 +8,8 @@ import type { Manifest } from '../data/types';
 import { useCatalog, useResult } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { WithData } from '../components/LoadState';
-import { Page, PageHeader } from '../components/Page';
+import { Body } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
 import { KindBadge } from '../components/RecordCard';
 import { SimpleTable } from '../components/PivotTable';
 
@@ -18,10 +19,21 @@ export default function DataCreditsScreen() {
   const catalog = useCatalog();
   const manifest = useResult<Manifest>('input_manifest.json');
   return (
-    <Page wide={false}>
-      <PageHeader eyebrow={<Database className="inline size-4" aria-hidden="true" />} title={t('nav.data')} lead={t('site.data.lead')} />
+    <>
+      <Hero
+        wide={false}
+        eyebrow={
+          <span className="inline-flex items-center gap-2">
+            <Database className="size-4" aria-hidden="true" />
+            {t('app.name')}
+          </span>
+        }
+        title={t('nav.data')}
+        lead={t('site.data.lead')}
+      />
+      <Body wide={false}>
       <section className="flex flex-col gap-4">
-        <h2 className="text-h2">{t('site.data.used_title')}</h2>
+        <h2 className="text-chapter">{t('site.data.used_title')}</h2>
         <WithData res={catalog}>
           {(c) => (
             <ul className="flex flex-col gap-3" data-testid="citations">
@@ -30,7 +42,7 @@ export default function DataCreditsScreen() {
                 .map((s) => {
                   const vars = c.variables.filter((v) => v.source === s.id);
                   return (
-                    <li key={s.id} className="rounded-[10px] border border-line bg-surface p-4">
+                    <li key={s.id} className="atlas-panel rounded-card border border-line bg-surface p-5">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <p className="font-semibold">{s.name}</p>
                         {vars[0] ? <KindBadge v={vars[0]} /> : null}
@@ -50,7 +62,7 @@ export default function DataCreditsScreen() {
         </WithData>
       </section>
       <section className="mt-12 flex flex-col gap-4">
-        <h2 className="text-h2">{t('site.data.files_title')}</h2>
+        <h2 className="text-chapter">{t('site.data.files_title')}</h2>
         <WithData res={manifest} path="input_manifest.json">
           {(m) => (
             <SimpleTable
@@ -62,7 +74,7 @@ export default function DataCreditsScreen() {
         </WithData>
       </section>
       <section className="mt-12 flex flex-col gap-3">
-        <h2 className="text-h2">{t('site.data.other_title')}</h2>
+        <h2 className="text-chapter">{t('site.data.other_title')}</h2>
         <ul className="flex list-disc flex-col gap-2 pl-6 text-[15px]">
           <li>{t('site.data.boundaries')}</li>
           <li>{t('site.data.outlines')}</li>
@@ -70,6 +82,7 @@ export default function DataCreditsScreen() {
           <li>{t('site.data.no_logos')}</li>
         </ul>
       </section>
-    </Page>
+    </Body>
+    </>
   );
 }

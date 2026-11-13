@@ -40,6 +40,7 @@ The tests read every id from that folder, so the same suite runs on the examples
 | `src/components/` | VerdictCard, CompareView, LineupTable, PlacePicker, ContributingCells, ConfidenceSpine, ProvenancePanel, ExpertPanel, RecordCard, … (04 §5) |
 | `src/charts/` | TrendChart, PairChart and DifferenceChart (Observable Plot), Sparkline (plain SVG). They draw the engine's `chart` block |
 | `src/explore/` | The globe explorer: globe, surface texture (Earth + layer + borders), side panels |
+| `src/components/atlas/` | The atlas page head (graticule, facts), the SVG locator globe for places and pairs, the record-group icons |
 | `src/map/` | The flat screening map on a canvas, equirectangular, with the bundled outlines; colour scales |
 | `src/screens/` | Home, Question, Place, CellPage, Compare, MapScreen, Methods, Watch, Offline, DataCredits, AiUse, About |
 | `src/ui/common/` | shadcn/ui components on Radix, re-themed to the tokens of 04 §11 |
@@ -51,7 +52,8 @@ Design direction "Atlas" (ADR-24): ocean navy (default) and ivory paper, one gol
 page and the map are a 3D globe explorer (ADR-23, `src/explore/`): NASA's Blue Marble image with the chosen record's
 map draped over it, click anywhere for that 1° square, pins for registered places, and an ask box backed by the
 no-AI smart matcher (ADR-25, `src/data/matcher.ts`, `src/data/places.ts`). The flat map stays one switch away for the
-keyboard and weak devices. The verdict card is still a case folder: a gold tab with the case id, the status as a
+keyboard and weak devices. Every other page opens with the atlas head and, for a place, a pair or a cell, a small
+locator globe that turns to face it. The line-up is an evidence board (records down, seasons across). The verdict card is still a case folder, printed on the ivory answer sheet: a gold tab with the case id, the status as a
 stamp before any number, one plain sentence, then the numbers. Fonts (Instrument Serif, Inter Tight, Noto Serif and
 Sans Bengali, IBM Plex Mono), icons, the Earth image and the outlines are bundled; the site fetches nothing from
 another origin, and the offline file makes no request at all.

@@ -8,6 +8,7 @@ import type { CatalogVariable } from '../data/types';
 import { useLang } from '../state/prefs';
 import { Badge } from '../ui/common/badge';
 import { cn } from '../ui/common/utils';
+import { GroupIcon } from './atlas/icons';
 
 export function KindBadge({ v }: { v: CatalogVariable }) {
   const t = useT();
@@ -40,11 +41,24 @@ export function RecordCard({ variable: v, why }: { variable: CatalogVariable; wh
       data-testid={`record-card-${v.id}`}
       data-deferred={deferred ? 'true' : 'false'}
       aria-disabled={deferred ? 'true' : undefined}
-      className={cn('flex h-full flex-col rounded-[10px] border p-4 sm:p-5', deferred ? 'border-dashed border-line-strong bg-surface-2 text-muted' : 'border-line bg-surface shadow-card')}
+      className={cn('flex h-full flex-col rounded-card border p-5 sm:p-6', deferred ? 'border-dashed border-line-strong text-muted' : 'atlas-panel border-line bg-surface')}
     >
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <h3 className={cn('text-h3', deferred && 'text-muted')}>{pick(v.name, lang)}</h3>
-        <KindBadge v={v} />
+      <div className="flex items-start gap-3.5">
+        <span
+          className={cn(
+            'inline-flex size-11 shrink-0 items-center justify-center rounded-full border',
+            deferred ? 'border-line-strong text-muted' : 'border-accent/40 bg-accent/10 text-accent-ink',
+          )}
+          aria-hidden="true"
+        >
+          <GroupIcon group={v.group} className="size-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className={cn('font-display text-[24px] font-normal leading-tight', deferred && 'text-muted')}>{pick(v.name, lang)}</h3>
+          <div className="mt-1.5">
+            <KindBadge v={v} />
+          </div>
+        </div>
       </div>
       {deferred ? (
         <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold" data-testid="not-analysed">
@@ -52,8 +66,8 @@ export function RecordCard({ variable: v, why }: { variable: CatalogVariable; wh
           {t('record_card.not_analysed')}
         </p>
       ) : null}
-      {why ? <p className="mt-2 text-[15px]">{why}</p> : null}
-      <p className="mt-2 text-[15px] text-muted">{pick(v.definition, lang)}</p>
+      {why ? <p className="mt-4 border-l-2 border-accent/60 pl-3 text-[15px] font-medium">{why}</p> : null}
+      <p className="mt-3 text-[15px] text-muted">{pick(v.definition, lang)}</p>
       <p className="mt-1 text-sm text-muted">{pick(v.how_measured, lang)}</p>
       <dl className="mt-4 grid gap-3 border-t border-line pt-3 text-[15px]">
         <div>

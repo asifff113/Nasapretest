@@ -2,17 +2,29 @@
 // AI use (docs/04_UI.md §4.13): the statement of docs/AI_USE.md §1. The product itself makes no AI call.
 import { Bot, ShieldCheck } from 'lucide-react';
 import { useT } from '../i18n';
-import { Page, PageHeader } from '../components/Page';
+import { Body } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
 import { Card } from '../ui/common/card';
 
 export default function AiUseScreen() {
   const t = useT();
   return (
-    <Page wide={false}>
-      <PageHeader eyebrow={<Bot className="inline size-4" aria-hidden="true" />} title={t('nav.ai_use')} lead={t('site.ai.lead')} />
+    <>
+      <Hero
+        wide={false}
+        eyebrow={
+          <span className="inline-flex items-center gap-2">
+            <Bot className="size-4" aria-hidden="true" />
+            {t('app.name')}
+          </span>
+        }
+        title={t('nav.ai_use')}
+        lead={t('site.ai.lead')}
+      />
+      <Body wide={false}>
       <div className="flex flex-col gap-6" data-testid="ai-statement">
         <section>
-          <h2 className="text-h2">{t('site.ai.how_title')}</h2>
+          <h2 className="text-chapter">{t('site.ai.how_title')}</h2>
           <div className="mt-3 flex flex-col gap-3 text-[17px] leading-relaxed">
             <p>{t('site.ai.how_1')}</p>
             <p>{t('site.ai.how_2')}</p>
@@ -37,6 +49,7 @@ export default function AiUseScreen() {
           <p className="mt-1 text-[17px]">{t('site.ai.record_body')}</p>
         </section>
       </div>
-    </Page>
+    </Body>
+    </>
   );
 }

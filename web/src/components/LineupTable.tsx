@@ -1,15 +1,42 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
-// LineupTable (docs/04_UI.md §4.4): one row per variable and season with its status, family, rate per decade
-// with its 95% range, and the adjusted p. Every row shows its status, so a "no verdict" row is never mistaken
-// for a weak verdict. Exploration rows show "adjusted within this list of N".
-import { ChevronRight } from 'lucide-react';
+// LineupTable (docs/04_UI.md §4.4), drawn as an evidence board: one row per record, one tile per season. Each
+// tile shows its status first, then the rate per decade with its 95% range, the family and the adjusted p.
+// Every tile shows its status, so a "no verdict" tile is never mistaken for a weak verdict. Exploration tiles
+// show "adjusted within this list of N". The tiles stay in the file's order in the document; the grid only
+// places them (layout arithmetic).
+import { ArrowUpRight } from 'lucide-react';
 import { pick, useT } from '../i18n';
-import { p as fmtP, rate } from '../i18n/format';
+import { int, p as fmtP, rate } from '../i18n/format';
 import type { Catalog, Lineup, LineupItem } from '../data/types';
 import { useLang } from '../state/prefs';
 import { href, type View } from '../state/view';
 import { cn } from '../ui/common/utils';
-import { FamilyBadge, StatusBadge } from './StatusBadge';
+import { FamilyBadge, StatusBadge, statusInfo } from './StatusBadge';
+import { groupIcon, kindLabel } from './atlas/icons';
+
+const TONE_BAR: Record<string, string> = {
+  strong: 'bg-strong',
+  supported: 'bg-supported',
+  canttell: 'bg-canttell',
+  noverdict: 'bg-noverdict',
+  exploration: 'bg-exploration',
+};
+
+/** The 95% range against zero, as a small bar (positions only). */
+function MiniRange({ value, lo, hi, tone }: { value: number; lo: number | null; hi: number | null; tone: string }) {
+  const ext = Math.max(Math.abs(lo ?? value), Math.abs(hi ?? value), Math.abs(value)) * 1.2 || 1;
+  const pos = (x: number) => 50 + (x / ext) * 46;
+  return (
+    <div className="relative mt-3 h-4" aria-hidden="true">
+      <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-line-strong" />
+      <div className="absolute top-0 h-4 w-px bg-muted/70" style={{ left: `${pos(0)}%` }} />
+      {lo !== null && hi !== null ? (
+        <div className={cn('absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full opacity-45', TONE_BAR[tone])} style={{ left: `${pos(lo)}%`, width: `${Math.max(1, pos(hi) - pos(lo))}%` }} />
+      ) : null}
+      <div className={cn('absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-surface', TONE_BAR[tone])} style={{ left: `${pos(value)}%` }} />
+    </div>
+  );
+}
 
 export function LineupTable({
   lineup,
@@ -24,139 +51,125 @@ export function LineupTable({
 }) {
   const t = useT();
   const lang = useLang();
+  const variable = (id: string) => catalog?.variables.find((x) => x.id === id);
   const varName = (id: string) => {
-    const v = catalog?.variables.find((x) => x.id === id);
+    const v = variable(id);
     return v ? pick(v.name, lang) : id;
   };
-  const pCell = (it: LineupItem) => {
+  const pText = (it: LineupItem) => {
     if (it.family === 'exploration' || it.family === 'sensitivity') {
-      return it.qWithinLineup !== null ? (
-        <span>
-          {fmtP(it.qWithinLineup, lang)}
-          <span className="block text-xs text-muted">{t('lineup.adjusted_within', { n_tests: lineup.nTests })}</span>
-        </span>
-      ) : (
-        '–'
-      );
+      return it.qWithinLineup !== null ? fmtP(it.qWithinLineup, lang) : '–';
     }
     return it.pAdjusted !== null ? fmtP(it.pAdjusted, lang) : '–';
   };
+  const within = (it: LineupItem) => (it.family === 'exploration' || it.family === 'sensitivity') && it.qWithinLineup !== null;
+
+  // Rows (records) and columns (seasons) in the order they first appear in the file.
+  const vars = [...new Set(lineup.items.map((i) => i.variable))];
+  const seasons = [...new Set(lineup.items.map((i) => i.season))];
+
+  const tile = (it: LineupItem, mobile: boolean) => {
+    const isSel = selected?.variable === it.variable && selected?.season === it.season;
+    const tone = statusInfo(t, it.status, it.grade, it.reason, it.family).tone;
+    return (
+      <a
+        href={href(linkFor(it))}
+        aria-current={isSel ? 'true' : undefined}
+        className={cn(
+          'group relative flex h-full flex-col overflow-hidden rounded-card border px-4 pb-3.5 pt-4 text-ink no-underline transition-[border-color,box-shadow,transform] hover:no-underline',
+          'hover:-translate-y-px hover:border-line-strong hover:shadow-lift',
+          isSel ? 'border-accent bg-accent/[0.08] shadow-[0_0_0_1px_var(--accent),var(--shadow)]' : 'atlas-panel border-line bg-surface',
+        )}
+      >
+        <span className={cn('absolute inset-x-0 top-0 h-[3px]', TONE_BAR[tone])} aria-hidden="true" />
+        <span className="flex items-start justify-between gap-2">
+          <span className="min-w-0">
+            {mobile ? <span className="block text-[15px] font-semibold leading-snug">{varName(it.variable)}</span> : null}
+            <span className="eyebrow block">{t(`season.${it.season}.long`)}</span>
+          </span>
+          <ArrowUpRight className="size-4 shrink-0 text-muted transition-colors group-hover:text-accent-ink" aria-hidden="true" />
+        </span>
+        <span className="mt-2.5 flex flex-wrap gap-1.5">
+          <StatusBadge status={it.status} grade={it.grade} reason={it.reason} family={it.family} />
+        </span>
+        {it.ratePerDecade !== null ? (
+          <>
+            <span className="mt-3 flex items-baseline gap-1.5">
+              <span className="font-display text-[30px] leading-none tabular">{rate(it.ratePerDecade, lang)}</span>
+              <span className="text-[13px] text-muted">
+                {it.units} {t('verdict.labels.rate_short')}
+              </span>
+            </span>
+            {it.rateLowPerDecade !== null && it.rateHighPerDecade !== null ? (
+              <span className="mt-1 block font-mono text-[12px] text-muted tabular">
+                [{rate(it.rateLowPerDecade, lang, it.ratePerDecade)}, {rate(it.rateHighPerDecade, lang, it.ratePerDecade)}]
+              </span>
+            ) : null}
+            <MiniRange value={it.ratePerDecade} lo={it.rateLowPerDecade} hi={it.rateHighPerDecade} tone={tone} />
+          </>
+        ) : (
+          <span className="mt-3 font-display text-[30px] leading-none text-muted">–</span>
+        )}
+        <span className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-3.5">
+          <FamilyBadge family={it.family} />
+          <span className="text-right text-[13px] tabular">
+            <span className="text-muted">{t('lineup.col_p')} </span>
+            <span className="font-semibold">{pText(it)}</span>
+            {within(it) ? <span className="block text-[11.5px] text-muted">{t('lineup.adjusted_within', { n_tests: lineup.nTests })}</span> : null}
+          </span>
+        </span>
+      </a>
+    );
+  };
+
   return (
     <div data-tour="lineup" data-testid="lineup">
-      <p className="mb-3 text-[15px] text-muted" data-testid="lineup-intro">
+      <p className="mb-5 text-[16px] text-muted" data-testid="lineup-intro">
         {t('lineup.intro', { n_tests: lineup.nTests })}
       </p>
-      {/* Wide screens: a table. Phones: one card per row. Same data, same order. */}
-      <div className="hidden overflow-hidden rounded-[10px] border border-line bg-surface md:block">
-        <table className="w-full border-collapse text-[15px] tabular">
-          <thead className="border-b border-line-strong bg-surface-2">
-            <tr>
-              <th scope="col" className="px-3 py-2 text-left text-[13px] font-semibold text-muted">
-                {t('lineup.col_variable')}
-              </th>
-              <th scope="col" className="px-3 py-2 text-left text-[13px] font-semibold text-muted">
-                {t('lineup.col_season')}
-              </th>
-              <th scope="col" className="px-3 py-2 text-left text-[13px] font-semibold text-muted">
-                {t('site.lineup.col_status')}
-              </th>
-              <th scope="col" className="px-3 py-2 text-right text-[13px] font-semibold text-muted">
-                {t('lineup.col_rate')}
-              </th>
-              <th scope="col" className="px-3 py-2 text-left text-[13px] font-semibold text-muted">
-                {t('lineup.col_family')}
-              </th>
-              <th scope="col" className="px-3 py-2 text-right text-[13px] font-semibold text-muted">
-                {t('lineup.col_p')}
-              </th>
-              <th scope="col" className="w-10 px-2 py-2">
-                <span className="sr-only">{t('lineup.open')}</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {lineup.items.map((it) => {
-              const isSel = selected?.variable === it.variable && selected?.season === it.season;
-              return (
-                <tr
-                  key={`${it.variable}-${it.season}`}
-                  data-testid="lineup-row"
-                  data-family={it.family}
-                  className={cn('border-b border-line last:border-0', isSel ? 'bg-accent-soft' : 'hover:bg-surface-2')}
-                >
-                  <td className="px-3 py-2.5 font-medium">{varName(it.variable)}</td>
-                  <td className="px-3 py-2.5">{t(`season.${it.season}.long`)}</td>
-                  <td className="px-3 py-2.5">
-                    <StatusBadge status={it.status} grade={it.grade} reason={it.reason} family={it.family} />
-                  </td>
-                  <td className="px-3 py-2.5 text-right">
-                    {it.ratePerDecade !== null ? (
-                      <>
-                        <span className="font-semibold">
-                          {rate(it.ratePerDecade, lang)} {it.units}
-                        </span>
-                        {it.rateLowPerDecade !== null && it.rateHighPerDecade !== null ? (
-                          <span className="block text-xs text-muted">
-                            [{rate(it.rateLowPerDecade, lang, it.ratePerDecade)}, {rate(it.rateHighPerDecade, lang, it.ratePerDecade)}]
-                          </span>
-                        ) : null}
-                      </>
-                    ) : (
-                      '–'
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <FamilyBadge family={it.family} />
-                  </td>
-                  <td className="px-3 py-2.5 text-right">{pCell(it)}</td>
-                  <td className="px-2 py-2.5">
-                    <a
-                      href={href(linkFor(it))}
-                      aria-current={isSel ? 'true' : undefined}
-                      aria-label={`${t('lineup.open')}: ${varName(it.variable)}, ${t(`season.${it.season}.long`)}`}
-                      className="inline-flex size-10 items-center justify-center rounded-[8px] text-ink hover:bg-ink/[0.06]"
-                    >
-                      <ChevronRight className="size-5" aria-hidden="true" />
-                    </a>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <ul className="flex flex-col gap-2 md:hidden">
-        {lineup.items.map((it) => {
-          const isSel = selected?.variable === it.variable && selected?.season === it.season;
+      {/* Wide screens: a board, records down, seasons across. Phones: one tile per test. Same data, same order. */}
+      <div
+        className="hidden gap-3 md:grid"
+        style={{ gridTemplateColumns: `minmax(150px, 210px) repeat(${seasons.length}, minmax(0, 1fr))` }}
+        role="list"
+      >
+        {vars.map((v, r) => {
+          const cv = variable(v);
+          const Icon = groupIcon(cv?.group);
           return (
-            <li key={`${it.variable}-${it.season}`} data-testid="lineup-row-mobile" data-family={it.family}>
-              <a
-                href={href(linkFor(it))}
-                aria-current={isSel ? 'true' : undefined}
-                className={cn(
-                  'flex items-start gap-3 rounded-[10px] border px-3.5 py-3 text-ink no-underline hover:no-underline',
-                  isSel ? 'border-accent bg-accent-soft' : 'border-line bg-surface',
-                )}
-              >
-                <span className="min-w-0 flex-1">
-                  <span className="block font-medium">
-                    {varName(it.variable)} · {t(`season.${it.season}.long`)}
-                  </span>
-                  <span className="mt-1.5 flex flex-wrap gap-1.5">
-                    <StatusBadge status={it.status} grade={it.grade} reason={it.reason} family={it.family} />
-                    <FamilyBadge family={it.family} />
-                  </span>
-                  <span className="mt-1.5 block text-sm text-muted tabular">
-                    {it.ratePerDecade !== null ? `${rate(it.ratePerDecade, lang)} ${it.units} ${t('verdict.labels.rate_short')}` : '–'}
-                    {' · '}
-                    {t('lineup.col_p')} {typeof pCell(it) === 'string' ? pCell(it) : it.qWithinLineup !== null ? fmtP(it.qWithinLineup, lang) : '–'}
-                  </span>
+            <div key={`h-${v}`} className="flex flex-col justify-center gap-2 pr-2" style={{ gridColumn: 1, gridRow: r + 1 }} aria-hidden="true">
+              <span className="inline-flex size-10 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent-ink">
+                <Icon className="size-5" />
+              </span>
+              <span className="text-[16px] font-semibold leading-snug">{varName(v)}</span>
+              {cv ? (
+                <span className="text-[13px] text-muted">
+                  {kindLabel(t, cv.kind)}
+                  {cv.record?.from ? ` · ${int(cv.record.from, lang)}–` : ''}
                 </span>
-                <ChevronRight className="mt-1 size-5 shrink-0 text-muted" aria-hidden="true" />
-              </a>
-            </li>
+              ) : null}
+            </div>
           );
         })}
+        {lineup.items.map((it) => (
+          <div
+            key={`${it.variable}-${it.season}`}
+            role="listitem"
+            data-testid="lineup-row"
+            data-family={it.family}
+            style={{ gridColumn: seasons.indexOf(it.season) + 2, gridRow: vars.indexOf(it.variable) + 1 }}
+            aria-label={`${varName(it.variable)}, ${t(`season.${it.season}.long`)}`}
+          >
+            {tile(it, false)}
+          </div>
+        ))}
+      </div>
+      <ul className="flex flex-col gap-3 md:hidden">
+        {lineup.items.map((it) => (
+          <li key={`${it.variable}-${it.season}`} data-testid="lineup-row-mobile" data-family={it.family}>
+            {tile(it, true)}
+          </li>
+        ))}
       </ul>
     </div>
   );

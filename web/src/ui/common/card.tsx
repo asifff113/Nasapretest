@@ -4,7 +4,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from './utils';
 
 export const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('rounded-card border border-line bg-surface shadow-card', className)} {...props} />
+  <div ref={ref} className={cn('atlas-panel rounded-card border border-line bg-surface', className)} {...props} />
 ));
 Card.displayName = 'Card';
 

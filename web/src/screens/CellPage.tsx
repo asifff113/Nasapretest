@@ -16,7 +16,9 @@ import { SeriesChart } from '../charts/SeriesChart';
 import { diverging, scalePos } from '../map/colours';
 import { cellInfo, latLon } from '../map/ScreeningMap';
 import { BadLinkNotice, Loading, WithData } from '../components/LoadState';
-import { Page, PageHeader } from '../components/Page';
+import { Body } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
+import { LocatorGlobe } from '../components/atlas/LocatorGlobe';
 import { Badge } from '../ui/common/badge';
 import { Card } from '../ui/common/card';
 import { MissingPanel } from '../components/LoadState';
@@ -137,31 +139,45 @@ export default function CellPage() {
   );
 
   return (
-    <Page>
-      <BadLinkNotice show={badLink} />
-      <a href={href({ screen: 'map', variable: variable?.id, season })} className="mb-4 inline-flex min-h-11 items-center gap-2 font-medium">
-        <ArrowLeft className="size-4" aria-hidden="true" />
-        {t('site.cell.back_to_map')}
-      </a>
-      <PageHeader
+    <>
+      <Hero
+        top={
+          <>
+            <BadLinkNotice show={badLink} />
+            <a href={href({ screen: 'map', variable: variable?.id, season })} className="inline-flex min-h-11 items-center gap-2 font-medium">
+              <ArrowLeft className="size-4" aria-hidden="true" />
+              {t('site.cell.back_to_map')}
+            </a>
+          </>
+        }
         eyebrow={variable ? `${pick(variable.name, lang)} · ${t(`season.${season}.long`)}` : undefined}
         title={t('cell.title', { lat: place.split(', ')[0] || '…', lon: place.split(', ')[1] || '…' })}
+        aside={
+          info ? (
+            <LocatorGlobe
+              size={400}
+              marks={[{ lon: info.lon, lat: info.lat, bbox: [info.lon - 0.5, info.lat - 0.5, info.lon + 0.5, info.lat + 0.5], label: place, tone: 'teal' }]}
+              label={t('site.cell.chart_alt', { place })}
+            />
+          ) : undefined
+        }
       >
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <Badge tone="exploration" data-testid="cell-status">
             <Compass aria-hidden="true" />
             {t('family.exploration')}
           </Badge>
-          <p className="text-[15px] text-muted">{t('cell.exploration')}</p>
+          <p className="m-0 text-[16px] text-muted">{t('cell.exploration')}</p>
         </div>
-      </PageHeader>
+      </Hero>
+      <Body>
       <WithData res={layer}>
         {(l) =>
           info ? (
-            <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]" data-testid="cell-page">
-              <Card className="p-4 sm:p-5">
-                <p className="text-[15px] font-semibold">{t('site.cell.yearly')}</p>
-                <p className="mb-2 text-sm text-muted">{t('site.cell.no_line')}</p>
+            <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]" data-testid="cell-page">
+              <Card className="p-4 sm:p-6">
+                <p className="font-display text-[26px] leading-tight">{t('site.cell.yearly')}</p>
+                <p className="mb-3 mt-1 text-sm text-muted">{t('site.cell.no_line')}</p>
                 {series.status === 'loading' ? (
                   <Loading />
                 ) : series.status === 'ok' && series.data ? (
@@ -171,8 +187,16 @@ export default function CellPage() {
                 )}
               </Card>
               <div className="flex flex-col gap-4">
-                <Card className="p-4 sm:p-5">
-                  <p className="mb-3 text-[15px] font-semibold">{t('site.cell.from_map')}</p>
+                <Card className="p-4 sm:p-6">
+                  <p className="eyebrow mb-3">{t('site.cell.from_map')}</p>
+                  {info.testable && info.rate !== null ? (
+                    <p className="m-0 mb-4 flex items-baseline gap-2">
+                      <span className="font-display text-[46px] leading-none tabular">{fmtRate(info.rate, lang)}</span>
+                      <span className="text-[14px] text-muted">
+                        {units} {t('verdict.labels.rate_short')}
+                      </span>
+                    </p>
+                  ) : null}
                   {info.testable ? (
                     <dl className="m-0 grid gap-2 text-[15px] tabular" data-testid="cell-stats">
                       <div className="flex justify-between gap-3">
@@ -218,6 +242,7 @@ export default function CellPage() {
           )
         }
       </WithData>
-    </Page>
+      </Body>
+    </>
   );
 }

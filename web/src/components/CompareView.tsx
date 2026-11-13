@@ -150,11 +150,11 @@ export function CompareView({
   const split = c.split;
   const mapGrid = split ? Object.entries(split.grids)[0] : undefined;
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_420px]" data-tour="compare-view" data-testid="compare-view">
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_440px]" data-tour="compare-view" data-testid="compare-view">
       <div className="flex flex-col gap-6">
-        <Card className="p-4 sm:p-5">
-          <p className="text-[15px] font-semibold">{t('site.compare.each_series', { variable: varName })}</p>
-          <p className="mb-2 text-sm text-muted">
+        <Card className="p-4 sm:p-6">
+          <p className="font-display text-[24px] leading-tight">{t('site.compare.each_series', { variable: varName })}</p>
+          <p className="mb-3 mt-1 font-mono text-[12.5px] text-muted">
             {t(`season.${c.season}.long`)} · {int(c.window.first, lang)}–{int(c.window.last, lang)}
           </p>
           <ul className="mb-1 flex flex-wrap gap-x-4 gap-y-1 text-sm" aria-label={t('site.chart.legend')}>
@@ -169,17 +169,17 @@ export function CompareView({
             {([va, vb]) => (va && vb ? <PairChart a={va} b={vb} nameA={nameA} nameB={nameB} lang={lang} label={`${nameA} · ${nameB}: ${varName}`} /> : null)}
           </WithData>
         </Card>
-        <Card className="p-4 sm:p-5">
-          <h3 className="text-[15px] font-semibold" data-testid="estimand-title">
+        <Card className="p-4 sm:p-6">
+          <h3 className="font-display text-[24px] font-normal leading-tight" data-testid="estimand-title">
             {estimand}
           </h3>
-          <p className="mb-2 text-sm text-muted">{t('site.compare.departure_note', { from: int(c.window.first, lang), to: int(c.window.last, lang) })}</p>
+          <p className="mb-3 mt-1 text-sm text-muted">{t('site.compare.departure_note', { from: int(c.window.first, lang), to: int(c.window.last, lang) })}</p>
           <DifferenceChart contrast={c} colour={toneColour(tokens, info.tone)} lang={lang} label={text.headline} text={{ ...chartText(t, lang), units: c.difference.units }} />
           <ChartLegend solid={solid} hasBand={Boolean(c.chart?.band)} hasBreaks={c.robustness.breaks.length > 0} colour={toneColour(tokens, info.tone)} />
         </Card>
         <SensitivityBlock c={c} on={sensitivityOn} onToggle={onSensitivity} nameA={nameA} nameB={nameB} />
       </div>
-      <CaseFolder caseId={c.id} tabLabel={t('site.verdict.case')} id="compare-card" testId="compare-card" tour="verdict-card" live>
+      <CaseFolder caseId={c.id} tabLabel={t('site.verdict.case')} id="compare-card" testId="compare-card" tour="verdict-card" live className="paper text-ink">
         <div className="px-5 pb-5 pt-5 sm:px-6">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={c.status} grade={c.grade} reason={c.reason} family={c.family} size="stamp" />
@@ -217,8 +217,9 @@ export function CompareView({
                 ['B', c.regions.b, nameB],
               ] as const
             ).map(([k, s, n]) => (
-              <li key={k} className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] border border-line bg-surface-2 px-3 py-2">
-                <span className="text-[15px] font-medium">
+              <li key={k} className="flex flex-wrap items-center justify-between gap-2 rounded-[8px] border border-line bg-surface-2 px-3 py-2">
+                <span className="inline-flex items-center gap-2 text-[15px] font-medium">
+                  <span className={k === 'A' ? 'inline-block size-2.5 rounded-full bg-link' : 'inline-block size-2.5 rounded-full bg-accent'} aria-hidden="true" />
                   {k} · {n}
                 </span>
                 <span className="flex items-center gap-2 text-sm tabular">

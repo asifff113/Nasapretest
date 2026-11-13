@@ -22,7 +22,8 @@ import { ChecksList } from '../components/ChecksList';
 import { ContributingCells, type MaskLayer } from '../components/ContributingCells';
 import { LineupTable } from '../components/LineupTable';
 import { Loading, MissingPanel, WithData } from '../components/LoadState';
-import { Page, PageHeader } from '../components/Page';
+import { Body } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
 import { FamilyBadge, StatusBadge, statusInfo } from '../components/StatusBadge';
 import { RateFigure } from '../components/VerdictCard';
 import { chartText } from '../components/VerdictView';
@@ -205,7 +206,7 @@ function Scene({ at, c, main, verdicts, index, lineupCatalog }: { at: string; c:
       return (
         <div data-tour="question-card-case" className="rounded-[14px] border border-line bg-surface p-8 text-center shadow-card sm:p-12">
           <p className="eyebrow">{t('site.watch.the_question')}</p>
-          <p className="mx-auto mt-3 max-w-[24ch] text-[clamp(24px,3vw+12px,40px)] font-semibold leading-tight tracking-tight">{pick(c.title, lang)}</p>
+          <p className="mx-auto mt-3 max-w-[24ch] font-display text-[clamp(30px,3vw+16px,52px)] leading-[1.08]">{pick(c.title, lang)}</p>
           {pair ? <p className="mt-4 text-muted">{pick(pair.question, lang)}</p> : null}
         </div>
       );
@@ -264,7 +265,7 @@ function Scene({ at, c, main, verdicts, index, lineupCatalog }: { at: string; c:
       return (
         <div data-tour="takeaway" className="rounded-[14px] border border-line bg-surface p-8 text-center shadow-card sm:p-12" data-testid="watch-takeaway" data-ending={c.ending ?? 'none'}>
           <p className="eyebrow">{t('site.watch.takeaway')}</p>
-          <p className="mx-auto mt-3 max-w-[40ch] text-[clamp(20px,2vw+12px,28px)] font-semibold leading-snug">
+          <p className="mx-auto mt-3 max-w-[40ch] font-display text-[clamp(24px,2vw+14px,36px)] leading-snug">
             {c.ending === 'cant_tell_yet' ? t('site.watch.ending_cant_tell') : c.ending === 'supported' ? t('site.watch.ending_supported') : t('site.watch.ending_none')}
           </p>
         </div>
@@ -341,7 +342,14 @@ function Player({ c }: { c: CaseFile }) {
 
   return (
     <div data-testid="watch-player" data-beat={beat.at} data-beat-index={i} data-beats={n}>
-      <div ref={stage} className="relative min-h-[420px] overflow-hidden rounded-[16px] border border-line bg-surface-2 p-3 sm:p-6">
+      <div className="flex items-center justify-between gap-3 rounded-t-[16px] border border-b-0 border-line bg-surface px-4 py-2.5 font-mono text-[12px] text-muted">
+        <span className="inline-flex min-w-0 items-center gap-2">
+          <span className={cn('inline-block size-2 shrink-0 rounded-full', isPlaying ? 'animate-pulse bg-noverdict' : 'bg-line-strong')} aria-hidden="true" />
+          <span className="truncate">{c.id}</span>
+        </span>
+        <span className="shrink-0 tabular">{t('site.watch.step', { n: int(i + 1, lang), total: int(n, lang) })}</span>
+      </div>
+      <div ref={stage} className="relative min-h-[420px] overflow-hidden rounded-b-[16px] border border-line bg-surface-2 p-3 sm:p-6">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={`${i}-${beat.at}`}
@@ -355,8 +363,8 @@ function Player({ c }: { c: CaseFile }) {
         </AnimatePresence>
         {ready ? <Spotlight stage={stage} target={SPOT[beat.at] ?? null} beatKey={`${i}`} /> : null}
       </div>
-      <div className="sticky bottom-[calc(var(--bottombar,0px)+48px)] z-30 mt-4 rounded-[14px] border border-line bg-surface/95 p-4 shadow-lift backdrop-blur-md lg:static lg:bg-surface">
-        <p className="min-h-[3em] text-[17px] font-medium leading-snug sm:text-[19px]" aria-live="polite" data-testid="watch-caption">
+      <div className="atlas-panel sticky bottom-[calc(var(--bottombar,0px)+48px)] z-30 mt-4 rounded-[14px] border border-line bg-surface/95 p-4 shadow-lift backdrop-blur-md sm:p-5 lg:static lg:bg-surface">
+        <p className="min-h-[3em] font-display text-[22px] leading-snug sm:text-[26px]" aria-live="polite" data-testid="watch-caption">
           {caption}
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -410,6 +418,34 @@ function Player({ c }: { c: CaseFile }) {
   );
 }
 
+/** The case's result as a small preview on the card's screen (its sparkline), with the status. */
+function CasePreview({ c }: { c: CaseFile }) {
+  const t = useT();
+  const tokens = useTokens();
+  const res = useResult<Main>(caseResultPath(c));
+  const r = res.data && 'chart' in res.data ? (res.data as Contrast | Verdict) : null;
+  const info = r ? statusInfo(t, r.status, r.grade, r.reason, r.family) : null;
+  const years = r ? ('difference' in r ? r.difference.years : r.series.years) : [];
+  return (
+    <span className="relative block">
+      {r && r.chart && info ? (
+        <Sparkline years={years} chart={r.chart} colour={toneColour(tokens, info.tone)} solid={r.status === 'verdict' && r.grade !== 'cant_tell_yet'} zero={'difference' in r} className="mt-8 h-24 w-full" />
+      ) : (
+        <span className="mt-8 flex h-24 items-end gap-1 px-2 pb-3" aria-hidden="true">
+          {Array.from({ length: 18 }, (_, k) => (
+            <span key={k} className="flex-1 rounded-sm bg-ink/10" style={{ height: `${20 + ((k * 37) % 60)}%` }} />
+          ))}
+        </span>
+      )}
+      {r ? (
+        <span className="absolute left-0 top-0">
+          <StatusBadge status={r.status} grade={r.grade} reason={r.reason} family={r.family} />
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
 function CaseList() {
   const t = useT();
   const lang = useLang();
@@ -417,20 +453,38 @@ function CaseList() {
   return (
     <WithData res={cases}>
       {(list) => (
-        <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-testid="case-list">
-          {list.map((c) => (
+        <ul className="m-0 grid list-none gap-5 p-0 md:grid-cols-2 lg:grid-cols-3" data-testid="case-list">
+          {list.map((c, k) => (
             <li key={c.id}>
               <a
                 href={href({ screen: 'watch', case: c.id })}
-                className="group flex h-full flex-col rounded-[12px] border border-line bg-surface p-5 text-ink no-underline shadow-card transition-shadow hover:no-underline hover:shadow-lift"
+                className="atlas-panel group flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface text-ink no-underline transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-accent/60 hover:no-underline hover:shadow-lift"
                 data-testid={`case-${c.id}`}
               >
-                <span className="font-mono text-xs text-muted">{c.id}</span>
-                <span className="mt-2 text-[17px] font-semibold leading-snug">{pick(c.title, lang)}</span>
-                {c.summary ? <span className="mt-2 text-[15px] text-muted">{pick(c.summary, lang)}</span> : null}
-                <span className="mt-auto inline-flex items-center gap-2 pt-4 font-semibold text-link">
-                  <Play className="size-4" aria-hidden="true" />
-                  {t('site.watch.play_case', { n: int(c.beats.length, lang) })}
+                <span className="relative block border-b border-line bg-surface-2 px-4 pb-3 pt-4">
+                  <span className="mb-2 flex items-center justify-between gap-2 font-mono text-[11.5px] text-muted">
+                    <span className="truncate">{c.id}</span>
+                    <span aria-hidden="true">{int(k + 1, lang).padStart(2, int(0, lang))}</span>
+                  </span>
+                  <CasePreview c={c} />
+                  <span className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true">
+                    <span className="inline-flex size-14 items-center justify-center rounded-full bg-accent text-ocean shadow-lift">
+                      <Play className="ml-0.5 size-6" />
+                    </span>
+                  </span>
+                  <span className="mt-3 flex gap-1" aria-hidden="true">
+                    {c.beats.map((_, b) => (
+                      <span key={b} className="h-1 flex-1 rounded-full bg-ink/20 transition-colors group-hover:bg-accent/60" />
+                    ))}
+                  </span>
+                </span>
+                <span className="flex flex-1 flex-col p-5">
+                  <span className="font-display text-[24px] leading-[1.15]">{pick(c.title, lang)}</span>
+                  {c.summary ? <span className="mt-2 text-[15px] text-muted">{pick(c.summary, lang)}</span> : null}
+                  <span className="mt-auto inline-flex items-center gap-2 pt-5 font-semibold text-accent-ink">
+                    <Play className="size-4" aria-hidden="true" />
+                    {t('site.watch.play_case', { n: int(c.beats.length, lang) })}
+                  </span>
                 </span>
               </a>
             </li>
@@ -448,26 +502,30 @@ export default function WatchScreen() {
   const c = useResult<CaseFile>(caseId ? paths.caseFile(caseId) : null);
   if (!caseId) {
     return (
-      <Page>
-        <PageHeader eyebrow={t('site.watch.eyebrow')} title={t('nav.watch')} lead={t('site.watch.lead')} />
-        <CaseList />
-      </Page>
+      <>
+        <Hero eyebrow={t('site.watch.eyebrow')} title={t('nav.watch')} lead={t('site.watch.lead')} />
+        <Body>
+          <CaseList />
+        </Body>
+      </>
     );
   }
+  const back = (
+    <a href="#/watch" className="inline-flex min-h-11 items-center gap-1 font-medium">
+      <ChevronLeft className="size-4" aria-hidden="true" />
+      {t('site.watch.all_cases')}
+    </a>
+  );
   return (
-    <Page>
-      <a href="#/watch" className="mb-3 inline-flex min-h-11 items-center gap-1 font-medium">
-        <ChevronLeft className="size-4" aria-hidden="true" />
-        {t('site.watch.all_cases')}
-      </a>
-      <WithData res={c} path={paths.caseFile(caseId)}>
-        {(cf) => (
-          <>
-            <PageHeader eyebrow={t('site.watch.eyebrow')} title={pick(cf.title, lang)} lead={cf.summary ? pick(cf.summary, lang) : undefined} />
+    <WithData res={c} path={paths.caseFile(caseId)}>
+      {(cf) => (
+        <>
+          <Hero top={back} eyebrow={t('site.watch.eyebrow')} title={pick(cf.title, lang)} lead={cf.summary ? pick(cf.summary, lang) : undefined} />
+          <Body className="pt-8 sm:pt-8">
             <Player key={cf.id} c={cf} />
-          </>
-        )}
-      </WithData>
-    </Page>
+          </Body>
+        </>
+      )}
+    </WithData>
   );
 }

@@ -176,7 +176,20 @@
       "step_place": "জায়গা",
       "step_lineup": "তালিকা",
       "step_verdict": "রায়",
-      "step_verdict_title": "প্রমাণ"
+      "step_verdict_title": "প্রমাণ",
+      "open_case": "কেসটি খুলুন",
+      "cells_title": "এই জায়গার পেছনের ডেটা ঘর",
+      "fact_cells": "ডেটা ঘর",
+      "fact_tests": "পরীক্ষা হয়েছে",
+      "fact_area": "আয়তন",
+      "km2": "বর্গকিলোমিটার",
+      "fact_centre": "কেন্দ্র",
+      "locator_alt": "{place} পৃথিবীর কোথায়, তা দেখাতে ঘোরানো একটি গ্লোব।",
+      "locator_all": "আমাদের প্রস্তুত করা জায়গাগুলো দেখানো একটি গ্লোব।",
+      "other_places": "অন্য জায়গা",
+      "fact_places": "পরীক্ষিত জায়গা",
+      "fact_pairs": "তুলনা",
+      "fact_grid": "ডেটা গ্রিড"
     },
     "lineup": {
       "col_status": "ফলাফল"
@@ -203,7 +216,8 @@
       "label_opposite_fitted": "মিলানো রেখা বিপরীত দিকে",
       "no_labels": "তুলনার কোনো লেবেল এখানে প্রযোজ্য নয়।",
       "split_title": "ঘরগুলো কীভাবে ভাগ হলো",
-      "split": "{grid}-এ {shared}টি ঘর দুই জায়গায় মিলত; ভাগের পর দুই জায়গা রাখে {a} ও {b}টি কার্যকর ঘর।"
+      "split": "{grid}-এ {shared}টি ঘর দুই জায়গায় মিলত; ভাগের পর দুই জায়গা রাখে {a} ও {b}টি কার্যকর ঘর।",
+      "locator_alt": "দুটি জায়গা ও তাদের মাঝের বাঁক দেখানো একটি গ্লোব।"
     },
     "map": {
       "eyebrow": "অনুসন্ধান",
@@ -312,7 +326,8 @@
       "golden": "এই বিল্ড: {total}টি গোল্ডেন পরীক্ষার {passed}টি উত্তীর্ণ।",
       "months": "মাস",
       "granules": "পাওয়া ফাইল",
-      "files": "বাঁধা ফাইল"
+      "files": "বাঁধা ফাইল",
+      "eyebrow": "পদ্ধতি"
     },
     "references": {
       "r1": "Mann, H. B. (1945), Nonparametric tests against trend, Econometrica, 13, 245–259. Kendall, M. G. (1975), Rank Correlation Methods.",

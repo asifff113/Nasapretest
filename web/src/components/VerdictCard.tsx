@@ -40,7 +40,7 @@ export function RateFigure({
   return (
     <div className="flex flex-wrap items-end gap-x-5 gap-y-1" data-testid="rate-figure">
       <p className="m-0">
-        <span className="text-[32px] font-semibold leading-none tracking-tight tabular">{rate(ratePerDecade, lang)}</span>{' '}
+        <span className="font-display text-[46px] leading-none tabular">{rate(ratePerDecade, lang)}</span>{' '}
         <span className="ml-1 text-[15px] text-muted">
           {units} {t('verdict.labels.rate_short')}
         </span>
@@ -69,7 +69,7 @@ export function VerdictCard({ verdict, path, about }: { verdict: Verdict; path: 
   const resultHref = !IS_OFFLINE_BUILD && build.data ? `${build.data.root.replace(/\/+$/, '')}/${path}` : null;
   const change = verdict.stats.change;
   return (
-    <CaseFolder caseId={verdict.id} tabLabel={t('site.verdict.case')} testId="verdict-card" tour="verdict-card" id="verdict-card" live>
+    <CaseFolder caseId={verdict.id} tabLabel={t('site.verdict.case')} testId="verdict-card" tour="verdict-card" id="verdict-card" live className="paper text-ink">
       <div className="px-5 pb-5 pt-5 sm:px-6">
         <div className="flex flex-wrap items-center gap-2">
           <StatusBadge status={verdict.status} grade={verdict.grade} reason={verdict.reason} family={verdict.family} size="stamp" />

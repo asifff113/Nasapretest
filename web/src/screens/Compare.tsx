@@ -2,21 +2,34 @@
 // Compare two places (docs/04_UI.md §4.6): the pair picker (pre-registered pairs first, the lead pair marked;
 // other pairs are exploration), the variable and season, then the comparison.
 import { useEffect, useState } from 'react';
-import { Star } from 'lucide-react';
+import { ArrowLeftRight, Star } from 'lucide-react';
 import { pick, useT } from '../i18n';
-import type { Contrast, Mask, Pair, RegionIndex } from '../data/types';
+import type { Contrast, Lang, Mask, Pair, Region, RegionIndex } from '../data/types';
 import { paths } from '../data/results';
 import { useCatalog, usePrereg, useRegionIndex, useResult, useResults } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { href, useView } from '../state/view';
 import { BadLinkNotice, WithData } from '../components/LoadState';
-import { Page, PageHeader, StepBar, StepHeading, goToStep, useStepObserver } from '../components/Page';
+import { Body, StepBar, StepHeading, goToStep, useStepObserver } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
+import { LocatorGlobe, type LocatorMark } from '../components/atlas/LocatorGlobe';
 import { CompareView } from '../components/CompareView';
 import { ContributingCells } from '../components/ContributingCells';
 import { FamilyBadge } from '../components/StatusBadge';
 import { Card } from '../ui/common/card';
 import { SegmentedControl } from '../ui/common/toggle-group';
 import { cn } from '../ui/common/utils';
+
+/** The two places of a pair as globe marks: A in blue, B in gold (the colours of the pair chart). */
+export function pairMarks(index: RegionIndex, pair: Pair, lang: Lang, labels = true): LocatorMark[] {
+  const r = (id: string) => index.regions.find((x) => x.id === id);
+  return ([
+    [r(pair.a), 'link'],
+    [r(pair.b), 'accent'],
+  ] as [Region | undefined, LocatorMark['tone']][])
+    .filter((x): x is [Region, LocatorMark['tone']] => x[0] !== undefined)
+    .map(([g, tone], i) => ({ lon: g.centroid[0], lat: g.centroid[1], bbox: g.bbox, tone, label: labels ? `${i === 0 ? 'A' : 'B'} · ${pick(g.name, lang)}` : undefined }));
+}
 
 function PairPicker({ index, value }: { index: RegionIndex; value?: string }) {
   const t = useT();
@@ -37,13 +50,19 @@ function PairPicker({ index, value }: { index: RegionIndex; value?: string }) {
           aria-current={selected ? 'true' : undefined}
           data-testid={`pair-${p.id}`}
           className={cn(
-            'flex h-full min-h-16 flex-col gap-1 rounded-[10px] border px-4 py-3 text-ink no-underline hover:no-underline',
-            selected ? 'border-accent bg-accent-soft shadow-card' : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2',
+            'group flex h-full items-start gap-4 rounded-card border px-4 py-4 text-ink no-underline transition-[border-color,transform,box-shadow] hover:no-underline',
+            selected
+              ? 'border-accent bg-accent/[0.09] shadow-[0_0_0_1px_var(--accent),var(--shadow)]'
+              : 'atlas-panel border-line bg-surface hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-lift',
           )}
         >
+          <LocatorGlobe still bare size={92} className="shrink-0" marks={pairMarks(index, p, lang, false)} arc label={`${name(p.a)} · ${name(p.b)}`} />
+          <span className="flex min-w-0 flex-1 flex-col gap-1.5">
           <span className="flex flex-wrap items-center gap-2">
-            <span className="font-semibold">
-              {name(p.a)} <span className="text-muted">−</span> {name(p.b)}
+            <span className="font-display text-[22px] leading-tight">
+              <span className="mr-1 font-mono text-[12px] text-link">A</span>
+              {name(p.a)} <span className="text-muted">−</span> <span className="mr-1 font-mono text-[12px] text-accent-ink">B</span>
+              {name(p.b)}
             </span>
             {p.lead ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-accent-ink px-2 py-0.5 text-xs font-semibold text-white dark:text-bg">
@@ -56,22 +75,23 @@ function PairPicker({ index, value }: { index: RegionIndex; value?: string }) {
           <span className="mt-1">
             <FamilyBadge family={p.preRegistered ? 'confirmatory' : 'exploration'} />
           </span>
+          </span>
         </a>
       </li>
     );
   };
   return (
-    <div className="flex flex-col gap-5" data-testid="pair-picker">
+    <div className="flex flex-col gap-7" data-testid="pair-picker">
       {pre.length ? (
         <section>
-          <h3 className="eyebrow mb-2">{t('site.compare.prereg_pairs')}</h3>
-          <ul className="grid gap-2 sm:grid-cols-2">{pre.map(item)}</ul>
+          <h3 className="eyebrow mb-3">{t('site.compare.prereg_pairs')}</h3>
+          <ul className={cn('grid gap-3', value ? 'grid-cols-1' : 'sm:grid-cols-2')}>{pre.map(item)}</ul>
         </section>
       ) : null}
       {other.length ? (
         <section>
-          <h3 className="eyebrow mb-2">{t('site.compare.other_pairs')}</h3>
-          <ul className="grid gap-2 sm:grid-cols-2">{other.map(item)}</ul>
+          <h3 className="eyebrow mb-3">{t('site.compare.other_pairs')}</h3>
+          <ul className={cn('grid gap-3', value ? 'grid-cols-1' : 'sm:grid-cols-2')}>{other.map(item)}</ul>
         </section>
       ) : null}
       <p className="text-sm text-muted">{t('site.compare.cells_cannot_pair')}</p>
@@ -89,7 +109,7 @@ function PairCells({ pair, index }: { pair: Pair; index: RegionIndex }) {
   const masks = useResults<Mask>(ra && rb && gridId ? [ra.cells[gridId] ?? '', rb.cells[gridId] ?? ''] : null);
   if (!ra || !rb || !grid) return null;
   return (
-    <Card className="p-4 sm:p-5">
+    <Card className="p-3 sm:p-4">
       <WithData res={masks}>
         {([ma, mb]) =>
           ma && mb ? (
@@ -104,7 +124,7 @@ function PairCells({ pair, index }: { pair: Pair; index: RegionIndex }) {
           ) : null
         }
       </WithData>
-      <p className="mt-2 text-sm text-muted">{t('site.compare.cells_note')}</p>
+      <p className="mt-3 px-1 text-sm text-muted">{t('site.compare.cells_note')}</p>
     </Card>
   );
 }
@@ -147,14 +167,29 @@ export default function CompareScreen() {
   );
 
   return (
-    <Page>
-      <BadLinkNotice show={badLink} />
-      <PageHeader eyebrow={t('site.compare.eyebrow')} title={t('contrast.title')} lead={t('site.compare.lead_text')} />
+    <>
+      <Hero
+        top={badLink ? <BadLinkNotice show={badLink} /> : undefined}
+        eyebrow={t('site.compare.eyebrow')}
+        title={pair && index.data ? <VersusTitle pair={pair} index={index.data} /> : t('contrast.title')}
+        lead={t('site.compare.lead_text')}
+        aside={
+          index.data && (pair ?? pairs[0]) ? (
+            <LocatorGlobe
+              marks={pairMarks(index.data, (pair ?? pairs[0]) as Pair, lang, Boolean(pair))}
+              arc
+              size={420}
+              label={t('site.compare.locator_alt')}
+            />
+          ) : undefined
+        }
+      />
+      <Body>
       <section id="step-pair" className="scroll-mt-28">
         <StepHeading n={1} title={t('site.compare.pick_pair')} />
         <WithData res={index}>
           {(idx) => (
-            <div className={pair ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_420px]' : ''}>
+            <div className={pair ? 'grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)]' : ''}>
               <PairPicker index={idx} value={pair?.id} />
               {pair ? <PairCells pair={pair} index={idx} /> : null}
             </div>
@@ -162,7 +197,7 @@ export default function CompareScreen() {
         </WithData>
       </section>
       {pair ? (
-        <section id="step-compare" className="mt-12 scroll-mt-28">
+        <section id="step-compare" className="mt-16 scroll-mt-28">
           <StepHeading n={2} title={t('site.compare.step_result_title')} />
           <div className="mb-5 flex flex-wrap items-center gap-3">
             {analysed.length > 1 ? (
@@ -198,6 +233,25 @@ export default function CompareScreen() {
           <StepBar steps={steps} current={step} onGo={(i) => goToStep(steps[i]?.id ?? '')} />
         </section>
       ) : null}
-    </Page>
+      </Body>
+    </>
+  );
+}
+
+/** "A − B" as the page title, each place in its chart colour. */
+function VersusTitle({ pair, index }: { pair: Pair; index: RegionIndex }) {
+  const lang = useLang();
+  const name = (id: string) => {
+    const r = index.regions.find((x) => x.id === id);
+    return r ? pick(r.name, lang) : id;
+  };
+  return (
+    <span className="flex flex-col gap-1">
+      <span>{name(pair.a)}</span>
+      <span className="flex items-center gap-3 text-[0.55em] text-muted">
+        <ArrowLeftRight className="size-[0.9em] text-accent" aria-hidden="true" />
+      </span>
+      <span>{name(pair.b)}</span>
+    </span>
   );
 }

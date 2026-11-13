@@ -17,12 +17,12 @@ export const CaseFolder = forwardRef<
     className={cn('relative pt-[30px] outline-none', className)}
   >
     <div className="absolute left-0 top-0 flex h-[31px] max-w-[85%] items-center gap-2 rounded-t-[10px] bg-accent-ink px-3.5 text-white dark:text-bg">
-      {tabLabel ? <span className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.1em] opacity-80">{tabLabel}</span> : null}
+      {tabLabel ? <span className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.1em]">{tabLabel}</span> : null}
       <span className="truncate font-mono text-[12px] font-medium tracking-wide" title={caseId}>
         {caseId}
       </span>
     </div>
-    <div className="relative rounded-[10px] rounded-tl-none border border-line bg-surface shadow-card">
+    <div className="paper-edge relative rounded-[10px] rounded-tl-none border border-line bg-surface shadow-lift">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[3px] rounded-tr-[10px] bg-accent-ink/80" aria-hidden="true" />
       {children}
     </div>

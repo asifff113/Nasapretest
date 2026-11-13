@@ -8,7 +8,8 @@ import { IS_OFFLINE_BUILD } from '../data/offline';
 import { useLang } from '../state/prefs';
 import { href } from '../state/view';
 import { WithData } from '../components/LoadState';
-import { Page, PageHeader } from '../components/Page';
+import { Body } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
 import { buttonVariants } from '../ui/common/button';
 import { Disclosure } from '../ui/common/collapsible';
 
@@ -25,7 +26,7 @@ export function OfflineList() {
           </p>
           <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {s.cases.map((c) => (
-              <li key={c.id} className="flex flex-col rounded-[10px] border border-line bg-surface p-4 shadow-card" data-testid={`offline-case-${c.id}`}>
+              <li key={c.id} className="flex flex-col atlas-panel rounded-card border border-line bg-surface p-5 shadow-card" data-testid={`offline-case-${c.id}`}>
                 <p className="font-mono text-xs text-muted">{c.id}</p>
                 <h3 className="mt-1 font-semibold leading-snug">{pick(c.title, lang)}</h3>
                 <Disclosure className="mt-3" title={t('site.offline.files', { n: int(c.files.length, lang) })} icon={<FileJson className="size-4 text-muted" aria-hidden="true" />}>
@@ -53,11 +54,21 @@ export function OfflineList() {
 export default function OfflineScreen() {
   const t = useT();
   return (
-    <Page>
-      <PageHeader eyebrow={<HardDriveDownload className="inline size-4" aria-hidden="true" />} title={t('offline.title')} lead={t('offline.intro')} />
+    <>
+      <Hero
+        eyebrow={
+          <span className="inline-flex items-center gap-2">
+            <HardDriveDownload className="size-4" aria-hidden="true" />
+            {t('app.name')}
+          </span>
+        }
+        title={t('offline.title')}
+        lead={t('offline.intro')}
+      />
+      <Body>
       <OfflineList />
       {!IS_OFFLINE_BUILD ? (
-        <div className="mt-10 flex flex-col items-start gap-3 rounded-[12px] border border-line bg-surface p-5">
+        <div className="mt-10 flex flex-col items-start gap-3 atlas-panel rounded-card border border-line bg-surface p-6">
           <p className="max-w-[68ch] text-[15px]">{t('site.offline.how_to_get')}</p>
           <a href="./casefile-earth-offline.html" download className={buttonVariants({ variant: 'accent' })} data-testid="offline-download">
             <HardDriveDownload aria-hidden="true" />
@@ -65,6 +76,7 @@ export default function OfflineScreen() {
           </a>
         </div>
       ) : null}
-    </Page>
+    </Body>
+    </>
   );
 }

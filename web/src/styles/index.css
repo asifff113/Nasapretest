@@ -251,6 +251,10 @@
     font-size: 27px;
     line-height: 1.15;
   }
+  .text-chapter {
+    font-size: clamp(26px, 1.4vw + 18px, 36px);
+    line-height: 1.1;
+  }
   .text-h3 {
     font-size: 18px;
     line-height: 1.4;
@@ -284,6 +288,103 @@
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* The atlas page head: soft ocean light, a graticule that fades out, a coordinate ruler on the bottom edge. */
+:root {
+  --hero-glow: color-mix(in srgb, var(--ocean-2) 16%, transparent);
+  --hero-warm: color-mix(in srgb, var(--accent) 12%, transparent);
+  --grid-line: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.dark {
+  --hero-glow: color-mix(in srgb, var(--ocean-2) 60%, transparent);
+  --hero-warm: color-mix(in srgb, var(--accent) 9%, transparent);
+  --grid-line: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.atlas-hero {
+  background:
+    radial-gradient(900px 480px at 82% 0%, var(--hero-glow), transparent 65%),
+    radial-gradient(700px 360px at 0% 110%, var(--hero-warm), transparent 60%);
+}
+.atlas-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: -1px -1px;
+  mask-image: radial-gradient(ellipse 70% 90% at 70% 30%, #000 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 90% at 70% 30%, #000 20%, transparent 80%);
+}
+.atlas-ruler {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 10px;
+  background-image:
+    repeating-linear-gradient(to right, var(--line-strong) 0 1px, transparent 1px 112px),
+    repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px 14px);
+  background-size:
+    100% 10px,
+    100% 5px;
+  background-repeat: no-repeat;
+  background-position: bottom left;
+  opacity: 0.9;
+}
+.text-display {
+  font-size: clamp(38px, 3.6vw + 20px, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+html:lang(bn) .text-display {
+  font-size: clamp(32px, 2.8vw + 18px, 54px);
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+/* Panels: a hairline light along the top edge, as on a lit instrument. */
+.atlas-panel {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--ink) 3.5%, var(--surface)), var(--surface) 140px);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in srgb, var(--ink) 9%, transparent),
+    var(--shadow);
+}
+
+/* The locator globe: a slow orbit ring, a pulse on each place, a moving dash on the arc. */
+.locator {
+  color: var(--ink);
+}
+.locator-orbit {
+  animation: locator-turn 120s linear infinite;
+}
+.locator-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: locator-pulse 2.4s var(--ease-out) infinite;
+}
+.locator-dash {
+  animation: locator-dash 1.6s linear infinite;
+}
+@keyframes locator-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes locator-pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+@keyframes locator-dash {
+  to {
+    stroke-dashoffset: -18;
   }
 }
 

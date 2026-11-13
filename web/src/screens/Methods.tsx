@@ -10,7 +10,9 @@ import type { Build, Manifest, MethodsTables, Prereg } from '../data/types';
 import { useCatalog, usePrereg, useResult } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { WithData } from '../components/LoadState';
-import { Page, PageHeader } from '../components/Page';
+import { Body, useStepObserver } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
+import { cn } from '../ui/common/utils';
 import { PivotTable, SimpleTable } from '../components/PivotTable';
 import { Disclosure } from '../ui/common/collapsible';
 import { SegmentedControl } from '../ui/common/toggle-group';
@@ -20,10 +22,16 @@ const SECTIONS = ['data', 'seasons', 'how-much', 'significant', 'domain', 'famil
 type SectionId = (typeof SECTIONS)[number];
 
 function Block({ id, title, children, tour }: { id: SectionId; title: string; children: ReactNode; tour?: string }) {
+  const n = SECTIONS.indexOf(id) + 1;
   return (
-    <section id={`m-${id}`} tabIndex={-1} className="scroll-mt-28 border-t border-line py-10 outline-none first:border-t-0 first:pt-0" data-tour={tour} data-testid={`methods-${id}`}>
-      <h2 className="text-h2">{title}</h2>
-      <div className="mt-4 flex flex-col gap-4">{children}</div>
+    <section id={`m-${id}`} tabIndex={-1} className="scroll-mt-28 border-t border-line py-12 outline-none first:border-t-0 first:pt-0" data-tour={tour} data-testid={`methods-${id}`}>
+      <div className="flex items-baseline gap-4">
+        <span className="font-mono text-[12px] tracking-[0.12em] text-accent-ink" aria-hidden="true">
+          {String(n).padStart(2, '0')}
+        </span>
+        <h2 className="text-chapter">{title}</h2>
+      </div>
+      <div className="mt-5 flex flex-col gap-4 sm:pl-[38px]">{children}</div>
     </section>
   );
 }
@@ -161,12 +169,18 @@ function FamilyList({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-function Toc() {
+function Toc({ ready }: { ready: boolean }) {
   const t = useT();
+  const [active, setActive] = useState(0);
+  useStepObserver(
+    SECTIONS.map((s) => `m-${s}`),
+    setActive,
+    ready,
+  );
   return (
     <nav aria-label={t('site.methods.toc')} className="hidden lg:block">
-      <ol className="sticky top-[calc(var(--header-h)+24px)] flex flex-col gap-0.5 border-l border-line text-sm">
-        {SECTIONS.map((s) => (
+      <ol className="sticky top-[calc(var(--header-h)+24px)] flex max-h-[calc(100dvh-var(--header-h)-48px)] flex-col gap-0.5 overflow-y-auto border-l border-line text-sm">
+        {SECTIONS.map((s, k) => (
           <li key={s}>
             <button
               type="button"
@@ -175,9 +189,16 @@ function Toc() {
                 el?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
                 el?.focus({ preventScroll: true });
               }}
-              className="-ml-px min-h-9 w-full border-l-2 border-transparent px-3 text-left text-muted hover:border-accent hover:text-ink"
+              aria-current={k === active ? 'location' : undefined}
+              className={cn(
+                '-ml-px flex min-h-9 w-full items-baseline gap-2.5 border-l-2 px-3 text-left transition-colors hover:border-accent hover:text-ink',
+                k === active ? 'border-accent text-ink' : 'border-transparent text-muted',
+              )}
             >
-              {t(`site.methods.s_${s}`)}
+              <span className={cn('font-mono text-[11px]', k === active ? 'text-accent-ink' : 'text-muted')} aria-hidden="true">
+                {String(k + 1).padStart(2, '0')}
+              </span>
+              <span>{t(`site.methods.s_${s}`)}</span>
             </button>
           </li>
         ))}
@@ -195,10 +216,20 @@ export default function MethodsScreen() {
   const prereg = usePrereg();
   const catalog = useCatalog();
   return (
-    <Page>
-      <PageHeader eyebrow={<BookOpen className="inline size-4" aria-hidden="true" />} title={t('methods.title')} lead={t('methods.intro')} />
-      <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <Toc />
+    <>
+      <Hero
+        eyebrow={
+          <span className="inline-flex items-center gap-2">
+            <BookOpen className="size-4" aria-hidden="true" />
+            {t('site.methods.eyebrow')}
+          </span>
+        }
+        title={t('methods.title')}
+        lead={t('methods.intro')}
+      />
+      <Body>
+      <div className="grid gap-12 lg:grid-cols-[240px_minmax(0,1fr)]">
+        <Toc ready={tables.status === 'ok'} />
         <div className="min-w-0">
           <WithData res={tables} path="methods/tables.json">
             {(tb) => (
@@ -411,7 +442,8 @@ export default function MethodsScreen() {
           </WithData>
         </div>
       </div>
-    </Page>
+      </Body>
+    </>
   );
 }
 

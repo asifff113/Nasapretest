@@ -1,22 +1,54 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
-// Question (docs/04_UI.md §4.2): question cards from the catalog. Each opens its shortlist: one row per variable
-// with why it fits and its record card. Deferred variables show their cards greyed.
+// Question (docs/04_UI.md §4.2) in the atlas look: question tiles from the catalog, each with the icon of its
+// first record and a small drawing of its flow (one place over time, or two places compared). A tile opens its
+// shortlist: one record card per variable with why it fits. Deferred variables show their cards greyed.
 import { useEffect } from 'react';
-import { ArrowRight, CircleHelp, FolderOpen } from 'lucide-react';
+import { ArrowRight, Lock } from 'lucide-react';
 import { pick, useT } from '../i18n';
+import { int } from '../i18n/format';
 import type { Catalog, CatalogQuestion } from '../data/types';
 import { useCatalog } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { href, useView } from '../state/view';
 import { BadLinkNotice, WithData } from '../components/LoadState';
-import { Page, PageHeader, StepHeading } from '../components/Page';
+import { Body, StepHeading } from '../components/Page';
+import { Hero } from '../components/atlas/Hero';
+import { GroupIcon } from '../components/atlas/icons';
 import { RecordCard } from '../components/RecordCard';
 import { buttonVariants } from '../ui/common/button';
 import { cn } from '../ui/common/utils';
 
-function QuestionCard({ q, selected }: { q: CatalogQuestion; selected: boolean }) {
+/** A small drawing of a flow: a line through time at one place, or two places joined by an arc. */
+function FlowGlyph({ flow }: { flow: string }) {
+  if (flow === 'compare') {
+    return (
+      <svg viewBox="0 0 64 28" className="h-7 w-16" aria-hidden="true">
+        <path d="M10 20 Q32 -2 54 20" fill="none" stroke="currentColor" strokeWidth="1.4" strokeDasharray="3 3" />
+        <circle cx="10" cy="20" r="4" fill="var(--accent)" />
+        <circle cx="54" cy="20" r="4" fill="var(--grade-strong)" />
+      </svg>
+    );
+  }
+  if (flow === 'place') {
+    return (
+      <svg viewBox="0 0 64 28" className="h-7 w-16" aria-hidden="true">
+        <polyline points="4,22 14,19 22,21 30,15 38,16 46,10 54,11 60,6" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        <line x1="4" y1="23" x2="60" y2="7" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 64 28" className="h-7 w-16" aria-hidden="true">
+      <line x1="4" y1="14" x2="60" y2="14" stroke="currentColor" strokeWidth="1.4" strokeDasharray="2 4" />
+    </svg>
+  );
+}
+
+function QuestionCard({ q, n, catalog, selected }: { q: CatalogQuestion; n: number; catalog: Catalog; selected: boolean }) {
   const lang = useLang();
   const t = useT();
+  const first = catalog.variables.find((v) => v.id === (q.shortlist[0]?.variable ?? q.also_deferred?.[0]));
+  const later = q.flow === 'none';
   return (
     <a
       href={href({ screen: 'question', question: q.id })}
@@ -24,16 +56,31 @@ function QuestionCard({ q, selected }: { q: CatalogQuestion; selected: boolean }
       data-tour={`question-card-${q.id}`}
       data-testid={`question-card-${q.id}`}
       className={cn(
-        'group relative flex h-full min-h-[92px] items-start gap-3 rounded-[10px] border px-4 py-4 text-ink no-underline transition-[border-color,background-color,box-shadow] hover:no-underline',
-        selected ? 'border-accent bg-accent-soft shadow-card' : 'border-line bg-surface hover:border-line-strong hover:shadow-card',
+        'group relative flex h-full min-h-[190px] flex-col rounded-card border p-5 text-ink no-underline transition-[border-color,transform,box-shadow] hover:no-underline',
+        selected
+          ? 'border-accent bg-accent/[0.09] shadow-[0_0_0_1px_var(--accent),var(--shadow-lg)]'
+          : later
+            ? 'border-dashed border-line-strong hover:border-accent/50'
+            : 'atlas-panel border-line bg-surface hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-lift',
       )}
     >
-      <span className={cn('mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-[8px]', selected ? 'bg-accent-ink text-white dark:text-bg' : 'bg-surface-2 text-accent-ink')}>
-        {selected ? <FolderOpen className="size-5" aria-hidden="true" /> : <CircleHelp className="size-5" aria-hidden="true" />}
+      <span className="flex items-start justify-between gap-3">
+        <span
+          className={cn(
+            'inline-flex size-11 items-center justify-center rounded-full border',
+            selected ? 'border-accent bg-accent text-ocean' : 'border-accent/40 bg-accent/10 text-accent-ink',
+          )}
+        >
+          {later ? <Lock className="size-5" aria-hidden="true" /> : <GroupIcon group={first?.group} className="size-5" />}
+        </span>
+        <span className="font-mono text-[12px] tracking-[0.12em] text-muted" aria-hidden="true">
+          {int(n, lang).padStart(2, int(0, lang))}
+        </span>
       </span>
-      <span className="flex-1">
-        <span className="block text-[17px] font-semibold leading-snug">{pick(q.question, lang)}</span>
-        <span className="mt-1 block text-sm text-muted">{t(`site.question.flow_${q.flow}`)}</span>
+      <span className="mt-4 block font-display text-[25px] leading-[1.12]">{pick(q.question, lang)}</span>
+      <span className="mt-auto flex items-center justify-between gap-3 pt-4 text-muted">
+        <span className="text-sm">{t(`site.question.flow_${q.flow}`)}</span>
+        <FlowGlyph flow={q.flow} />
       </span>
     </a>
   );
@@ -58,30 +105,59 @@ function Shortlist({ q, catalog }: { q: CatalogQuestion; catalog: Catalog }) {
         ? { screen: 'compare' as const, variable: first }
         : null;
   return (
-    <section aria-labelledby="shortlist-title" className="mt-12" data-testid="shortlist">
+    <section aria-labelledby="shortlist-title" className="mt-16 scroll-mt-28" data-testid="shortlist">
       <StepHeading n={2} title={<span id="shortlist-title">{t('question.shortlist')}</span>} />
-      <p className="-mt-2 mb-5 max-w-[68ch] text-[17px] font-medium">{pick(q.question, lang)}</p>
+      <blockquote className="m-0 mb-8 max-w-[40ch] border-l-2 border-accent pl-5 font-display text-[clamp(26px,2vw+16px,38px)] leading-[1.12]">
+        {pick(q.question, lang)}
+      </blockquote>
       {vars.length ? (
         <div className="grid gap-4 md:grid-cols-2">
           {vars.map(({ v, why }) => (v ? <RecordCard key={v.id} variable={v} why={pick(why, lang)} /> : null))}
         </div>
       ) : null}
       {next ? (
-        <a href={href(next)} className={cn(buttonVariants({ variant: 'accent', size: 'lg' }), 'mt-6')} data-testid="question-next">
+        <a href={href(next)} className={cn(buttonVariants({ variant: 'accent', size: 'lg' }), 'mt-8')} data-testid="question-next">
           {q.flow === 'compare' ? t('site.question.start_compare') : t('question.start')}
           <ArrowRight aria-hidden="true" />
         </a>
       ) : null}
       {deferred.length ? (
-        <div className="mt-10">
-          <h3 className="text-h3">{t('question.deferred_title')}</h3>
-          <p className="mb-4 mt-1 text-[15px] text-muted">{t('site.question.deferred_note')}</p>
+        <div className="mt-14">
+          <h3 className="font-display text-[26px] font-normal">{t('question.deferred_title')}</h3>
+          <p className="mb-5 mt-1 max-w-[70ch] text-[15px] text-muted">{t('site.question.deferred_note')}</p>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {deferred.map((v) => (v ? <RecordCard key={v.id} variable={v} /> : null))}
           </div>
         </div>
       ) : null}
     </section>
+  );
+}
+
+/** The route of a case, drawn beside the page head: ask, choose a place, read the verdict, compare. */
+function Route() {
+  const t = useT();
+  const steps = ['question', 'place', 'verdict', 'compare'];
+  return (
+    <ol className="relative m-0 flex w-full max-w-[360px] list-none flex-col gap-0 p-0" aria-label={t('site.home.how_title')}>
+      <span className="absolute bottom-6 left-[19px] top-6 w-px bg-gradient-to-b from-accent via-line-strong to-transparent" aria-hidden="true" />
+      {steps.map((s, i) => (
+        <li key={s} className="relative flex gap-4 py-3">
+          <span
+            className={cn(
+              'relative z-10 inline-flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-[12px]',
+              i === 0 ? 'border-accent bg-accent text-ocean' : 'border-line-strong bg-bg text-muted',
+            )}
+          >
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <span className="pt-1">
+            <span className="block font-semibold">{t(`site.home.step_${s}_title`)}</span>
+            <span className="mt-0.5 block text-[14px] leading-snug text-muted">{t(`site.home.step_${s}_body`)}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -94,26 +170,33 @@ export default function QuestionScreen() {
     if (catalog.status === 'ok' && view.question && !selected) flagBadLink();
   }, [catalog.status, view.question, selected, flagBadLink]);
   return (
-    <Page>
-      <BadLinkNotice show={badLink} />
-      <PageHeader eyebrow={t('site.question.eyebrow')} title={t('question.title')} lead={t('site.question.lead')} />
-      <WithData res={catalog}>
-        {(c) => (
-          <>
-            <section aria-labelledby="questions-title">
-              <StepHeading n={1} title={<span id="questions-title">{t('question.pick')}</span>} />
-              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {c.questions.map((q) => (
-                  <li key={q.id}>
-                    <QuestionCard q={q} selected={q.id === selected?.id} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-            {selected ? <Shortlist key={selected.id} q={selected} catalog={c} /> : null}
-          </>
-        )}
-      </WithData>
-    </Page>
+    <>
+      <Hero
+        top={badLink ? <BadLinkNotice show={badLink} /> : undefined}
+        eyebrow={t('site.question.eyebrow')}
+        title={t('question.title')}
+        lead={t('site.question.lead')}
+        aside={<Route />}
+      />
+      <Body>
+        <WithData res={catalog}>
+          {(c) => (
+            <>
+              <section aria-labelledby="questions-title">
+                <StepHeading n={1} title={<span id="questions-title">{t('question.pick')}</span>} />
+                <ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+                  {c.questions.map((q, i) => (
+                    <li key={q.id}>
+                      <QuestionCard q={q} n={i + 1} catalog={c} selected={q.id === selected?.id} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+              {selected ? <Shortlist key={selected.id} q={selected} catalog={c} /> : null}
+            </>
+          )}
+        </WithData>
+      </Body>
+    </>
   );
 }

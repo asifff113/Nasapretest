@@ -4,7 +4,8 @@
 // a pin opens a registered place (graded verdicts), and the ask box routes a free-text question with the smart
 // matcher (no AI). The globe library loads only on this screen, so the first view of the site stays small.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { CloudSun, Droplets, Factory, Gauge, Globe2, Leaf, Minus, Plus, Search, Thermometer, X } from 'lucide-react';
+import { Globe2, Minus, Plus, Search, X } from 'lucide-react';
+import { groupIcon } from '../components/atlas/icons';
 import { pick, useT } from '../i18n';
 import { int, rate as fmtRate } from '../i18n/format';
 import type { CatalogVariable, Region } from '../data/types';
@@ -98,7 +99,6 @@ function reduceMotion(): boolean {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-const GROUP_ICON: Record<string, typeof Thermometer> = { heat: Thermometer, water: Droplets, weather: Gauge, sky: CloudSun, air: Factory, land: Leaf };
 
 function VariableRail({ variables, value, onPick }: { variables: CatalogVariable[]; value: string | undefined; onPick: (v: CatalogVariable) => void }) {
   const t = useT();
@@ -118,7 +118,7 @@ function VariableRail({ variables, value, onPick }: { variables: CatalogVariable
             <h3 className="mb-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-muted">{t(title)}</h3>
             <ul className="flex gap-1.5 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
               {list.map((v) => {
-                const Icon = GROUP_ICON[v.group] ?? Globe2;
+                const Icon = groupIcon(v.group);
                 const on = v.id === value;
                 return (
                   <li key={v.id} className="shrink-0">

@@ -19,16 +19,29 @@ export function PageHeader({ eyebrow, title, lead, children }: { eyebrow?: React
   );
 }
 
-export function StepHeading({ n, title, id, children }: { n: number; title: ReactNode; id?: string; children?: ReactNode }) {
+/** A chapter head: a numbered tag, the serif title, and a rule that runs to the edge. */
+export function StepHeading({ n, title, id, lead, children }: { n: number; title: ReactNode; id?: string; lead?: ReactNode; children?: ReactNode }) {
   return (
-    <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1" id={id}>
-      <span className="font-mono text-[13px] font-medium text-accent-ink" aria-hidden="true">
-        {String(n).padStart(2, '0')}
-      </span>
-      <h2 className="text-h2">{title}</h2>
-      {children}
+    <div className="mb-6" id={id}>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <span
+          className="inline-flex h-7 items-center rounded-full border border-accent/45 bg-accent/10 px-2.5 font-mono text-[12px] font-medium tracking-[0.12em] text-accent-ink"
+          aria-hidden="true"
+        >
+          {String(n).padStart(2, '0')}
+        </span>
+        <h2 className="text-chapter">{title}</h2>
+        <span className="hidden h-px min-w-8 flex-1 bg-gradient-to-r from-line-strong to-transparent sm:block" aria-hidden="true" />
+        {children}
+      </div>
+      {lead ? <p className="mt-2 max-w-[70ch] text-[16px] text-muted sm:pl-[60px]">{lead}</p> : null}
     </div>
   );
+}
+
+/** A narrow-or-wide content column without the page's top padding (used under a Hero). */
+export function Body({ children, className, wide = true }: { children: ReactNode; className?: string; wide?: boolean }) {
+  return <div className={cn('mx-auto w-full px-4 pb-16 pt-10 sm:px-6 sm:pt-12', wide ? 'max-w-[1280px]' : 'max-w-[900px]', className)}>{children}</div>;
 }
 
 /**
