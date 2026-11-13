@@ -17,7 +17,7 @@ from casefile_engine.base import ROOT, VARS
 from . import boundaries, manifest, mapfield, regions, series
 from .grids import GRIDS, NATIVE_GRIDS, index_box, lat_bounds, lon_bounds, row_areas
 from .series import MonthlyField
-from .sources import Reader, used_readers
+from .sources import Reader, parts, used_readers
 
 CACHE = ROOT / ".cache"
 
@@ -155,13 +155,19 @@ def fetch(products: list[str] | None = None, first: str | None = None, last: str
 
 
 def load_field(reader: Reader, file_variable: str, cache: Path = CACHE) -> MonthlyField | None:
+    """The stored monthly field of a config variable. A sum "A + B" (GLDAS runoff) is added month by month from its
+    parts, each already in the monthly unit; a cell is NaN in a month when any part is NaN there."""
     p = monthly_path(reader, cache)
     if not p.exists():
         return None
     with np.load(p, allow_pickle=False) as z:
-        if f"values__{file_variable}" not in z.files:
+        keys = [f"values__{n}" for n in parts(file_variable)]
+        if any(k not in z.files for k in keys):
             return None                   # this variable was added after the product was fetched: fetch again
-        return MonthlyField([str(m) for m in z["months"]], z[f"values__{file_variable}"], str(z["grid"]), int(z["row0"]), int(z["col0"]))
+        values = z[keys[0]]
+        for k in keys[1:]:
+            values = values + z[k]
+        return MonthlyField([str(m) for m in z["months"]], values, str(z["grid"]), int(z["row0"]), int(z["col0"]))
 
 
 # ============================================================================ regions
@@ -190,8 +196,6 @@ def explore_stage(bundle_id: str, results: Path, cache: Path = CACHE, log=print)
 
     def load_fields():
         for reader in used_readers():
-            if reader.grid_id != explore.GRID_ID:
-                continue
             for var in reader.variables():
                 if VARS[var["id"]]["status"] == "analysed":
                     f = load_field(reader, str(var["variable"]), cache)
@@ -251,11 +255,15 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
             if field is None:
                 log(f"  {vid}: not in {monthly_path(reader, cache).name} yet (run fetch), skipped")
                 continue
-            n = 0
+            n, empty = 0, []
             ok = [rid for rid in in_set if index_support(index, rid, reader.grid_id)]
             for rid in ok:
-                series.write_series(out, vid, rid, field, masks[(rid, reader.grid_id)][0])
-                n += 1
+                if series.write_series(out, vid, rid, field, masks[(rid, reader.grid_id)][0]) is None:
+                    empty.append(rid)
+                else:
+                    n += 1
+            if empty:
+                log(f"  {vid}: no series for {empty}: no month has a value there on {reader.grid_id} (a land-only product over the sea)")
             for p in index["pairs"] if reader.grid_id in NATIVE_GRIDS else []:
                 series.write_pair(out, vid, p["id"], field, masks[(p["a"], reader.grid_id)][0], masks[(p["b"], reader.grid_id)][0])
             log(f"  {vid}: {n} region series, {len(index['pairs'])} pair series, {field.months[0]}..{field.months[-1]} on {reader.grid_id}")

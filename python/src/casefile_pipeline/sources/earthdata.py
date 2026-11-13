@@ -203,10 +203,8 @@ def open_saved(path: Path, reader: Reader):
 
 
 def _var_entry(reader: Reader, variable: str) -> dict:
-    for v in reader.variables():
-        if str(v["variable"]) == variable:
-            return v
-    raise KeyError(f"{reader.short_name}: no used variable '{variable}' in config/variables.yaml")
+    """The config/variables.yaml entry the file variable belongs to (alone or as a part of a sum)."""
+    return reader.entry_for(variable)
 
 
 def load_month(reader: Reader, month: str, variable: str, box=None) -> tuple[np.ndarray, dict]:
@@ -217,7 +215,7 @@ def load_month(reader: Reader, month: str, variable: str, box=None) -> tuple[np.
         raise ValueError(f"{reader.short_name} {variable} {month}: cached with box {rec['box']}, needed {box}; delete {d} and fetch again")
     if rec["route"] == "opendap_subset":
         with open_saved(d / rec["saved"], reader) as ds:
-            return reader.decode(ds, _var_entry(reader, variable), box)[0], rec
+            return reader.decode(ds, _var_entry(reader, variable), box, name=variable)[0], rec
     with np.load(d / rec["saved"], allow_pickle=False) as z:
         return z[variable], rec
 
@@ -261,14 +259,14 @@ def fetch_month(reader: Reader, month: str, granule, route: str, variable: str, 
     if route == "opendap_subset":
         saved = _route_opendap(reader, variable, granule, d / f"{month}__{name}.dap.nc4")
         with open_saved(saved, reader) as ds:
-            field, facts = reader.decode(ds, entry, box)
+            field, facts = reader.decode(ds, entry, box, name=variable)
         rec.update(saved=saved.name, bytes=saved.stat().st_size, sha256=sha256_path(saved))
     elif route == "remote_read":
         import earthaccess
 
         (fobj,) = earthaccess.open([granule])
         with xr.open_dataset(fobj, engine="h5netcdf", group=reader.group, mask_and_scale=False, decode_times=False) as ds:
-            field, facts = reader.decode(ds, entry, box)
+            field, facts = reader.decode(ds, entry, box, name=variable)
         saved = d / f"{month}__{name}.values.npz"
         np.savez(saved, **{variable: field})
         rec.update(saved=saved.name, bytes=saved.stat().st_size, sha256=sha256_path(saved))
@@ -280,7 +278,7 @@ def fetch_month(reader: Reader, month: str, granule, route: str, variable: str, 
         (path,) = [Path(p) for p in earthaccess.download([granule], str(tmpdir), show_progress=False)]
         rec.update(bytes=path.stat().st_size, sha256=sha256_path(path))
         with open_saved(path, reader) as ds:
-            field, facts = reader.decode(ds, entry, box)
+            field, facts = reader.decode(ds, entry, box, name=variable)
         path.unlink()
         tmpdir.rmdir()
         saved = d / f"{month}__{name}.values.npz"

@@ -474,7 +474,7 @@
        "bn": "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
       },
       "date": null,
-      "verified": false
+      "verified": true
      }
     ],
     "observation_or_model": {
@@ -493,7 +493,7 @@
   },
   {
    "id": "evapotranspiration",
-   "status": "deferred",
+   "status": "analysed",
    "group": "water",
    "kind": "model",
    "source": "gldas_noah10_m",
@@ -514,6 +514,7 @@
     "en": "From GLDAS, a NASA land model.",
     "bn": "GLDAS থেকে, নাসার একটি ভূমি-মডেল।"
    },
+   "conversion": "kg m⁻² s⁻¹ × 86 400 → mm day⁻¹ (monthly); totals = Σ mm day⁻¹ × days",
    "units": {
     "monthly": "mm/day",
     "aggregated": "mm"
@@ -522,12 +523,12 @@
    "ratio_scale": true,
    "record": {
     "from": 2000,
-    "to": null
+    "to": 2025
    },
    "record_card": {
     "gaps": {
-     "en": "Start year to be checked (#15).",
-     "bn": "শুরুর বছর যাচাই করতে হবে (#১৫)।"
+     "en": "No gaps on land from January 2000: the model fills every month. No values over the sea.",
+     "bn": "স্থলভাগে ২০০০ সালের জানুয়ারি থেকে কোনো ফাঁক নেই: মডেল প্রতিটি মাস পূরণ করে। সমুদ্রের ওপর কোনো মান নেই।"
     },
     "known_breaks": [
      {
@@ -537,7 +538,7 @@
        "bn": "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
       },
       "date": null,
-      "verified": false
+      "verified": true
      }
     ],
     "observation_or_model": {
@@ -555,7 +556,7 @@
   },
   {
    "id": "runoff",
-   "status": "deferred",
+   "status": "analysed",
    "group": "water",
    "kind": "model",
    "source": "gldas_noah10_m",
@@ -576,6 +577,7 @@
     "en": "From GLDAS, a NASA land model without river routing.",
     "bn": "GLDAS থেকে, নদীপথের হিসাব ছাড়া নাসার একটি ভূমি-মডেল।"
    },
+   "conversion": "surface (Qs_acc) + subsurface (Qsb_acc) runoff, each kg m⁻² per 3 hours averaged over the month × 8 → mm day⁻¹ (GLDAS-2 README §3.5); totals = Σ mm day⁻¹ × days",
    "units": {
     "monthly": "mm/day",
     "aggregated": "mm"
@@ -584,12 +586,12 @@
    "ratio_scale": true,
    "record": {
     "from": 2000,
-    "to": null
+    "to": 2025
    },
    "record_card": {
     "gaps": {
-     "en": "Start year to be checked (#15).",
-     "bn": "শুরুর বছর যাচাই করতে হবে (#১৫)।"
+     "en": "No gaps on land from January 2000: the model fills every month. No values over the sea.",
+     "bn": "স্থলভাগে ২০০০ সালের জানুয়ারি থেকে কোনো ফাঁক নেই: মডেল প্রতিটি মাস পূরণ করে। সমুদ্রের ওপর কোনো মান নেই।"
     },
     "known_breaks": [
      {
@@ -599,7 +601,7 @@
        "bn": "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
       },
       "date": null,
-      "verified": false
+      "verified": true
      }
     ],
     "observation_or_model": {
@@ -1238,14 +1240,14 @@
   },
   {
    "id": "gldas_noah10_m",
-   "status": "deferred",
+   "status": "exploration",
    "name": "GLDAS Noah Land Surface Model L4 monthly 1.0° V2.1",
    "short_name": "GLDAS_NOAH10_M",
    "version": "2.1",
    "kind": "model",
-   "doi": null,
-   "doi_verified": false,
-   "citation": "Beaudoing, H. and M. Rodell, NASA/GSFC/HSL (2020), GLDAS Noah Land Surface Model L4 monthly 1.0 x 1.0 degree V2.1, GES DISC.",
+   "doi": "10.5067/LWTYSMP3VM5Z",
+   "doi_verified": true,
+   "citation": "Beaudoing, H. and M. Rodell, NASA/GSFC/HSL (2020), GLDAS Noah Land Surface Model L4 monthly 1.0 x 1.0 degree V2.1, Greenbelt, Maryland, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/LWTYSMP3VM5Z.",
    "reference": "Rodell, M., et al. (2004), The Global Land Data Assimilation System, BAMS, 85, 381–394.",
    "licence": "NASA open data"
   },

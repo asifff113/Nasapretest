@@ -74,15 +74,21 @@ def thin(x: np.ndarray, limit: int = MAX_CELLS) -> np.ndarray:
     return x[:: int(np.ceil(x.shape[0] / limit))]
 
 
-def write_series(out: Path, variable: str, region: str, field: MonthlyField, cells: list[list]) -> Path:
-    """series/<variable>/<region>.npz with start, monthly, cells, area_km2, effective_cells, grid."""
+def write_series(out: Path, variable: str, region: str, field: MonthlyField, cells: list[list]) -> Path | None:
+    """series/<variable>/<region>.npz with start, monthly, cells, area_km2, effective_cells, grid.
+
+    Writes nothing and returns None when no month has a value (a land-only product such as GLDAS over a sea
+    region): like a region that fails the support rule on that grid, it gets no series (02 §14 step 5)."""
     start, values = pad_to_january(field.months, field.values)
     f = MonthlyField(field.months, values, field.grid_id, field.row0, field.col0)
     x = cell_matrix(f, cells)
     w = weights(cells, field.grid_id)
+    monthly = region_mean(x, w)
+    if not np.isfinite(monthly).any():
+        return None
     p = Path(out) / f"series/{variable}/{fpath(region)}.npz"
     p.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(p, start=start, monthly=region_mean(x, w), cells=thin(x), area_km2=float(w.sum()),
+    np.savez_compressed(p, start=start, monthly=monthly, cells=thin(x), area_km2=float(w.sum()),
                         effective_cells=float(sum(c[2] for c in cells)), grid=field.grid_id)
     return p
 

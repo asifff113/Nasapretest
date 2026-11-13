@@ -211,7 +211,7 @@ variables:
     tags: [water, farming]
 
   - id: evapotranspiration
-    status: deferred
+    status: analysed                     # exploration layer only: not in the pre-registration, so no verdicts
     group: water
     kind: model
     source: gldas_noah10_m
@@ -222,19 +222,20 @@ variables:
       en: "Water that rises into the air from soil, lakes and leaves, added up over the season or year."
       bn: "মাটি, জলাশয় ও পাতা থেকে যে পানি বাষ্প হয়ে বাতাসে ওঠে — ঋতু বা বছর ধরে যোগ করে।"
     how_measured: { en: "From GLDAS, a NASA land model.", bn: "GLDAS থেকে, নাসার একটি ভূমি-মডেল।" }
+    conversion: "kg m⁻² s⁻¹ × 86 400 → mm day⁻¹ (monthly); totals = Σ mm day⁻¹ × days"
     units: { monthly: "mm/day", aggregated: "mm" }
     rule: sum
     ratio_scale: true
     record: { from: 2000, to: null }
     record_card:
-      gaps: { en: "Start year to be checked (#15).", bn: "শুরুর বছর যাচাই করতে হবে (#১৫)।" }
+      gaps: { en: "No gaps on land from January 2000: the model fills every month. No values over the sea.", bn: "স্থলভাগে ২০০০ সালের জানুয়ারি থেকে কোনো ফাঁক নেই: মডেল প্রতিটি মাস পূরণ করে। সমুদ্রের ওপর কোনো মান নেই।" }
       known_breaks: [gldas21_forcing_changes]
       observation_or_model: { en: "Model output; its forcing changed over time.", bn: "মডেলের ফল; এর চালিকা-ইনপুট সময়ের সঙ্গে বদলেছে।" }
       cannot_answer: { en: "Not analysed in this release.", bn: "এই সংস্করণে বিশ্লেষণ করা হয়নি।" }
     tags: [water]
 
   - id: runoff
-    status: deferred
+    status: analysed                     # exploration layer only: not in the pre-registration, so no verdicts
     group: water
     kind: model
     source: gldas_noah10_m
@@ -245,12 +246,13 @@ variables:
       en: "Rain and snowmelt that the soil cannot hold and that flows toward rivers. It feeds streamflow but is not river flow."
       bn: "যে বৃষ্টি ও গলা বরফ মাটি ধরে রাখতে পারে না, তা নদীর দিকে গড়িয়ে যায়। এটি নদীপ্রবাহের উৎস, তবে নিজে নদীপ্রবাহ নয়।"
     how_measured: { en: "From GLDAS, a NASA land model without river routing.", bn: "GLDAS থেকে, নদীপথের হিসাব ছাড়া নাসার একটি ভূমি-মডেল।" }
+    conversion: "surface (Qs_acc) + subsurface (Qsb_acc) runoff, each kg m⁻² per 3 hours averaged over the month × 8 → mm day⁻¹ (GLDAS-2 README §3.5); totals = Σ mm day⁻¹ × days"
     units: { monthly: "mm/day", aggregated: "mm" }
     rule: sum
     ratio_scale: true
     record: { from: 2000, to: null }
     record_card:
-      gaps: { en: "Start year to be checked (#15).", bn: "শুরুর বছর যাচাই করতে হবে (#১৫)।" }
+      gaps: { en: "No gaps on land from January 2000: the model fills every month. No values over the sea.", bn: "স্থলভাগে ২০০০ সালের জানুয়ারি থেকে কোনো ফাঁক নেই: মডেল প্রতিটি মাস পূরণ করে। সমুদ্রের ওপর কোনো মান নেই।" }
       known_breaks: [gldas21_forcing_changes]
       observation_or_model: { en: "Model output.", bn: "মডেলের ফল।" }
       cannot_answer: { en: "Not analysed in this release.", bn: "এই সংস্করণে বিশ্লেষণ করা হয়নি।" }

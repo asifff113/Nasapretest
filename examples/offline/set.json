@@ -50,7 +50,7 @@
  "files": [
   {
    "path": "build.json",
-   "sha256": "9611b10438f5bc8a4b25030e383ccd9a33c752505ed0df0fd0c7365fecc3e255",
+   "sha256": "a3807ded33a5911ede425dbdc05c51403f6159ab9bed41e3631326cb6f98dc71",
    "bytes": 1889
   },
   {
@@ -70,8 +70,8 @@
   },
   {
    "path": "catalog.json",
-   "sha256": "2bdaf98ce9a7786db61dca182b603ea0e4a81e402064c77d70d94efd9245cac3",
-   "bytes": 50809
+   "sha256": "b4a822ad31c69e4e8aa1da0a7684669c86e5dc962234c482a2040b16e0ae78b9",
+   "bytes": 51748
   },
   {
    "path": "contrasts/air_temp/pair_north_vs_delta/ANN.json",
@@ -144,5 +144,5 @@
    "bytes": 14115
   }
  ],
- "totalBytes": 278294
+ "totalBytes": 279231
 }

@@ -36,3 +36,17 @@ def granule(month: str, name: str | None = None) -> dict:
     return {"umm": {"GranuleUR": f"TEST.1:{name or 'file_' + month}.nc4",
                     "TemporalExtent": {"RangeDateTime": {"BeginningDateTime": f"{month}-01T00:00:00.000Z",
                                                          "EndingDateTime": f"{month}-{last:02d}T23:59:59.000Z"}}}}
+
+
+def gldas_file(path: Path, fields: dict[str, tuple[str, np.ndarray]], fill: float = -9999.0, lat0: float | None = None) -> Path:
+    """One GLDAS_NOAH10_M-like monthly file: each variable name → (units, values [150][360]) as (time, lat, lon) at
+    the root, -9999 as _FillValue and missing_value. `lat0` shifts the latitudes (to make a file of the wrong grid)."""
+    g = GRIDS["gldas_1deg"]
+    lat = lat_centres(g) if lat0 is None else lat0 + np.arange(g["nlat"]) * g["dlat"]
+    data = {}
+    for name, (units, values) in fields.items():
+        x = np.where(np.isnan(values), fill, values).astype(np.float32)
+        data[name] = xr.DataArray(x[None], dims=("time", "lat", "lon"), attrs={"units": units, "missing_value": np.float32(fill)},
+                                  coords={"time": [0.0], "lat": lat, "lon": lon_centres(g)})
+    xr.Dataset(data).to_netcdf(path, engine="h5netcdf", encoding={n: {"_FillValue": np.float32(fill)} for n in data})
+    return path

@@ -7,9 +7,13 @@ The site computes nothing (AGENTS.md rule 4), so everything it shows must be in 
    from the bundle's map/<variable>__ANN.npz, whose annual values the engine's own rules made
    (casefile_engine.bundle.annual_field). value = raw × scale + offset unless raw == fill. For the globe's year slider.
 2. Region detail files: explore/regions/<region>.json for every country of Natural Earth Admin 0 and every region of
-   config/regions.yaml: the region's monthly mean on the MERRA-2 grid (Σ w x / Σ w, the same rule as the bundle),
-   its yearly values by casefile_engine.layer.annual_values (the engine's rules), and its monthly climatology over
-   the years with values. explore/index.json lists them. No test, no trend: each value is labelled exploration.
+   config/regions.yaml: the region's monthly mean on its variable's native grid (Σ w x / Σ w, the same rule as the
+   bundle, so NaN in a month when cells holding more than 10% of Σ w have no value), its yearly values by
+   casefile_engine.layer.annual_values (the engine's rules), and its monthly climatology over the years with
+   values. explore/index.json lists them. No test, no trend: each value is labelled exploration.
+   The region's facts (area, cells, support) and the file's `grid` are those of the MERRA-2 grid, which covers the
+   whole globe. A variable on another grid (GLDAS, land only) is averaged over the region's cells on that grid and
+   left out of a region where no year has a value there (the sea, small islands).
 
 Verdicts, contrasts and the screening map's rates stay the engine's alone.
 """
@@ -141,22 +145,38 @@ def write_region_files(results: Path, build_id: str, load_fields, log=print) -> 
     grid = GRIDS[GRID_ID]
     s = CFG["support"]
     masks = region_masks(log)
-    weights = [series.weights(cells, grid["id"]) for _, cells in masks]
+    by_grid = {GRID_ID: ([cells for _, cells in masks], [series.weights(cells, grid["id"]) for _, cells in masks])}
     per_region: list[dict] = [{} for _ in masks]
     var_info = []
     for vid, fld in load_fields():
+        if fld.row0 or fld.col0:
+            raise ValueError(f"{vid}: region detail files need a field on the whole {fld.grid_id} grid, not a box")
+        if fld.grid_id not in by_grid:
+            g = GRIDS[fld.grid_id]
+            cells_g = [regions.region_cells(d, g) for d, _ in masks]
+            by_grid[fld.grid_id] = (cells_g, [series.weights(c, g["id"]) for c in cells_g])
+            log(f"  masks on {g['id']}: {sum(1 for c in cells_g if c)} of {len(masks)} regions have cells")
+        cells_v, weights_v = by_grid[fld.grid_id]
         start, vals = series.pad_to_january(fld.months, fld.values)
         full = MonthlyField(fld.months, vals, fld.grid_id)
         first, last = int(start[:4]), int(fld.months[-1][:4]) - (fld.months[-1][5:7] != "12")
         var_info.append({"id": vid, "units": VARS[vid]["units"]["aggregated"], "rule": VARS[vid]["rule"], "first": first, "last": last})
-        for k, (_, cells) in enumerate(masks):
-            monthly = series.region_mean(series.cell_matrix(full, cells), weights[k])
+        left_out = 0
+        for k in range(len(masks)):
+            if not cells_v[k]:
+                left_out += 1
+                continue
+            monthly = series.region_mean(series.cell_matrix(full, cells_v[k]), weights_v[k])
             a = L.annual_values(start, [None if not np.isfinite(x) else float(x) for x in monthly], "ANN", VARS[vid]["rule"], first, last)
+            if all(v is None for v in a["values"]):
+                left_out += 1
+                continue
             per_region[k][vid] = {"unitsMonthly": VARS[vid]["units"]["monthly"], "units": VARS[vid]["units"]["aggregated"],
                                   "rule": VARS[vid]["rule"], "years": list(range(first, last + 1)),
                                   "annual": [None if v is None else round(float(v), 4) for v in a["values"]],
                                   "monthlyClimatology": _climatology(monthly[: (last - first + 1) * 12])}
-        log(f"  {vid}: yearly values and monthly climatology for {len(masks)} regions")
+        log(f"  {vid}: yearly values and monthly climatology for {len(masks) - left_out} regions"
+            + (f" ({left_out} without a value on {fld.grid_id}: left out)" if left_out else ""))
         del full, vals
     entries = []
     for (d, cells), variables in zip(masks, per_region):

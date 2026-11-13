@@ -62,8 +62,8 @@ breaks:
     label:
       en: "GLDAS-2.1 is driven by model and observation inputs that changed over time; it is not a climate data record"
       bn: "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
-    ref: "GLDAS-2.1 README, GES DISC (#15)."
-    verified: false
+    ref: "README Document for NASA GLDAS Version 2 Data Products, GES DISC, revised 13 Aug 2025: §1.2.3 (forced with GDAS and GPCP from January 2000 to February 2001, AGRMET radiation added from 1 March 2001, GALWEM radiation from 9 June 2025) and §1.5.3 (AGRMET radiation rescaled from 2008, an apparent shift after 2011 not corrected)."
+    verified: true
 
   - id: aqua_orbit_drift
     type: data

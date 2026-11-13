@@ -14,7 +14,12 @@ import numpy as np
 
 from casefile_engine.base import IMERG, MERRA2, ONE, RE, edges
 
-GRIDS: dict[str, dict] = {g["id"]: g for g in (MERRA2, IMERG, ONE)}
+# GLDAS-2.1 Noah 1° (GLDAS_NOAH10_M 2.1): 360 × 150 cells, first centre 179.5° W 59.5° S, latitude increasing with the
+# row (GLDAS-2 README, GES DISC, Table 1, revised 13 Aug 2025; read in one granule on 13 Nov 2026). Land only: sea
+# cells hold the fill value.
+GLDAS = {"id": "gldas_1deg", "lat0": -59.5, "dlat": 1.0, "nlat": 150, "lon0": -179.5, "dlon": 1.0, "nlon": 360}
+
+GRIDS: dict[str, dict] = {g["id"]: g for g in (MERRA2, IMERG, ONE, GLDAS)}
 NATIVE_GRIDS: tuple[str, ...] = (MERRA2["id"], IMERG["id"])     # first-release grids: they decide whether a region is in the set
 
 

@@ -117,24 +117,32 @@ sources:
     known_breaks: []
     traps: "Second-route check of one pipeline series and a fallback route only. POWER's weather is MERRA-2, so it is never a witness for MERRA-2, and POWER's IMERG never witnesses IMERG."
 
-  # ------------------------------------------------------------------ deferred (cards only; each returns one at a time with its own domain check)
+  # ------------------------------------------------------------------ exploration layers (globe and place reports only; not in the pre-registration, no verdicts)
   - id: gldas_noah10_m
-    status: deferred
+    status: exploration
     name: "GLDAS Noah Land Surface Model L4 monthly 1.0° V2.1"
     short_name: GLDAS_NOAH10_M
     version: "2.1"
-    provider: GES_DISC
+    provider: GES_DISC (Earthdata Cloud)
     kind: model
-    doi: null
-    doi_verified: false
-    temporal: { start: "VERIFY (#15)", end: present }
-    grid: { id: gldas_1deg, native: "1.0°" }
-    access: { route: earthaccess, method: download, variables: [SoilMoi0_10cm_inst, Evap_tavg, Qs_acc, Qsb_acc] }
-    citation: "Beaudoing, H. and M. Rodell, NASA/GSFC/HSL (2020), GLDAS Noah Land Surface Model L4 monthly 1.0 x 1.0 degree V2.1, GES DISC."
+    doi: "10.5067/LWTYSMP3VM5Z"
+    doi_verified: true                   # CMR collection C1288937542-GES_DISC and GLDAS-2 README Table 2 (read 13 Nov 2026)
+    temporal: { start: "2000-01", end: present }   # CMR: from 2000-01-01, ends at present; 319 monthly granules 2000-01..2026-07 on 13 Nov 2026
+    grid: { id: gldas_1deg, native: "1.0°, 360 × 150 cells from 179.5° W 59.5° S (README Table 1); land only: sea and inland water hold the fill" }
+    access:
+      route: earthaccess
+      find: "CMR query by short name and version 2.1 (main product; never the Early Product GLDAS_NOAH10_M_EP)"
+      method: cloud_opendap_subset       # fallback: whole-file download (about 8 MB a month)
+      variables: [Evap_tavg, Qs_acc, Qsb_acc]   # SoilMoi0_10cm_inst stays a card (soil_moisture, deferred)
+      units: "Evap_tavg kg m-2 s-1 (mean rate) × 86 400 → mm/day; Qs_acc and Qsb_acc kg m-2 per 3 hours averaged over the month (README §3.5 item 6) × 8 → mm/day; read in GLDAS_NOAH10_M.A202007.021.nc4"
+      fill: "-9999 (_FillValue and missing_value in the same granule)"
+    citation: "Beaudoing, H. and M. Rodell, NASA/GSFC/HSL (2020), GLDAS Noah Land Surface Model L4 monthly 1.0 x 1.0 degree V2.1, Greenbelt, Maryland, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/LWTYSMP3VM5Z."
     reference: "Rodell, M., et al. (2004), The Global Land Data Assimilation System, BAMS, 85, 381–394."
     licence: "NASA open data"
     known_breaks: [gldas21_forcing_changes]
-    traps: "Model; forcing changed over time."
+    traps: "Model output, not a measurement; its inputs changed over time (README §1.2.3, §1.5.3). Land only, 60° S to 90° N; no river routing."
+
+  # ------------------------------------------------------------------ deferred (cards only; each returns one at a time with its own domain check)
 
   - id: airs3stm
     status: deferred

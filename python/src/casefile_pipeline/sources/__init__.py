@@ -8,12 +8,16 @@ from config/variables.yaml. A new dataset is one more reader registered here (do
 
 `Reader.decode()` turns one opened monthly file into one field [n_lat][n_lon] in the monthly unit, with NaN for
 fill and non-finite values, on the reader's grid (latitude increasing with the row, longitude with the column).
+
+A variable of config/variables.yaml may be the sum of several file variables, written "A + B" (GLDAS runoff =
+Qs_acc + Qsb_acc, GLDAS-2 README §3.5 item 2). Each part is fetched and decoded on its own, in the monthly unit;
+`casefile_pipeline.stages.load_field` adds them month by month (NaN if any part is NaN).
 Network access is allowed only inside this package (AGENTS.md rule 9); this module itself makes no request.
 """
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -41,6 +45,9 @@ class Reader:
     units: dict[str, str]                 # variable name in the file → units attribute the documentation gives
     subset_to_regions: bool = False       # keep only the box covering every region (+1°), docs/02_DATA.md §3.2
     name_check: Callable[[list[str]], None] | None = None    # raises if a granule is not of the pinned product
+    # variable name → the unit the documentation gives for the monthly value when the units attribute alone does not
+    # say it (GLDAS "_acc": "kg m-2" in the file, a 3-hour accumulation averaged over the month); used to convert
+    rate_units: dict[str, str] = field(default_factory=dict)
 
     # ------------------------------------------------------------------ configuration
     @property
@@ -64,7 +71,18 @@ class Reader:
         return [v for v in VARS.values() if v.get("source") == self.source_id and v.get("status") in USED_STATUSES]
 
     def file_variables(self) -> list[str]:
-        return [str(v["variable"]) for v in self.variables()]
+        """The variables to read from the files: the parts of every used variable, in order, each once."""
+        out: list[str] = []
+        for v in self.variables():
+            out += [p for p in parts(str(v["variable"])) if p not in out]
+        return out
+
+    def entry_for(self, file_variable: str) -> dict:
+        """The used variable of config/variables.yaml that `file_variable` belongs to (alone or as a part)."""
+        for v in self.variables():
+            if file_variable in parts(str(v["variable"])):
+                return v
+        raise KeyError(f"{self.short_name}: no used variable '{file_variable}' in config/variables.yaml")
 
     def path(self, name: str) -> str:
         return f"/{self.group}/{name}" if self.group else f"/{name}"
@@ -74,13 +92,17 @@ class Reader:
         return ";".join([self.path(variable)] + [self.path(c) for c in (self.time, self.lat, self.lon)])
 
     # ------------------------------------------------------------------ decoding one monthly file
-    def decode(self, ds, variable: dict, box: tuple[int, int, int, int] | None = None) -> tuple[np.ndarray, dict]:
-        """One month of `variable` (an entry of config/variables.yaml) from the opened dataset `ds`.
+    def decode(self, ds, variable: dict, box: tuple[int, int, int, int] | None = None,
+               name: str | None = None) -> tuple[np.ndarray, dict]:
+        """One month of the file variable `name` (default: `variable["variable"]`), which is `variable` (an entry of
+        config/variables.yaml) or one of its parts, from the opened dataset `ds`.
 
         `ds` must be opened with mask_and_scale=False so the fill value is read as found. Returns
         (values [n_lat][n_lon] float32 in the variable's monthly unit, facts as found in the file). `box` is
         (row0, row1, col0, col1) on the reader's grid; None keeps the whole grid."""
-        name = str(variable["variable"])
+        name = name or str(variable["variable"])
+        if name not in parts(str(variable["variable"])):
+            raise KeyError(f"{self.short_name}: '{name}' is not a part of '{variable['variable']}'")
         if name not in ds.variables:
             raise AccessMismatch(f"{self.short_name}: variable '{name}' not in the file (has {sorted(ds.variables)})")
         da = ds[name]
@@ -111,15 +133,21 @@ class Reader:
         if box is not None:
             r0, r1, c0, c1 = box
             x = x[r0:r1, c0:c1]
-        values = convert(x, units, variable["units"]["monthly"]).astype(np.float32)
+        values = convert(x, self.rate_units.get(name, units), variable["units"]["monthly"]).astype(np.float32)
         fin = values[np.isfinite(values)]
         facts = {"variable": name, "dims": list(da.dims), "units": units,
+                 **({"documentedUnits": self.rate_units[name]} if name in self.rate_units else {}),
                  "fill": None if fill is None else float(np.asarray(fill).ravel()[0]),
                  "lat": [float(lat.min()), float(lat.max()), int(lat.size)], "lon": [float(lon.min()), float(lon.max()), int(lon.size)],
                  "monthlyUnit": variable["units"]["monthly"], "finite": int(fin.size), "missing": int(values.size - fin.size),
                  "min": float(fin.min()) if fin.size else None, "max": float(fin.max()) if fin.size else None,
                  "mean": float(fin.mean()) if fin.size else None}
         return values, facts
+
+
+def parts(file_variable: str) -> list[str]:
+    """The file variables a config variable is made of: "Qs_acc + Qsb_acc" → ["Qs_acc", "Qsb_acc"]; "T2M" → ["T2M"]."""
+    return [p.strip() for p in str(file_variable).split("+")]
 
 
 READERS: dict[str, Reader] = {}
@@ -145,4 +173,4 @@ def used_readers() -> list[Reader]:
     return [READERS[s] for s in SOURCES if s in READERS and READERS[s].variables()]
 
 
-from . import imerg, merra2  # noqa: F401  (registers the readers)
+from . import gldas, imerg, merra2  # noqa: F401  (registers the readers)
