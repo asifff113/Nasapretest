@@ -13,6 +13,7 @@ import { href, useView } from '../state/view';
 import { useSpineClaim } from '../state/spine';
 import { useTokens } from '../charts/tokens';
 import { SeriesChart } from '../charts/SeriesChart';
+import { ClimateStripes } from '../charts/ClimateStripes';
 import { diverging, scalePos } from '../map/colours';
 import { cellInfo, latLon } from '../map/ScreeningMap';
 import { BadLinkNotice, Loading, WithData } from '../components/LoadState';
@@ -181,7 +182,21 @@ export default function CellPage() {
                 {series.status === 'loading' ? (
                   <Loading />
                 ) : series.status === 'ok' && series.data ? (
-                  <SeriesChart x={series.data.years} y={series.data.values} units={series.data.units} lang={lang} label={t('site.cell.chart_alt', { place })} testId="cell-chart" height={280} />
+                  <>
+                    <SeriesChart x={series.data.years} y={series.data.values} units={series.data.units} lang={lang} label={t('site.cell.chart_alt', { place })} testId="cell-chart" height={280} />
+                    <div className="mt-6 border-t border-line pt-4">
+                      <p className="mb-1 text-sm font-semibold">{t('site.stripes.title')}</p>
+                      <p className="mb-3 text-[13px] text-muted">{t('site.stripes.note')}</p>
+                      <ClimateStripes
+                        years={series.data.years}
+                        values={series.data.values}
+                        units={series.data.units}
+                        colormap={variable?.colormap?.trend}
+                        lang={lang}
+                        label={t('site.stripes.alt', { place, from: int(series.data.years[0] ?? 0, lang), to: int(series.data.years[series.data.years.length - 1] ?? 0, lang) })}
+                      />
+                    </div>
+                  </>
                 ) : (
                   <MissingPanel />
                 )}

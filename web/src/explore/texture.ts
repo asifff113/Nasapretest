@@ -43,13 +43,49 @@ function rings(f: CountryFeature): Ring[] {
 }
 
 /** Draws the composite and returns it as an image URL for the globe material. */
-export function composeTexture(base: HTMLImageElement, layer: MapLayer | null, colormap: string | undefined, opacity: number, countries: CountryFeature[]): string {
+export interface TextureFocus {
+  feature: CountryFeature;
+  /** Square indices inside the country (row · nlon + col). */
+  cells: Set<number>;
+}
+
+const xOf = (lon: number) => ((lon + 180) / 360) * TEX_W;
+const yOf = (lat: number) => ((90 - lat) / 180) * TEX_H;
+
+function tracePath(ctx: CanvasRenderingContext2D, f: CountryFeature): void {
+  for (const ring of rings(f)) {
+    ring.forEach(([lon, lat], i) => {
+      if (i === 0) ctx.moveTo(xOf(lon), yOf(lat));
+      else ctx.lineTo(xOf(lon), yOf(lat));
+    });
+    ctx.closePath();
+  }
+}
+
+export function composeTexture(
+  base: HTMLImageElement,
+  layer: MapLayer | null,
+  colormap: string | undefined,
+  opacity: number,
+  countries: CountryFeature[],
+  focus: TextureFocus | null = null,
+): string {
   const cv = document.createElement('canvas');
   cv.width = TEX_W;
   cv.height = TEX_H;
   const ctx = cv.getContext('2d');
   if (!ctx) return '';
   ctx.drawImage(base, 0, 0, TEX_W, TEX_H);
+  if (focus) {
+    // Everything outside the country fades back.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, TEX_W, TEX_H);
+    tracePath(ctx, focus.feature);
+    ctx.fillStyle = 'rgba(3,10,24,0.66)';
+    ctx.fill('evenodd');
+    ctx.restore();
+  }
 
   if (layer && opacity > 0) {
     const g = layer.meta.grid;
@@ -68,6 +104,7 @@ export function composeTexture(base: HTMLImageElement, layer: MapLayer | null, c
       for (let i = 0; i < n; i++) {
         const f = layer.flags[i] ?? 0;
         const r = rate ? rate[i] : Number.NaN;
+        if (focus && !focus.cells.has(i)) continue;
         if ((f & tb) !== 0 && r !== undefined && Number.isFinite(r)) {
           const [cr, cg, cb] = lut[Math.round(scalePos(r, layer.meta.colourLimit) * 255)] ?? [128, 128, 128];
           img.data[i * 4] = cr;
@@ -86,7 +123,7 @@ export function composeTexture(base: HTMLImageElement, layer: MapLayer | null, c
       ctx.lineWidth = 1.4;
       ctx.beginPath();
       for (let i = 0; i < n; i++) {
-        if (((layer.flags[i] ?? 0) & tb) === 0) {
+        if (((layer.flags[i] ?? 0) & tb) === 0 && (!focus || focus.cells.has(i))) {
           const x = (i % g.nlon) * cw;
           const y = Math.floor(i / g.nlon) * ch;
           ctx.moveTo(x, y + ch);
@@ -112,6 +149,13 @@ export function composeTexture(base: HTMLImageElement, layer: MapLayer | null, c
       });
       ctx.stroke();
     }
+  }
+  if (focus) {
+    ctx.beginPath();
+    tracePath(ctx, focus.feature);
+    ctx.strokeStyle = '#e9b44c';
+    ctx.lineWidth = 4;
+    ctx.stroke();
   }
   return cv.toDataURL('image/jpeg', 0.9);
 }

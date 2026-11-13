@@ -17,17 +17,16 @@ import { Body, StepBar, StepHeading, goToStep, useStepObserver } from '../compon
 import { Facts, Hero } from '../components/atlas/Hero';
 import { LocatorGlobe } from '../components/atlas/LocatorGlobe';
 import { PlacePicker } from '../components/PlacePicker';
-import { ContributingCells, type GeoJSON } from '../components/ContributingCells';
+import type { GeoJSON } from '../components/ContributingCells';
+import { SquaresExplainer } from '../components/atlas/SquaresExplainer';
 import { LineupTable } from '../components/LineupTable';
 import { VerdictView } from '../components/VerdictView';
-import { Card } from '../ui/common/card';
 import { SegmentedControl } from '../ui/common/toggle-group';
 
 const CellPage = lazy(() => import('./CellPage'));
 
 function CellsPanel({ region }: { region: Region }) {
   const t = useT();
-  const lang = useLang();
   const index = useRegionIndex();
   const grids = Object.keys(region.cells);
   const [gridId, setGridId] = useState(grids[0] ?? 'merra2_native');
@@ -35,46 +34,27 @@ function CellsPanel({ region }: { region: Region }) {
   const mask = useResult<Mask>(maskPath);
   const geom = useResult<GeoJSON>(region.geom);
   const grid = index.data?.grids.find((g) => g.id === gridId);
-  const support = region.support[gridId];
   return (
-    <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)]">
-      <Card className="overflow-hidden p-3 sm:p-4">
-        <WithData res={mask} path={maskPath ?? undefined}>
-          {(m) =>
-            grid ? (
-              <ContributingCells
-                grid={grid}
-                layers={[{ mask: m, colour: 'accent', label: pick(region.name, lang), geom: geom.status === 'ok' ? geom.data : null }]}
-                label={`${t('place.cells_shown')} ${support ? t('place.support', { cells: num(support.effectiveCells, lang, 1) }) : ''}`}
-              />
-            ) : null
-          }
-        </WithData>
-      </Card>
-      <div className="flex flex-col gap-5">
-        {grids.length > 1 ? (
-          <div>
-            <p className="eyebrow mb-2">{t('site.place.grid_label')}</p>
-            <SegmentedControl
-              size="sm"
-              label={t('site.place.grid_label')}
-              value={gridId}
-              onValueChange={setGridId}
-              options={grids.map((g) => ({ value: g, label: tOr(t, `site.grid.${g}`, g) }))}
-            />
-          </div>
-        ) : null}
-        {support ? (
-          <div className="border-l-2 border-accent pl-4">
-            <p className="m-0 font-display text-[44px] leading-none tabular">{num(support.effectiveCells, lang, 1)}</p>
-            <p className="mt-2 text-[15px] font-medium tabular" data-testid="support-line">
-              {t('place.support', { cells: num(support.effectiveCells, lang, 1) })}
-            </p>
-          </div>
-        ) : null}
-        <p className="m-0 text-[15px]">{t('place.cells_shown')}</p>
-        <p className="m-0 text-sm text-muted">{t('site.place.shade_note')}</p>
-      </div>
+    <div className="flex flex-col gap-5">
+      {grids.length > 1 ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="eyebrow m-0">{t('site.place.grid_label')}</p>
+          <SegmentedControl
+            size="sm"
+            label={t('site.place.grid_label')}
+            value={gridId}
+            onValueChange={setGridId}
+            options={grids.map((g) => ({ value: g, label: tOr(t, `site.grid.${g}`, g) }))}
+          />
+        </div>
+      ) : null}
+      <WithData res={mask} path={maskPath ?? undefined}>
+        {(m) =>
+          grid ? (
+            <SquaresExplainer region={region} grid={grid} mask={m} geom={geom.status === 'ok' ? (geom.data ?? null) : null} minCells={index.data?.minNativeCells} />
+          ) : null
+        }
+      </WithData>
     </div>
   );
 }
@@ -206,7 +186,7 @@ function RegionScreen() {
       <RegionHero region={validRegion} index={index.data} lineup={lineup.data} />
       <Body>
         <section id="step-place" className="scroll-mt-28">
-          <StepHeading n={1} title={t('site.place.cells_title')} />
+          <StepHeading n={1} title={t('site.place.cells_title')} lead={t('site.squares.lead')} />
           <CellsPanel key={validRegion.id} region={validRegion} />
         </section>
         <section id="step-lineup" className="mt-16 scroll-mt-28">

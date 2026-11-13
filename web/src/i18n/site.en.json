@@ -458,7 +458,50 @@
       "var_no_map": "This build has no map for this record yet. A full build draws one, and every square opens its own chart.",
       "which_place": "Which place?",
       "which_place_body": "Name a city, a country or a place from our set, or click anywhere on the globe.",
-      "cluster": "{n} registered places"
+      "cluster": "{n} registered places",
+      "columns": "3D columns",
+      "columns_note": "Each square that stands out rises as a column: the taller, the faster it changes. The colour says which way."
+    },
+    "stripes": {
+      "title": "Every year as a colour",
+      "note": "One stripe per year. The colours run from the lowest to the highest yearly value in this record.",
+      "alt": "{place}: one coloured stripe per year, {from}–{to}. The colours run from the lowest to the highest yearly value."
+    },
+    "squares": {
+      "lead": "NASA's records do not measure every street. They split the planet into squares and give one value per square per month. This is how a place becomes a set of squares.",
+      "step1": "The planet",
+      "step1_note": "{place}, on the globe.",
+      "step2": "NASA's data grid",
+      "step2_note": "The lines are the record's grid. Each square here is one data pixel, about {w} × {h} km.",
+      "step2_alt": "The area around {place} on NASA's Blue Marble image, with the data grid drawn over it.",
+      "step3": "The squares we use",
+      "step3_note": "Each number is how much of that square lies inside the place. We average the squares, giving each one that much weight.",
+      "key": "How to read the squares",
+      "k1_title": "1 square = 1 data pixel",
+      "k1_body": "About {w} × {h} km here. The record gives one value for the whole square.",
+      "k2_title": "Full colour: fully inside",
+      "k2_body": "The whole square lies in the place, so it counts fully.",
+      "k3_title": "Pale: partly inside",
+      "k3_body": "Only part of the square lies in the place, so it counts less.",
+      "k4_body": "We test a place only when it is covered by at least {min} squares' worth of data.",
+      "k4_body_plain": "Enough squares cover this place to test it.",
+      "cell_title": "{pct}% of this square lies inside {place}",
+      "km": "{n} km"
+    },
+    "country": {
+      "eyebrow": "Country view",
+      "open": "See all of {country}",
+      "back": "Back to {country}",
+      "none": "No square of this map has its centre inside this country's outline at this scale.",
+      "tested": "Squares tested",
+      "untestable": "Squares we can't test",
+      "out_up": "Stand out, rising",
+      "out_down": "Stand out, falling",
+      "strip_title": "Every square, slowest to fastest",
+      "strip_note": "Each sliver is one square, in order of its change per decade. Pale slivers do not stand out after allowing for all the tests. Click one to open it.",
+      "top_up": "Rising fastest",
+      "top_down": "Falling fastest",
+      "whole_note": "This view shows each square on its own: we only sort and count them. One answer for the whole country needs its own test, which this build does not include."
     }
   }
 }

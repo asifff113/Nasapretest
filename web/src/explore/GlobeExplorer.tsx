@@ -4,7 +4,7 @@
 // a pin opens a registered place (graded verdicts), and the ask box routes a free-text question with the smart
 // matcher (no AI). The globe library loads only on this screen, so the first view of the site stays small.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Globe2, Minus, Plus, Search, X } from 'lucide-react';
+import { BarChart3, Globe2, Minus, Plus, Search, X } from 'lucide-react';
 import { groupIcon } from '../components/atlas/icons';
 import { pick, useT } from '../i18n';
 import { int, rate as fmtRate } from '../i18n/format';
@@ -16,11 +16,14 @@ import { cellId, route, understand, type MatchContext, type Understood } from '.
 import { IS_OFFLINE_BUILD } from '../data/offline';
 import { useLang } from '../state/prefs';
 import { toHash, useView } from '../state/view';
-import { diverging } from '../map/colours';
+import { diverging, scalePos } from '../map/colours';
 import { ScreeningMap } from '../map/ScreeningMap';
 import { loadOutlines, type Outlines } from '../map/outlines';
 import { composeTexture, countryAt, loadCountries, loadEarthImage } from './texture';
 import { CellPanel, NoPlacePanel, RegionPanel, VariablePanel } from './ExplorePanels';
+import { CountryPanel } from './CountryPanel';
+import { cellsInCountry, findCountry, fitAltitude } from './country';
+import type { CountryFeature } from '../data/places';
 import { MissingPanel } from '../components/LoadState';
 import { SegmentedControl } from '../ui/common/toggle-group';
 import { cn } from '../ui/common/utils';
@@ -53,6 +56,16 @@ interface GlobeLike {
   htmlAltitude(a: number): GlobeLike;
   htmlElement(f: (d: object) => HTMLElement): GlobeLike;
   onZoom(cb: (p: { lat: number; lng: number; altitude: number }) => void): GlobeLike;
+  pointsData(d: object[]): GlobeLike;
+  pointLat(f: (d: object) => number): GlobeLike;
+  pointLng(f: (d: object) => number): GlobeLike;
+  pointAltitude(f: (d: object) => number): GlobeLike;
+  pointRadius(r: number): GlobeLike;
+  pointColor(f: (d: object) => string): GlobeLike;
+  pointResolution(n: number): GlobeLike;
+  pointsMerge(b: boolean): GlobeLike;
+  pointsTransitionDuration(ms: number): GlobeLike;
+  onPointClick(cb: (p: object) => void): GlobeLike;
   pointOfView(p?: { lat: number; lng: number; altitude: number }, ms?: number): { lat: number; lng: number; altitude: number };
   controls(): { autoRotate: boolean; autoRotateSpeed: number; enableDamping: boolean };
   pauseAnimation(): GlobeLike;
@@ -62,10 +75,11 @@ interface GlobeLike {
 }
 
 type Selection =
-  | { kind: 'cell'; row: number; col: number; label?: string; understood?: Understood }
+  | { kind: 'cell'; row: number; col: number; label?: string; understood?: Understood; from?: { kind: 'country'; feature: CountryFeature; cells: number[] } }
   | { kind: 'region'; region: Region; understood?: Understood }
   | { kind: 'variable'; variable: CatalogVariable; understood?: Understood }
-  | { kind: 'noplace'; understood: Understood };
+  | { kind: 'noplace'; understood: Understood }
+  | { kind: 'country'; feature: CountryFeature; cells: number[]; understood?: Understood };
 
 interface Marker {
   kind: 'pin' | 'city' | 'cluster';
@@ -154,7 +168,7 @@ function VariableRail({ variables, value, onPick }: { variables: CatalogVariable
   );
 }
 
-function Legend({ layer, colormap, opacity, onOpacity }: { layer: MapLayer; colormap: string | undefined; opacity?: number; onOpacity?: (v: number) => void }) {
+function Legend({ layer, colormap, opacity, onOpacity, columns = false }: { layer: MapLayer; colormap: string | undefined; opacity?: number; onOpacity?: (v: number) => void; columns?: boolean }) {
   const t = useT();
   const lang = useLang();
   const interp = diverging(colormap);
@@ -174,6 +188,7 @@ function Legend({ layer, colormap, opacity, onOpacity }: { layer: MapLayer; colo
           <input id="layer-strength" type="range" min={0} max={100} step={5} value={Math.round(opacity * 100)} onChange={(e) => onOpacity(Number(e.target.value) / 100)} className="w-full accent-[var(--accent)]" />
         </label>
       ) : null}
+      {columns ? <p className="m-0 rounded-[4px] bg-accent/15 px-2 py-1.5 text-[12px] text-ink">{t('site.explore.columns_note')}</p> : null}
       <ul className="flex flex-col gap-1 text-muted">
         <li className="flex items-center gap-2">
           <span className="inline-block h-2.5 w-3.5 rounded-[2px]" style={{ background: interp(0.85) }} aria-hidden="true" />
@@ -222,6 +237,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const [question, setQuestion] = useState('');
+  const [columns, setColumns] = useState(false);
 
   const host = useRef<HTMLDivElement>(null);
   const globeRef = useRef<GlobeLike | null>(null);
@@ -235,7 +251,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
       const id = cellId(grid, lat, lng);
       const [, rc] = id.split(':');
       const [row, col] = (rc ?? '0_0').split('_').map(Number);
-      setSelection({ kind: 'cell', row: row ?? 0, col: col ?? 0, label, understood });
+      setSelection((prev) => ({ kind: 'cell', row: row ?? 0, col: col ?? 0, label, understood, from: prev?.kind === 'country' ? prev : prev?.kind === 'cell' ? prev.from : undefined }));
       const g = globeRef.current;
       if (g) {
         const cLat = grid.lat0 + (row ?? 0) * grid.dlat;
@@ -271,6 +287,20 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
       }
     },
     [reduce],
+  );
+
+  const focusCountry = useCallback(
+    (feature: CountryFeature, understood?: Understood) => {
+      if (!grid) return;
+      setSelection({ kind: 'country', feature, cells: cellsInCountry(feature, grid), understood });
+      const g = globeRef.current;
+      if (g) {
+        g.controls().autoRotate = false;
+        g.polygonsData([]).ringsData([]);
+        g.pointOfView({ lat: feature.properties.lat, lng: feature.properties.lon, altitude: fitAltitude(feature) }, reduce ? 0 : 1300);
+      }
+    },
+    [grid, reduce],
   );
 
   const pickRef = useRef<(lat: number, lng: number) => void>(() => undefined);
@@ -316,6 +346,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
           .htmlLat((d) => (d as Marker).lat)
           .htmlLng((d) => (d as Marker).lng)
           .htmlAltitude(0.012)
+          .onPointClick((p) => pickRef.current((p as { lat: number }).lat, (p as { lng: number }).lng))
           .onZoom((p) => setAltitude(p.altitude < 0.9 ? 0.8 : p.altitude < 1.5 ? 1.2 : 2.25));
         g.renderer().setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
         g.controls().autoRotate = !reduce;
@@ -360,15 +391,60 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   }, [flat]);
 
   // ---- the surface: Earth + layer + borders ----------------------------------------------------
+  const focus = selection?.kind === 'country' ? selection : selection?.kind === 'cell' ? (selection.from ?? null) : null;
+  const focusSet = useMemo(() => (focus ? { feature: focus.feature, cells: new Set(focus.cells) } : null), [focus]);
   useEffect(() => {
     const g = globeRef.current;
     const earth = earthRef.current;
     if (!ready || !g || !earth || layer.status === 'loading' || countries.status === 'loading') return;
     const id = window.setTimeout(() => {
-      g.globeImageUrl(composeTexture(earth, activeLayer, variable?.colormap?.trend, opacity, countries.data ?? []));
+      g.globeImageUrl(composeTexture(earth, activeLayer, variable?.colormap?.trend, columns ? opacity * 0.3 : opacity, countries.data ?? [], focusSet));
     }, 60);
     return () => window.clearTimeout(id);
-  }, [ready, activeLayer, layer.status, countries.status, countries.data, opacity, variable?.colormap?.trend]);
+  }, [ready, activeLayer, layer.status, countries.status, countries.data, opacity, variable?.colormap?.trend, focusSet, columns]);
+
+  // ---- 3D columns: each square that stands out rises by how fast it changes (height from the map's rate) ----
+  useEffect(() => {
+    const g = globeRef.current;
+    if (!ready || !g) return;
+    if (!columns || !activeLayer) {
+      g.pointsData([]);
+      return;
+    }
+    const lay = activeLayer;
+    const gr = lay.meta.grid;
+    const interp = diverging(variable?.colormap?.trend);
+    const tb = lay.meta.flagBits.testable ?? 1;
+    const sb = lay.meta.flagBits.significant ?? 2;
+    const rate = lay.fields.rate;
+    const limit = lay.meta.colourLimit;
+    const pts: { lat: number; lng: number; h: number; c: string }[] = [];
+    const use = (i: number) => {
+      const fl = lay.flags[i] ?? 0;
+      const r = rate ? rate[i] : Number.NaN;
+      if ((fl & tb) === 0 || r === undefined || !Number.isFinite(r)) return;
+      if (!focusSet && (fl & sb) === 0) return;
+      const row = Math.floor(i / gr.nlon);
+      const col = i % gr.nlon;
+      pts.push({ lat: gr.lat0 + row * gr.dlat, lng: gr.lon0 + col * gr.dlon, h: 0.003 + Math.min(1, Math.abs(r) / limit) * (focusSet ? 0.045 : 0.075), c: interp(scalePos(r, limit)) });
+    };
+    if (focusSet) focusSet.cells.forEach(use);
+    else for (let i = 0; i < gr.nlat * gr.nlon; i++) use(i);
+    g.pointsMerge(true)
+      .pointsTransitionDuration(0)
+      .pointResolution(4)
+      .pointRadius(focusSet ? 0.42 : 0.5)
+      .pointLat((d) => (d as { lat: number }).lat)
+      .pointLng((d) => (d as { lng: number }).lng)
+      .pointAltitude((d) => (d as { h: number }).h)
+      .pointColor((d) => (d as { c: string }).c)
+      .pointsData(pts);
+    // The whole world as a skyline: step back far enough to see it.
+    if (!focusSet) {
+      const p = g.pointOfView();
+      if (p.altitude < 1.9) g.pointOfView({ ...p, altitude: 2.1 }, reduce ? 0 : 900);
+    }
+  }, [ready, columns, activeLayer, variable?.colormap?.trend, focusSet, reduce]);
 
   // ---- pins for registered places, and city names ------------------------------------------------
   useEffect(() => {
@@ -467,6 +543,11 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
       return;
     }
     if (r.kind === 'region') return selectRegion(r.region, u);
+    const firstPlace = u.places[0];
+    if (firstPlace?.kind === 'country') {
+      const feature = findCountry(countries.data ?? [], firstPlace.name);
+      if (feature) return focusCountry(feature, u);
+    }
     if (r.kind === 'cell') return selectCell(r.lat, r.lon, r.label, u);
     if (u.variable && u.variable.status === 'deferred') return setSelection({ kind: 'variable', variable: u.variable, understood: u });
     setSelection({ kind: 'noplace', understood: u });
@@ -484,7 +565,26 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   };
 
   let panel: ReactNode = null;
-  if (current?.kind === 'cell') {
+  const cellCountry =
+    current?.kind === 'cell' ? countryAt(countries.data ?? [], (grid?.lat0 ?? 89.5) + current.row * (grid?.dlat ?? -1), (grid?.lon0 ?? -179.5) + current.col * (grid?.dlon ?? 1)) : null;
+  if (current?.kind === 'country') {
+    panel = activeLayer && variable ? (
+      <CountryPanel
+        key={`${current.feature.properties.name}_${variable.id}`}
+        name={current.feature.properties.name}
+        cells={current.cells}
+        layer={activeLayer}
+        variable={variable}
+        understood={current.understood}
+        onPickCell={(row, col) => {
+          if (!grid) return;
+          selectCell(grid.lat0 + row * grid.dlat, grid.lon0 + col * grid.dlon);
+        }}
+      />
+    ) : variable ? (
+      <VariablePanel variable={variable} hasMap={false} understood={current.understood} />
+    ) : null;
+  } else if (current?.kind === 'cell') {
     panel = activeLayer && variable ? (
       <CellPanel
         key={`${current.row}_${current.col}_${variable.id}`}
@@ -493,8 +593,16 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
         row={current.row}
         col={current.col}
         label={current.label}
-        country={countryAt(countries.data ?? [], (grid?.lat0 ?? 89.5) + current.row * (grid?.dlat ?? -1), (grid?.lon0 ?? -179.5) + current.col * (grid?.dlon ?? 1))}
+        country={cellCountry}
         understood={current.understood}
+        onCountry={
+          cellCountry && findCountry(countries.data ?? [], cellCountry)
+            ? () => {
+                const feature = findCountry(countries.data ?? [], cellCountry);
+                if (feature) focusCountry(feature);
+              }
+            : undefined
+        }
       />
     ) : variable ? (
       <VariablePanel variable={variable} hasMap={false} understood={current.understood} />
@@ -614,7 +722,22 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
                 {t('map.label')}
               </p>
             ) : null}
-            <div className="pointer-events-auto ml-auto">
+            <div className="pointer-events-auto ml-auto flex items-center gap-2">
+              {!showFlat && activeLayer ? (
+                <button
+                  type="button"
+                  aria-pressed={columns}
+                  onClick={() => setColumns((c) => !c)}
+                  className={cn(
+                    'inline-flex min-h-10 items-center gap-2 rounded-[6px] border px-3 text-[13px] font-semibold backdrop-blur-md',
+                    columns ? 'border-accent bg-accent text-ocean' : 'border-line bg-surface/85 hover:border-accent',
+                  )}
+                  data-testid="view-columns"
+                >
+                  <BarChart3 className="size-4" aria-hidden="true" />
+                  {t('site.explore.columns')}
+                </button>
+              ) : null}
               <SegmentedControl
                 size="sm"
                 label={t('site.explore.view_label')}
@@ -632,7 +755,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
           {!showFlat ? (
             <>
               <div className="pointer-events-none absolute bottom-3 left-3 z-10 sm:bottom-4 sm:left-4">
-                {activeLayer ? <Legend layer={activeLayer} colormap={variable?.colormap?.trend} opacity={opacity} onOpacity={setOpacity} /> : null}
+                {activeLayer ? <Legend layer={activeLayer} colormap={variable?.colormap?.trend} opacity={opacity} onOpacity={setOpacity} columns={columns} /> : null}
               </div>
               <div className="absolute bottom-3 right-3 z-10 flex flex-col gap-1.5 sm:bottom-4 sm:right-4">
                 <button type="button" onClick={() => zoom(0.6)} aria-label={t('site.map.zoom_in')} className="grid size-10 place-items-center rounded-[6px] border border-line bg-surface/85 backdrop-blur-md hover:border-accent">
@@ -675,6 +798,20 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
             >
               <X className="size-5" aria-hidden="true" />
             </button>
+            {current?.kind === 'cell' && current.from ? (
+              <button
+                type="button"
+                onClick={() => {
+                  const from = current.from;
+                  if (from) setSelection(from);
+                  globeRef.current?.polygonsData([]).ringsData([]);
+                }}
+                className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-[14px] font-medium text-link hover:underline"
+                data-testid="back-to-country"
+              >
+                ← {t('site.country.back', { country: current.from.feature.properties.name })}
+              </button>
+            ) : null}
             <div className="pr-8">{panel}</div>
           </aside>
         ) : null}

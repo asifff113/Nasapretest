@@ -11,6 +11,7 @@ import { useLang } from '../state/prefs';
 import { useSpineClaim } from '../state/spine';
 import { TrendChart } from '../charts/TrendChart';
 import { SeriesChart } from '../charts/SeriesChart';
+import { ClimateStripes } from '../charts/ClimateStripes';
 import { toneColour, useTokens } from '../charts/tokens';
 import { Card } from '../ui/common/card';
 import { Button } from '../ui/common/button';
@@ -106,6 +107,18 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
           <p className="text-muted">{t('site.chart.no_chart')}</p>
         )}
         <ChartLegend solid={solid} hasBand={Boolean(verdict.chart?.band)} hasBreaks={verdict.robustness.breaks.length > 0} colour={toneColour(tokens, info.tone)} />
+        <div className="mt-6 border-t border-line pt-4">
+          <p className="mb-1 text-sm font-semibold">{t('site.stripes.title')}</p>
+          <p className="mb-3 text-[13px] text-muted">{t('site.stripes.note')}</p>
+          <ClimateStripes
+            years={verdict.series.years}
+            values={verdict.series.values}
+            units={verdict.series.units}
+            colormap={variable?.colormap?.trend}
+            lang={lang}
+            label={t('site.stripes.alt', { place: regionName, from: int(verdict.window.first, lang), to: int(verdict.window.last, lang) })}
+          />
+        </div>
         {monthly ? <MonthlyPanel verdict={verdict} regionName={regionName} /> : null}
       </Card>
       <div className="flex flex-col gap-4">

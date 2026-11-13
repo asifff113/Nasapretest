@@ -304,3 +304,31 @@ test('I-03 the site requests only files from its own origin, with no console err
   expect(w.foreign).toEqual([]);
   expect(w.errors).toEqual([]);
 });
+
+test('ATLAS the place shows how its squares are chosen, and the verdict has one stripe per year', async ({ page }) => {
+  const item = homeLineup!.items[0]!;
+  const v = read<{ series: { years: number[] } }>(item.path);
+  await open(page, `#/place?region=${home!.id}&variable=${item.variable}&season=${item.season}`);
+  await expect(page.getByTestId('squares-explainer')).toBeVisible();
+  await expect(page.locator('[data-testid="squares-explainer"] [data-testid="contributing-cells"] text').first()).toBeAttached();
+  await expect(page.getByTestId('climate-stripes').first()).toBeVisible();
+  await expect(page.getByTestId('climate-stripes').first().locator('svg > rect')).toHaveCount(v.series.years.length);
+});
+
+test('COUNTRY asking about a country opens its squares, and a square opens with a way back', async ({ page }) => {
+  const maps = list('maps').filter((p) => p.endsWith('meta.json'));
+  test.skip(maps.length === 0, 'no map in this build');
+  await open(page, '#/map');
+  await page.getByTestId('view-flat').click();
+  await page.getByTestId('ask-input').fill('Is Nigeria getting hotter?');
+  await page.getByTestId('ask-submit').click();
+  const panel = page.getByTestId('explore-country');
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole('heading', { level: 2 })).toHaveText('Nigeria');
+  const items = panel.locator('ol button');
+  test.skip((await items.count()) === 0, 'no testable square in this country');
+  await items.first().click();
+  await expect(page.getByTestId('explore-cell')).toBeVisible();
+  await page.getByTestId('back-to-country').click();
+  await expect(page.getByTestId('explore-country')).toBeVisible();
+});

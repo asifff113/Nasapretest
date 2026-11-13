@@ -1,7 +1,7 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
 // What the globe's side panel shows: a 1° square (exploration), a registered place (graded verdicts), or a record
 // that has no map in this build. Every number is read from a result file; the panel only lays it out.
-import { ArrowRight, Compass, MapPin } from 'lucide-react';
+import { ArrowRight, Compass, Map as MapIcon, MapPin } from 'lucide-react';
 import { pick, tOr, useT } from '../i18n';
 import { int, p as fmtP, rate as fmtRate } from '../i18n/format';
 import type { Catalog, CatalogVariable, Lineup, Region, RegionIndex } from '../data/types';
@@ -12,6 +12,7 @@ import { useLang } from '../state/prefs';
 import { href } from '../state/view';
 import { cellInfo, latLon } from '../map/ScreeningMap';
 import { SeriesChart } from '../charts/SeriesChart';
+import { ClimateStripes } from '../charts/ClimateStripes';
 import { RecordCard } from '../components/RecordCard';
 import { FamilyBadge, StatusBadge } from '../components/StatusBadge';
 import { Loading } from '../components/LoadState';
@@ -72,6 +73,7 @@ export function CellPanel({
   label,
   country,
   understood,
+  onCountry,
 }: {
   layer: MapLayer;
   variable: CatalogVariable;
@@ -80,6 +82,8 @@ export function CellPanel({
   label?: string;
   country: string | null;
   understood?: Understood;
+  /** Opens the country view for the country that holds this square. */
+  onCountry?: () => void;
 }) {
   const t = useT();
   const lang = useLang();
@@ -150,6 +154,15 @@ export function CellPanel({
           <Loading />
         ) : series.data ? (
           <>
+            <ClimateStripes
+              years={series.data.years}
+              values={series.data.values}
+              units={series.data.units}
+              colormap={variable.colormap?.trend}
+              lang={lang}
+              height={46}
+              label={t('site.stripes.alt', { place: where, from: int(series.data.years[0] ?? 0, lang), to: int(series.data.years[series.data.years.length - 1] ?? 0, lang) })}
+            />
             <SeriesChart x={series.data.years} y={series.data.values} units={series.data.units} lang={lang} height={190} label={t('site.cell.chart_alt', { place: where })} testId="explore-cell-chart" />
             <p className="text-xs text-muted">{t('site.cell.no_line')}</p>
           </>
@@ -157,6 +170,12 @@ export function CellPanel({
           <p className="text-sm text-muted">{t('site.explore.no_tile')}</p>
         )}
       </section>
+      {onCountry && country ? (
+        <button type="button" onClick={onCountry} className={cn(buttonVariants({ variant: 'accent', size: 'sm' }), 'self-start')} data-testid="explore-country-open">
+          <MapIcon aria-hidden="true" />
+          {t('site.country.open', { country })}
+        </button>
+      ) : null}
       <a
         href={href({ screen: 'place', region: `cell:${row}_${col}`, variable: variable.id, season: layer.meta.season })}
         className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'self-start')}

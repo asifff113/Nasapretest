@@ -12,6 +12,7 @@ import { useSpineClaim } from '../state/spine';
 import { useBuild } from '../data/hooks';
 import { IS_OFFLINE_BUILD } from '../data/offline';
 import { DifferenceChart, PairChart } from '../charts/DifferenceChart';
+import { ClimateStripes } from '../charts/ClimateStripes';
 import { toneColour, useTokens } from '../charts/tokens';
 import { Card } from '../ui/common/card';
 import { Disclosure } from '../ui/common/collapsible';
@@ -166,7 +167,39 @@ export function CompareView({
             </li>
           </ul>
           <WithData res={sides} loading={<Loading done={sides.done} total={sides.total} />}>
-            {([va, vb]) => (va && vb ? <PairChart a={va} b={vb} nameA={nameA} nameB={nameB} lang={lang} label={`${nameA} · ${nameB}: ${varName}`} /> : null)}
+            {([va, vb]) =>
+              va && vb ? (
+                <>
+                  <PairChart a={va} b={vb} nameA={nameA} nameB={nameB} lang={lang} label={`${nameA} · ${nameB}: ${varName}`} />
+                  <div className="mt-5 flex flex-col gap-4 border-t border-line pt-4" data-testid="pair-stripes">
+                    <p className="m-0 text-[13px] text-muted">{t('site.stripes.note')}</p>
+                    {(
+                      [
+                        ['A', va, nameA, 'bg-link'],
+                        ['B', vb, nameB, 'bg-accent'],
+                      ] as const
+                    ).map(([k, v, n, dot]) => (
+                      <div key={k}>
+                        <p className="mb-1.5 inline-flex items-center gap-2 text-sm font-medium">
+                          <span className={`inline-block size-2.5 rounded-full ${dot}`} aria-hidden="true" />
+                          {k} · {n}
+                        </p>
+                        <ClimateStripes
+                          years={v.series.years}
+                          values={v.series.values}
+                          units={v.series.units}
+                          colormap={variable?.colormap?.trend}
+                          lang={lang}
+                          height={44}
+                          testId={`stripes-${k}`}
+                          label={t('site.stripes.alt', { place: n, from: int(v.window.first, lang), to: int(v.window.last, lang) })}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : null
+            }
           </WithData>
         </Card>
         <Card className="p-4 sm:p-6">
