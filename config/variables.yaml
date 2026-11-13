@@ -142,7 +142,7 @@ variables:
 
   # ---------------------------------------------------------------- deferred: cards only, "not analysed in this release"
   - id: water_vapor
-    status: deferred
+    status: analysed                     # exploration layer only: not in the pre-registration, so no verdicts
     group: water
     kind: model
     source: merra2_slv
@@ -165,7 +165,7 @@ variables:
     tags: [water]
 
   - id: pressure
-    status: deferred
+    status: analysed                     # exploration layer only: not in the pre-registration, so no verdicts
     group: weather
     kind: model
     source: merra2_slv

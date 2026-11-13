@@ -167,13 +167,14 @@ def opendap_url(umm: dict) -> str | None:
 
 
 # ============================================================================ the cache
-def raw_dir(reader: Reader, root: Path | None = None) -> Path:
-    """The month cache of a product: .cache/raw/<short name>/ (or `root`/<short name>/)."""
-    return (root or CACHE / "raw") / reader.short_name
+def raw_dir(reader: Reader, variable: str, root: Path | None = None) -> Path:
+    """The month cache of one variable of a product: .cache/raw/<short name>/<variable>/ (or under `root`).
+    Each variable is fetched on its own, so adding a variable never changes the saved files of another."""
+    return (root or CACHE / "raw") / reader.short_name / variable
 
 
-def record_path(reader: Reader, month: str, root: Path | None = None) -> Path:
-    return raw_dir(reader, root) / f"{month}.json"
+def record_path(reader: Reader, month: str, variable: str, root: Path | None = None) -> Path:
+    return raw_dir(reader, variable, root) / f"{month}.json"
 
 
 def sha256_path(p: Path) -> str:
@@ -201,18 +202,24 @@ def open_saved(path: Path, reader: Reader):
     return xr.open_dataset(path, engine="h5netcdf", mask_and_scale=False, decode_times=False)
 
 
-def load_month(reader: Reader, month: str, box=None) -> tuple[dict[str, np.ndarray], dict]:
-    """The decoded fields {file variable: [n_lat][n_lon]} of one cached month, and its record."""
-    rec = json.loads(record_path(reader, month).read_text(encoding="utf-8"))
+def _var_entry(reader: Reader, variable: str) -> dict:
+    for v in reader.variables():
+        if str(v["variable"]) == variable:
+            return v
+    raise KeyError(f"{reader.short_name}: no used variable '{variable}' in config/variables.yaml")
+
+
+def load_month(reader: Reader, month: str, variable: str, box=None) -> tuple[np.ndarray, dict]:
+    """The decoded field [n_lat][n_lon] of one cached month of one variable, and its record."""
+    d = raw_dir(reader, variable)
+    rec = json.loads(record_path(reader, month, variable).read_text(encoding="utf-8"))
     if rec["box"] != (list(box) if box is not None else None):
-        raise ValueError(f"{reader.short_name} {month}: cached with box {rec['box']}, needed {box}; delete {raw_dir(reader)} and fetch again")
+        raise ValueError(f"{reader.short_name} {variable} {month}: cached with box {rec['box']}, needed {box}; delete {d} and fetch again")
     if rec["route"] == "opendap_subset":
-        with open_saved(raw_dir(reader) / rec["saved"], reader) as ds:
-            fields = {v["variable"]: reader.decode(ds, v, box)[0] for v in reader.variables()}
-    else:
-        with np.load(raw_dir(reader) / rec["saved"], allow_pickle=False) as z:
-            fields = {k: z[k] for k in z.files}
-    return fields, rec
+        with open_saved(d / rec["saved"], reader) as ds:
+            return reader.decode(ds, _var_entry(reader, variable), box)[0], rec
+    with np.load(d / rec["saved"], allow_pickle=False) as z:
+        return z[variable], rec
 
 
 # ============================================================================ the three routes
@@ -227,11 +234,11 @@ def _session():
     return _local.session
 
 
-def _route_opendap(reader: Reader, granule, dest: Path) -> Path:
+def _route_opendap(reader: Reader, variable: str, granule, dest: Path) -> Path:
     url = opendap_url(granule["umm"])
     if url is None:
         raise RuntimeError("the granule lists no OPENDAP DATA url")
-    full = f"{url}.dap.nc4?dap4.ce={quote(reader.constraint(), safe='')}"
+    full = f"{url}.dap.nc4?dap4.ce={quote(reader.constraint(variable), safe='')}"
     tmp = dest.with_suffix(".part")
     with _session().get(full, stream=True, timeout=300) as r:
         if r.status_code != 200:
@@ -242,34 +249,28 @@ def _route_opendap(reader: Reader, granule, dest: Path) -> Path:
     return dest
 
 
-def _decode_all(reader: Reader, ds, box) -> tuple[dict[str, np.ndarray], dict]:
-    fields, facts = {}, {}
-    for v in reader.variables():
-        fields[v["variable"]], facts[v["variable"]] = reader.decode(ds, v, box)
-    return fields, facts
-
-
-def fetch_month(reader: Reader, month: str, granule, route: str, box=None, root: Path | None = None) -> dict:
-    """Fetch one month by `route`, decode it, write its record; return the record (with the decoded facts)."""
+def fetch_month(reader: Reader, month: str, granule, route: str, variable: str, box=None, root: Path | None = None) -> dict:
+    """Fetch one variable of one month by `route`, decode it, write its record; return the record (with the facts)."""
     import xarray as xr
 
-    d = raw_dir(reader, root)
+    d = raw_dir(reader, variable, root)
     d.mkdir(parents=True, exist_ok=True)
     name = granule_name(granule["umm"])
-    rec = {"month": month, "name": name, "route": route, "box": list(box) if box is not None else None}
+    entry = _var_entry(reader, variable)
+    rec = {"month": month, "name": name, "variable": variable, "route": route, "box": list(box) if box is not None else None}
     if route == "opendap_subset":
-        saved = _route_opendap(reader, granule, d / f"{month}__{name}.dap.nc4")
+        saved = _route_opendap(reader, variable, granule, d / f"{month}__{name}.dap.nc4")
         with open_saved(saved, reader) as ds:
-            fields, facts = _decode_all(reader, ds, box)
+            field, facts = reader.decode(ds, entry, box)
         rec.update(saved=saved.name, bytes=saved.stat().st_size, sha256=sha256_path(saved))
     elif route == "remote_read":
         import earthaccess
 
         (fobj,) = earthaccess.open([granule])
         with xr.open_dataset(fobj, engine="h5netcdf", group=reader.group, mask_and_scale=False, decode_times=False) as ds:
-            fields, facts = _decode_all(reader, ds, box)
+            field, facts = reader.decode(ds, entry, box)
         saved = d / f"{month}__{name}.values.npz"
-        np.savez(saved, **fields)
+        np.savez(saved, **{variable: field})
         rec.update(saved=saved.name, bytes=saved.stat().st_size, sha256=sha256_path(saved))
     elif route == "whole_file":
         import earthaccess
@@ -279,26 +280,26 @@ def fetch_month(reader: Reader, month: str, granule, route: str, box=None, root:
         (path,) = [Path(p) for p in earthaccess.download([granule], str(tmpdir), show_progress=False)]
         rec.update(bytes=path.stat().st_size, sha256=sha256_path(path))
         with open_saved(path, reader) as ds:
-            fields, facts = _decode_all(reader, ds, box)
+            field, facts = reader.decode(ds, entry, box)
         path.unlink()
         tmpdir.rmdir()
         saved = d / f"{month}__{name}.values.npz"
-        np.savez(saved, **fields)
+        np.savez(saved, **{variable: field})
         rec["saved"] = saved.name
     else:
         raise ValueError(f"unknown route {route}")
-    rec["valuesSha256"] = values_sha256(np.stack([fields[k] for k in sorted(fields)]))
-    rec["facts"] = facts
-    record_path(reader, month, root).write_bytes((json.dumps(rec, indent=1)).encode("utf-8"))
+    rec["valuesSha256"] = values_sha256(field[None])
+    rec["facts"] = {variable: facts}
+    record_path(reader, month, variable, root).write_bytes((json.dumps(rec, indent=1)).encode("utf-8"))
     return rec
 
 
-def probe_routes(reader: Reader, month: str, granule, box=None, log=print, root: Path | None = None) -> dict:
+def probe_routes(reader: Reader, month: str, granule, variable: str, box=None, log=print, root: Path | None = None) -> dict:
     """Try the routes in order on one granule; return the record of the first that works (the access check)."""
     errors = {}
     for route in ROUTES:
         try:
-            rec = fetch_month(reader, month, granule, route, box, root)
+            rec = fetch_month(reader, month, granule, route, variable, box, root)
             rec["routesTried"] = errors
             return rec
         except AccessMismatch:
@@ -309,27 +310,41 @@ def probe_routes(reader: Reader, month: str, granule, box=None, log=print, root:
     raise RuntimeError(f"{reader.short_name}: no route works ({errors}); see docs/02_DATA.md §8 — a person decides")
 
 
-def fetch_product(reader: Reader, table: dict, route: str, box=None, workers: int = 8, retries: int = 4, log=print) -> list[dict]:
-    """Fetch every month of `table` ({month: granule}) by `route`, skipping months already cached with the same box."""
-    todo = []
-    for m, g in table.items():
-        rp = record_path(reader, m)
+def cached_route(reader: Reader, table: dict, variable: str, box=None) -> str | None:
+    """The route of the months already cached for this variable with this box, if they agree on one."""
+    want = list(box) if box is not None else None
+    routes = set()
+    for m in table:
+        rp = record_path(reader, m, variable)
         if rp.exists():
             rec = json.loads(rp.read_text(encoding="utf-8"))
-            if rec.get("box") == (list(box) if box is not None else None) and (raw_dir(reader) / rec["saved"]).exists():
+            if rec.get("box") == want:
+                routes.add(rec["route"])
+    return routes.pop() if len(routes) == 1 else None
+
+
+def fetch_product(reader: Reader, table: dict, route: str, variable: str, box=None, workers: int = 8, retries: int = 4,
+                  log=print) -> list[dict]:
+    """Fetch one variable for every month of `table` ({month: granule}) by `route`, skipping months already cached."""
+    todo = []
+    for m, g in table.items():
+        rp = record_path(reader, m, variable)
+        if rp.exists():
+            rec = json.loads(rp.read_text(encoding="utf-8"))
+            if rec.get("box") == (list(box) if box is not None else None) and (raw_dir(reader, variable) / rec["saved"]).exists():
                 continue
         todo.append((m, g))
-    log(f"  {reader.short_name}: {len(table)} months, {len(table) - len(todo)} cached, {len(todo)} to fetch by {route}")
+    log(f"  {reader.short_name} {variable}: {len(table)} months, {len(table) - len(todo)} cached, {len(todo)} to fetch by {route}")
 
     def one(m, g):
         for k in range(retries + 1):
             try:
-                return fetch_month(reader, m, g, route, box)
+                return fetch_month(reader, m, g, route, variable, box)
             except AccessMismatch:
                 raise
             except Exception as e:  # noqa: BLE001
                 if k == retries:
-                    raise RuntimeError(f"{reader.short_name} {m}: {type(e).__name__}: {str(e)[:200]}") from None
+                    raise RuntimeError(f"{reader.short_name} {variable} {m}: {type(e).__name__}: {str(e)[:200]}") from None
                 time.sleep(2 ** k * 3)
 
     done = 0
@@ -338,6 +353,6 @@ def fetch_product(reader: Reader, table: dict, route: str, box=None, workers: in
         for f in as_completed(futs):
             f.result()
             done += 1
-            if done % 25 == 0 or done == len(todo):
-                log(f"    {reader.short_name}: {done}/{len(todo)} fetched")
-    return [json.loads(record_path(reader, m).read_text(encoding="utf-8")) for m in table]
+            if done % 50 == 0 or done == len(todo):
+                log(f"    {reader.short_name} {variable}: {done}/{len(todo)} fetched")
+    return [json.loads(record_path(reader, m, variable).read_text(encoding="utf-8")) for m in table]

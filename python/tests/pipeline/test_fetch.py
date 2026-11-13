@@ -165,8 +165,9 @@ def test_p11_on_premises_addresses_are_refused():
 
 
 def test_constraints_name_variable_and_coordinates():
-    assert READERS["merra2_slv"].constraint() == "/T2M;/time;/lat;/lon"
-    assert READERS["imerg_v07_final_monthly"].constraint() == "/Grid/precipitation;/Grid/time;/Grid/lat;/Grid/lon"
+    assert READERS["merra2_slv"].constraint("T2M") == "/T2M;/time;/lat;/lon"
+    assert READERS["imerg_v07_final_monthly"].constraint("precipitation") == "/Grid/precipitation;/Grid/time;/Grid/lat;/Grid/lon"
+    assert READERS["merra2_slv"].constraint("TQV") == "/TQV;/time;/lat;/lon"
 
 
 # ----------------------------------------------------------------------------------------------- P-12
@@ -181,4 +182,23 @@ def test_p12_imerg_v07_final_only():
 def test_a_new_reader_registers_under_its_source_id():
     r = Reader(source_id="merra2_slv", grid_id="merra2_native", group=None, dims=("time", "lat", "lon"), time="time",
                lat="lat", lon="lon", units={"T2M": "K"})
-    assert r.short_name == "M2TMNXSLV" and r.file_variables() == ["T2M"]
+    want = [v["variable"] for v in M.VARS.values() if v.get("source") == "merra2_slv" and v.get("status") in ("analysed", "sensitivity")]
+    assert r.short_name == "M2TMNXSLV" and r.file_variables() == want and "T2M" in want
+
+
+def test_water_vapour_and_pressure_units(tmp_path):
+    assert units.convert(np.array([42.0]), "kg m-2", "mm")[0] == pytest.approx(42.0)       # 1 kg m-2 of water = 1 mm
+    assert units.convert(np.array([101325.0]), "Pa", "hPa")[0] == pytest.approx(1013.25)
+    g = GRIDS["merra2_native"]
+    r = READERS["merra2_slv"]
+    x = np.full((g["nlat"], g["nlon"]), 100000.0, dtype=np.float32)
+    slp = next(v for v in M.VARS.values() if v.get("source") == "merra2_slv" and v["variable"] == "SLP")
+    with _open(merra2_file(tmp_path / "s.nc4", "SLP", "Pa", x), r) as ds:
+        v, facts = r.decode(ds, slp)
+    assert float(v[0, 0]) == pytest.approx(1000.0) and facts["units"] == "Pa"
+
+
+def test_each_variable_has_its_own_cache_folder():
+    r = READERS["merra2_slv"]
+    assert ed.raw_dir(r, "T2M") != ed.raw_dir(r, "TQV")
+    assert ed.record_path(r, "2000-01", "TQV").parent.name == "TQV"

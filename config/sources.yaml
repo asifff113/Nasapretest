@@ -19,7 +19,7 @@ sources:
       route: earthaccess
       find: "CMR query by short name and version; never hard-coded file names (stream prefixes change over the record)"
       method: cloud_opendap_subset       # fallback: whole-file download, subset locally
-      variables: [T2M]
+      variables: [T2M, TQV, SLP]           # TQV and SLP: exploration layers (water vapour, air pressure)
       fill: "VERIFY V-03 (v2 notes: _FillValue 1e15; mask > 1e14)"
     citation: "Global Modeling and Assimilation Office (GMAO) (2015), MERRA-2 tavgM_2d_slv_Nx: 2d, Monthly mean, Time-Averaged, Single-Level, Assimilation, Single-Level Diagnostics V5.12.4, Greenbelt, MD, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/AP1B0BA5PD2K."
     reference: "Gelaro, R., et al. (2017), The Modern-Era Retrospective Analysis for Research and Applications, Version 2 (MERRA-2), J. Climate, 30, 5419–5454."

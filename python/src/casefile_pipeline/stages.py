@@ -87,17 +87,21 @@ def access_check(products: list[str] | None = None, log=print) -> dict:
         g = found[0]
         url = ed.opendap_url(g["umm"])
         log(f"  first granule: {ed.granule_name(g['umm'])}; OPeNDAP url host: {url.split('/')[2] if url else 'none'}")
-        rec = ed.probe_routes(reader, ed.granule_month(g["umm"]), g, None, log=log, root=root)
-        log(f"  route that worked: {rec['route']}  ({rec['bytes']} bytes saved)")
-        for v, f in rec["facts"].items():
+        facts, route, failed = {}, None, {}
+        for var in reader.file_variables():
+            rec = ed.probe_routes(reader, ed.granule_month(g["umm"]), g, var, None, log=log, root=root)
+            log(f"  {var}: route that worked: {rec['route']}  ({rec['bytes']} bytes saved)")
+            facts.update(rec["facts"])
+            route, failed = route or rec["route"], failed or rec.get("routesTried", {})
+        for v, f in facts.items():
             log(f"  {v}: dims {tuple(f['dims'])}, units '{f['units']}', fill {f['fill']}, "
                 f"lat {f['lat'][0]:.3f}..{f['lat'][1]:.3f} ({f['lat'][2]}), lon {f['lon'][0]:.3f}..{f['lon'][1]:.3f} ({f['lon'][2]})")
             log(f"     one month in {f['monthlyUnit']}: min {f['min']:.3f}, max {f['max']:.3f}, mean {f['mean']:.3f} "
                 f"(unweighted over grid points); missing points {f['missing']}")
         result["products"][reader.source_id] = {"shortName": reader.short_name, "version": reader.version, "granules": len(found),
                                                 "firstMonth": months[0] if months else None, "lastMonth": months[-1] if months else None,
-                                                "doubled": doubled, "gaps": gaps, "route": rec["route"],
-                                                "routesFailed": rec.get("routesTried", {}), "facts": rec["facts"],
+                                                "doubled": doubled, "gaps": gaps, "route": route,
+                                                "routesFailed": failed, "facts": facts,
                                                 "opendapHost": url.split("/")[2] if url else None}
     CACHE.mkdir(exist_ok=True)
     (CACHE / "access_check.json").write_bytes((json.dumps(result, indent=1)).encode("utf-8"))
@@ -138,21 +142,16 @@ def fetch(products: list[str] | None = None, first: str | None = None, last: str
         box, bbox = subset_box(reader, log=log)
         log(f"\n{reader.short_name} {reader.version}: months {f}..{la}" + (f", box rows {box[0]}:{box[1]} cols {box[2]}:{box[3]} = {bbox}" if box else ", global"))
         table = ed.month_table(ed.search(reader, f, la), f, la)
-        recs = [json.loads(ed.record_path(reader, m).read_text(encoding="utf-8")) for m in table if ed.record_path(reader, m).exists()]
-        routes = {r["route"] for r in recs if r.get("box") == (list(box) if box else None)}
-        if len(routes) == 1:
-            route = routes.pop()
-        else:
-            m0 = next(iter(table))
-            route = ed.probe_routes(reader, m0, table[m0], box, log=log)["route"]
-        log(f"  route: {route}")
-        records = ed.fetch_product(reader, table, route, box, workers=workers, log=log)
-        fields = {v: [] for v in reader.file_variables()}
-        for m in table:
-            got, _ = ed.load_month(reader, m, box)
-            for v, xs in fields.items():
-                xs.append(got[v])
-        store_monthly(reader, fields, list(table), box, bbox, records, route, log=log)
+        fields, records, routes = {}, [], []
+        for var in reader.file_variables():
+            route = ed.cached_route(reader, table, var, box)
+            if route is None:
+                m0 = next(iter(table))
+                route = ed.probe_routes(reader, m0, table[m0], var, box, log=log)["route"]
+            routes.append(f"{var}: {route}")
+            records += ed.fetch_product(reader, table, route, var, box, workers=workers, log=log)
+            fields[var] = [ed.load_month(reader, m, var, box)[0] for m in table]
+        store_monthly(reader, fields, list(table), box, bbox, records, ", ".join(routes), log=log)
 
 
 def load_field(reader: Reader, file_variable: str, cache: Path = CACHE) -> MonthlyField | None:
@@ -160,6 +159,8 @@ def load_field(reader: Reader, file_variable: str, cache: Path = CACHE) -> Month
     if not p.exists():
         return None
     with np.load(p, allow_pickle=False) as z:
+        if f"values__{file_variable}" not in z.files:
+            return None                   # this variable was added after the product was fetched: fetch again
         return MonthlyField([str(m) for m in z["months"]], z[f"values__{file_variable}"], str(z["grid"]), int(z["row0"]), int(z["col0"]))
 
 
@@ -178,6 +179,29 @@ def regions_stage(bundle_id: str = "b1", boundary_dir: Path | None = None, log=p
 
 
 # ============================================================================ bundle
+def explore_stage(bundle_id: str, results: Path, cache: Path = CACHE, log=print) -> None:
+    """Yearly map frames and region detail files beside a results build (casefile_pipeline.explore)."""
+    from . import explore
+
+    out, results = cache / "bundle" / bundle_id, Path(results)
+    build_id = json.loads((results / "build.json").read_text(encoding="utf-8"))["buildId"]
+    log("yearly map frames:")
+    explore.write_year_frames(out, results, build_id, log)
+
+    def load_fields():
+        for reader in used_readers():
+            if reader.grid_id != explore.GRID_ID:
+                continue
+            for var in reader.variables():
+                if VARS[var["id"]]["status"] == "analysed":
+                    f = load_field(reader, str(var["variable"]), cache)
+                    if f is not None:
+                        yield var["id"], f
+
+    log("region detail files:")
+    explore.write_region_files(results, build_id, load_fields, log)
+
+
 def index_support(index: dict, region_id: str, grid_id: str) -> bool:
     """True if the region passes the support rule on this grid (02 §14 step 5: otherwise no series there)."""
     r = next(x for x in index["regions"] if x["id"] == region_id)
@@ -224,6 +248,9 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
         for var in reader.variables():
             vid = var["id"]
             field = load_field(reader, str(var["variable"]), cache)
+            if field is None:
+                log(f"  {vid}: not in {monthly_path(reader, cache).name} yet (run fetch), skipped")
+                continue
             n = 0
             ok = [rid for rid in in_set if index_support(index, rid, reader.grid_id)]
             for rid in ok:

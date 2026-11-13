@@ -7,6 +7,8 @@ listed stops the pipeline: a unit is never guessed.
 - K → °C: x − 273.15
 - kg m⁻² s⁻¹ → mm/day: x × 86 400 (1 kg m⁻² of water is 1 mm; never × 86 400 000)
 - mm/hr → mm/day: x × 24
+- kg m⁻² of water → mm: x (1 kg m⁻² of water is 1 mm deep; docs/02_DATA.md §3.1)
+- Pa → hPa: x ÷ 100
 """
 from __future__ import annotations
 
@@ -18,6 +20,8 @@ CONVERT: dict[tuple[str, str], Callable[[np.ndarray], np.ndarray]] = {
     ("K", "°C"): lambda x: x - 273.15,
     ("kg m-2 s-1", "mm/day"): lambda x: x * 86400.0,
     ("mm/hr", "mm/day"): lambda x: x * 24.0,
+    ("kg m-2", "mm"): lambda x: x * 1.0,
+    ("Pa", "hPa"): lambda x: x / 100.0,
 }
 
 

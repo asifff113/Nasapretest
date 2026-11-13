@@ -5,6 +5,7 @@
     casefile-pipeline fetch [--products …] [--first YYYY-MM] [--last YYYY-MM] [--workers 8]
     casefile-pipeline regions [--bundle-id b1] [--boundaries <folder with the files and sources.json>]
     casefile-pipeline bundle [--bundle-id b1]
+    casefile-pipeline explore --results ../results/<id> [--bundle-id b1]   (after the results build)
 
 Every command prints counts, units, ranges and climatologies only (AGENTS.md rule 5).
 """
@@ -42,6 +43,9 @@ def main(argv=None) -> int:
     p.add_argument("--boundaries", type=Path, help="use boundary files already in this folder (no download)")
     p = sub.add_parser("bundle", help="series, pairs, map fields and input_manifest.json → .cache/bundle/<id>/")
     p.add_argument("--bundle-id", default="b1")
+    p = sub.add_parser("explore", help="yearly map frames and region detail files beside a results build (exploration)")
+    p.add_argument("--bundle-id", default="b1")
+    p.add_argument("--results", type=Path, required=True, help="the results build folder, for example ../results/r2")
     a = ap.parse_args(argv)
 
     from . import stages
@@ -54,6 +58,9 @@ def main(argv=None) -> int:
         return 0
     if a.cmd == "regions":
         stages.regions_stage(a.bundle_id, a.boundaries)
+        return 0
+    if a.cmd == "explore":
+        stages.explore_stage(a.bundle_id, a.results)
         return 0
     if a.cmd == "bundle":
         from casefile_engine.bundle import check_bundle

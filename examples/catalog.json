@@ -306,7 +306,7 @@
   },
   {
    "id": "water_vapor",
-   "status": "deferred",
+   "status": "analysed",
    "group": "water",
    "kind": "model",
    "source": "merra2_slv",
@@ -335,7 +335,7 @@
    "ratio_scale": true,
    "record": {
     "from": 1980,
-    "to": null
+    "to": 2025
    },
    "record_card": {
     "gaps": {
@@ -368,7 +368,7 @@
   },
   {
    "id": "pressure",
-   "status": "deferred",
+   "status": "analysed",
    "group": "weather",
    "kind": "model",
    "source": "merra2_slv",
@@ -397,7 +397,7 @@
    "ratio_scale": false,
    "record": {
     "from": 1980,
-    "to": null
+    "to": 2025
    },
    "record_card": {
     "gaps": {

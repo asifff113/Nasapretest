@@ -19,7 +19,10 @@ def product_entry(source_id: str, records: list[dict], first: str, last: str, bb
     route as the provenance schema names it (earthaccess, power_check, csv, synthetic); the detailed route goes into
     the manifest's checks."""
     s = SOURCES[source_id]
-    facts = records[0]["facts"]
+    facts = {}
+    for r in records:                     # one record per month and variable; the first of each variable carries its facts
+        for v, f in r["facts"].items():
+            facts.setdefault(v, f)
     variables = sorted(facts)
     units = {v: facts[v]["units"] for v in variables}
     fills = {facts[v]["fill"] for v in variables}
@@ -33,7 +36,7 @@ def product_entry(source_id: str, records: list[dict], first: str, last: str, bb
     return {"source": source_id, "shortName": str(s["short_name"]), "version": str(s["version"]), "doi": s.get("doi"),
             "query": {"provider": provider, "temporal": [first, last], "bbox": None if bbox is None else [round(float(x), 4) for x in bbox]},
             "variables": variables, "units": units, "fill": fill, "firstMonth": first, "lastMonth": last,
-            "granuleCount": len(records), "files": files}
+            "granuleCount": len({r["month"] for r in records}), "files": files}
 
 
 def write_manifest(out: Path, manifest_id: str, created: str, products: list[dict], checks: list[dict]) -> Path:
