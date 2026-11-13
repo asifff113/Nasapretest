@@ -3,7 +3,7 @@
 // place, region reports, the globe's year timeline and the record list. Tests that need the exploration files
 // (explore/, maps/<v>/ANN/years.json) run on a results build (RESULTS_DIR=../results) and are skipped on examples/.
 import { expect, test } from '@playwright/test';
-import { catalog, exists, open } from './helpers';
+import { catalog, exists, open, read, regionIndex } from './helpers';
 
 const hasExplore = exists('explore/index.json');
 const analysed = catalog.variables.filter((v) => v.status === 'analysed');
@@ -61,6 +61,16 @@ test.describe('with the exploration files', () => {
     await expect(page.getByTestId('region-report')).toBeVisible();
     await expect(page.getByTestId('report-glance')).toBeVisible();
     await expect(page.getByTestId('report-years-chart')).toBeVisible();
+  });
+
+  test('a region in the set but outside the pre-registered tests opens its report', async ({ page }) => {
+    const prereg = read<{ regions: { set: { id: string }[] } }>('prereg.json');
+    const tested = new Set(prereg.regions.set.map((r) => r.id));
+    const untested = regionIndex.regions.find((r) => r.inSet && !tested.has(r.id));
+    test.skip(!untested, 'every region in the set is pre-registered');
+    await open(page, `#/place?region=${untested!.id}`);
+    await expect(page.getByTestId('region-report')).toBeVisible();
+    await expect(page.getByText(/not in this build/i)).toHaveCount(0);
   });
 
   test('the place gallery lists every place with a search', async ({ page }) => {

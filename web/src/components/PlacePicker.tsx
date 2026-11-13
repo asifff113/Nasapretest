@@ -29,20 +29,25 @@ export function PlacePicker({
   value,
   linkFor,
   compact = false,
+  tested,
 }: {
   index: RegionIndex;
   value?: string;
   linkFor: (regionId: string) => View;
   compact?: boolean;
+  /** The pre-registration's region set: only these have tested results (line-ups and verdicts). Other regions
+   * that pass the support rule open their report (exploration). Without it every region in the set counts. */
+  tested?: ReadonlySet<string>;
 }) {
   const t = useT();
   const lang = useLang();
   const groups = groupRegions(index);
   const mapGrid = index.grids.find((g) => g.id === 'merra2_native') ?? index.grids[0];
   const supportOf = (r: Region) => (mapGrid ? r.support[mapGrid.id] : undefined);
+  const isTested = (r: Region) => r.inSet && (!tested || tested.has(r.id));
 
   if (compact) {
-    const inSet = index.regions.filter((r) => r.inSet);
+    const inSet = index.regions.filter(isTested);
     return (
       <nav aria-label={t('place.region_set')} data-tour="place-picker" data-testid="place-picker">
         <ul className="flex flex-wrap gap-2">
@@ -127,6 +132,7 @@ export function PlacePicker({
                     aria-current={r.id === value ? 'true' : undefined}
                     data-testid={`region-${r.id}`}
                     data-in-set="true"
+                    data-tested={isTested(r) ? 'true' : 'false'}
                     className="atlas-panel group flex h-full items-start gap-4 rounded-card border border-line bg-surface px-4 py-4 text-ink no-underline transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-accent/60 hover:no-underline hover:shadow-lift"
                   >
                     {globe}
@@ -136,8 +142,9 @@ export function PlacePicker({
                       {support ? (
                         <span className="mt-1.5 block text-sm text-muted tabular">{t('place.support', { cells: num(support.effectiveCells, lang, 1) })}</span>
                       ) : null}
+                      {isTested(r) ? null : <span className="mt-1.5 block text-sm text-muted">{t('site.place.not_tested')}</span>}
                       <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-[14px] font-semibold text-accent-ink">
-                        {t('site.place.open_case')}
+                        {isTested(r) ? t('site.place.open_case') : t('site.place.open_report')}
                         <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                       </span>
                     </span>

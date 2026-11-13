@@ -190,7 +190,9 @@
       "other_places": "Other places",
       "fact_places": "Places tested",
       "fact_pairs": "Comparisons",
-      "fact_grid": "Data grids"
+      "fact_grid": "Data grids",
+      "not_tested": "Not in the pre-registered tests: yearly values only (exploration).",
+      "open_report": "Open its report"
     },
     "lineup": {
       "col_status": "Result"

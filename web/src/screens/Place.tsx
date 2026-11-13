@@ -9,7 +9,7 @@ import { pick, tOr, useT } from '../i18n';
 import { int, num } from '../i18n/format';
 import type { Lineup, Mask, Region, RegionIndex, Verdict } from '../data/types';
 import { paths } from '../data/results';
-import { useCatalog, useRegionIndex, useResult } from '../data/hooks';
+import { useCatalog, usePrereg, useRegionIndex, useResult } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { useView } from '../state/view';
 import { latLon } from '../map/ScreeningMap';
@@ -66,6 +66,12 @@ function CellsPanel({ region }: { region: Region }) {
 
 function placeMarks(regions: Region[], lang: 'en' | 'bn', labels = true) {
   return regions.map((r) => ({ lon: r.centroid[0], lat: r.centroid[1], bbox: r.bbox, label: labels ? pick(r.name, lang) : undefined }));
+}
+
+/** The pre-registration's region set (the places with tested results), once prereg.json has loaded. */
+function useTested(): ReadonlySet<string> | undefined {
+  const prereg = usePrereg();
+  return useMemo(() => (prereg.data ? new Set(prereg.data.regions.set.map((r) => r.id)) : undefined), [prereg.data]);
 }
 
 /** Every country and region with a detail file, grouped by continent, with a search box. */
@@ -133,7 +139,8 @@ function Gallery({ badLink }: { badLink: boolean }) {
   const lang = useLang();
   const index = useRegionIndex();
   const { view } = useView();
-  const inSet = index.data?.regions.filter((r) => r.inSet) ?? [];
+  const tested = useTested();
+  const inSet = index.data?.regions.filter((r) => r.inSet && (!tested || tested.has(r.id))) ?? [];
   const explore = useExploreIndex();
   return (
     <>
@@ -160,7 +167,7 @@ function Gallery({ badLink }: { badLink: boolean }) {
         <section id="step-place">
           <StepHeading n={1} title={t('place.region_set')} />
           <WithData res={index}>
-            {(idx) => <PlacePicker index={idx} linkFor={(id) => ({ screen: 'place', region: id, variable: view.variable, season: view.season })} />}
+            {(idx) => <PlacePicker index={idx} tested={tested} linkFor={(id) => ({ screen: 'place', region: id, variable: view.variable, season: view.season })} />}
           </WithData>
         </section>
         {explore.status === 'ok' && explore.data ? (
@@ -175,6 +182,7 @@ function Gallery({ badLink }: { badLink: boolean }) {
 }
 
 function RegionHero({ region, index, lineup }: { region: Region; index: RegionIndex; lineup: Lineup | undefined }) {
+  const tested = useTested();
   const t = useT();
   const lang = useLang();
   const { view } = useView();
@@ -199,7 +207,7 @@ function RegionHero({ region, index, lineup }: { region: Region; index: RegionIn
       }
     >
       <p className="eyebrow mb-2.5">{t('site.place.other_places')}</p>
-      <PlacePicker index={index} value={region.id} compact linkFor={(id) => ({ screen: 'place', region: id, variable: view.variable, season: view.season })} />
+      <PlacePicker index={index} value={region.id} compact tested={tested} linkFor={(id) => ({ screen: 'place', region: id, variable: view.variable, season: view.season })} />
     </Hero>
   );
 }
@@ -211,10 +219,13 @@ function RegionScreen() {
   const index = useRegionIndex();
   const catalog = useCatalog();
   const explore = useExploreIndex();
+  const prereg = usePrereg();
+  const tested = useTested();
   const [step, setStep] = useState(0);
 
   const region = view.region ? index.data?.regions.find((r) => r.id === view.region) : undefined;
-  const validRegion = region && region.inSet ? region : undefined;
+  // Only the pre-registered regions have line-ups and verdicts; the others open their report like any country.
+  const validRegion = region && region.inSet && (!tested || tested.has(region.id)) ? region : undefined;
   const lineupPath = validRegion ? paths.lineup(validRegion.id) : null;
   const lineup = useResult<Lineup>(lineupPath);
 
@@ -244,7 +255,7 @@ function RegionScreen() {
   );
 
   if (!validRegion || !index.data) {
-    if (index.status === 'loading' || (view.region && explore.status === 'loading')) return <Loading className="mx-auto max-w-[1280px] px-4 py-8" />;
+    if (index.status === 'loading' || prereg.status === 'loading' || (view.region && explore.status === 'loading')) return <Loading className="mx-auto max-w-[1280px] px-4 py-8" />;
     if (reportInfo && explore.data) return <RegionReport id={reportInfo.id} index={explore.data} />;
     return <Gallery badLink={badLink} />;
   }
