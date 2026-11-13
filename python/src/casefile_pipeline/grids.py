@@ -19,7 +19,12 @@ from casefile_engine.base import IMERG, MERRA2, ONE, RE, edges
 # cells hold the fill value.
 GLDAS = {"id": "gldas_1deg", "lat0": -59.5, "dlat": 1.0, "nlat": 150, "lon0": -179.5, "dlon": 1.0, "nlon": 360}
 
-GRIDS: dict[str, dict] = {g["id"]: g for g in (MERRA2, IMERG, ONE, GLDAS)}
+# MODIS CMG at 0.5°: the 0.05° Climate Modeling Grid of MOD13C2 061 (3600 × 7200 cells, centres 89.975° N…89.975° S and
+# 179.975° W…179.975° E, read in MOD13C2.A2020001.061 on 14 Nov 2026), averaged by the reader over blocks of 10 × 10
+# cells (sources/modis.py). Latitude increasing with the row, like every native grid here.
+MODIS05 = {"id": "modis_05deg", "lat0": -89.75, "dlat": 0.5, "nlat": 360, "lon0": -179.75, "dlon": 0.5, "nlon": 720}
+
+GRIDS: dict[str, dict] = {g["id"]: g for g in (MERRA2, IMERG, ONE, GLDAS, MODIS05)}
 NATIVE_GRIDS: tuple[str, ...] = (MERRA2["id"], IMERG["id"])     # first-release grids: they decide whether a region is in the set
 
 

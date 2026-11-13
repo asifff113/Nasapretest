@@ -142,6 +142,30 @@ sources:
     known_breaks: [gldas21_forcing_changes]
     traps: "Model output, not a measurement; its inputs changed over time (README §1.2.3, §1.5.3). Land only, 60° S to 90° N; no river routing."
 
+  - id: modis_vegetation
+    status: exploration
+    name: "MODIS/Terra Vegetation Indices Monthly L3 Global 0.05Deg CMG V061"
+    short_name: MOD13C2
+    version: "061"
+    provider: LPCLOUD (Earthdata Cloud)
+    kind: satellite
+    doi: "10.5067/MODIS/MOD13C2.061"
+    doi_verified: true                   # CMR collection C2565788914-LPCLOUD (read 14 Nov 2026)
+    temporal: { start: "2000-02", end: present }   # CMR: from 2000-02-01, ends at present; 321 monthly granules on 14 Nov 2026
+    grid: { id: modis_05deg, native: "0.05° CMG, 7200 × 3600 cells, centres 89.975° N…89.975° S, 179.975° W…179.975° E (read in MOD13C2.A2020001.061); averaged to 0.5° in the reader (sources/modis.py)" }
+    access:
+      route: earthaccess
+      find: "CMR query by short name MOD13C2 and version 061 (Earthdata Cloud, LPCLOUD; Earth Engine is not used)"
+      method: cloud_opendap_subset       # the archive files are HDF-EOS2 (HDF4); the cloud OPeNDAP server returns the variable as NetCDF-4
+      variables: [CMG_0_05_Deg_Monthly_NDVI]   # group MOD_Grid_monthly_CMG_VI/Data_Fields; Latitude and Longitude in MOD_Grid_monthly_CMG_VI
+      units: "NDVI, int16, scale 0.0001 (MOD13 User Guide v3.10, Table 19); the file's scale_factor 10000 is the MODIS divisor convention for the same scale"
+      fill: "-3000; valid range -2000..10000 (User Guide Table 19; the same in the granule)"
+    citation: "Didan, K. (2021), MODIS/Terra Vegetation Indices Monthly L3 Global 0.05Deg CMG V061, NASA Land Processes Distributed Active Archive Center, Sioux Falls, South Dakota, USA, doi:10.5067/MODIS/MOD13C2.061."
+    reference: "Didan, K. and A. Barreto Munoz (2019), MODIS Vegetation Index User's Guide (MOD13 Series), Version 3.10, Collection 6.1, Vegetation Index and Phenology Lab, The University of Arizona."
+    licence: "NASA open data (Earthdata data use policy, CMR UseConstraints)"
+    known_breaks: [terra_orbit_drift]
+    traps: "Cloudy pixels are filled from the long-term MODIS average (pixel reliability rank 4, User Guide §8.1, §9), so trends are damped where clouds persist; Terra's orbit is drifting (#21). Land only."
+
   # ------------------------------------------------------------------ deferred (cards only; each returns one at a time with its own domain check)
 
   - id: airs3stm
@@ -179,24 +203,6 @@ sources:
     licence: "NASA open data"
     known_breaks: [aqua_orbit_drift]
     traps: "Overpass drift; monsoon cloud masks."
-
-  - id: modis_vegetation
-    status: deferred
-    name: "MODIS/Terra Vegetation Indices monthly, Collection 6.1"
-    short_name: "MOD13 (6.1; MOD13C2 Version 6 retired 31 Jul 2023, #20c)"
-    version: "6.1"
-    provider: "LP DAAC; reduced in Google Earth Engine (needed only if this product returns)"
-    kind: satellite
-    doi: "VERIFY (#20)"
-    doi_verified: false
-    temporal: { start: "2000-02", end: present }
-    grid: { id: modis, native: "VERIFY" }
-    access: { route: earth_engine, collection: "VERIFY (#20, #32)", band: NDVI }
-    citation: "Didan, K. (2021), MODIS/Terra Vegetation Indices Monthly V061, NASA EOSDIS LP DAAC."
-    reference: "Didan, K., MODIS Vegetation Index User's Guide (Collection 6.1)."
-    licence: "NASA open data"
-    known_breaks: [terra_orbit_drift]
-    traps: "Terra's orbit is drifting (#21)."
 
   - id: grace_mascon_jpl
     status: deferred

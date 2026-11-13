@@ -173,4 +173,4 @@ def used_readers() -> list[Reader]:
     return [READERS[s] for s in SOURCES if s in READERS and READERS[s].variables()]
 
 
-from . import gldas, imerg, merra2  # noqa: F401  (registers the readers)
+from . import gldas, imerg, merra2, modis  # noqa: F401  (registers the readers)

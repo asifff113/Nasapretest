@@ -132,7 +132,8 @@ def test_a_sea_region_gets_no_series_and_the_bundle_passes_check_bundle(tmp_path
     defs = [_region("cmp:test_land", (84.0, 18.0, 90.0, 24.0)), _region("cmp:test_sea", (60.0, -20.0, 70.0, -10.0))]
     out = cache / "bundle" / "g1"
     index, _ = regions.build_regions(defs, out, "g1", prereg={"pairs": []}, log=lambda *_: None)
-    assert [g["id"] for g in index["grids"]][-1] == "gldas_1deg"
+    grid_ids = [g["id"] for g in index["grids"]]
+    assert grid_ids[:2] == list(NATIVE_GRIDS) and "gldas_1deg" in grid_ids[2:]    # extra grids follow the native ones
     assert all(r["inSet"] for r in index["regions"])                    # decided by the MERRA-2 and IMERG grids only
     assert all(set(r["support"]) == set(NATIVE_GRIDS) for r in index["regions"])     # what prereg.json receives
     _, masks = regions.load_masks(out)
