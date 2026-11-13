@@ -142,6 +142,8 @@ def test_p19_tiny_end_to_end_bundle_passes_check_bundle(tmp_path):
         assert b"\r\n" not in f.read_bytes(), f          # LF on every OS: the pre-registration pins these hashes
     man = json.loads((out / "input_manifest.json").read_text(encoding="utf-8"))
     assert man["synthetic"] is False and len(man["products"]) == 3
+    assert {p["query"]["provider"] for p in man["products"]} == {"earthaccess"}      # the provenance schema's route names
+    assert man["checks"][0]["id"] == "fetch_route" and "opendap_subset" in man["checks"][0]["note"]
     assert {p["shortName"] for p in man["products"]} == {"M2TMNXSLV", "M2TMNXFLX", "GPM_3IMERGM"}
     assert all(p["granuleCount"] == 24 for p in man["products"])
 

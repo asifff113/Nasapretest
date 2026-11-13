@@ -136,7 +136,7 @@ def test_p10_manifest_lists_every_file_with_its_sha256():
 
     recs = [{"month": m, "name": f"f{m}.nc4", "sha256": "a" * 64, "bytes": 10, "valuesSha256": "b" * 64,
              "facts": {"T2M": {"units": "K", "fill": 1e15}}} for m in ed.month_range("2000-01", "2000-03")]
-    e = product_entry("merra2_slv", recs, "2000-01", "2000-03", None, "earthaccess/CMR; route opendap_subset")
+    e = product_entry("merra2_slv", recs, "2000-01", "2000-03", None, "earthaccess")
     assert e["granuleCount"] == 3 and [f["month"] for f in e["files"]] == ["2000-01", "2000-02", "2000-03"]
     assert all(len(f["sha256"]) == 64 and f["valuesSha256"] for f in e["files"])
     assert e["shortName"] == "M2TMNXSLV" and e["units"] == {"T2M": "K"}

@@ -118,8 +118,9 @@ def store_monthly(reader: Reader, fields: dict[str, list], months: list[str], bo
     arrays = {f"values__{v}": np.stack(x).astype(np.float32) for v, x in fields.items()}
     np.savez(monthly_path(reader, cache), months=np.array(months), grid=reader.grid_id, row0=box[0] if box else 0,
              col0=box[2] if box else 0, **arrays)
-    entry = manifest.product_entry(reader.source_id, records, months[0], months[-1], bbox, f"earthaccess/CMR; route {route}")
-    (cache / "monthly" / f"{reader.short_name}.product.json").write_bytes((json.dumps({"fetched": _now(), "entry": entry}, indent=1)).encode("utf-8"))
+    entry = manifest.product_entry(reader.source_id, records, months[0], months[-1], bbox, "earthaccess")
+    meta = {"fetched": _now(), "route": route, "entry": entry}
+    (cache / "monthly" / f"{reader.short_name}.product.json").write_bytes((json.dumps(meta, indent=1)).encode("utf-8"))
     for v, a in arrays.items():
         fin = np.isfinite(a)
         log(f"  stored {monthly_path(reader, cache).name} {v[8:]}: {a.shape[0]} months x {a.shape[1]} x {a.shape[2]}, "
@@ -203,7 +204,7 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
     for sub in ("series", "pairs", "map"):
         for f in (out / sub).glob("*/*.npz") if sub != "map" else (out / sub).glob("*.npz"):
             f.unlink()
-    products, fetched, checks = [], [], []
+    products, fetched, checks, routes = [], [], [], []
     in_set = [r["id"] for r in index["regions"] if r["inSet"]]
     for reader in used_readers():
         pj = cache / "monthly" / f"{reader.short_name}.product.json"
@@ -213,6 +214,7 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
         meta = json.loads(pj.read_text(encoding="utf-8"))
         products.append(meta["entry"])
         fetched.append(meta["fetched"])
+        routes.append(f"{reader.short_name}: {meta['route']}")
         for var in reader.variables():
             vid = var["id"]
             field = load_field(reader, str(var["variable"]), cache)
@@ -236,7 +238,8 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
                 checks.append(_d01(reader, field))
     if not products:
         raise SystemExit("nothing fetched: run `casefile-pipeline fetch` first")
-    checks.insert(0, {"id": "D-03", "result": "pass", "note": "every product's months are complete and none is doubled (checked by fetch)"})
+    checks.insert(0, {"id": "fetch_route", "result": "pass", "note": "one variable per granule through earthaccess and CMR; route per product: " + "; ".join(routes)})
+    checks.insert(1, {"id": "D-03", "result": "pass", "note": "every product's months are complete and none is doubled (checked by fetch)"})
     checks.append({"id": "D-06", "result": "skip", "note": "optional POWER cross-check: not run"})
     manifest.write_manifest(out, bundle_id, max(fetched), products, checks)
     log(f"written: {out}")

@@ -15,7 +15,9 @@ from casefile_engine.base import SOURCES
 
 
 def product_entry(source_id: str, records: list[dict], first: str, last: str, bbox, provider: str) -> dict:
-    """One product of the manifest from the month records of a fetch (in month order)."""
+    """One product of the manifest from the month records of a fetch (in month order). `provider` is the access
+    route as the provenance schema names it (earthaccess, power_check, csv, synthetic); the detailed route goes into
+    the manifest's checks."""
     s = SOURCES[source_id]
     facts = records[0]["facts"]
     variables = sorted(facts)

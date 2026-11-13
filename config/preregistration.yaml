@@ -21,12 +21,13 @@ signed_by: ["asifff113", "hirok121", "Shakilkhan24"]
 
 hashes:                            # printed by prereg-check
   analysis_yaml_sha256: "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159"
-  input_manifest_sha256: "a7d1aebdddf38804ab15a6cdacdba4e1cd01275079e9c5f21552b4c7b1794bcc"
+  input_manifest_sha256: "4d7a50e4f469a46de86f05ae76634a733970254885b1640f80f0214e164b34dd"
   regions_support_sha256: "51898fe0f5a05adfa1cfb3c16af7141cb5847bba9f132148b75653c5952dd9cc"
 
 alpha:
   confirmatory: 0.05               # Holm across the confirmatory family
   secondary_q: 0.05                # Benjamini–Hochberg across the secondary family
+  map_q: 0.1                       # Benjamini–Hochberg within each screening map: config/analysis.yaml map.fdr_q (fixed by the schema)
 
 variables:
   - id: air_temp
@@ -58,8 +59,9 @@ variables:
       reason: "Same as rain."
 
 seasons:
-  primary: ANN
+  main: ANN                        # the schema's name for the primary season
   secondary: [MAM, JJAS, "ON", DJF]  # pre-monsoon, monsoon, post-monsoon, winter. "ON" is quoted: bare ON is the boolean true in YAML
+  djf_starts_one_year_later: true   # 03 §2.2: a season is dated by the year in which it ends
 
 regions:
   support_rule: { min_native_cells: 4, max_spill_share: 0.333 }
