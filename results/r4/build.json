@@ -1,0 +1,79 @@
+{
+ "schema": "casefile/build@3",
+ "buildId": "r4",
+ "created": "2026-11-14T02:17:17Z",
+ "synthetic": false,
+ "engine": {
+  "version": "1.0.0",
+  "gitSha": "76b6e77c9a128c690d377e4e3d87a9da9fb6b1be"
+ },
+ "pipeline": {
+  "gitSha": "76b6e77c9a128c690d377e4e3d87a9da9fb6b1be"
+ },
+ "python": {
+  "numpy": "2.5.4",
+  "scipy": "1.18.1"
+ },
+ "inputManifest": {
+  "path": "input_manifest.json",
+  "sha256": "ecfe408fc9d10ee41aea3af7c872be6f5aedb7dd0f9bc3cd1bd1ffb70a87d71b"
+ },
+ "prereg": {
+  "path": "prereg.json",
+  "sha256": "2f78c41e9f74e32fdabe5e6832ca51f80e393a7100b5aa27a484b94ed9730177",
+  "commit": "613ddab2369dab1b6487fc94937b67191e0c2696",
+  "status": "committed"
+ },
+ "configHashes": {
+  "analysis": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "variables": "6d5808b116185fe0db774ca4a0889f1fecc48653c364cd42c8ef10eefc4da167",
+  "regions": "f36c69c044c477c71a44d5f71455567d30c462f3719f2d05742689bbb82f6824",
+  "seasons": "4c5e88bc4d220cc552a34f79350324fd9131262924458e494a3835d9382fe845",
+  "known_breaks": "84a018a87104692f0479bec294af2c862021a6c67f8c60b8996bfaa13b10867d",
+  "break_review": "4f1729e3d9f5d3e834e539b116c58517b5fd667a5c9451c18a3b433ae1c086cd",
+  "i18n_en": "c2dc2ab2f61254f67b46aa9d7e7ed6a2c43219443ba5541a6e65c2b925b5edab",
+  "i18n_bn": "4951f0d720d4bb78017f624d743a0a97cf2db1e6ac6bc67f79e6bf6ab12db09f"
+ },
+ "goldenTests": {
+  "suite": "examples/golden",
+  "total": 60,
+  "passed": 60
+ },
+ "products": [
+  {
+   "source": "merra2_slv",
+   "shortName": "M2TMNXSLV",
+   "version": "5.12.4",
+   "granules": 552
+  },
+  {
+   "source": "merra2_precip",
+   "shortName": "M2TMNXFLX",
+   "version": "5.12.4",
+   "granules": 552
+  },
+  {
+   "source": "imerg_v07_final_monthly",
+   "shortName": "GPM_3IMERGM",
+   "version": "07",
+   "granules": 333
+  },
+  {
+   "source": "gldas_noah10_m",
+   "shortName": "GLDAS_NOAH10_M",
+   "version": "2.1",
+   "granules": 312
+  }
+ ],
+ "counts": {
+  "verdicts": 60,
+  "contrasts": 30,
+  "lineups": 4,
+  "maps": 6,
+  "cases": 3
+ },
+ "files": {
+  "count": 4065,
+  "bytes": 18364150
+ }
+}

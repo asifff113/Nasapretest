@@ -1,0 +1,1 @@
+{"schema": "casefile/mask@3", "region": "cmp:meghalaya", "grid": "gldas_1deg", "cells": [[85, 269, 0.08], [85, 270, 0.8], [85, 271, 0.72], [85, 272, 0.44]], "areaKm2": 22765.9, "effectiveCells": 2.04, "synthetic": false}

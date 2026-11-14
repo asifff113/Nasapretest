@@ -1,0 +1,61 @@
+{
+ "schema": "casefile/casefile@3",
+ "synthetic": false,
+ "id": "bangladesh_seasons",
+ "uses": {
+  "kind": "lineup",
+  "region": "country:BGD"
+ },
+ "ending": null,
+ "title": {
+  "en": "Which seasons changed in Bangladesh?",
+  "bn": "বাংলাদেশে কোন ঋতুগুলো বদলেছে?"
+ },
+ "summary": {
+  "en": "Temperature and rain by season, with the number of tests on screen.",
+  "bn": "ঋতুভেদে তাপমাত্রা ও বৃষ্টি, কতগুলো পরীক্ষা হলো তা পর্দায় দেখিয়ে।"
+ },
+ "results": [
+  "lineups/country__BGD.json",
+  "verdicts/air_temp/country__BGD/ANN.json",
+  "verdicts/air_temp/country__BGD/MAM.json",
+  "verdicts/air_temp/country__BGD/JJAS.json",
+  "verdicts/air_temp/country__BGD/ON.json",
+  "verdicts/air_temp/country__BGD/DJF.json",
+  "verdicts/rain/country__BGD/ANN.json",
+  "verdicts/rain/country__BGD/MAM.json",
+  "verdicts/rain/country__BGD/JJAS.json",
+  "verdicts/rain/country__BGD/ON.json",
+  "verdicts/rain/country__BGD/DJF.json"
+ ],
+ "beats": [
+  {
+   "at": "question",
+   "caption": {
+    "en": "Has one season changed more than the others?",
+    "bn": "একটি ঋতু কি অন্যগুলোর চেয়ে বেশি বদলেছে?"
+   }
+  },
+  {
+   "at": "lineup",
+   "caption": {
+    "en": "10 tests on one screen. Testing many things at once makes chance hits likely, so we correct for it.",
+    "bn": "এক পর্দায় ১০টি পরীক্ষা। একসঙ্গে অনেক কিছু যাচাই করলে কাকতালীয় ফল আসতে পারে, তাই আমরা তা সংশোধন করি।"
+   }
+  },
+  {
+   "at": "verdict",
+   "caption": {
+    "en": "Season results are 'secondary': we registered them in advance, but the yearly tests come first.",
+    "bn": "ঋতুর ফলগুলো ‘দ্বিতীয় সারির’: আগে থেকে নিবন্ধিত, তবে বার্ষিক পরীক্ষাগুলো প্রধান।"
+   }
+  },
+  {
+   "at": "takeaway",
+   "caption": {
+    "en": "Open a season to see its own evidence.",
+    "bn": "একটি ঋতু খুলে তার নিজের প্রমাণ দেখুন।"
+   }
+  }
+ ]
+}

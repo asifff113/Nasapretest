@@ -1,0 +1,1 @@
+{"schema": "casefile/mask@3", "region": "bd_div:rangpur", "grid": "gldas_1deg", "cells": [[85, 268, 0.4], [85, 269, 0.72], [86, 268, 0.24], [86, 269, 0.12]], "areaKm2": 16482.4, "effectiveCells": 1.48, "synthetic": false}

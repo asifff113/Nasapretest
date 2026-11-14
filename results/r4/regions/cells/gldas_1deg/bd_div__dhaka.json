@@ -1,0 +1,1 @@
+{"schema": "casefile/mask@3", "region": "bd_div:dhaka", "grid": "gldas_1deg", "cells": [[82, 269, 0.04], [83, 269, 0.44], [83, 270, 0.72], [84, 269, 0.16], [84, 270, 0.48], [84, 271, 0.08]], "areaKm2": 21710.5, "effectiveCells": 1.92, "synthetic": false}

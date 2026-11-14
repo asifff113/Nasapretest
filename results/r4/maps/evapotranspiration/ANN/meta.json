@@ -1,0 +1,102 @@
+{
+ "schema": "casefile/map@3",
+ "synthetic": false,
+ "variable": "evapotranspiration",
+ "season": "ANN",
+ "grid": {
+  "id": "global_1deg",
+  "lat0": 89.5,
+  "dlat": -1.0,
+  "nlat": 180,
+  "lon0": -179.5,
+  "dlon": 1.0,
+  "nlon": 360
+ },
+ "window": {
+  "id": "main",
+  "first": 2000,
+  "last": 2025
+ },
+ "label": "exploration",
+ "units": "mm",
+ "nCells": 64800,
+ "nTestable": 12654,
+ "nSignificant": 3712,
+ "fdrQ": 0.1,
+ "colourLimit": 99.0755822821707,
+ "file": "cells.bin.gz",
+ "byteOrder": "little",
+ "layout": "field-major: each field is a [nlat][nlon] block, in the order listed",
+ "fields": [
+  {
+   "name": "rate",
+   "dtype": "int16",
+   "scale": 0.1,
+   "offset": 0.0,
+   "fill": -32768
+  },
+  {
+   "name": "rate_low",
+   "dtype": "int16",
+   "scale": 0.1,
+   "offset": 0.0,
+   "fill": -32768
+  },
+  {
+   "name": "rate_high",
+   "dtype": "int16",
+   "scale": 0.1,
+   "offset": 0.0,
+   "fill": -32768
+  },
+  {
+   "name": "p",
+   "dtype": "float32",
+   "scale": 1.0,
+   "offset": 0.0,
+   "fill": null
+  },
+  {
+   "name": "q",
+   "dtype": "float32",
+   "scale": 1.0,
+   "offset": 0.0,
+   "fill": null
+  },
+  {
+   "name": "flags",
+   "dtype": "uint8",
+   "scale": 1.0,
+   "offset": 0.0,
+   "fill": null
+  }
+ ],
+ "flagBits": {
+  "testable": 1,
+  "significant": 2,
+  "short_or_missing": 4,
+  "phi_out_of_range": 8,
+  "leftover_memory": 16,
+  "not_finite": 32
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "GLDAS Noah Land Surface Model L4 monthly 1.0° V2.1",
+    "shortName": "GLDAS_NOAH10_M",
+    "version": "2.1",
+    "doi": "10.5067/LWTYSMP3VM5Z",
+    "route": "earthaccess",
+    "granules": 312,
+    "accessed": "2026-11-13T13:15:26Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "ecfe408fc9d10ee41aea3af7c872be6f5aedb7dd0f9bc3cd1bd1ffb70a87d71b",
+  "preregSha256": "2f78c41e9f74e32fdabe5e6832ca51f80e393a7100b5aa27a484b94ed9730177",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r4",
+  "created": "2026-11-14T02:17:17Z"
+ }
+}

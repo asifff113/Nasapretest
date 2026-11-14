@@ -1,0 +1,355 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": false,
+ "id": "rain_imerg__bd_div__khulna__MAM",
+ "variable": {
+  "id": "rain_imerg",
+  "kind": "satellite",
+  "source": "imerg_v07_final_monthly",
+  "units": "mm",
+  "rule": "sum",
+  "ratioScale": true
+ },
+ "region": {
+  "id": "bd_div:khulna",
+  "kind": "division",
+  "areaKm2": 21783.4
+ },
+ "season": "MAM",
+ "window": {
+  "id": "main",
+  "first": 1998,
+  "last": 2024
+ },
+ "family": "sensitivity",
+ "multiplicity": {
+  "method": "none",
+  "familySize": 0,
+  "pAdjusted": null,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "outside_domain",
+ "series": {
+  "years": [
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024
+  ],
+  "values": [
+   456.1662176605112,
+   246.23453177263409,
+   426.3177282720414,
+   377.4062237045789,
+   374.7294818750481,
+   301.8288058359074,
+   231.3800345415888,
+   278.8888138987955,
+   324.9325211563948,
+   190.1956739889214,
+   216.06984300384673,
+   273.9243242459519,
+   229.13221893917898,
+   283.1171925266802,
+   243.2675658340207,
+   470.73674336247717,
+   209.816352391956,
+   257.71567374968384,
+   321.7893652970916,
+   304.60413124749425,
+   340.01259944455956,
+   294.1525849914963,
+   400.0076541637638,
+   198.29780169737668,
+   259.9466904038623,
+   235.72959971948467,
+   299.63618478113517
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain_imerg",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure, evapotranspiration, runoff"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "MAM",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 27,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.0,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": false,
+    "value": 0.08248913209316022,
+    "limit": 0.048655527642423084
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 27,
+  "mk": {
+   "S": -49,
+   "varS": 2301.0,
+   "tau": -0.1396011396011396,
+   "z": -1.0006516781401997,
+   "p": 0.31699523656062345,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": -0.12472591833696467,
+   "phi": 0.0,
+   "vif": 1.0,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 2301.0,
+   "z": -1.0006516781401997,
+   "p": 0.31699523656062345,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -2.1996249564717267,
+   "intercept": 4706.562979991322,
+   "ciLowPerYear": -7.562319903099049,
+   "ciHighPerYear": 2.5678726220569437,
+   "multiplier": 2.25,
+   "nPairs": 351
+  },
+  "change": {
+   "ratePerDecade": -21.996249564717267,
+   "rateLowPerDecade": -75.62319903099049,
+   "rateHighPerDecade": 25.678726220569438,
+   "total": -57.190248868264895,
+   "totalLow": -196.6203174805753,
+   "totalHigh": 66.76468817348054,
+   "span": 26,
+   "units": "mm",
+   "percent": -18.347125139573727,
+   "baseline": 311.71231696081213,
+   "residSd": 74.97335398746344,
+   "snr": 0.7628076620105309
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -2.4773734269824614,
+   "intercept": 5279.999315680486,
+   "se": 1.888334064257181,
+   "r1": -0.12610316990649278,
+   "phi": 0.0,
+   "nEff": 27.0,
+   "seAdj": 1.888334064257181,
+   "t": -1.3119359936754582,
+   "df": 25.0,
+   "p": 0.20146157493436004,
+   "ciLowPerYear": -6.3664702327974485,
+   "ciHighPerYear": 1.411723378832526,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -1.0006516781401997,
+   "p": 0.31699523656062345,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": 0.08248913209316022,
+   "m": 111,
+   "mEff": 1.512303683423893,
+   "mEffStep": 1,
+   "rhoBar": 0.8112726059007549,
+   "phiCells": 0.0,
+   "critical": 0.048655527642423084,
+   "passed": false,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "practical": {
+  "threshold": null,
+  "units": "mm per decade",
+  "position": null
+ },
+ "overturn": [],
+ "sensitivity": null,
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "outside_domain",
+  "ratePerDecade": -21.996249564717267,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "mm",
+  "family": "sensitivity",
+  "familySize": 0,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   456.1662176605112,
+   246.23453177263409,
+   426.3177282720414,
+   377.4062237045789,
+   374.7294818750481,
+   301.8288058359074,
+   231.3800345415888,
+   278.8888138987955,
+   324.9325211563948,
+   190.1956739889214,
+   216.06984300384673,
+   273.9243242459519,
+   229.13221893917898,
+   283.1171925266802,
+   243.2675658340207,
+   470.73674336247717,
+   209.816352391956,
+   257.71567374968384,
+   321.7893652970916,
+   304.60413124749425,
+   340.01259944455956,
+   294.1525849914963,
+   400.0076541637638,
+   198.29780169737668,
+   259.9466904038623,
+   235.72959971948467,
+   299.63618478113517
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2011.0,
+   283.1171925266802
+  ],
+  "line": [
+   [
+    1998,
+    311.71231696081213
+   ],
+   [
+    2024,
+    254.52206809254767
+   ]
+  ],
+  "band": null
+ },
+ "text": {
+  "en": {
+   "headline": "No verdict: outside the range this method was tested for. The fitted rate is −22 mm per decade.",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "Both records use rain-gauge and satellite inputs, so this is a sensitivity check, not an independent confirmation."
+   ]
+  },
+  "bn": {
+   "headline": "কোনো রায় নেই: এই পদ্ধতি যে পরিসরে যাচাই করা হয়েছে, এটি তার বাইরে। মিলিয়ে নেওয়া হার প্রতি দশকে −২২ মিমি।",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "দুটি রেকর্ডই বৃষ্টিমাপক ও স্যাটেলাইটের তথ্য ব্যবহার করে, তাই এটি সংবেদনশীলতা-যাচাই, স্বাধীন সমর্থন নয়।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "GPM IMERG Final Precipitation L3 1 month 0.1° V07",
+    "shortName": "GPM_3IMERGM",
+    "version": "07",
+    "doi": "10.5067/GPM/IMERG/3B-MONTH/07",
+    "route": "earthaccess",
+    "granules": 333,
+    "accessed": "2026-11-13T13:15:26Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "ecfe408fc9d10ee41aea3af7c872be6f5aedb7dd0f9bc3cd1bd1ffb70a87d71b",
+  "preregSha256": "2f78c41e9f74e32fdabe5e6832ca51f80e393a7100b5aa27a484b94ed9730177",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r4",
+  "created": "2026-11-14T02:17:17Z"
+ }
+}

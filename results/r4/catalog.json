@@ -1,0 +1,1333 @@
+{
+ "schema": "casefile/catalog@3",
+ "buildId": "r4",
+ "created": "2026-11-14T02:17:17Z",
+ "synthetic": false,
+ "variables": [
+  {
+   "id": "air_temp",
+   "status": "analysed",
+   "group": "heat",
+   "kind": "model",
+   "source": "merra2_slv",
+   "variable": "T2M",
+   "conversion": "K − 273.15 → °C",
+   "name": {
+    "en": "Air temperature near the ground",
+    "bn": "ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা"
+   },
+   "name_mid": {
+    "en": "air temperature near the ground",
+    "bn": "ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা"
+   },
+   "definition": {
+    "en": "How warm the air is 2 metres above the ground, averaged over day and night.",
+    "bn": "মাটি থেকে ২ মিটার ওপরে বাতাস কতটা উষ্ণ, দিন-রাত মিলিয়ে গড়।"
+   },
+   "how_measured": {
+    "en": "From MERRA-2, a NASA model that blends weather observations from satellites, balloons and stations.",
+    "bn": "MERRA-2 থেকে — নাসার একটি মডেল, যা স্যাটেলাইট, বেলুন ও আবহাওয়া কেন্দ্রের পর্যবেক্ষণ মিলিয়ে তৈরি।"
+   },
+   "units": {
+    "monthly": "°C",
+    "aggregated": "°C"
+   },
+   "rule": "mean",
+   "ratio_scale": false,
+   "record": {
+    "from": 1980,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None: the model fills every month.",
+     "bn": "নেই: মডেল প্রতিটি মাস পূরণ করে।"
+    },
+    "known_breaks": [
+     {
+      "id": "merra2_observing_system",
+      "label": {
+       "en": "MERRA-2 is a model: the satellite and ground observations it blends in changed over the record",
+       "bn": "MERRA-2 একটি মডেল: এটি যে স্যাটেলাইট ও ভূমি-পর্যবেক্ষণ মেলায়, রেকর্ডজুড়ে সেগুলো বদলেছে"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output (a reanalysis): it blends many observations, but it is not a thermometer reading.",
+     "bn": "মডেলের ফল (রিঅ্যানালাইসিস): অনেক পর্যবেক্ষণ মেলানো, তবে থার্মোমিটারের সরাসরি মাপ নয়।"
+    },
+    "cannot_answer": {
+     "en": "It cannot show the heat of one city or street (each cell is about 55 × 64 km over Bangladesh), and it cannot say why the temperature changed.",
+     "bn": "এটি একটি শহর বা রাস্তার গরম দেখাতে পারে না (বাংলাদেশের ওপর প্রতিটি ঘর প্রায় ৫৫ × ৬৪ কিমি), আর তাপমাত্রা কেন বদলেছে তা-ও বলতে পারে না।"
+    }
+   },
+   "colormap": {
+    "trend": "RdBu_r",
+    "value": "inferno"
+   },
+   "valid_range": [
+    -80,
+    50
+   ],
+   "tags": [
+    "heat",
+    "everyday"
+   ]
+  },
+  {
+   "id": "rain",
+   "status": "analysed",
+   "group": "water",
+   "kind": "model",
+   "source": "merra2_precip",
+   "variable": "PRECTOTCORR",
+   "conversion": "kg m⁻² s⁻¹ × 86 400 → mm day⁻¹ (monthly); totals = Σ mm day⁻¹ × days",
+   "name": {
+    "en": "Rain and snowfall",
+    "bn": "বৃষ্টি ও তুষারপাত"
+   },
+   "name_mid": {
+    "en": "rain and snowfall",
+    "bn": "বৃষ্টি ও তুষারপাত"
+   },
+   "definition": {
+    "en": "How much water falls from the sky as rain or snow, added up over the season or year.",
+    "bn": "আকাশ থেকে বৃষ্টি বা তুষার হয়ে কতটা পানি পড়ে — ঋতু বা বছর ধরে যোগ করে।"
+   },
+   "how_measured": {
+    "en": "From MERRA-2, a NASA model whose rain is corrected with rain-gauge and satellite estimates.",
+    "bn": "MERRA-2 থেকে — নাসার একটি মডেল, যার বৃষ্টির হিসাব বৃষ্টিমাপক যন্ত্র ও স্যাটেলাইটের অনুমান দিয়ে সংশোধিত।"
+   },
+   "units": {
+    "monthly": "mm/day",
+    "aggregated": "mm"
+   },
+   "rule": "sum",
+   "ratio_scale": true,
+   "record": {
+    "from": 1980,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None: the model fills every month.",
+     "bn": "নেই: মডেল প্রতিটি মাস পূরণ করে।"
+    },
+    "known_breaks": [
+     {
+      "id": "merra2_observing_system",
+      "label": {
+       "en": "MERRA-2 is a model: the satellite and ground observations it blends in changed over the record",
+       "bn": "MERRA-2 একটি মডেল: এটি যে স্যাটেলাইট ও ভূমি-পর্যবেক্ষণ মেলায়, রেকর্ডজুড়ে সেগুলো বদলেছে"
+      },
+      "date": null,
+      "verified": false
+     },
+     {
+      "id": "merra2_precip_correction_inputs",
+      "label": {
+       "en": "MERRA-2's corrected rain uses gauge and satellite estimates whose inputs changed over time",
+       "bn": "MERRA-2-এর সংশোধিত বৃষ্টি যে বৃষ্টিমাপক ও স্যাটেলাইট-অনুমান ব্যবহার করে, তার উৎস সময়ের সঙ্গে বদলেছে"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output, corrected with gauge and satellite estimates whose inputs changed over time.",
+     "bn": "মডেলের ফল, যা বৃষ্টিমাপক যন্ত্র ও স্যাটেলাইটের অনুমান দিয়ে সংশোধিত; এই উৎসগুলো সময়ের সঙ্গে বদলেছে।"
+    },
+    "cannot_answer": {
+     "en": "It cannot show single storms, floods or the rain in one town, and it is not a rain-gauge record.",
+     "bn": "এটি একক ঝড়, বন্যা বা একটি শহরের বৃষ্টি দেখাতে পারে না, আর এটি বৃষ্টিমাপক যন্ত্রের রেকর্ডও নয়।"
+    }
+   },
+   "sensitivity": "rain_imerg",
+   "colormap": {
+    "trend": "BrBG",
+    "value": "Blues"
+   },
+   "valid_range": [
+    0,
+    300
+   ],
+   "tags": [
+    "water",
+    "everyday",
+    "monsoon"
+   ]
+  },
+  {
+   "id": "rain_imerg",
+   "status": "sensitivity",
+   "group": "water",
+   "kind": "satellite",
+   "source": "imerg_v07_final_monthly",
+   "variable": "precipitation",
+   "conversion": "mm h⁻¹ × 24 → mm day⁻¹ (monthly); totals = Σ mm day⁻¹ × days",
+   "name": {
+    "en": "Rain and snowfall (IMERG, satellites and gauges)",
+    "bn": "বৃষ্টি ও তুষারপাত (IMERG, স্যাটেলাইট ও বৃষ্টিমাপক)"
+   },
+   "name_mid": {
+    "en": "rain and snowfall in IMERG",
+    "bn": "IMERG-এ বৃষ্টি ও তুষারপাত"
+   },
+   "definition": {
+    "en": "The same quantity as rain, from a different record, used to check whether the answer depends on the dataset.",
+    "bn": "বৃষ্টির একই পরিমাপ, তবে ভিন্ন রেকর্ড থেকে — উত্তরটি ডেটাসেটের ওপর নির্ভর করে কি না, তা যাচাইয়ের জন্য।"
+   },
+   "how_measured": {
+    "en": "From GPM IMERG Final, which merges a fleet of satellites with rain gauges.",
+    "bn": "GPM IMERG Final থেকে — এটি একঝাঁক স্যাটেলাইটের পরিমাপ ও বৃষ্টিমাপক যন্ত্রের তথ্য মেলায়।"
+   },
+   "units": {
+    "monthly": "mm/day",
+    "aggregated": "mm"
+   },
+   "rule": "sum",
+   "ratio_scale": true,
+   "record": {
+    "from": 1998,
+    "to": 2024
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None from Jan 1998 to Sep 2025. Years after 2024 are not used.",
+     "bn": "জানুয়ারি ১৯৯৮ থেকে সেপ্টেম্বর ২০২৫ পর্যন্ত নেই। ২০২৪-এর পরের বছর ব্যবহার হয় না।"
+    },
+    "known_breaks": [
+     {
+      "id": "imerg_trmm_to_gpm_2014",
+      "label": {
+       "en": "IMERG moved from the TRMM era to the GPM era (June 2014)",
+       "bn": "IMERG, TRMM যুগ থেকে GPM যুগে যায় (জুন ২০১৪)"
+      },
+      "date": "2014-06",
+      "verified": false
+     },
+     {
+      "id": "imerg_v07_final_end",
+      "label": {
+       "en": "The IMERG V07 Final record ends in September 2025; annual trends end in 2024. Never append Late Run or V08",
+       "bn": "IMERG V07 Final রেকর্ড সেপ্টেম্বর ২০২৫-এ শেষ; বার্ষিক প্রবণতা ২০২৪-এ শেষ। Late Run বা V08 কখনো জোড়া হয় না"
+      },
+      "date": "2025-09",
+      "verified": true
+     }
+    ],
+    "observation_or_model": {
+     "en": "Satellite measurements calibrated with rain gauges. Both this and MERRA-2's corrected rain use gauges, so they are not independent.",
+     "bn": "বৃষ্টিমাপক যন্ত্র দিয়ে মিলিয়ে নেওয়া স্যাটেলাইটের মাপ। এটি ও MERRA-2-এর সংশোধিত বৃষ্টি — দুটিই বৃষ্টিমাপক ব্যবহার করে, তাই এরা স্বাধীন নয়।"
+    },
+    "cannot_answer": {
+     "en": "It is a sensitivity check, not an independent confirmation, and it gives no verdict of its own.",
+     "bn": "এটি একটি সংবেদনশীলতা-যাচাই, স্বাধীন সমর্থন নয়, আর এর নিজের কোনো রায় নেই।"
+    }
+   },
+   "colormap": {
+    "trend": "BrBG",
+    "value": "Blues"
+   },
+   "valid_range": [
+    0,
+    300
+   ],
+   "tags": [
+    "water",
+    "monsoon",
+    "sensitivity"
+   ]
+  },
+  {
+   "id": "global_temp_gistemp",
+   "status": "reference",
+   "group": "heat",
+   "kind": "observations",
+   "source": "gistemp_v4",
+   "variable": "Land-ocean global mean anomaly",
+   "conversion": "°C anomaly (base period VERIFY V-08)",
+   "name": {
+    "en": "Global surface temperature (stations and ships)",
+    "bn": "পৃথিবীর ভূপৃষ্ঠের তাপমাত্রা (আবহাওয়া কেন্দ্র ও জাহাজ)"
+   },
+   "name_mid": {
+    "en": "global surface temperature",
+    "bn": "পৃথিবীর ভূপৃষ্ঠের তাপমাত্রা"
+   },
+   "definition": {
+    "en": "How much warmer or cooler the whole planet's surface is than a reference average, from weather stations, ships and buoys.",
+    "bn": "আবহাওয়া কেন্দ্র, জাহাজ ও বয়ার মাপ অনুযায়ী পুরো পৃথিবীর ভূপৃষ্ঠ একটি তুলনা-গড়ের চেয়ে কতটা উষ্ণ বা শীতল।"
+   },
+   "how_measured": {
+    "en": "NASA GISS combines land stations with ship and buoy measurements of the sea surface.",
+    "bn": "নাসা GISS স্থলভাগের আবহাওয়া কেন্দ্রের সঙ্গে জাহাজ ও বয়ার সমুদ্রপৃষ্ঠ-পরিমাপ মিলিয়ে তৈরি করে।"
+   },
+   "units": {
+    "monthly": "°C",
+    "aggregated": "°C"
+   },
+   "rule": "mean",
+   "ratio_scale": false,
+   "record": {
+    "from": 1880,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None in the global series.",
+     "bn": "বৈশ্বিক সিরিজে নেই।"
+    },
+    "known_breaks": [],
+    "observation_or_model": {
+     "en": "Observations, combined into one global series. Used here only to check our engine against a known answer.",
+     "bn": "পর্যবেক্ষণ, একটি বৈশ্বিক সিরিজে মেলানো। এখানে শুধু জানা উত্তরের সঙ্গে আমাদের হিসাব মেলাতে ব্যবহার হয়।"
+    },
+    "cannot_answer": {
+     "en": "It has one value per month for the whole planet, so it says nothing about Bangladesh or any region.",
+     "bn": "পুরো পৃথিবীর জন্য প্রতি মাসে একটি মান, তাই বাংলাদেশ বা কোনো অঞ্চল সম্পর্কে এটি কিছু বলে না।"
+    }
+   },
+   "colormap": {
+    "trend": "RdBu_r",
+    "value": "RdBu_r"
+   },
+   "valid_range": [
+    -3,
+    3
+   ],
+   "tags": [
+    "heat",
+    "world",
+    "reference"
+   ]
+  },
+  {
+   "id": "water_vapor",
+   "status": "analysed",
+   "group": "water",
+   "kind": "model",
+   "source": "merra2_slv",
+   "variable": "TQV",
+   "name": {
+    "en": "Water vapour in the air",
+    "bn": "বাতাসে জলীয় বাষ্প"
+   },
+   "name_mid": {
+    "en": "water vapour in the air",
+    "bn": "বাতাসে জলীয় বাষ্প"
+   },
+   "definition": {
+    "en": "All the invisible water vapour in a column of air, as millimetres of water if it all fell as rain.",
+    "bn": "বাতাসের পুরো স্তম্ভে থাকা অদৃশ্য জলীয় বাষ্প — সবটা বৃষ্টি হয়ে পড়লে কত মিলিমিটার পানি হতো।"
+   },
+   "how_measured": {
+    "en": "From MERRA-2, a NASA model.",
+    "bn": "MERRA-2 থেকে, নাসার একটি মডেল।"
+   },
+   "units": {
+    "monthly": "mm",
+    "aggregated": "mm"
+   },
+   "rule": "mean",
+   "ratio_scale": true,
+   "record": {
+    "from": 1980,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None: the model fills every month.",
+     "bn": "নেই: মডেল প্রতিটি মাস পূরণ করে।"
+    },
+    "known_breaks": [
+     {
+      "id": "merra2_observing_system",
+      "label": {
+       "en": "MERRA-2 is a model: the satellite and ground observations it blends in changed over the record",
+       "bn": "MERRA-2 একটি মডেল: এটি যে স্যাটেলাইট ও ভূমি-পর্যবেক্ষণ মেলায়, রেকর্ডজুড়ে সেগুলো বদলেছে"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output.",
+     "bn": "মডেলের ফল।"
+    },
+    "cannot_answer": {
+     "en": "Model output on a 0.5° grid, averaged by month: it cannot show the humidity of one town or one day. Exploration only: maps, yearly values and trends, no verdict.",
+     "bn": "০.৫° গ্রিডে মাসিক গড় করা মডেলের ফল: এটি কোনো এক শহরের বা এক দিনের আর্দ্রতা দেখাতে পারে না। শুধু অনুসন্ধান: মানচিত্র, বছরওয়ারি মান ও প্রবণতা, কোনো রায় নেই।"
+    }
+   },
+   "tags": [
+    "water"
+   ]
+  },
+  {
+   "id": "pressure",
+   "status": "analysed",
+   "group": "weather",
+   "kind": "model",
+   "source": "merra2_slv",
+   "variable": "SLP",
+   "name": {
+    "en": "Air pressure at sea level",
+    "bn": "সমুদ্রপৃষ্ঠে বায়ুচাপ"
+   },
+   "name_mid": {
+    "en": "air pressure at sea level",
+    "bn": "সমুদ্রপৃষ্ঠে বায়ুচাপ"
+   },
+   "definition": {
+    "en": "The weight of the air above, adjusted to sea level.",
+    "bn": "ওপরের বাতাসের ওজন, সমুদ্রপৃষ্ঠের হিসাবে।"
+   },
+   "how_measured": {
+    "en": "From MERRA-2; over high mountains the sea-level value is an estimate.",
+    "bn": "MERRA-2 থেকে; উঁচু পাহাড়ের ওপর সমুদ্রপৃষ্ঠের মান একটি অনুমান।"
+   },
+   "units": {
+    "monthly": "hPa",
+    "aggregated": "hPa"
+   },
+   "rule": "mean",
+   "ratio_scale": false,
+   "record": {
+    "from": 1980,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None: the model fills every month.",
+     "bn": "নেই: মডেল প্রতিটি মাস পূরণ করে।"
+    },
+    "known_breaks": [
+     {
+      "id": "merra2_observing_system",
+      "label": {
+       "en": "MERRA-2 is a model: the satellite and ground observations it blends in changed over the record",
+       "bn": "MERRA-2 একটি মডেল: এটি যে স্যাটেলাইট ও ভূমি-পর্যবেক্ষণ মেলায়, রেকর্ডজুড়ে সেগুলো বদলেছে"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output.",
+     "bn": "মডেলের ফল।"
+    },
+    "cannot_answer": {
+     "en": "Model output averaged by month: it cannot show a single storm or the pressure in one town. Exploration only: maps, yearly values and trends, no verdict.",
+     "bn": "মাসিক গড় করা মডেলের ফল: এটি কোনো একক ঝড় বা কোনো এক শহরের বায়ুচাপ দেখাতে পারে না। শুধু অনুসন্ধান: মানচিত্র, বছরওয়ারি মান ও প্রবণতা, কোনো রায় নেই।"
+    }
+   },
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "id": "soil_moisture",
+   "status": "deferred",
+   "group": "water",
+   "kind": "model",
+   "source": "gldas_noah10_m",
+   "variable": "SoilMoi0_10cm_inst",
+   "name": {
+    "en": "Topsoil moisture",
+    "bn": "ওপরের মাটির আর্দ্রতা"
+   },
+   "name_mid": {
+    "en": "topsoil moisture",
+    "bn": "ওপরের মাটির আর্দ্রতা"
+   },
+   "definition": {
+    "en": "How wet the top 10 cm of soil is.",
+    "bn": "মাটির ওপরের ১০ সেমি কতটা ভেজা।"
+   },
+   "how_measured": {
+    "en": "From GLDAS, a NASA land model.",
+    "bn": "GLDAS থেকে, নাসার একটি ভূমি-মডেল।"
+   },
+   "units": {
+    "monthly": "m³/m³",
+    "aggregated": "m³/m³"
+   },
+   "rule": "mean",
+   "ratio_scale": true,
+   "record": {
+    "from": 2000,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "Start year to be checked (#15).",
+     "bn": "শুরুর বছর যাচাই করতে হবে (#১৫)।"
+    },
+    "known_breaks": [
+     {
+      "id": "gldas21_forcing_changes",
+      "label": {
+       "en": "GLDAS-2.1 is driven by model and observation inputs that changed over time; it is not a climate data record",
+       "bn": "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
+      },
+      "date": null,
+      "verified": true
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output; its forcing changed over time. A storage variable: it stays descriptive.",
+     "bn": "মডেলের ফল; এর চালিকা-ইনপুট সময়ের সঙ্গে বদলেছে। এটি জমা-পরিমাপ, তাই শুধু বর্ণনামূলক থাকবে।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "water",
+    "farming"
+   ]
+  },
+  {
+   "id": "evapotranspiration",
+   "status": "analysed",
+   "group": "water",
+   "kind": "model",
+   "source": "gldas_noah10_m",
+   "variable": "Evap_tavg",
+   "name": {
+    "en": "Water evaporating from land and plants",
+    "bn": "মাটি ও গাছপালা থেকে বাষ্পীভবন"
+   },
+   "name_mid": {
+    "en": "water evaporating from land and plants",
+    "bn": "মাটি ও গাছপালা থেকে বাষ্পীভবন"
+   },
+   "definition": {
+    "en": "Water that rises into the air from soil, lakes and leaves, added up over the season or year.",
+    "bn": "মাটি, জলাশয় ও পাতা থেকে যে পানি বাষ্প হয়ে বাতাসে ওঠে — ঋতু বা বছর ধরে যোগ করে।"
+   },
+   "how_measured": {
+    "en": "From GLDAS, a NASA land model.",
+    "bn": "GLDAS থেকে, নাসার একটি ভূমি-মডেল।"
+   },
+   "conversion": "kg m⁻² s⁻¹ × 86 400 → mm day⁻¹ (monthly); totals = Σ mm day⁻¹ × days",
+   "units": {
+    "monthly": "mm/day",
+    "aggregated": "mm"
+   },
+   "rule": "sum",
+   "ratio_scale": true,
+   "record": {
+    "from": 2000,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "No gaps on land from January 2000: the model fills every month. No values over the sea.",
+     "bn": "স্থলভাগে ২০০০ সালের জানুয়ারি থেকে কোনো ফাঁক নেই: মডেল প্রতিটি মাস পূরণ করে। সমুদ্রের ওপর কোনো মান নেই।"
+    },
+    "known_breaks": [
+     {
+      "id": "gldas21_forcing_changes",
+      "label": {
+       "en": "GLDAS-2.1 is driven by model and observation inputs that changed over time; it is not a climate data record",
+       "bn": "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
+      },
+      "date": null,
+      "verified": true
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output; its forcing changed over time.",
+     "bn": "মডেলের ফল; এর চালিকা-ইনপুট সময়ের সঙ্গে বদলেছে।"
+    },
+    "cannot_answer": {
+     "en": "Land only, from a model on a 1° grid: it cannot show the water use of one field or crop, and has no values over the sea. Exploration only, no verdict.",
+     "bn": "শুধু স্থলভাগ, ১° গ্রিডের মডেল থেকে: এটি কোনো এক মাঠ বা ফসলের পানি-ব্যবহার দেখাতে পারে না, আর সাগরের ওপর কোনো মান নেই। শুধু অনুসন্ধান, কোনো রায় নেই।"
+    }
+   },
+   "tags": [
+    "water"
+   ]
+  },
+  {
+   "id": "runoff",
+   "status": "analysed",
+   "group": "water",
+   "kind": "model",
+   "source": "gldas_noah10_m",
+   "variable": "Qs_acc + Qsb_acc",
+   "name": {
+    "en": "Runoff (water flowing off the land)",
+    "bn": "রানঅফ (ভূমি থেকে গড়িয়ে যাওয়া পানি)"
+   },
+   "name_mid": {
+    "en": "runoff",
+    "bn": "রানঅফ"
+   },
+   "definition": {
+    "en": "Rain and snowmelt that the soil cannot hold and that flows toward rivers. It feeds streamflow but is not river flow.",
+    "bn": "যে বৃষ্টি ও গলা বরফ মাটি ধরে রাখতে পারে না, তা নদীর দিকে গড়িয়ে যায়। এটি নদীপ্রবাহের উৎস, তবে নিজে নদীপ্রবাহ নয়।"
+   },
+   "how_measured": {
+    "en": "From GLDAS, a NASA land model without river routing.",
+    "bn": "GLDAS থেকে, নদীপথের হিসাব ছাড়া নাসার একটি ভূমি-মডেল।"
+   },
+   "conversion": "surface (Qs_acc) + subsurface (Qsb_acc) runoff, each kg m⁻² per 3 hours averaged over the month × 8 → mm day⁻¹ (GLDAS-2 README §3.5); totals = Σ mm day⁻¹ × days",
+   "units": {
+    "monthly": "mm/day",
+    "aggregated": "mm"
+   },
+   "rule": "sum",
+   "ratio_scale": true,
+   "record": {
+    "from": 2000,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "No gaps on land from January 2000: the model fills every month. No values over the sea.",
+     "bn": "স্থলভাগে ২০০০ সালের জানুয়ারি থেকে কোনো ফাঁক নেই: মডেল প্রতিটি মাস পূরণ করে। সমুদ্রের ওপর কোনো মান নেই।"
+    },
+    "known_breaks": [
+     {
+      "id": "gldas21_forcing_changes",
+      "label": {
+       "en": "GLDAS-2.1 is driven by model and observation inputs that changed over time; it is not a climate data record",
+       "bn": "GLDAS-2.1 সময়ের সঙ্গে বদলানো মডেল ও পর্যবেক্ষণ-ইনপুটে চলে; এটি জলবায়ু-রেকর্ড হিসেবে তৈরি নয়"
+      },
+      "date": null,
+      "verified": true
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output.",
+     "bn": "মডেলের ফল।"
+    },
+    "cannot_answer": {
+     "en": "Land only, on a 1° grid and without river routing: it is not river flow or flood depth, and has no values over the sea. Exploration only, no verdict.",
+     "bn": "শুধু স্থলভাগ, ১° গ্রিডে, নদীপথের হিসাব ছাড়া: এটি নদীর প্রবাহ বা বন্যার গভীরতা নয়, আর সাগরের ওপর কোনো মান নেই। শুধু অনুসন্ধান, কোনো রায় নেই।"
+    }
+   },
+   "tags": [
+    "water",
+    "rivers"
+   ]
+  },
+  {
+   "id": "air_temp_levels",
+   "status": "deferred",
+   "group": "sky",
+   "kind": "satellite",
+   "source": "airs3stm",
+   "variable": "Temperature_A, Temperature_D",
+   "name": {
+    "en": "Air temperature high above, by level",
+    "bn": "উঁচু আকাশে বাতাসের তাপমাত্রা, স্তরভেদে"
+   },
+   "name_mid": {
+    "en": "air temperature high above",
+    "bn": "উঁচু আকাশে বাতাসের তাপমাত্রা"
+   },
+   "definition": {
+    "en": "How warm the air is at a chosen height in the atmosphere.",
+    "bn": "বায়ুমণ্ডলের নির্দিষ্ট উচ্চতায় বাতাস কতটা উষ্ণ।"
+   },
+   "how_measured": {
+    "en": "Measured by AIRS on NASA's Aqua satellite.",
+    "bn": "নাসার অ্যাকুয়া স্যাটেলাইটের AIRS যন্ত্রে মাপা।"
+   },
+   "units": {
+    "monthly": "°C",
+    "aggregated": "°C"
+   },
+   "rule": "mean",
+   "ratio_scale": false,
+   "record": {
+    "from": 2002,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "Levels below the ground are empty.",
+     "bn": "মাটির নিচের স্তরগুলো ফাঁকা।"
+    },
+    "known_breaks": [
+     {
+      "id": "aqua_orbit_drift",
+      "label": {
+       "en": "Aqua's orbit is drifting, so its overpass time changes",
+       "bn": "অ্যাকুয়ার কক্ষপথ সরে যাচ্ছে, তাই এর পর্যবেক্ষণের সময় বদলায়"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Satellite measurement.",
+     "bn": "স্যাটেলাইটের মাপ।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "sky"
+   ]
+  },
+  {
+   "id": "haze",
+   "status": "deferred",
+   "group": "air",
+   "kind": "satellite",
+   "source": "modis_myd08_m3",
+   "variable": "Aerosol optical depth (band VERIFY)",
+   "name": {
+    "en": "Haze and smoke (satellite)",
+    "bn": "ধোঁয়াশা ও ধোঁয়া (স্যাটেলাইট)"
+   },
+   "name_mid": {
+    "en": "haze and smoke",
+    "bn": "ধোঁয়াশা ও ধোঁয়া"
+   },
+   "definition": {
+    "en": "How much sunlight tiny particles such as smoke, dust and pollution block.",
+    "bn": "ধোঁয়া, ধুলা ও দূষণের মতো ক্ষুদ্র কণা কতটা সূর্যালোক আটকায়।"
+   },
+   "how_measured": {
+    "en": "Measured by MODIS on NASA's Aqua satellite.",
+    "bn": "নাসার অ্যাকুয়া স্যাটেলাইটের MODIS যন্ত্রে মাপা।"
+   },
+   "units": {
+    "monthly": "",
+    "aggregated": ""
+   },
+   "rule": "mean",
+   "ratio_scale": true,
+   "record": {
+    "from": 2002,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "Bright surfaces and monsoon clouds leave gaps.",
+     "bn": "উজ্জ্বল ভূপৃষ্ঠ ও বর্ষার মেঘে ফাঁক থাকে।"
+    },
+    "known_breaks": [
+     {
+      "id": "aqua_orbit_drift",
+      "label": {
+       "en": "Aqua's orbit is drifting, so its overpass time changes",
+       "bn": "অ্যাকুয়ার কক্ষপথ সরে যাচ্ছে, তাই এর পর্যবেক্ষণের সময় বদলায়"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Satellite measurement.",
+     "bn": "স্যাটেলাইটের মাপ।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "air"
+   ]
+  },
+  {
+   "id": "greenness",
+   "status": "deferred",
+   "group": "land",
+   "kind": "satellite",
+   "source": "modis_vegetation",
+   "variable": "NDVI",
+   "name": {
+    "en": "Plant greenness (NDVI)",
+    "bn": "গাছপালার সবুজভাব (NDVI)"
+   },
+   "name_mid": {
+    "en": "plant greenness",
+    "bn": "গাছপালার সবুজভাব"
+   },
+   "definition": {
+    "en": "How green and leafy the land looks from space.",
+    "bn": "মহাকাশ থেকে ভূমি কতটা সবুজ ও পাতায় ভরা দেখায়।"
+   },
+   "how_measured": {
+    "en": "Measured by MODIS on NASA's Terra satellite (Collection 6.1).",
+    "bn": "নাসার টেরা স্যাটেলাইটের MODIS যন্ত্রে মাপা (সংকলন ৬.১)।"
+   },
+   "units": {
+    "monthly": "",
+    "aggregated": ""
+   },
+   "rule": "mean",
+   "ratio_scale": true,
+   "record": {
+    "from": 2000,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "Monsoon clouds leave gaps.",
+     "bn": "বর্ষার মেঘে ফাঁক থাকে।"
+    },
+    "known_breaks": [
+     {
+      "id": "terra_orbit_drift",
+      "label": {
+       "en": "Terra's orbit is drifting, so its overpass time changes",
+       "bn": "টেরার কক্ষপথ সরে যাচ্ছে, তাই এর পর্যবেক্ষণের সময় বদলায়"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Satellite measurement.",
+     "bn": "স্যাটেলাইটের মাপ।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "land"
+   ]
+  },
+  {
+   "id": "water_storage",
+   "status": "deferred",
+   "group": "water",
+   "kind": "satellite",
+   "source": "grace_mascon_jpl",
+   "variable": "lwe_thickness",
+   "name": {
+    "en": "Water stored on and under the land",
+    "bn": "ভূমির ওপরে ও নিচে জমা পানি"
+   },
+   "name_mid": {
+    "en": "water stored on and under the land",
+    "bn": "ভূমির ওপরে ও নিচে জমা পানি"
+   },
+   "definition": {
+    "en": "All the water in soil, groundwater, lakes, snow and ice, compared with a reference average.",
+    "bn": "মাটি, ভূগর্ভ, হ্রদ, তুষার ও বরফে থাকা মোট পানি — একটি তুলনা-গড়ের সঙ্গে মিলিয়ে।"
+   },
+   "how_measured": {
+    "en": "Weighed from space by the GRACE and GRACE-FO satellites.",
+    "bn": "GRACE ও GRACE-FO স্যাটেলাইট মহাকাশ থেকে ওজন করে মাপে।"
+   },
+   "units": {
+    "monthly": "cm",
+    "aggregated": "cm"
+   },
+   "rule": "mean",
+   "ratio_scale": false,
+   "record": {
+    "from": 2002,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "A gap between GRACE and GRACE-FO (about mid-2017 to mid-2018; exact months to be checked, #17) stays empty.",
+     "bn": "GRACE ও GRACE-FO-এর মাঝে একটি ফাঁক (প্রায় ২০১৭-এর মাঝামাঝি থেকে ২০১৮-এর মাঝামাঝি; সঠিক মাস যাচাই করতে হবে, #১৭) ফাঁকাই থাকে।"
+    },
+    "known_breaks": [
+     {
+      "id": "grace_gap",
+      "label": {
+       "en": "Gap between GRACE and GRACE-FO; the gap stays empty and is never interpolated",
+       "bn": "GRACE ও GRACE-FO-এর মাঝের ফাঁক; ফাঁকটি ফাঁকাই থাকে, কখনো পূরণ করা হয় না"
+      },
+      "date": "2017-07",
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Satellite measurement of 3° mascons. A storage variable: it stays descriptive, with no verdicts and no district claims.",
+     "bn": "৩° মাসকনের স্যাটেলাইট-মাপ। এটি জমা-পরিমাপ: শুধু বর্ণনামূলক, কোনো রায় বা জেলা-পর্যায়ের দাবি নেই।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "water",
+    "groundwater"
+   ]
+  },
+  {
+   "id": "no2",
+   "status": "deferred",
+   "group": "air",
+   "kind": "satellite",
+   "source": "omi",
+   "variable": "ColumnAmountNO2TropCloudScreened",
+   "name": {
+    "en": "NO₂ pollution gas",
+    "bn": "NO₂ দূষণকারী গ্যাস"
+   },
+   "name_mid": {
+    "en": "NO₂ pollution",
+    "bn": "NO₂ দূষণ"
+   },
+   "definition": {
+    "en": "Nitrogen dioxide in the lower air, mostly from vehicles, power plants and industry.",
+    "bn": "নিচের বাতাসে নাইট্রোজেন ডাই-অক্সাইড, যা মূলত যানবাহন, বিদ্যুৎকেন্দ্র ও শিল্প থেকে আসে।"
+   },
+   "how_measured": {
+    "en": "Measured by OMI on NASA's Aura satellite.",
+    "bn": "নাসার অরা স্যাটেলাইটের OMI দিয়ে মাপা।"
+   },
+   "units": {
+    "monthly": "10¹⁵ molecules/cm²",
+    "aggregated": "10¹⁵ molecules/cm²"
+   },
+   "rule": "mean",
+   "ratio_scale": true,
+   "record": {
+    "from": 2005,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "The row anomaly reduced coverage from 2007.",
+     "bn": "২০০৭ থেকে ‘রো অ্যানোমালি’তে কভারেজ কমেছে।"
+    },
+    "known_breaks": [
+     {
+      "id": "omi_row_anomaly",
+      "label": {
+       "en": "OMI's row anomaly reduced coverage from 2007",
+       "bn": "২০০৭ থেকে OMI-এর ‘রো অ্যানোমালি’ কভারেজ কমিয়েছে"
+      },
+      "date": "2007-06",
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Satellite measurement.",
+     "bn": "স্যাটেলাইটের মাপ।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "air",
+    "city"
+   ]
+  },
+  {
+   "id": "ozone_omi",
+   "status": "deferred",
+   "group": "sky",
+   "kind": "satellite",
+   "source": "omi",
+   "variable": "ColumnAmountO3",
+   "name": {
+    "en": "Ozone layer thickness (satellite)",
+    "bn": "ওজোন স্তরের পুরুত্ব (স্যাটেলাইট)"
+   },
+   "name_mid": {
+    "en": "the ozone layer",
+    "bn": "ওজোন স্তর"
+   },
+   "definition": {
+    "en": "The total ozone above a place, which shields us from the Sun's ultraviolet light.",
+    "bn": "কোনো জায়গার ওপরে মোট ওজোন, যা সূর্যের অতিবেগুনি রশ্মি থেকে আমাদের রক্ষা করে।"
+   },
+   "how_measured": {
+    "en": "Measured by OMI on NASA's Aura satellite.",
+    "bn": "নাসার অরা স্যাটেলাইটের OMI দিয়ে মাপা।"
+   },
+   "units": {
+    "monthly": "DU",
+    "aggregated": "DU"
+   },
+   "rule": "mean",
+   "ratio_scale": true,
+   "record": {
+    "from": 2005,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "Polar winter months are missing; the row anomaly reduced coverage.",
+     "bn": "মেরু অঞ্চলের শীতের মাস নেই; ‘রো অ্যানোমালি’তে কভারেজ কমেছে।"
+    },
+    "known_breaks": [
+     {
+      "id": "omi_row_anomaly",
+      "label": {
+       "en": "OMI's row anomaly reduced coverage from 2007",
+       "bn": "২০০৭ থেকে OMI-এর ‘রো অ্যানোমালি’ কভারেজ কমিয়েছে"
+      },
+      "date": "2007-06",
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Satellite measurement.",
+     "bn": "স্যাটেলাইটের মাপ।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "sky"
+   ]
+  },
+  {
+   "id": "rain_gsmap",
+   "status": "deferred",
+   "group": "water",
+   "kind": "satellite",
+   "agency": "JAXA",
+   "source": "jaxa_gsmap_v8",
+   "variable": "VERIFY (#32)",
+   "name": {
+    "en": "Rain and snowfall (JAXA's GSMaP)",
+    "bn": "বৃষ্টি ও তুষারপাত (জাক্সার GSMaP)"
+   },
+   "name_mid": {
+    "en": "rain and snowfall in JAXA's record",
+    "bn": "জাক্সার রেকর্ডে বৃষ্টি ও তুষারপাত"
+   },
+   "definition": {
+    "en": "How much water falls as rain or snow, from Japan's space agency JAXA, NASA's partner in GPM.",
+    "bn": "বৃষ্টি বা তুষার হয়ে কতটা পানি পড়ে — জাপানের মহাকাশ সংস্থা জাক্সার তথ্য, যারা GPM-এ নাসার অংশীদার।"
+   },
+   "how_measured": {
+    "en": "From GSMaP V8, covering 60° north to 60° south. GSMaP data provided by JAXA.",
+    "bn": "GSMaP V8 থেকে, ৬০° উত্তর থেকে ৬০° দক্ষিণ পর্যন্ত। তথ্য দিয়েছে জাক্সা।"
+   },
+   "units": {
+    "monthly": "mm/day",
+    "aggregated": "mm"
+   },
+   "rule": "sum",
+   "ratio_scale": true,
+   "record": {
+    "from": 1998,
+    "to": null
+   },
+   "record_card": {
+    "gaps": {
+     "en": "Nothing poleward of 60°.",
+     "bn": "৬০°-এর বেশি অক্ষাংশে কিছু নেই।"
+    },
+    "known_breaks": [],
+    "observation_or_model": {
+     "en": "Satellite measurement adjusted with gauges.",
+     "bn": "বৃষ্টিমাপক দিয়ে মেলানো স্যাটেলাইটের মাপ।"
+    },
+    "cannot_answer": {
+     "en": "Not analysed in this release.",
+     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+    }
+   },
+   "tags": [
+    "water",
+    "partner"
+   ]
+  }
+ ],
+ "questions": [
+  {
+   "id": "hotter",
+   "flow": "place",
+   "question": {
+    "en": "Is it getting hotter?",
+    "bn": "গরম কি বাড়ছে?"
+   },
+   "shortlist": [
+    {
+     "variable": "air_temp",
+     "why": {
+      "en": "Air temperature near the ground, every year since 1980.",
+      "bn": "ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা, ১৯৮০ থেকে প্রতি বছর।"
+     }
+    }
+   ],
+   "also_deferred": [
+    "air_temp_levels"
+   ]
+  },
+  {
+   "id": "rain_changing",
+   "flow": "place",
+   "question": {
+    "en": "Is rain changing?",
+    "bn": "বৃষ্টি কি বদলাচ্ছে?"
+   },
+   "shortlist": [
+    {
+     "variable": "rain",
+     "why": {
+      "en": "Rain and snowfall added up over the year or the monsoon.",
+      "bn": "বছর বা বর্ষাকাল ধরে যোগ করা বৃষ্টি ও তুষারপাত।"
+     }
+    },
+    {
+     "variable": "rain_imerg",
+     "why": {
+      "en": "A second rain record, to check whether the answer depends on the dataset.",
+      "bn": "দ্বিতীয় একটি বৃষ্টির রেকর্ড — উত্তর ডেটাসেটের ওপর নির্ভর করে কি না দেখতে।"
+     }
+    }
+   ],
+   "also_deferred": [
+    "rain_gsmap",
+    "soil_moisture",
+    "runoff"
+   ]
+  },
+  {
+   "id": "rain_two_places",
+   "flow": "compare",
+   "question": {
+    "en": "Has rain changed differently in two places?",
+    "bn": "দুই জায়গায় কি বৃষ্টি ভিন্নভাবে বদলেছে?"
+   },
+   "shortlist": [
+    {
+     "variable": "rain",
+     "why": {
+      "en": "We test the trend in the difference between the two places.",
+      "bn": "আমরা দুই জায়গার পার্থক্যের প্রবণতা যাচাই করি।"
+     }
+    }
+   ]
+  },
+  {
+   "id": "heat_two_places",
+   "flow": "compare",
+   "question": {
+    "en": "Has it warmed differently in two places?",
+    "bn": "দুই জায়গায় কি উষ্ণতা ভিন্নভাবে বেড়েছে?"
+   },
+   "shortlist": [
+    {
+     "variable": "air_temp",
+     "why": {
+      "en": "We test the trend in the difference between the two places.",
+      "bn": "আমরা দুই জায়গার পার্থক্যের প্রবণতা যাচাই করি।"
+     }
+    }
+   ]
+  },
+  {
+   "id": "one_season",
+   "flow": "place",
+   "question": {
+    "en": "Has one season changed more than the others?",
+    "bn": "একটি ঋতু কি অন্যগুলোর চেয়ে বেশি বদলেছে?"
+   },
+   "shortlist": [
+    {
+     "variable": "air_temp",
+     "why": {
+      "en": "Pre-monsoon, monsoon, post-monsoon and winter, side by side.",
+      "bn": "প্রাক-বর্ষা, বর্ষা, বর্ষা-পরবর্তী ও শীত, পাশাপাশি।"
+     }
+    },
+    {
+     "variable": "rain",
+     "why": {
+      "en": "The same seasons for rain.",
+      "bn": "বৃষ্টির জন্যও একই ঋতুগুলো।"
+     }
+    }
+   ]
+  },
+  {
+   "id": "more_later",
+   "flow": "none",
+   "question": {
+    "en": "Is the ground drying, or the air getting hazier?",
+    "bn": "মাটি কি শুকিয়ে যাচ্ছে, নাকি বাতাস আরও ঘোলাটে হচ্ছে?"
+   },
+   "shortlist": [],
+   "also_deferred": [
+    "soil_moisture",
+    "water_storage",
+    "haze",
+    "no2",
+    "greenness"
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "id": "merra2_slv",
+   "status": "first_release",
+   "name": "MERRA-2 monthly single-level diagnostics",
+   "short_name": "M2TMNXSLV",
+   "version": "5.12.4",
+   "kind": "model",
+   "doi": "10.5067/AP1B0BA5PD2K",
+   "doi_verified": true,
+   "citation": "Global Modeling and Assimilation Office (GMAO) (2015), MERRA-2 tavgM_2d_slv_Nx: 2d, Monthly mean, Time-Averaged, Single-Level, Assimilation, Single-Level Diagnostics V5.12.4, Greenbelt, MD, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/AP1B0BA5PD2K.",
+   "reference": "Gelaro, R., et al. (2017), The Modern-Era Retrospective Analysis for Research and Applications, Version 2 (MERRA-2), J. Climate, 30, 5419–5454.",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "merra2_precip",
+   "status": "first_release",
+   "name": "MERRA-2 tavgM_2d_flx_Nx: monthly mean surface flux diagnostics (holds PRECTOTCORR, bias-corrected total precipitation)",
+   "short_name": "M2TMNXFLX",
+   "version": "5.12.4",
+   "kind": "model",
+   "doi": "10.5067/0JRLVL8YV2Y4",
+   "doi_verified": true,
+   "citation": "Global Modeling and Assimilation Office (GMAO) (2015), MERRA-2 tavgM_2d_flx_Nx: 2d, Monthly mean, Time-Averaged, Single-Level, Assimilation, Surface Flux Diagnostics V5.12.4, Greenbelt, MD, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/0JRLVL8YV2Y4.",
+   "reference": "Reichle, R. H., et al. (2017), Land surface precipitation in MERRA-2, J. Climate, 30, 1643–1664 (VERIFY before citing).",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "imerg_v07_final_monthly",
+   "status": "sensitivity",
+   "name": "GPM IMERG Final Precipitation L3 1 month 0.1° V07",
+   "short_name": "GPM_3IMERGM",
+   "version": "07",
+   "kind": "satellite",
+   "doi": "10.5067/GPM/IMERG/3B-MONTH/07",
+   "doi_verified": true,
+   "citation": "Huffman, G.J., E.F. Stocker, D.T. Bolvin, E.J. Nelkin, J. Tan (2023), GPM IMERG Final Precipitation L3 1 month 0.1 degree x 0.1 degree V07, Greenbelt, MD, GES DISC, doi:10.5067/GPM/IMERG/3B-MONTH/07.",
+   "reference": "Huffman, G. J., et al., IMERG Algorithm Theoretical Basis Document, V07.",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "gistemp_v4",
+   "status": "reference",
+   "name": "NASA GISS Surface Temperature Analysis, version 4 (global mean series only)",
+   "short_name": "GISTEMP",
+   "version": "v4",
+   "kind": "observations",
+   "doi": null,
+   "doi_verified": true,
+   "citation": "GISTEMP Team (2026), GISS Surface Temperature Analysis (GISTEMP), version 4. NASA Goddard Institute for Space Studies. Dataset accessed <date>.",
+   "reference": "Lenssen, N., et al. (2024), A NASA GISTEMPv4 observational uncertainty ensemble, J. Geophys. Res. Atmos., doi:10.1029/2023JD040179 (fact-check #22).",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "power",
+   "status": "check",
+   "name": "NASA Prediction Of Worldwide Energy Resources (POWER)",
+   "short_name": "POWER",
+   "version": "API version VERIFY V-07",
+   "kind": "model",
+   "doi": null,
+   "doi_verified": true,
+   "citation": "These data were obtained from the NASA Langley Research Center (LaRC) POWER Project funded through the NASA Earth Science/Applied Science Program.",
+   "reference": "NASA POWER Data Methodology, https://power.larc.nasa.gov/docs/methodology/ ; daily T2M against GSOD stations: bias −0.53 °C, RMSE 2.10 °C, R² 0.97 (#29).",
+   "licence": "VERIFY V-07"
+  },
+  {
+   "id": "gldas_noah10_m",
+   "status": "exploration",
+   "name": "GLDAS Noah Land Surface Model L4 monthly 1.0° V2.1",
+   "short_name": "GLDAS_NOAH10_M",
+   "version": "2.1",
+   "kind": "model",
+   "doi": "10.5067/LWTYSMP3VM5Z",
+   "doi_verified": true,
+   "citation": "Beaudoing, H. and M. Rodell, NASA/GSFC/HSL (2020), GLDAS Noah Land Surface Model L4 monthly 1.0 x 1.0 degree V2.1, Greenbelt, Maryland, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/LWTYSMP3VM5Z.",
+   "reference": "Rodell, M., et al. (2004), The Global Land Data Assimilation System, BAMS, 85, 381–394.",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "airs3stm",
+   "status": "deferred",
+   "name": "AIRS/Aqua L3 Monthly Standard Physical Retrieval (AIRS-only) 1° V7.0",
+   "short_name": "AIRS3STM",
+   "version": "7.0",
+   "kind": "satellite",
+   "doi": null,
+   "doi_verified": false,
+   "citation": "AIRS project (2019), Aqua/AIRS L3 Monthly Standard Physical Retrieval (AIRS-only) 1 degree x 1 degree V7.0, GES DISC.",
+   "reference": "AIRS Version 7 Level 3 Product User Guide, JPL.",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "modis_myd08_m3",
+   "status": "deferred",
+   "name": "MODIS/Aqua Atmosphere Monthly Global Product, Collection 6.1 (aerosol)",
+   "short_name": "MYD08_M3",
+   "version": "6.1",
+   "kind": "satellite",
+   "doi": "VERIFY (#20)",
+   "doi_verified": false,
+   "citation": "Platnick, S., et al. (2017), MODIS Atmosphere L3 Monthly Product (MYD08_M3), NASA MODIS Adaptive Processing System, GSFC.",
+   "reference": "Levy, R. C., et al. (2013), The Collection 6 MODIS aerosol products over land and ocean, AMT, 6, 2989–3034.",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "modis_vegetation",
+   "status": "deferred",
+   "name": "MODIS/Terra Vegetation Indices monthly, Collection 6.1",
+   "short_name": "MOD13 (6.1; MOD13C2 Version 6 retired 31 Jul 2023, #20c)",
+   "version": "6.1",
+   "kind": "satellite",
+   "doi": "VERIFY (#20)",
+   "doi_verified": false,
+   "citation": "Didan, K. (2021), MODIS/Terra Vegetation Indices Monthly V061, NASA EOSDIS LP DAAC.",
+   "reference": "Didan, K., MODIS Vegetation Index User's Guide (Collection 6.1).",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "grace_mascon_jpl",
+   "status": "deferred",
+   "name": "JPL GRACE and GRACE-FO mascons (water stored on and under land); descriptive only",
+   "short_name": "VERIFY (#16a: RL06.3Mv04 per one checker; the JPL page header read RL06.1Mv03 on 2 Nov 2026)",
+   "version": "VERIFY (#16a)",
+   "kind": "satellite",
+   "doi": "VERIFY (#16a)",
+   "doi_verified": false,
+   "citation": "Wiese, D. N., et al., JPL GRACE and GRACE-FO Mascon Ocean, Ice, and Hydrology Equivalent Water Height, PO.DAAC (release VERIFY).",
+   "reference": "Watkins, M. M., et al. (2015), Improved methods for observing Earth's time variable mass distribution with GRACE using spherical cap mascons, JGR Solid Earth, 120, 2648–2671.",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "omi",
+   "status": "deferred",
+   "name": "OMI/Aura OMNO2d (NO₂) and OMTO3e (ozone), L3 daily 0.25°",
+   "short_name": "OMNO2d, OMTO3e",
+   "version": "003",
+   "kind": "satellite",
+   "doi": null,
+   "doi_verified": false,
+   "citation": "Krotkov, N. A., et al. (2019), OMI/Aura NO2 Cloud-Screened Total and Tropospheric Column L3 Global Gridded 0.25 degree V3, GES DISC; Bhartia, P. K. (2012), OMI/Aura TOMS-Like Ozone L3 V3, GES DISC.",
+   "reference": "Krotkov, N. A., et al. (2016), Aura OMI observations of regional SO2 and NO2 pollution changes from 2005 to 2015, ACP, 16, 4605–4629.",
+   "licence": "NASA open data"
+  },
+  {
+   "id": "jaxa_gsmap_v8",
+   "status": "deferred",
+   "name": "GSMaP V8 (JAXA), partner-agency rain witness",
+   "short_name": "VERIFY Earth Engine id, dates and bands (#32)",
+   "version": "8",
+   "kind": "satellite",
+   "doi": null,
+   "doi_verified": false,
+   "citation": "GSMaP V8, JAXA Earth Observation Research Center. Data provided by JAXA.",
+   "reference": "Kubota, T., et al. (2020), Global Satellite Mapping of Precipitation (GSMaP) products in the GPM era, doi:10.1007/978-3-030-24568-9_20.",
+   "licence": "JAXA terms: acknowledge JAXA in every publication (VERIFY)"
+  }
+ ]
+}
