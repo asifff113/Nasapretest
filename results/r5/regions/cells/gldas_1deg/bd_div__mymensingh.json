@@ -1,0 +1,1 @@
+{"schema": "casefile/mask@3", "region": "bd_div:mymensingh", "grid": "gldas_1deg", "cells": [[84, 269, 0.08], [84, 270, 0.52], [84, 271, 0.04], [85, 269, 0.12], [85, 270, 0.2]], "areaKm2": 10771.7, "effectiveCells": 0.96, "synthetic": false}

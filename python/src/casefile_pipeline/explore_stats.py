@@ -103,6 +103,9 @@ def trend(years: np.ndarray, values: np.ndarray, variable: str) -> dict:
         out["reason"] = "missing_year"
         return out
     t, x = years[ok].astype(float), values[ok]
+    if float(np.ptp(x)) == 0.0:                       # the same value every year (no snow in the tropics): nothing to test
+        out["reason"] = "constant"
+        return out
     st = L.core_stats(t, list(x))
     phi = float(st["ar1"]["phi"])
     out["phi"] = round(phi, 3)

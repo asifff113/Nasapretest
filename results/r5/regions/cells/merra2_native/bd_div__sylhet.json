@@ -1,0 +1,1 @@
+{"schema": "casefile/mask@3", "region": "bd_div:sylhet", "grid": "merra2_native", "cells": [[228, 434, 0.2], [228, 435, 0.16], [229, 434, 0.52], [229, 435, 0.88], [230, 434, 0.76], [230, 435, 0.8], [230, 436, 0.24]], "areaKm2": 12496.4, "effectiveCells": 3.56, "synthetic": false}

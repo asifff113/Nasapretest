@@ -1,0 +1,1 @@
+{"schema": "casefile/mask@3", "region": "bd_div:barishal", "grid": "modis_05deg", "cells": [[223, 540, 0.28], [223, 541, 0.04], [224, 539, 0.16], [224, 540, 0.96], [224, 541, 0.6], [225, 539, 0.04], [225, 540, 0.96], [225, 541, 0.36]], "areaKm2": 9716.3, "effectiveCells": 3.4, "synthetic": false}

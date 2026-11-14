@@ -1,0 +1,412 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": false,
+ "id": "air_temp__bd_div__rajshahi__JJAS",
+ "variable": {
+  "id": "air_temp",
+  "kind": "model",
+  "source": "merra2_slv",
+  "units": "°C",
+  "rule": "mean",
+  "ratioScale": false
+ },
+ "region": {
+  "id": "bd_div:rajshahi",
+  "kind": "division",
+  "areaKm2": 18975.1
+ },
+ "season": "JJAS",
+ "window": {
+  "id": "main",
+  "first": 1980,
+  "last": 2025
+ },
+ "family": "secondary",
+ "multiplicity": {
+  "method": "bh",
+  "familySize": 48,
+  "pAdjusted": 1.0,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "outside_domain",
+ "series": {
+  "years": [
+   1980,
+   1981,
+   1982,
+   1983,
+   1984,
+   1985,
+   1986,
+   1987,
+   1988,
+   1989,
+   1990,
+   1991,
+   1992,
+   1993,
+   1994,
+   1995,
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   28.692147113009387,
+   28.949889094674603,
+   29.24052232192814,
+   31.021502467870114,
+   28.851303285073914,
+   30.443134022373695,
+   29.791874232816912,
+   29.77201113345136,
+   29.830400634912056,
+   30.7749997871489,
+   29.757484769910846,
+   30.177099329031343,
+   31.281847052079815,
+   30.137672577241972,
+   30.508142253220328,
+   29.751876858418267,
+   30.18791160220042,
+   28.99264288007714,
+   29.008461477149606,
+   28.562063537383573,
+   28.374103007878734,
+   28.614430645232805,
+   28.492600134234625,
+   29.025958369854603,
+   28.371347256325326,
+   29.65073545164961,
+   28.60148922722136,
+   28.648533312292496,
+   28.46959904706062,
+   29.35644636264972,
+   28.946599093518515,
+   28.685955589769947,
+   29.577425746953626,
+   28.85991538165978,
+   29.16559963300655,
+   28.92830525906763,
+   28.919792194970924,
+   28.665626768299866,
+   28.88025104029013,
+   28.988230073062017,
+   28.67723021138328,
+   28.51823064174274,
+   28.862560916709263,
+   29.571198853867454,
+   29.216657428664565,
+   28.7282611099246
+  ],
+  "units": "°C"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "air_temp",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure, snowfall, wind_speed, soil_moisture, evapotranspiration, runoff, greenness"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "JJAS",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 46,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.36312360945687916,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": false,
+    "value": 0.25077466881045074,
+    "limit": 0.10095649347729432
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 46,
+  "mk": {
+   "S": -293,
+   "varS": 11155.0,
+   "tau": -0.28309178743961355,
+   "z": -2.7647003285651532,
+   "p": 0.005697511075561834,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.2880693825475853,
+   "phi": 0.36312360945687916,
+   "vif": 2.1014029036106767,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 23441.1493897771,
+   "z": -1.9071875373183287,
+   "p": 0.05649630675865291,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -0.021107284592690838,
+   "intercept": 71.25777387343298,
+   "ciLowPerYear": -0.05171962474648497,
+   "ciHighPerYear": 0.004429322090672372,
+   "multiplier": 2.25,
+   "nPairs": 1035
+  },
+  "change": {
+   "ratePerDecade": -0.2110728459269084,
+   "rateLowPerDecade": -0.5171962474648497,
+   "rateHighPerDecade": 0.04429322090672372,
+   "total": -0.9498278066710877,
+   "totalLow": -2.3273831135918237,
+   "totalHigh": 0.19931949408025673,
+   "span": 45,
+   "units": "°C",
+   "percent": null,
+   "baseline": null,
+   "residSd": 0.6520368441626437,
+   "snr": 1.456708796710517
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -0.026617527718899556,
+   "intercept": 82.57399206551514,
+   "se": 0.007276062964535538,
+   "r1": 0.2881817568721917,
+   "phi": 0.3632466860981148,
+   "nEff": 21.48595169031545,
+   "seAdj": 0.010933569656441428,
+   "t": -2.4344773532601995,
+   "df": 19.48595169031545,
+   "p": 0.02467652149648439,
+   "ciLowPerYear": -0.04946318667048048,
+   "ciHighPerYear": -0.0037718687673186264,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -2.7647003285651532,
+   "p": 0.005697511075561834,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": 0.25077466881045074,
+   "m": 11,
+   "mEff": 1.0984709822799317,
+   "mEffStep": 1,
+   "rhoBar": 0.9494166371743163,
+   "phiCells": 0.3561581831007523,
+   "critical": 0.10095649347729432,
+   "passed": false,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "practical": {
+  "threshold": null,
+  "units": "°C per decade",
+  "position": null
+ },
+ "overturn": [],
+ "sensitivity": null,
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "outside_domain",
+  "ratePerDecade": -0.2110728459269084,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "°C",
+  "family": "secondary",
+  "familySize": 48,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   28.692147113009387,
+   28.949889094674603,
+   29.24052232192814,
+   31.021502467870114,
+   28.851303285073914,
+   30.443134022373695,
+   29.791874232816912,
+   29.77201113345136,
+   29.830400634912056,
+   30.7749997871489,
+   29.757484769910846,
+   30.177099329031343,
+   31.281847052079815,
+   30.137672577241972,
+   30.508142253220328,
+   29.751876858418267,
+   30.18791160220042,
+   28.99264288007714,
+   29.008461477149606,
+   28.562063537383573,
+   28.374103007878734,
+   28.614430645232805,
+   28.492600134234625,
+   29.025958369854603,
+   28.371347256325326,
+   29.65073545164961,
+   28.60148922722136,
+   28.648533312292496,
+   28.46959904706062,
+   29.35644636264972,
+   28.946599093518515,
+   28.685955589769947,
+   29.577425746953626,
+   28.85991538165978,
+   29.16559963300655,
+   28.92830525906763,
+   28.919792194970924,
+   28.665626768299866,
+   28.88025104029013,
+   28.988230073062017,
+   28.67723021138328,
+   28.51823064174274,
+   28.862560916709263,
+   29.571198853867454,
+   29.216657428664565,
+   28.7282611099246
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2002.5,
+   28.990436476569577
+  ],
+  "line": [
+   [
+    1980,
+    29.465350379905125
+   ],
+   [
+    2025,
+    28.515522573234037
+   ]
+  ],
+  "band": null
+ },
+ "text": {
+  "en": {
+   "headline": "No verdict: outside the range this method was tested for. The fitted rate is −0.21 °C per decade.",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "কোনো রায় নেই: এই পদ্ধতি যে পরিসরে যাচাই করা হয়েছে, এটি তার বাইরে। মিলিয়ে নেওয়া হার প্রতি দশকে −০.২১ °C।",
+   "howMuch": [],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "earthaccess",
+    "granules": 552,
+    "accessed": "2026-11-14T03:22:08Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "4226ae72bc4da34923a7eaf3a7741db40e9f00688183f32d4b7c3750ebf50f42",
+  "preregSha256": "19b78caa49249c80d5d8b58378783d8b180251e46c0df07fa403f3a1ee2bc1de",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r5",
+  "created": "2026-11-14T03:53:19Z"
+ }
+}

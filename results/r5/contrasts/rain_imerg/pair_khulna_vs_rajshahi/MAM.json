@@ -1,0 +1,393 @@
+{
+ "schema": "casefile/contrast@3",
+ "synthetic": false,
+ "id": "rain_imerg__pair_khulna_vs_rajshahi__MAM",
+ "pair": {
+  "id": "pair_khulna_vs_rajshahi",
+  "a": "bd_div:khulna",
+  "b": "bd_div:rajshahi",
+  "preRegistered": true,
+  "lead": false
+ },
+ "variable": "rain_imerg",
+ "season": "MAM",
+ "window": {
+  "id": "main",
+  "first": 1998,
+  "last": 2024
+ },
+ "family": "sensitivity",
+ "multiplicity": {
+  "method": "none",
+  "familySize": 0,
+  "pAdjusted": null,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "outside_domain",
+ "estimand": "trend_in_difference",
+ "difference": {
+  "years": [
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024
+  ],
+  "values": [
+   61.832702014852885,
+   -28.43629117589984,
+   -68.22742887031973,
+   32.52856892847302,
+   -45.26778050584875,
+   -31.199840937975807,
+   -67.90552621065282,
+   -3.5426296944994533,
+   -39.70125513836814,
+   -17.4876704910578,
+   -28.837982748740245,
+   25.326146535390365,
+   -4.492380594888317,
+   -35.48671324897248,
+   58.42584204758538,
+   199.81982836744123,
+   2.0209728208747038,
+   -137.81436401410252,
+   10.511613260386241,
+   -115.6356874211258,
+   -83.4698326233459,
+   -23.72792433147447,
+   -46.82355328078967,
+   -84.5151035337837,
+   -64.05986902793381,
+   -8.704245050667794,
+   85.27419655617217
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": false,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain_imerg",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure, snowfall, wind_speed, soil_moisture, evapotranspiration, runoff, greenness"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "MAM",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 27,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.3014839954105396,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": false,
+    "value": "A and B",
+    "limit": "both in the domain"
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 27,
+  "mk": {
+   "S": -19,
+   "varS": 2301.0,
+   "tau": -0.05413105413105413,
+   "z": -0.3752443793025749,
+   "p": 0.7074787276069775,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.1827456257200893,
+   "phi": 0.3014839954105396,
+   "vif": 1.8174431806680733,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 4181.936758717236,
+   "z": -0.2783452245126688,
+   "p": 0.780747363050522,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -0.5358590388745839,
+   "intercept": 1049.1762360008881,
+   "ciLowPerYear": -5.998378375662554,
+   "ciHighPerYear": 5.096924988870054,
+   "multiplier": 2.25,
+   "nPairs": 351
+  },
+  "change": {
+   "ratePerDecade": -5.358590388745839,
+   "rateLowPerDecade": -59.98378375662554,
+   "rateHighPerDecade": 50.96924988870054,
+   "total": -13.93233501073918,
+   "totalLow": -155.9578377672264,
+   "totalHigh": 132.5200497106214,
+   "span": 26,
+   "units": "mm",
+   "percent": null,
+   "baseline": null,
+   "residSd": 67.45099500295305,
+   "snr": 0.2065549219863875
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -0.6377073725706625,
+   "intercept": 1265.4074444481469,
+   "se": 1.6994832496883152,
+   "r1": 0.15508417108435466,
+   "phi": 0.26901185301206854,
+   "nEff": 15.552794027753224,
+   "seAdj": 2.308194882316276,
+   "t": -0.2762796926101502,
+   "df": 13.552794027753224,
+   "p": 0.7865016053297937,
+   "ciLowPerYear": -5.603662470368719,
+   "ciHighPerYear": 4.328247725227395,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -0.3752443793025749,
+   "p": 0.7074787276069775,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": null
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "skip",
+   "year": null,
+   "pMax": null,
+   "pMin": null
+  },
+  "windows": {
+   "status": "skip",
+   "agree": 0,
+   "ran": 0,
+   "items": []
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "regions": {
+  "a": {
+   "id": "bd_div:khulna",
+   "verdict": "verdicts/rain_imerg/bd_div__khulna/MAM.json",
+   "ratePerDecade": -21.996249564717267,
+   "rateLowPerDecade": -75.62319903099049,
+   "rateHighPerDecade": 25.678726220569438,
+   "pAdjusted": null,
+   "status": "no_verdict",
+   "grade": null,
+   "inDomain": false
+  },
+  "b": {
+   "id": "bd_div:rajshahi",
+   "verdict": "verdicts/rain_imerg/bd_div__rajshahi/MAM.json",
+   "ratePerDecade": -22.46432219536219,
+   "rateLowPerDecade": -108.63357384936648,
+   "rateHighPerDecade": 55.43379004442767,
+   "pAdjusted": null,
+   "status": "no_verdict",
+   "grade": null,
+   "inDomain": false
+  }
+ },
+ "labels": {
+  "oppositeFittedDirections": false,
+  "supportedOppositeTrends": false,
+  "ratesDiffer": false
+ },
+ "sensitivity": null,
+ "practical": {
+  "threshold": null,
+  "units": "mm per decade",
+  "position": null
+ },
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "outside_domain",
+  "ratePerDecade": -5.358590388745839,
+  "rateLowPerDecade": null,
+  "rateHighPerDecade": null,
+  "units": "mm",
+  "family": "sensitivity",
+  "familySize": 0,
+  "inDomain": false
+ },
+ "chart": {
+  "values": [
+   78.85478380630737,
+   -11.414209384445357,
+   -51.205347078865245,
+   49.5506507199275,
+   -28.245698714394265,
+   -14.177759146521325,
+   -50.88344441919834,
+   13.479452096955029,
+   -22.679173346913657,
+   -0.46558869960331606,
+   -11.815900957285763,
+   42.34822832684485,
+   12.529701196566165,
+   -18.464631457517996,
+   75.44792383903986,
+   216.8419101588957,
+   19.043054612329186,
+   -120.79228222264804,
+   27.533695051840724,
+   -98.61360562967131,
+   -66.44775083189141,
+   -6.705842540019987,
+   -29.801471489335185,
+   -67.49302174232922,
+   -47.03778723647933,
+   8.317836740786689,
+   102.29627834762665
+  ],
+  "offset": -17.022081791454482,
+  "pivot": [
+   2011.0,
+   -11.414209384445357
+  ],
+  "line": [
+   [
+    1998,
+    -4.448041879076001
+   ],
+   [
+    2024,
+    -18.380376889815054
+   ]
+  ],
+  "band": null
+ },
+ "split": {
+  "rule": "disjoint_cells_larger_fraction",
+  "grids": {
+   "merra2_native": {
+    "sharedCells": 2,
+    "effectiveCellsA": 5.96,
+    "effectiveCellsB": 5.28,
+    "passes": true
+   },
+   "imerg_native": {
+    "sharedCells": 8,
+    "effectiveCellsA": 187.28,
+    "effectiveCellsB": 164.72,
+    "passes": true
+   }
+  },
+  "passes": true
+ },
+ "text": {
+  "en": {
+   "headline": "No verdict on the difference between Khulna division and Rajshahi division: No verdict: outside the range this method was tested for. The fitted rate is −5.4 mm per decade.",
+   "howMuch": [
+    "Khulna division: −22 mm per decade (95% range −76 mm to +26 mm). Rajshahi division: −22 mm per decade (95% range −109 mm to +55 mm).",
+    "Each place's own rate is shown beside the difference, never subtracted from it."
+   ],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "Both records use rain-gauge and satellite inputs, so this is a sensitivity check, not an independent confirmation."
+   ]
+  },
+  "bn": {
+   "headline": "খুলনা বিভাগ ও রাজশাহী বিভাগ-এর পার্থক্য নিয়ে কোনো রায় নেই: কোনো রায় নেই: এই পদ্ধতি যে পরিসরে যাচাই করা হয়েছে, এটি তার বাইরে। মিলিয়ে নেওয়া হার প্রতি দশকে −৫.৪ মিমি।",
+   "howMuch": [
+    "খুলনা বিভাগ: প্রতি দশকে −২২ মিমি (৯৫% পরিসর −৭৬ মিমি থেকে +২৬ মিমি)। রাজশাহী বিভাগ: প্রতি দশকে −২২ মিমি (৯৫% পরিসর −১০৯ মিমি থেকে +৫৫ মিমি)।",
+    "প্রতিটি জায়গার নিজস্ব হার পার্থক্যের পাশে দেখানো হয়, কখনো তা থেকে বিয়োগ করা হয় না।"
+   ],
+   "howSure": [],
+   "checks": [],
+   "practical": [],
+   "overturn": [],
+   "notes": [
+    "দুটি রেকর্ডই বৃষ্টিমাপক ও স্যাটেলাইটের তথ্য ব্যবহার করে, তাই এটি সংবেদনশীলতা-যাচাই, স্বাধীন সমর্থন নয়।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "GPM IMERG Final Precipitation L3 1 month 0.1° V07",
+    "shortName": "GPM_3IMERGM",
+    "version": "07",
+    "doi": "10.5067/GPM/IMERG/3B-MONTH/07",
+    "route": "earthaccess",
+    "granules": 333,
+    "accessed": "2026-11-14T03:22:08Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "4226ae72bc4da34923a7eaf3a7741db40e9f00688183f32d4b7c3750ebf50f42",
+  "preregSha256": "19b78caa49249c80d5d8b58378783d8b180251e46c0df07fa403f3a1ee2bc1de",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r5",
+  "created": "2026-11-14T03:53:19Z"
+ }
+}

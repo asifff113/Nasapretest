@@ -326,6 +326,7 @@
                   "descriptive",
                   "too_short",
                   "missing_year",
+                  "constant",
                   "not_finite",
                   "phi_out_of_range"
                 ]
@@ -429,6 +430,7 @@
                     "descriptive",
                     "too_short",
                     "missing_year",
+                    "constant",
                     "not_finite",
                     "phi_out_of_range"
                   ]

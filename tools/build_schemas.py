@@ -414,7 +414,8 @@ S("map_years", "Yearly map frames — one [180][360] int16 frame per year for th
     "file": {"type": "string"}, "dtype": {"const": "int16"}, "byteOrder": {"const": "little"}, "layout": {"const": "[year][row][col]"},
     "scale": {"type": "number", "exclusiveMinimum": 0}, "offset": {"type": "number"}, "fill": {"const": -32768},
     "range": {"type": ["array", "null"], "items": {"type": "number"}, "minItems": 2, "maxItems": 2}, "source": {"type": "string"},
-    "anomaly": {"oneOf": [{"type": "null"}, obj({"file": {"type": "string"}, "baseline": years_pair, "scale": {"type": "number", "exclusiveMinimum": 0},
+    "anomaly": {"oneOf": [{"type": "null"}, obj({"file": {"type": "string"}, "baseline": years_pair, "dtype": {"const": "int8"},
+                                                 "scale": {"type": "number", "exclusiveMinimum": 0}, "fill": {"const": -128}, "clippedAt": {"type": "number"},
                                                  "layout": {"const": "[year][row][col]"}, "range": num_or_null})]},
     "decades": {"oneOf": [{"type": "null"}, obj({"file": {"type": "string"}, "frames": {"const": ["early", "late", "change"]},
                                                  "early": years_pair, "late": years_pair, "scale": {"type": "number", "exclusiveMinimum": 0},
@@ -428,7 +429,7 @@ place_info = {"bbox": {"type": "array", "items": {"type": "number"}, "minItems":
 explore_region_info = {"id": ref("regionId"), "kind": {"enum": ["country", "division", "comparison"]}, "name": ref("text2"), **place_info}
 explore_area_info = {"id": {"type": "string", "pattern": "^(world|world:land|continent:[a-z_]+)$"}, "kind": {"enum": ["world", "continent"]},
                      "name": ref("text2"), **place_info}
-trend_reason = {"enum": [None, "ok", "descriptive", "too_short", "missing_year", "not_finite", "phi_out_of_range"]}
+trend_reason = {"enum": [None, "ok", "descriptive", "too_short", "missing_year", "constant", "not_finite", "phi_out_of_range"]}
 trend_props = {"testable": {"type": "boolean"}, "reason": trend_reason, "exploratory": {"type": "boolean"}, "n": {"type": "integer"},
                "first": int_or_null, "last": int_or_null, "ratePerDecade": num_or_null, "lowPerDecade": num_or_null, "highPerDecade": num_or_null,
                "p": num_or_null, "q": num_or_null, "standsOut": {"type": "boolean"}, "phi": num_or_null, "jumpYear": int_or_null}

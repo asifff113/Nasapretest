@@ -70,6 +70,7 @@ def test_descriptive_short_and_missing_records_get_no_test():
     a = np.array(_annual(1980, 2025, m), dtype=float)
     a[20] = np.nan
     assert X.trend(years, a, "air_temp")["reason"] == "missing_year"
+    assert X.trend(years, np.zeros(46), "snowfall")["reason"] == "constant"           # no snow at all: nothing to test
 
 
 def test_adjustment_across_places():
@@ -94,7 +95,8 @@ def test_anomaly_decade_maps_and_hovmoller(tmp_path):
     explore.write_year_frames(bundle, results, "t1", log=lambda *_: None)
     meta = json.loads((results / "maps/air_temp/ANN/years.json").read_text(encoding="utf-8"))
     assert meta["anomaly"]["baseline"] == [1991, 2020] and meta["decades"]["early"] == [1980, 1989]
-    an = np.frombuffer(gzip.decompress((results / "maps/air_temp/ANN/anomaly.bin.gz").read_bytes()), dtype="<i2").reshape(46, 180, 360)
+    an = np.frombuffer(gzip.decompress((results / "maps/air_temp/ANN/anomaly.bin.gz").read_bytes()), dtype="i1").reshape(46, 180, 360)
+    assert meta["anomaly"]["dtype"] == "int8" and meta["anomaly"]["fill"] == -128 and an[0, 0, 0] == -128   # the empty row
     assert an[0, 90, 0] * meta["anomaly"]["scale"] == pytest.approx(-0.02 * (2005.5 - 1980), abs=meta["anomaly"]["scale"])
     dec = np.frombuffer(gzip.decompress((results / "maps/air_temp/ANN/decades.bin.gz").read_bytes()), dtype="<i2").reshape(3, 180, 360)
     assert dec[2, 90, 0] * meta["decades"]["scale"] == pytest.approx(0.02 * 36, abs=meta["decades"]["scale"])

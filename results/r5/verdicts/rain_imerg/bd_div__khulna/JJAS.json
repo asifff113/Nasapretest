@@ -1,0 +1,467 @@
+{
+ "schema": "casefile/verdict@3",
+ "synthetic": false,
+ "id": "rain_imerg__bd_div__khulna__JJAS",
+ "variable": {
+  "id": "rain_imerg",
+  "kind": "satellite",
+  "source": "imerg_v07_final_monthly",
+  "units": "mm",
+  "rule": "sum",
+  "ratioScale": true
+ },
+ "region": {
+  "id": "bd_div:khulna",
+  "kind": "division",
+  "areaKm2": 21783.4
+ },
+ "season": "JJAS",
+ "window": {
+  "id": "main",
+  "first": 1998,
+  "last": 2024
+ },
+ "family": "sensitivity",
+ "multiplicity": {
+  "method": "none",
+  "familySize": 0,
+  "pAdjusted": null,
+  "alpha": 0.05
+ },
+ "status": "no_verdict",
+ "grade": null,
+ "reason": "exploration",
+ "series": {
+  "years": [
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024
+  ],
+  "values": [
+   1315.2019072538642,
+   1568.6567941246046,
+   1316.6148330871702,
+   1252.9653646913434,
+   1732.2490797703492,
+   1105.3027555666306,
+   1610.4543980380345,
+   1322.865200743703,
+   1470.609252920533,
+   1583.749265380091,
+   1322.9867704954243,
+   1314.258490643608,
+   964.3092937082262,
+   1535.2792308677454,
+   1159.548076907809,
+   1245.8331834579412,
+   1189.5822478591836,
+   1709.5877110186327,
+   1349.5206468009242,
+   1437.7426907788847,
+   1075.5974905796065,
+   1085.1569485891637,
+   1277.1565644461748,
+   1668.7034580407606,
+   926.6204431249378,
+   1172.4478809127372,
+   1571.1436017280448
+  ],
+  "units": "mm"
+ },
+ "domain": {
+  "inDomain": true,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "rain_imerg",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure, snowfall, wind_speed, soil_moisture, evapotranspiration, runoff, greenness"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "JJAS",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 27,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.0,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": -0.05256183704634361,
+    "limit": 0.048655527642423084
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 27,
+  "mk": {
+   "S": -53,
+   "varS": 2301.0,
+   "tau": -0.150997150997151,
+   "z": -1.0840393179852164,
+   "p": 0.2783473662511158,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": -0.3878381927804857,
+   "phi": 0.0,
+   "vif": 1.0,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 2301.0,
+   "z": -1.0840393179852164,
+   "p": 0.2783473662511158,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": -7.273005741428885,
+   "intercept": 15942.629379100657,
+   "ciLowPerYear": -22.910154205444428,
+   "ciHighPerYear": 7.661772026595724,
+   "multiplier": 2.25,
+   "nPairs": 351
+  },
+  "change": {
+   "ratePerDecade": -72.73005741428885,
+   "rateLowPerDecade": -229.10154205444428,
+   "rateHighPerDecade": 76.61772026595725,
+   "total": -189.098149277151,
+   "totalLow": -595.6640093415551,
+   "totalHigh": 199.20607269148883,
+   "span": 26,
+   "units": "mm",
+   "percent": -13.400154882213831,
+   "baseline": 1411.163907725746,
+   "residSd": 220.1723065363368,
+   "snr": 0.8588643696928461
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": -5.687099779809029,
+   "intercept": 12780.614826882475,
+   "se": 5.53874625715032,
+   "r1": -0.3531393530244888,
+   "phi": 0.0,
+   "nEff": 27.0,
+   "seAdj": 5.53874625715032,
+   "t": -1.0267846757679482,
+   "df": 25.0,
+   "p": 0.31435471472924265,
+   "ciLowPerYear": -17.094361230328143,
+   "ciHighPerYear": 5.720161670710087,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": -1.0840393179852164,
+   "p": 0.2783473662511158,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": {
+   "stat": -0.05256183704634361,
+   "m": 111,
+   "mEff": 1.3779962274409,
+   "mEffStep": 1,
+   "rhoBar": 0.8504102992339965,
+   "phiCells": 0.0,
+   "critical": 0.048655527642423084,
+   "passed": true,
+   "source": "contributing_cells"
+  }
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [
+   {
+    "id": "imerg_trmm_to_gpm_2014",
+    "year": 2014,
+    "label": {
+     "en": "IMERG moved from the TRMM era to the GPM era (June 2014)",
+     "bn": "IMERG, TRMM যুগ থেকে GPM যুগে যায় (জুন ২০১৪)"
+    },
+    "status": "unreviewed",
+    "review": null
+   }
+  ],
+  "loo": {
+   "status": "pass",
+   "year": 2021,
+   "pMax": 0.5084542305885602,
+   "pMin": 0.13391892014731072
+  },
+  "windows": {
+   "status": "pass",
+   "agree": 0,
+   "ran": 5,
+   "items": [
+    {
+     "id": "s3",
+     "first": 2001,
+     "last": 2024,
+     "ran": true,
+     "ratePerDecade": -86.10380279705169,
+     "rateLowPerDecade": -260.25402064351863,
+     "rateHighPerDecade": 130.67284262333774,
+     "p": 0.3091626948735827,
+     "agrees": false
+    },
+    {
+     "id": "s6",
+     "first": 2004,
+     "last": 2024,
+     "ran": true,
+     "ratePerDecade": -114.24085103858235,
+     "rateLowPerDecade": -298.18311347590014,
+     "rateHighPerDecade": 134.27517208993058,
+     "p": 0.2638720094732372,
+     "agrees": false
+    },
+    {
+     "id": "e3",
+     "first": 1998,
+     "last": 2021,
+     "ran": true,
+     "ratePerDecade": -47.501029790497356,
+     "rateLowPerDecade": -229.10154205444428,
+     "rateHighPerDecade": 101.09047581149659,
+     "p": 0.44193101201121243,
+     "agrees": false
+    },
+    {
+     "id": "e6",
+     "first": 1998,
+     "last": 2018,
+     "ran": true,
+     "ratePerDecade": -86.10380279705169,
+     "rateLowPerDecade": -272.9666929213115,
+     "rateHighPerDecade": 115.4858288047133,
+     "p": 0.41489093965848534,
+     "agrees": false
+    },
+    {
+     "id": "s3e3",
+     "first": 2001,
+     "last": 2021,
+     "ran": true,
+     "ratePerDecade": -76.53261435286367,
+     "rateLowPerDecade": -267.7937247812959,
+     "rateHighPerDecade": 145.95719431165207,
+     "p": 0.4873503903353207,
+     "agrees": false
+    }
+   ]
+  },
+  "pettitt": null
+ },
+ "doubts": [
+  "break_unreviewed"
+ ],
+ "practical": {
+  "threshold": 40,
+  "units": "mm per decade",
+  "position": "overlaps"
+ },
+ "overturn": [],
+ "sensitivity": null,
+ "spine": {
+  "status": "no_verdict",
+  "grade": null,
+  "reason": "exploration",
+  "ratePerDecade": -72.73005741428885,
+  "rateLowPerDecade": -229.10154205444428,
+  "rateHighPerDecade": 76.61772026595725,
+  "units": "mm",
+  "family": "sensitivity",
+  "familySize": 0,
+  "inDomain": true
+ },
+ "chart": {
+  "values": [
+   1315.2019072538642,
+   1568.6567941246046,
+   1316.6148330871702,
+   1252.9653646913434,
+   1732.2490797703492,
+   1105.3027555666306,
+   1610.4543980380345,
+   1322.865200743703,
+   1470.609252920533,
+   1583.749265380091,
+   1322.9867704954243,
+   1314.258490643608,
+   964.3092937082262,
+   1535.2792308677454,
+   1159.548076907809,
+   1245.8331834579412,
+   1189.5822478591836,
+   1709.5877110186327,
+   1349.5206468009242,
+   1437.7426907788847,
+   1075.5974905796065,
+   1085.1569485891637,
+   1277.1565644461748,
+   1668.7034580407606,
+   926.6204431249378,
+   1172.4478809127372,
+   1571.1436017280448
+  ],
+  "offset": 0.0,
+  "pivot": [
+   2011.0,
+   1316.6148330871702
+  ],
+  "line": [
+   [
+    1998,
+    1411.163907725746
+   ],
+   [
+    2024,
+    1222.0657584485944
+   ]
+  ],
+  "band": {
+   "low": [
+    [
+     1998,
+     1614.4468377579478
+    ],
+    [
+     2024,
+     1018.7828284163926
+    ]
+   ],
+   "high": [
+    [
+     1998,
+     1217.0117967414258
+    ],
+    [
+     2024,
+     1416.2178694329145
+    ]
+   ]
+  }
+ },
+ "text": {
+  "en": {
+   "headline": "Sensitivity check: −73 mm per decade (95% range −229 mm to +77 mm) in IMERG, a second rain record. It is shown beside MERRA-2 and gets no verdict.",
+   "howMuch": [
+    "Rate: −73 mm per decade (95% range −229 mm to +77 mm).",
+    "Total change over 1998–2024: −189 mm (−13% of the starting level).",
+    "That is smaller than the usual year-to-year ups and downs."
+   ],
+   "howSure": [],
+   "checks": [
+    "No missing years.",
+    "A documented data change falls in 2014 (IMERG moved from the TRMM era to the GPM era (June 2014)) and has not been checked by a person yet.",
+    "No single year decides the answer.",
+    "0 of 5 other windows agree."
+   ],
+   "practical": [
+    "We decided in advance that a change of 40 mm per decade matters. The 95% range includes smaller changes, so it may or may not matter."
+   ],
+   "overturn": [],
+   "notes": [
+    "Both records use rain-gauge and satellite inputs, so this is a sensitivity check, not an independent confirmation."
+   ]
+  },
+  "bn": {
+   "headline": "সংবেদনশীলতা-যাচাই: IMERG-এ, বৃষ্টির দ্বিতীয় একটি রেকর্ডে, প্রতি দশকে −৭৩ মিমি (৯৫% পরিসর −২২৯ মিমি থেকে +৭৭ মিমি)। এটি MERRA-2-এর পাশে দেখানো হয়, এর কোনো রায় নেই।",
+   "howMuch": [
+    "হার: প্রতি দশকে −৭৩ মিমি (৯৫% পরিসর −২২৯ মিমি থেকে +৭৭ মিমি)।",
+    "১৯৯৮–২০২৪ সময়ে মোট পরিবর্তন: −১৮৯ মিমি (শুরুর মাত্রার −১৩%)।",
+    "এটি স্বাভাবিক বছর-থেকে-বছরের ওঠানামার চেয়ে ছোট।"
+   ],
+   "howSure": [],
+   "checks": [
+    "কোনো বছর অনুপস্থিত নয়।",
+    "২০১৪ সালে ডেটার একটি নথিভুক্ত পরিবর্তন আছে (IMERG, TRMM যুগ থেকে GPM যুগে যায় (জুন ২০১৪)), যা এখনো কেউ যাচাই করেননি।",
+    "কোনো একক বছর উত্তর ঠিক করে দিচ্ছে না।",
+    "অন্য ৫টি সময়সীমার মধ্যে ০টি একমত।"
+   ],
+   "practical": [
+    "আমরা আগেই ঠিক করেছি যে প্রতি দশকে ৪০ মিমি পরিবর্তন গুরুত্বপূর্ণ। ৯৫% পরিসরে এর চেয়ে ছোট পরিবর্তনও আছে, তাই এটি গুরুত্বপূর্ণ হতেও পারে, না-ও পারে।"
+   ],
+   "overturn": [],
+   "notes": [
+    "দুটি রেকর্ডই বৃষ্টিমাপক ও স্যাটেলাইটের তথ্য ব্যবহার করে, তাই এটি সংবেদনশীলতা-যাচাই, স্বাধীন সমর্থন নয়।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "GPM IMERG Final Precipitation L3 1 month 0.1° V07",
+    "shortName": "GPM_3IMERGM",
+    "version": "07",
+    "doi": "10.5067/GPM/IMERG/3B-MONTH/07",
+    "route": "earthaccess",
+    "granules": 333,
+    "accessed": "2026-11-14T03:22:08Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "4226ae72bc4da34923a7eaf3a7741db40e9f00688183f32d4b7c3750ebf50f42",
+  "preregSha256": "19b78caa49249c80d5d8b58378783d8b180251e46c0df07fa403f3a1ee2bc1de",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r5",
+  "created": "2026-11-14T03:53:19Z"
+ }
+}

@@ -1,0 +1,557 @@
+{
+ "schema": "casefile/contrast@3",
+ "synthetic": false,
+ "id": "air_temp__pair_khulna_vs_rajshahi__MAM",
+ "pair": {
+  "id": "pair_khulna_vs_rajshahi",
+  "a": "bd_div:khulna",
+  "b": "bd_div:rajshahi",
+  "preRegistered": true,
+  "lead": false
+ },
+ "variable": "air_temp",
+ "season": "MAM",
+ "window": {
+  "id": "main",
+  "first": 1980,
+  "last": 2025
+ },
+ "family": "secondary",
+ "multiplicity": {
+  "method": "bh",
+  "familySize": 48,
+  "pAdjusted": 0.019394214198283067,
+  "alpha": 0.05
+ },
+ "status": "verdict",
+ "grade": "supported",
+ "reason": null,
+ "estimand": "trend_in_difference",
+ "difference": {
+  "years": [
+   1980,
+   1981,
+   1982,
+   1983,
+   1984,
+   1985,
+   1986,
+   1987,
+   1988,
+   1989,
+   1990,
+   1991,
+   1992,
+   1993,
+   1994,
+   1995,
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   -0.025484247129824666,
+   -0.07420344761324316,
+   -0.11066322656698091,
+   -0.1917852904652797,
+   -0.6405250497957979,
+   -0.7545461186001603,
+   -0.3794734602995824,
+   -0.391475762321452,
+   -0.5001023809092224,
+   -0.31581377146201106,
+   -0.8453787124760517,
+   -0.2260238954932312,
+   -0.29026473314710444,
+   -0.34205158357692866,
+   -0.7723070821917801,
+   -0.6722803052346542,
+   -0.8204215251547673,
+   -0.47682495367680744,
+   -0.11618506995836597,
+   0.06872109640961455,
+   0.3015536266627947,
+   0.2080166748648935,
+   0.6286680811040632,
+   0.4880251540961993,
+   0.3796016865885683,
+   0.019953688580660156,
+   0.7600523334437597,
+   -0.14939640016002897,
+   -0.1312357231830994,
+   0.24193491949003487,
+   -0.22143110149834655,
+   0.06605603613877165,
+   -0.024650188590868538,
+   0.031077314735373562,
+   0.10875005895170275,
+   -0.00933758222457115,
+   -0.3025237375158838,
+   0.30446317774470444,
+   0.909635797178737,
+   -0.5068290116679961,
+   0.6132460340555639,
+   0.9315160525179245,
+   0.11702126541097968,
+   0.36337707548826614,
+   0.806173644023513,
+   0.548825186006475
+  ],
+  "units": "°C"
+ },
+ "domain": {
+  "inDomain": true,
+  "checks": [
+   {
+    "id": "D1",
+    "passed": true,
+    "value": "air_temp",
+    "limit": "air_temp, rain, rain_imerg, water_vapor, pressure, snowfall, wind_speed, soil_moisture, evapotranspiration, runoff, greenness"
+   },
+   {
+    "id": "D2",
+    "passed": true,
+    "value": "MAM",
+    "limit": "ANN or a pre-registered season"
+   },
+   {
+    "id": "D3",
+    "passed": true,
+    "value": 46,
+    "limit": 20
+   },
+   {
+    "id": "D4",
+    "passed": true,
+    "value": 0,
+    "limit": 0
+   },
+   {
+    "id": "D5",
+    "passed": true,
+    "value": 0.32512435626682695,
+    "limit": 0.7
+   },
+   {
+    "id": "D6",
+    "passed": true,
+    "value": "A and B",
+    "limit": "both in the domain"
+   },
+   {
+    "id": "D7",
+    "passed": true,
+    "value": null,
+    "limit": null
+   }
+  ]
+ },
+ "stats": {
+  "n": 46,
+  "mk": {
+   "S": 427,
+   "varS": 11155.0,
+   "tau": 0.41256038647342996,
+   "z": 4.033432671125874,
+   "p": 5.496793524558096e-05,
+   "pKind": "mk_normal_cc"
+  },
+  "ar1": {
+   "phiRaw": 0.2533744122436246,
+   "phi": 0.32512435626682695,
+   "vif": 1.9324723331938967,
+   "estimator": "ar1_regression_consecutive"
+  },
+  "mkAr1": {
+   "varSStar": 21556.728876777917,
+   "z": 2.9014705667326677,
+   "p": 0.003714156692710626,
+   "pKind": "mk_normal_cc"
+  },
+  "sen": {
+   "slopePerYear": 0.02096813438360328,
+   "intercept": -42.0385329505371,
+   "ciLowPerYear": 0.005701490882522142,
+   "ciHighPerYear": 0.03684312398785572,
+   "multiplier": 2.25,
+   "nPairs": 1035
+  },
+  "change": {
+   "ratePerDecade": 0.20968134383603282,
+   "rateLowPerDecade": 0.05701490882522142,
+   "rateHighPerDecade": 0.3684312398785572,
+   "total": 0.9435660472621477,
+   "totalLow": 0.2565670897134964,
+   "totalHigh": 1.6579405794535074,
+   "span": 45,
+   "units": "°C",
+   "percent": null,
+   "baseline": null,
+   "residSd": 0.37051151462470555,
+   "snr": 2.546657823085186
+  },
+  "ttest": {
+   "available": true,
+   "slopePerYear": 0.021249068461166868,
+   "intercept": -42.58157579908279,
+   "se": 0.004161171888392607,
+   "r1": 0.25254214252500257,
+   "phi": 0.32421282276547897,
+   "nEff": 23.475237226496333,
+   "seAdj": 0.005956251249972645,
+   "t": 3.5675238618022465,
+   "df": 21.475237226496333,
+   "p": 0.0017703796871134608,
+   "ciLowPerYear": 0.008879035323349112,
+   "ciHighPerYear": 0.033619101598984624,
+   "role": "display_only"
+  },
+  "naive": {
+   "z": 4.033432671125874,
+   "p": 5.496793524558096e-05,
+   "label": "naive_ignores_memory"
+  },
+  "leftover": null
+ },
+ "robustness": {
+  "gaps": {
+   "missingYears": []
+  },
+  "coverage": {
+   "status": "skip",
+   "cmin": null,
+   "cmax": null,
+   "p": null
+  },
+  "breaks": [],
+  "loo": {
+   "status": "pass",
+   "year": 2018,
+   "pMax": 0.015688316710132176,
+   "pMin": 0.001309393889514379
+  },
+  "windows": {
+   "status": "pass",
+   "agree": 4,
+   "ran": 5,
+   "items": [
+    {
+     "id": "s3",
+     "first": 1983,
+     "last": 2025,
+     "ran": true,
+     "ratePerDecade": 0.25426967247078164,
+     "rateLowPerDecade": 0.11787545739901537,
+     "rateHighPerDecade": 0.4028466429619748,
+     "p": 0.00043304386053405415,
+     "agrees": true
+    },
+    {
+     "id": "s6",
+     "first": 1986,
+     "last": 2025,
+     "ran": true,
+     "ratePerDecade": 0.25226696912770263,
+     "rateLowPerDecade": 0.09818982957260283,
+     "rateHighPerDecade": 0.4258673667484282,
+     "p": 0.0014859655341120086,
+     "agrees": true
+    },
+    {
+     "id": "e3",
+     "first": 1980,
+     "last": 2022,
+     "ran": true,
+     "ratePerDecade": 0.18150695480005946,
+     "rateLowPerDecade": 0.018175174284193928,
+     "rateHighPerDecade": 0.3745684322335734,
+     "p": 0.015610580372572364,
+     "agrees": true
+    },
+    {
+     "id": "e6",
+     "first": 1980,
+     "last": 2019,
+     "ran": true,
+     "ratePerDecade": 0.15905129401067736,
+     "rateLowPerDecade": -0.07695541399612754,
+     "rateHighPerDecade": 0.4028466429619748,
+     "p": 0.09550794649518703,
+     "agrees": false
+    },
+    {
+     "id": "s3e3",
+     "first": 1983,
+     "last": 2022,
+     "ran": true,
+     "ratePerDecade": 0.23307683100992194,
+     "rateLowPerDecade": 0.08226581336550609,
+     "rateHighPerDecade": 0.4217084149378615,
+     "p": 0.0024465040854764484,
+     "agrees": true
+    }
+   ]
+  },
+  "pettitt": null
+ },
+ "doubts": [],
+ "regions": {
+  "a": {
+   "id": "bd_div:khulna",
+   "verdict": "verdicts/air_temp/bd_div__khulna/MAM.json",
+   "ratePerDecade": -0.13646478516424684,
+   "rateLowPerDecade": -0.3616032038778746,
+   "rateHighPerDecade": 0.08550993709011748,
+   "pAdjusted": 0.3418189923245469,
+   "status": "verdict",
+   "grade": "cant_tell_yet",
+   "inDomain": true
+  },
+  "b": {
+   "id": "bd_div:rajshahi",
+   "verdict": "verdicts/air_temp/bd_div__rajshahi/MAM.json",
+   "ratePerDecade": -0.3209797898804661,
+   "rateLowPerDecade": -0.6204014956631769,
+   "rateHighPerDecade": -0.048487865113138184,
+   "pAdjusted": 0.0319585101672057,
+   "status": "verdict",
+   "grade": "supported",
+   "inDomain": true
+  }
+ },
+ "labels": {
+  "oppositeFittedDirections": false,
+  "supportedOppositeTrends": false,
+  "ratesDiffer": true
+ },
+ "sensitivity": null,
+ "practical": {
+  "threshold": 0.1,
+  "units": "°C per decade",
+  "position": "overlaps"
+ },
+ "spine": {
+  "status": "verdict",
+  "grade": "supported",
+  "reason": null,
+  "ratePerDecade": 0.20968134383603282,
+  "rateLowPerDecade": 0.05701490882522142,
+  "rateHighPerDecade": 0.3684312398785572,
+  "units": "°C",
+  "family": "secondary",
+  "familySize": 48,
+  "inDomain": true
+ },
+ "chart": {
+  "values": [
+   0.004831958466293598,
+   -0.04388724201712489,
+   -0.08034702097086265,
+   -0.16146908486916145,
+   -0.6102088441996797,
+   -0.724229913004042,
+   -0.34915725470346415,
+   -0.36115955672533373,
+   -0.4697861753131042,
+   -0.2854975658658928,
+   -0.8150625068799334,
+   -0.19570768989711296,
+   -0.2599485275509862,
+   -0.3117353779808104,
+   -0.7419908765956619,
+   -0.641964099638536,
+   -0.790105319558649,
+   -0.4465087480806892,
+   -0.08586886436224771,
+   0.09903730200573281,
+   0.331869832258913,
+   0.23833288046101175,
+   0.6589842867001815,
+   0.5183413596923175,
+   0.40991789218468655,
+   0.05026989417677842,
+   0.7903685390398779,
+   -0.11908019456391071,
+   -0.10091951758698113,
+   0.2722511250861531,
+   -0.1911148959022283,
+   0.09637224173488991,
+   0.005666017005249727,
+   0.06139352033149183,
+   0.139066264547821,
+   0.020978623371547114,
+   -0.27220753191976554,
+   0.3347793833408227,
+   0.9399520027748552,
+   -0.47651280607187785,
+   0.6435622396516821,
+   0.9618322581140427,
+   0.14733747100709793,
+   0.3936932810843844,
+   0.8364898496196312,
+   0.5791413916025933
+  ],
+  "offset": -0.030316205596118265,
+  "pivot": [
+   2002.5,
+   -0.019527641775415647
+  ],
+  "line": [
+   [
+    1980,
+    -0.4913106654064917
+   ],
+   [
+    2025,
+    0.4522553818556604
+   ]
+  ],
+  "band": {
+   "low": [
+    [
+     1980,
+     -0.14781118663216386
+    ],
+    [
+     2025,
+     0.10875590308133255
+    ]
+   ],
+   "high": [
+    [
+     1980,
+     -0.8484979315021693
+    ],
+    [
+     2025,
+     0.809442647951338
+    ]
+   ]
+  }
+ },
+ "split": {
+  "rule": "disjoint_cells_larger_fraction",
+  "grids": {
+   "merra2_native": {
+    "sharedCells": 2,
+    "effectiveCellsA": 5.96,
+    "effectiveCellsB": 5.28,
+    "passes": true
+   },
+   "imerg_native": {
+    "sharedCells": 8,
+    "effectiveCellsA": 187.28,
+    "effectiveCellsB": 164.72,
+    "passes": true
+   }
+  },
+  "passes": true
+ },
+ "text": {
+  "en": {
+   "headline": "Air temperature near the ground (Mar–May) changed at different rates in Khulna division and Rajshahi division: the trend in the difference (Khulna division − Rajshahi division) is +0.21 °C per decade (95% range +0.06 °C to +0.37 °C).",
+   "howMuch": [
+    "Khulna division: −0.14 °C per decade (95% range −0.36 °C to +0.09 °C). Rajshahi division: −0.32 °C per decade (95% range −0.62 °C to −0.05 °C).",
+    "Each place's own rate is shown beside the difference, never subtracted from it."
+   ],
+   "howSure": [
+    "A secondary result: one of 48 season tests registered in advance; after correcting for them, p = 0.019.",
+    "Mann–Kendall test allowing for year-to-year memory, before correction: p = 0.004.",
+    "That is below the 0.05 line we set in advance."
+   ],
+   "checks": [
+    "No missing years.",
+    "No documented data change falls inside these years.",
+    "No single year decides the answer.",
+    "4 of 5 other windows agree."
+   ],
+   "practical": [
+    "We decided in advance that a change of 0.10 °C per decade matters. The 95% range includes smaller changes, so it may or may not matter."
+   ],
+   "overturn": [
+    "The answer leans most on 2018: without it, p = 0.016.",
+    "The weakest of the other windows, 1980–2019, gives +0.16 °C per decade.",
+    "If year-to-year memory were stronger or slower than our model assumes, the test would be too eager. Our check found no sign of that here."
+   ],
+   "notes": [
+    "This comes from a model that blends many observations (a reanalysis). Models can shift when the observations they use change."
+   ]
+  },
+  "bn": {
+   "headline": "খুলনা বিভাগ ও রাজশাহী বিভাগ-এ ভূপৃষ্ঠের কাছের বাতাসের তাপমাত্রা (মার্চ–মে) ভিন্ন হারে বদলেছে: পার্থক্যের (খুলনা বিভাগ − রাজশাহী বিভাগ) প্রবণতা প্রতি দশকে +০.২১ °C (৯৫% পরিসর +০.০৬ °C থেকে +০.৩৭ °C)।",
+   "howMuch": [
+    "খুলনা বিভাগ: প্রতি দশকে −০.১৪ °C (৯৫% পরিসর −০.৩৬ °C থেকে +০.০৯ °C)। রাজশাহী বিভাগ: প্রতি দশকে −০.৩২ °C (৯৫% পরিসর −০.৬২ °C থেকে −০.০৫ °C)।",
+    "প্রতিটি জায়গার নিজস্ব হার পার্থক্যের পাশে দেখানো হয়, কখনো তা থেকে বিয়োগ করা হয় না।"
+   ],
+   "howSure": [
+    "দ্বিতীয় সারির ফল: আগে থেকে নিবন্ধিত ৪৮টি ঋতু-পরীক্ষার একটি; সেগুলোর জন্য সংশোধনের পর p = ০.০১৯।",
+    "বছর-থেকে-বছরের স্মৃতি বিবেচনা করা ম্যান–কেন্ডাল পরীক্ষা, সংশোধনের আগে: p = ০.০০৪।",
+    "এটি আমাদের আগে থেকে ঠিক করা ০.০৫ সীমার নিচে।"
+   ],
+   "checks": [
+    "কোনো বছর অনুপস্থিত নয়।",
+    "এই বছরগুলোর মধ্যে ডেটার কোনো নথিভুক্ত পরিবর্তন নেই।",
+    "কোনো একক বছর উত্তর ঠিক করে দিচ্ছে না।",
+    "অন্য ৫টি সময়সীমার মধ্যে ৪টি একমত।"
+   ],
+   "practical": [
+    "আমরা আগেই ঠিক করেছি যে প্রতি দশকে ০.১০ °C পরিবর্তন গুরুত্বপূর্ণ। ৯৫% পরিসরে এর চেয়ে ছোট পরিবর্তনও আছে, তাই এটি গুরুত্বপূর্ণ হতেও পারে, না-ও পারে।"
+   ],
+   "overturn": [
+    "উত্তরটি সবচেয়ে বেশি নির্ভর করে ২০১৮-এর ওপর: সেটি বাদ দিলে p = ০.০১৬।",
+    "অন্য সময়সীমাগুলোর মধ্যে সবচেয়ে দুর্বলটি, ১৯৮০–২০১৯, প্রতি দশকে +০.১৬ °C দেয়।",
+    "বছর-থেকে-বছরের স্মৃতি আমাদের মডেলের ধারণার চেয়ে জোরালো বা ধীর হলে পরীক্ষাটি অতি-উৎসাহী হতো। আমাদের যাচাই অনুযায়ী এখানে তেমন কোনো চিহ্ন নেই।"
+   ],
+   "notes": [
+    "এটি এমন একটি মডেল থেকে এসেছে যা অনেক পর্যবেক্ষণ মিলিয়ে ছবি তৈরি করে (রিঅ্যানালাইসিস)। ব্যবহৃত পর্যবেক্ষণ বদলালে মডেলের ফলও সরে যেতে পারে।"
+   ]
+  }
+ },
+ "provenance": {
+  "items": [
+   {
+    "product": "MERRA-2 monthly single-level diagnostics",
+    "shortName": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "route": "earthaccess",
+    "granules": 552,
+    "accessed": "2026-11-14T03:22:08Z",
+    "note": null
+   }
+  ],
+  "inputManifestSha256": "4226ae72bc4da34923a7eaf3a7741db40e9f00688183f32d4b7c3750ebf50f42",
+  "preregSha256": "19b78caa49249c80d5d8b58378783d8b180251e46c0df07fa403f3a1ee2bc1de",
+  "configSha256": "047f79f7730c64b171246a65438c17726ce59726803b391f97ad905496f03159",
+  "engine": "casefile_engine 1.0.0",
+  "buildId": "r5",
+  "created": "2026-11-14T03:53:19Z"
+ }
+}

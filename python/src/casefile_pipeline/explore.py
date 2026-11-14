@@ -66,6 +66,22 @@ def _i16(v: np.ndarray, scale: float) -> np.ndarray:
     return np.where(np.isfinite(v), np.round(v / scale), FILL).astype("<i2")
 
 
+def nice_step(x: float) -> float:
+    """The smallest 1, 2, 2.5 or 5 × 10^k that is at least x."""
+    if not x > 0:
+        return 1.0
+    k = math.floor(math.log10(x))
+    for m in (1, 2, 2.5, 5, 10):
+        if m * 10 ** k >= x - 1e-15:
+            return float(m * 10 ** k)
+    return float(10 ** (k + 1))
+
+
+def _i8(v: np.ndarray, scale: float) -> np.ndarray:
+    """int8 for a colour layer: ±127 steps of `scale`, values beyond clipped to the ends, −128 = no value."""
+    return np.where(np.isfinite(v), np.clip(np.round(v / scale), -127, 127), -128).astype("i1")
+
+
 def _period(years: np.ndarray, v: np.ndarray, a: int, b: int) -> np.ndarray:
     """Per-cell mean over years a..b ([180][360]), NaN where fewer than 80% of those years have a value."""
     sel = (years >= a) & (years <= b)
@@ -101,10 +117,12 @@ def write_year_frames(bundle: Path, results: Path, build_id: str, log=print) -> 
         base = explore_stats.baseline_years(int(years[0]), int(years[-1]))
         if base:
             anom = v - _period(years, v, *base)[:, :, None]
-            a_scale = frame_scale(anom)
-            (out / "anomaly.bin.gz").write_bytes(_gz(np.ascontiguousarray(np.moveaxis(_i16(anom, a_scale), 2, 0)).tobytes()))
             af = np.abs(anom[np.isfinite(anom)])
-            meta["anomaly"] = {"file": "anomaly.bin.gz", "baseline": list(base), "scale": a_scale, "layout": "[year][row][col]",
+            top = float(np.percentile(af, 99.9)) if af.size else 1.0
+            a_scale = nice_step(top / 127.0)
+            (out / "anomaly.bin.gz").write_bytes(_gz(np.ascontiguousarray(np.moveaxis(_i8(anom, a_scale), 2, 0)).tobytes()))
+            meta["anomaly"] = {"file": "anomaly.bin.gz", "baseline": list(base), "dtype": "int8", "scale": a_scale, "fill": -128,
+                               "clippedAt": round(127 * a_scale, 10), "layout": "[year][row][col]",
                                "range": float(np.percentile(af, 98)) if af.size else None}
         dec = explore_stats.decade_years(int(years[0]), int(years[-1]))
         if dec:
