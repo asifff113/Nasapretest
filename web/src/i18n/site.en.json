@@ -767,6 +767,75 @@
       "10": "Oct",
       "11": "Nov",
       "12": "Dec"
+    },
+    "copilot": {
+      "challenge": {
+        "button": "Challenge this conclusion",
+        "title": "Challenge this conclusion",
+        "intro": "What supports this result and what could change it. Every line is read from the result file and names its source.",
+        "close": "Close",
+        "groups": {
+          "support": "Supports it",
+          "qualify": "Qualifies it",
+          "note": "Worth knowing"
+        },
+        "source": "Source: {source}",
+        "next": "Look next",
+        "findings": {
+          "test_supported": "The test registered in advance supports it: adjusted p = {p}, below {alpha}. It is one of {n} tests written down before any trend was seen.",
+          "test_cant_tell": "The test registered in advance can't tell yet: adjusted p = {p}, above {alpha}. It is one of {n} tests written down before any trend was seen. That is not the same as no change.",
+          "no_verdict": "No verdict here: {reason}. The rate is shown, but no test decides it.",
+          "sensitivity_role": "This record is a sensitivity check. It is never graded, and it is not an independent confirmation.",
+          "windows_agree": "All {ran} alternative time windows agree with the main result.",
+          "windows_disagree": "Only {agree} of {ran} alternative time windows agree with the main result.",
+          "loo_flip": "One year matters a lot: leaving out {year} changes the answer.",
+          "loo_ok": "No single year changes the answer.",
+          "jump_unreviewed": "A jump around {year} stands out. No documented data change is recorded for it, and no person has reviewed it yet. A jump can come from the data rather than the climate, so treat the trend with care.",
+          "jump_reviewed": "A jump around {year} stands out, and a reviewed data change is recorded near it ({review}).",
+          "break_documented": "A documented data change ({year}) falls inside this window: {review}.",
+          "gaps": "Missing years: {years}.",
+          "coverage_doubt": "Changes in data coverage over the record may affect the trend.",
+          "practical_exceeds": "The change is bigger than the size the team set in advance as worth reporting ({threshold} {units}).",
+          "practical_overlaps": "The range of the change overlaps the size the team set in advance as worth reporting ({threshold} {units}).",
+          "practical_smaller": "The change is smaller than the size the team set in advance as worth reporting ({threshold} {units}).",
+          "exploration_up": "The exploration screen marks this place as standing out (q = {q}). That screen compares many places with a different correction. The test registered in advance, above, is the one that decides.",
+          "exploration_down": "The exploration screen does not mark this place as standing out. That screen compares many places with a different correction. The test registered in advance, above, is the one that decides.",
+          "other_unmatched": "A second record of the same quantity covers {first}–{last}, not {mainFirst}–{mainLast}. Its rate ({rate} per decade) is not a matched comparison, and it is a sensitivity check, not a confirmation.",
+          "other_matched": "A second record of the same quantity, over the same years, gives {rate} per decade. It is a sensitivity check, not a confirmation.",
+          "rates_differ": "The test supports that the two places changed at different rates.",
+          "rates_same": "The test does not show that the two places changed at different rates.",
+          "opposite_fitted": "Their fitted lines point in opposite directions.",
+          "opposite_supported": "Both places have supported trends, in opposite directions.",
+          "split_ok": "The two places are compared on separate data squares, so neither borrows the other's data.",
+          "split_fail": "The two places share too many data squares for a clean comparison."
+        },
+        "unknown_year": "date not known",
+        "windows": {
+          "title": "The rate in each time window",
+          "note": "Dot: rate per decade. Line: its 95% range. The main window is drawn darker; the others start later or end earlier.",
+          "main": "main",
+          "alt": "Rate per decade in the main window and {n} alternative windows",
+          "axis": "per decade ({units})"
+        },
+        "actions": {
+          "open_seasons": "See the seasons",
+          "open_other_dataset": "See the second record",
+          "open_monthly": "See every month",
+          "open_methods": "How the tests differ",
+          "open_contrast_sides": "See each place on its own"
+        },
+        "not_reviewed": "not reviewed yet"
+      },
+      "class": {
+        "preregistered": "Pre-registered result",
+        "exploratory": "Exploratory finding",
+        "descriptive": "Descriptive observation",
+        "unavailable": "Unavailable",
+        "preregistered_note": "Decided by a test written down before any trend was seen.",
+        "exploratory_note": "Shown for exploration: no verdict, and no test registered in advance.",
+        "descriptive_note": "Values as recorded, without a test of change.",
+        "unavailable_note": "This build has no data for this."
+      }
     }
   }
 }

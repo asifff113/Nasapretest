@@ -2,7 +2,10 @@
 // A verdict on screen: the chart (left, flexible) and the verdict card (right, 420 px) on desktop; chart then card
 // on tablets and phones (docs/04_UI.md §3). Sets the confidence spine while it is on screen.
 import { useState } from 'react';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, ShieldQuestion } from 'lucide-react';
+import { ChallengePanel } from '../copilot/ChallengePanel';
+import type { NextAction } from '../copilot/evidence';
+import { useView } from '../state/view';
 import { pick, tOr, useT } from '../i18n';
 import type { BreakItem, Catalog, SeriesFile, Verdict } from '../data/types';
 import { paths } from '../data/results';
@@ -68,6 +71,15 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
   const lang = useLang();
   const tokens = useTokens();
   const [monthly, setMonthly] = useState(false);
+  const [challenging, setChallenging] = useState(false);
+  const navigate = useView((s) => s.navigate);
+  const onAction = (a: NextAction) => {
+    const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (a === 'open_monthly') setMonthly(true);
+    else if (a === 'open_seasons') scrollTo('step-lineup');
+    else if (a === 'open_other_dataset') scrollTo('sensitivity-panel');
+    else if (a === 'open_methods') navigate({ screen: 'methods' });
+  };
   const info = statusInfo(t, verdict.status, verdict.grade, verdict.reason, verdict.family);
   const variable = catalog?.variables.find((v) => v.id === verdict.variable.id);
   const varName = variable ? pick(variable.name, lang) : verdict.variable.id;
@@ -123,7 +135,19 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
       </Card>
       <div className="flex flex-col gap-4">
         <VerdictCard verdict={verdict} path={path} about={about} />
-        {verdict.sensitivity ? <SensitivityPanel path={verdict.sensitivity} /> : null}
+        {challenging ? (
+          <ChallengePanel result={verdict} path={path} onAction={onAction} onClose={() => setChallenging(false)} />
+        ) : (
+          <Button variant="outline" onClick={() => setChallenging(true)} data-testid="challenge-open">
+            <ShieldQuestion aria-hidden="true" />
+            {t('site.copilot.challenge.button')}
+          </Button>
+        )}
+        {verdict.sensitivity ? (
+          <div id="sensitivity-panel" className="scroll-mt-28">
+            <SensitivityPanel path={verdict.sensitivity} />
+          </div>
+        ) : null}
       </div>
     </div>
   );
