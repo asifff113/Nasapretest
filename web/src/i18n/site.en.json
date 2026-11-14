@@ -391,7 +391,7 @@
       "how_4": "Language: AI drafted Bangla and English interface text, which a native Bangla reader checks.",
       "how_5": "People decided the design, the statistical methods, every threshold, the regions and the comparisons, and we committed those choices before we looked at any real trend.",
       "product_title": "AI in the product: the copilot only",
-      "product_body": "No AI computes, changes or decides any number or verdict: every value and verdict comes from one tested Python engine. The optional investigation copilot uses an AI model (Claude, by Anthropic) to choose which evidence to open and to word its answers. It reads only this site's result files through fixed tools, and every number in its answers is checked against those files before it is shown; an answer that fails the check is replaced by a summary taken from the files.",
+      "product_body": "No AI computes, changes or decides any number or verdict: every value and verdict comes from one tested Python engine. The optional investigation copilot uses an AI model (Google's Gemini, or Anthropic's Claude, depending on the server's setup) to choose which evidence to open and to word its answers. It reads only this site's result files through fixed tools, and every number in its answers is checked against those files before it is shown; an answer that fails the check is replaced by a summary taken from the files.",
       "media_title": "Media",
       "media_body": "No AI-generated images, video or audio are used on this site.",
       "record_title": "The record",

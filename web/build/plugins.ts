@@ -160,17 +160,19 @@ export function offlineCsp(): Plugin {
   };
 }
 
-/** The copilot relay at /api/copilot in `npm run dev` (the deployed site uses api/copilot.ts on Vercel). The key is
- *  read from the environment or from web/.env.local (git-ignored); it never reaches the browser. */
+/** The copilot relay at /api/copilot in `npm run dev` (the deployed site uses api/copilot.ts on Vercel). The key
+ *  (GEMINI_API_KEY or ANTHROPIC_API_KEY) is read from the environment or from web/.env.local (git-ignored); it never
+ *  reaches the browser. */
 export function copilotRelay(): Plugin {
   return {
     name: 'casefile-copilot-relay',
     configureServer(server) {
       for (const f of ['.env.local', '.env']) {
         const p = path.join(webRoot, f);
-        if (!process.env.ANTHROPIC_API_KEY && fs.existsSync(p)) {
-          const m = fs.readFileSync(p, 'utf8').match(/^\s*ANTHROPIC_API_KEY\s*=\s*"?([^"\r\n]+)"?\s*$/m);
-          if (m?.[1]) process.env.ANTHROPIC_API_KEY = m[1].trim();
+        if (!fs.existsSync(p)) continue;
+        for (const line of fs.readFileSync(p, 'utf8').split(/\r?\n/)) {
+          const m = line.match(/^\s*(GEMINI_API_KEY|GEMINI_MODEL|ANTHROPIC_API_KEY)\s*=\s*"?([^"]+?)"?\s*$/);
+          if (m?.[1] && m[2] && !process.env[m[1]]) process.env[m[1]] = m[2].trim();
         }
       }
       server.middlewares.use('/api/copilot', (req, res) => {

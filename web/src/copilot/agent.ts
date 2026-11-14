@@ -40,6 +40,8 @@ interface CopilotState {
   available: boolean | null;
   busy: boolean;
   messages: ApiMessage[];
+  /** The provider's state for continuing the conversation (Gemini: the previous interaction id). */
+  state: Record<string, unknown> | null;
   exchanges: Exchange[];
   /** A challenge panel the copilot asked to open: "<region>|<variable>|<season>". */
   challengeKey: string | null;
@@ -53,10 +55,11 @@ export const useCopilot = create<CopilotState>((set) => ({
   available: null,
   busy: false,
   messages: [],
+  state: null,
   exchanges: [],
   challengeKey: null,
   setOpen: (open) => set({ open }),
-  reset: () => set({ messages: [], exchanges: [], busy: false }),
+  reset: () => set({ messages: [], state: null, exchanges: [], busy: false }),
   clearChallenge: () => set({ challengeKey: null }),
 }));
 
@@ -99,11 +102,11 @@ function openView(view: View & { challenge?: boolean }) {
   if (challenge && rest.region && rest.variable) useCopilot.setState({ challengeKey: `${rest.region}|${rest.variable}|${rest.season ?? 'ANN'}` });
 }
 
-async function relay(messages: ApiMessage[]): Promise<{ content: Block[]; stop_reason: string | null }> {
-  const res = await fetch('./api/copilot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages }) });
-  const body = (await res.json().catch(() => ({}))) as { content?: Block[]; stop_reason?: string | null; error?: string };
+async function relay(messages: ApiMessage[], state: Record<string, unknown> | null): Promise<{ content: Block[]; stop_reason: string | null; state: Record<string, unknown> | null }> {
+  const res = await fetch('./api/copilot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages, state }) });
+  const body = (await res.json().catch(() => ({}))) as { content?: Block[]; stop_reason?: string | null; error?: string; state?: Record<string, unknown> };
   if (!res.ok || !body.content) throw new Error(body.error ?? `http_${res.status}`);
-  return { content: body.content, stop_reason: body.stop_reason ?? null };
+  return { content: body.content, stop_reason: body.stop_reason ?? null, state: body.state ?? null };
 }
 
 /** A summary made only of file content, used when a written answer fails the checks. */
@@ -127,13 +130,15 @@ export async function ask(question: string, lang: Lang): Promise<void> {
   if (st.busy || !question.trim()) return;
   const exchanges = [...st.exchanges, { question }];
   const messages: ApiMessage[] = [...st.messages, { role: 'user', content: question }];
+  let state = st.state;
   useCopilot.setState({ busy: true, exchanges });
   const outcomes: Outcome[] = [];
   const views: View[] = [];
   try {
     const store = await getStore();
     for (let round = 0; round <= LIMITS.toolRoundsPerTurn; round++) {
-      const res = await relay(messages);
+      const res = await relay(messages, state);
+      state = res.state ?? state;
       messages.push({ role: 'assistant', content: res.content });
       if (res.stop_reason === 'pause_turn') continue;
       if (res.stop_reason === 'tool_use') {
@@ -164,7 +169,7 @@ export async function ask(question: string, lang: Lang): Promise<void> {
         views,
       };
       exchanges[exchanges.length - 1] = { question, reply };
-      useCopilot.setState({ messages, exchanges: [...exchanges], busy: false });
+      useCopilot.setState({ messages, state, exchanges: [...exchanges], busy: false });
       return;
     }
     throw new Error('too_many_steps');

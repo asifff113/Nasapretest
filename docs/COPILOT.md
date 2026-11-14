@@ -11,12 +11,12 @@ A side panel ("Ask the copilot") beside the workspace. A visitor asks about a pl
 | Evidence layer | `web/src/copilot/evidence.ts` | Classes and findings (test, windows, influential year, jump and its review, other dataset, exploration vs registered test); shared with the challenge panel |
 | Checks | `web/src/copilot/validate.ts` | Every number in an answer must come from the tool results or the question; barred wording is refused; a failed answer is replaced by a summary from the files |
 | Loop and panel | `web/src/copilot/agent.ts`, `CopilotPanel.tsx` | Runs the tools, opens views, shows class, check status, sources and opened views |
-| Relay | `web/server/copilot-relay.ts`, `api/copilot.ts` | The only code that calls the model (`claude-opus-5-5`); adds instructions and tools, checks the conversation, rate-limits, keeps the key on the server |
+| Relay | `web/server/copilot-relay.ts`, `api/copilot.ts` | The only code that calls the model: Gemini (`web/server/copilot-gemini.ts`, `gemini-3.5-flash-lite` unless `GEMINI_MODEL` says otherwise) when `GEMINI_API_KEY` is set, else Claude (`claude-opus-5-5`) with `ANTHROPIC_API_KEY`; adds instructions and tools, checks the conversation, rate-limits, keeps the key on the server |
 
 ## Switching it on
 
-- **Locally:** put `ANTHROPIC_API_KEY=...` in `web/.env.local` (git-ignored), then `cd web && npm run dev`. The panel's "Ask the copilot" button turns on when `/api/copilot` reports `available: true`.
-- **Vercel:** add `ANTHROPIC_API_KEY` to the project's environment variables. `api/copilot.ts` is the function.
+- **Locally:** put `GEMINI_API_KEY=...` (or `ANTHROPIC_API_KEY=...`) in `web/.env.local` (git-ignored), then `cd web && npm run dev`. Gemini is used when both are set. The panel's "Ask the copilot" button turns on when `/api/copilot` reports `available: true`.
+- **Vercel:** add `GEMINI_API_KEY` (or `ANTHROPIC_API_KEY`) to the project's environment variables. `api/copilot.ts` is the function.
 - **GitHub Pages and the offline file:** no relay, so the panel says the copilot is unavailable here and points to the ask box. Everything else works as before.
 
 Never put the key in a file that is committed, in a chat, or in the browser.

@@ -4,9 +4,11 @@
 // allowed to do. The API key stays on the server (ANTHROPIC_API_KEY). Tools run in the browser, against the
 // build's own files, and their results come back here as ordinary tool_result blocks.
 // Served by the Vite dev server (build/plugins.ts) and by the Vercel function api/copilot.ts.
+// Provider: Google Gemini when GEMINI_API_KEY is set (copilot-gemini.ts), else Claude when ANTHROPIC_API_KEY is set.
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import Anthropic from '@anthropic-ai/sdk';
 import { LIMITS, MODEL, SYSTEM_PROMPT, TOOLS } from '../src/copilot/contract';
+import { GEMINI_MODEL, geminiConfigured, geminiError, geminiTurn } from './copilot-gemini';
 
 type Messages = Anthropic.Beta.Messages.BetaMessageParam[];
 
@@ -65,10 +67,11 @@ export function checkMessages(x: unknown): Messages | string {
 }
 
 export async function handleCopilot(req: IncomingMessage, res: ServerResponse): Promise<void> {
-  if (req.method === 'GET') return send(res, 200, { available: getClient() !== null, model: MODEL });
+  const gemini = geminiConfigured();
+  if (req.method === 'GET') return send(res, 200, { available: gemini || getClient() !== null, provider: gemini ? 'gemini' : 'anthropic', model: gemini ? GEMINI_MODEL : MODEL });
   if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
-  const anthropic = getClient();
-  if (!anthropic) return send(res, 503, { error: 'not_configured' });
+  const anthropic = gemini ? null : getClient();
+  if (!gemini && !anthropic) return send(res, 503, { error: 'not_configured' });
   const ip = String(req.headers['x-forwarded-for'] ?? req.socket.remoteAddress ?? 'unknown').split(',')[0]!.trim();
   if (!allowed(ip)) return send(res, 429, { error: 'rate_limited' });
   let parsed: unknown;
@@ -79,6 +82,15 @@ export async function handleCopilot(req: IncomingMessage, res: ServerResponse): 
   }
   const messages = checkMessages((parsed as { messages?: unknown })?.messages);
   if (typeof messages === 'string') return send(res, 400, { error: 'bad_request', detail: messages });
+  if (gemini) {
+    try {
+      return send(res, 200, await geminiTurn(messages as never, (parsed as { state?: { previous_interaction_id?: unknown } }).state));
+    } catch (err) {
+      const e = geminiError(err);
+      return send(res, e.status, { error: e.error });
+    }
+  }
+  if (!anthropic) return send(res, 503, { error: 'not_configured' });
   try {
     const response = await anthropic.beta.messages.create({
       model: MODEL,

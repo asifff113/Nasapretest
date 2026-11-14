@@ -147,3 +147,24 @@ describe('the relay accepts only a well-formed conversation', async () => {
     expect(checkMessages(long)).toMatch(/too long/);
   });
 });
+
+describe('the Gemini translation keeps one format in the browser', async () => {
+  const { GEMINI_TOOLS, geminiParameters, toBlocks, turnInput } = await import('../../server/copilot-gemini');
+  it('nullable fields become optional fields of their single type; strict-only keys are dropped', () => {
+    const p = geminiParameters({ properties: { place_id: { type: 'string' }, season: { type: ['string', 'null'], description: 'x' } }, required: ['place_id', 'season'] });
+    expect(p).toEqual({ type: 'object', properties: { place_id: { type: 'string' }, season: { type: 'string', description: 'x' } }, required: ['place_id'] });
+    expect(GEMINI_TOOLS.map((t) => t.name)).toEqual(TOOLS.map((t) => t.name));
+    for (const t of GEMINI_TOOLS) expect(JSON.stringify(t)).not.toMatch(/additionalProperties|"strict"|"null"/);
+  });
+  it('the browser\'s tool results become function_result steps; text stays text', () => {
+    expect(turnInput({ role: 'user', content: 'Is Kenya warming?' })).toBe('Is Kenya warming?');
+    expect(turnInput({ role: 'user', content: [{ type: 'tool_result', tool_use_id: 'c1', content: '{"a":1}' }] })).toEqual([{ type: 'function_result', call_id: 'c1', result: '{"a":1}' }]);
+  });
+  it('function calls come back as tool_use; text alone ends the turn', () => {
+    const calls = toBlocks([{ type: 'thought', signature: 's' }, { type: 'function_call', id: 'c1', name: 'resolve_place', arguments: { name: 'Kenya' } }], 'requires_action');
+    expect(calls).toEqual({ content: [{ type: 'tool_use', id: 'c1', name: 'resolve_place', input: { name: 'Kenya' } }], stop_reason: 'tool_use' });
+    const done = toBlocks([{ type: 'function_result', call_id: 'c1', result: 'x' }, { type: 'model_output', content: [{ type: 'text', text: 'Exploratory finding.' }] }], 'completed');
+    expect(done).toEqual({ content: [{ type: 'text', text: 'Exploratory finding.' }], stop_reason: 'end_turn' });
+    expect(toBlocks([], 'incomplete').stop_reason).toBe('max_tokens');
+  });
+});

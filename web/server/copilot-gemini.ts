@@ -1,0 +1,104 @@
+// Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
+// The copilot on Google Gemini, through the Interactions API of @google/genai (stateful: Google keeps the
+// conversation and the model's thought signatures; each request sends only the new turn with the id of the previous
+// interaction). The relay calls this when GEMINI_API_KEY is set. It translates both ways so the browser keeps one
+// format: the browser's tool_result blocks become function_result steps, and the model's function_call steps and
+// text come back as tool_use and text blocks. Instructions and tools are the same contract as for any model.
+import { ApiError, GoogleGenAI } from '@google/genai';
+import { LIMITS, SYSTEM_PROMPT, TOOLS } from '../src/copilot/contract';
+
+export const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+
+type Block = { type: string; [k: string]: unknown };
+export interface Turn {
+  role: 'user' | 'assistant';
+  content: string | Block[];
+}
+export interface RelayReply {
+  content: Block[];
+  stop_reason: string;
+  model: string;
+  /** What the browser sends back next time: the interaction to continue. */
+  state: { previous_interaction_id: string };
+}
+
+/** The contract's JSON Schema in the subset Gemini's function parameters accept: a nullable field ("type":
+ * ["string","null"]) becomes an optional field of its single type, and the strict-mode keys are dropped. */
+export function geminiParameters(schema: { properties: Record<string, Record<string, unknown>>; required: readonly string[] }) {
+  const properties: Record<string, Record<string, unknown>> = {};
+  const required: string[] = [];
+  for (const [name, prop] of Object.entries(schema.properties)) {
+    const t = prop.type;
+    const nullable = Array.isArray(t) && t.includes('null');
+    properties[name] = { ...prop, type: Array.isArray(t) ? t.find((x) => x !== 'null') : t };
+    if (!nullable && schema.required.includes(name)) required.push(name);
+  }
+  return { type: 'object', properties, required };
+}
+
+export const GEMINI_TOOLS = TOOLS.map((t) => ({
+  type: 'function' as const,
+  name: t.name,
+  description: t.description,
+  parameters: geminiParameters(t.input_schema as unknown as { properties: Record<string, Record<string, unknown>>; required: readonly string[] }),
+}));
+
+/** The new input of this turn: the user's text, or the results of the tools the model asked for. */
+export function turnInput(last: Turn): string | Record<string, unknown>[] {
+  if (typeof last.content === 'string') return last.content;
+  const steps: Record<string, unknown>[] = [];
+  for (const b of last.content) {
+    if (b.type === 'tool_result') steps.push({ type: 'function_result', call_id: String(b.tool_use_id), result: String(b.content ?? '') });
+    else if (b.type === 'text') steps.push({ type: 'user_input', content: [{ type: 'text', text: String(b.text) }] });
+  }
+  return steps;
+}
+
+/** The model's steps as the browser's blocks; the stop reason the browser's loop understands. */
+export function toBlocks(steps: { type: string; [k: string]: unknown }[], status: string): { content: Block[]; stop_reason: string } {
+  const content: Block[] = [];
+  for (const s of steps) {
+    if (s.type === 'function_call') content.push({ type: 'tool_use', id: String(s.id), name: String(s.name), input: (s.arguments ?? {}) as Record<string, unknown> });
+    else if (s.type === 'model_output') {
+      for (const c of (s.content ?? []) as { type: string; text?: string }[]) if (c.type === 'text' && c.text) content.push({ type: 'text', text: c.text });
+    }
+  }
+  const calls = content.some((b) => b.type === 'tool_use');
+  const stop_reason = calls ? 'tool_use' : status === 'incomplete' ? 'max_tokens' : status === 'completed' ? 'end_turn' : status;
+  return { content, stop_reason };
+}
+
+let client: GoogleGenAI | null = null;
+
+export function geminiConfigured(): boolean {
+  return Boolean(process.env.GEMINI_API_KEY);
+}
+
+export async function geminiTurn(messages: Turn[], state: { previous_interaction_id?: unknown } | undefined): Promise<RelayReply> {
+  client ??= new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const previous = typeof state?.previous_interaction_id === 'string' ? state.previous_interaction_id : undefined;
+  // A new conversation sends its whole text; a continued one sends only the latest turn.
+  const input = previous ? turnInput(messages[messages.length - 1]!) : messages.length === 1 ? turnInput(messages[0]!) : null;
+  if (input === null) throw new Error('lost_state');
+  const interaction = await client.interactions.create({
+    model: GEMINI_MODEL,
+    system_instruction: SYSTEM_PROMPT,
+    tools: GEMINI_TOOLS,
+    input: input as never,
+    previous_interaction_id: previous,
+    generation_config: { thinking_level: 'low', max_output_tokens: LIMITS.maxTokens },
+  });
+  const { content, stop_reason } = toBlocks((interaction.steps ?? []) as { type: string; [k: string]: unknown }[], String(interaction.status));
+  return { content, stop_reason, model: GEMINI_MODEL, state: { previous_interaction_id: interaction.id } };
+}
+
+export function geminiError(err: unknown): { status: number; error: string } {
+  if (err instanceof ApiError) {
+    if (err.status === 429) return { status: 429, error: 'model_busy' };
+    if (err.status === 401 || err.status === 403) return { status: 503, error: 'not_configured' };
+    if (err.status === 400) return { status: 400, error: 'model_rejected' };
+    return { status: 502, error: 'model_error' };
+  }
+  if (err instanceof Error && err.message === 'lost_state') return { status: 409, error: 'lost_state' };
+  return { status: 502, error: 'model_unreachable' };
+}
