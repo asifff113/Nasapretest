@@ -25,6 +25,7 @@ CONVERT: dict[tuple[str, str], Callable[[np.ndarray], np.ndarray]] = {
     ("mm/hr", "mm/day"): lambda x: x * 24.0,
     ("kg m-2", "mm"): lambda x: x * 1.0,
     ("Pa", "hPa"): lambda x: x / 100.0,
+    ("m s-1", "m/s"): lambda x: x * 1.0,
     ("kg m-2 3hr-1", "mm/day"): lambda x: x * 8.0,
 }
 

@@ -13,4 +13,4 @@ from . import Reader, register
 MERRA2_SLV = register(Reader(source_id="merra2_slv", grid_id="merra2_native", group=None, dims=("time", "lat", "lon"),
                              time="time", lat="lat", lon="lon", units={"T2M": "K", "TQV": "kg m-2", "SLP": "Pa"}))
 MERRA2_FLX = register(Reader(source_id="merra2_precip", grid_id="merra2_native", group=None, dims=("time", "lat", "lon"),
-                             time="time", lat="lat", lon="lon", units={"PRECTOTCORR": "kg m-2 s-1"}))
+                             time="time", lat="lat", lon="lon", units={"PRECTOTCORR": "kg m-2 s-1", "PRECSNO": "kg m-2 s-1", "SPEED": "m s-1"}))

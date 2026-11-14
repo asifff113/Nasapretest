@@ -20,5 +20,5 @@ from . import Reader, register
 
 GLDAS_NOAH10_M = register(Reader(source_id="gldas_noah10_m", grid_id="gldas_1deg", group=None, dims=("time", "lat", "lon"),
                                  time="time", lat="lat", lon="lon",
-                                 units={"Evap_tavg": "kg m-2 s-1", "Qs_acc": "kg m-2", "Qsb_acc": "kg m-2"},
+                                 units={"Evap_tavg": "kg m-2 s-1", "Qs_acc": "kg m-2", "Qsb_acc": "kg m-2", "SoilMoi0_10cm_inst": "kg m-2"},
                                  rate_units={"Qs_acc": "kg m-2 3hr-1", "Qsb_acc": "kg m-2 3hr-1"}))

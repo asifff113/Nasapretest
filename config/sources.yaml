@@ -42,7 +42,7 @@ sources:
       route: earthaccess
       find: "CMR query by short name and version; V-03 confirms PRECTOTCORR in one monthly granule (the MERRA-2 flux collection lists it: Earth Engine catalog, hourly flux collection)"
       method: cloud_opendap_subset
-      variables: [PRECTOTCORR]
+      variables: [PRECTOTCORR, PRECSNO, SPEED]   # PRECSNO (snowfall) and SPEED (wind speed): exploration layers
       units: "kg m-2 s-1 (bias-corrected precipitation, fact-check #14); × 86 400 → mm/day"
       fill: "VERIFY V-03"
     citation: "Global Modeling and Assimilation Office (GMAO) (2015), MERRA-2 tavgM_2d_flx_Nx: 2d, Monthly mean, Time-Averaged, Single-Level, Assimilation, Surface Flux Diagnostics V5.12.4, Greenbelt, MD, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/0JRLVL8YV2Y4."
@@ -133,7 +133,7 @@ sources:
       route: earthaccess
       find: "CMR query by short name and version 2.1 (main product; never the Early Product GLDAS_NOAH10_M_EP)"
       method: cloud_opendap_subset       # fallback: whole-file download (about 8 MB a month)
-      variables: [Evap_tavg, Qs_acc, Qsb_acc]   # SoilMoi0_10cm_inst stays a card (soil_moisture, deferred)
+      variables: [Evap_tavg, Qs_acc, Qsb_acc, SoilMoi0_10cm_inst]   # soil moisture: exploration, descriptive
       units: "Evap_tavg kg m-2 s-1 (mean rate) × 86 400 → mm/day; Qs_acc and Qsb_acc kg m-2 per 3 hours averaged over the month (README §3.5 item 6) × 8 → mm/day; read in GLDAS_NOAH10_M.A202007.021.nc4"
       fill: "-9999 (_FillValue and missing_value in the same granule)"
     citation: "Beaudoing, H. and M. Rodell, NASA/GSFC/HSL (2020), GLDAS Noah Land Surface Model L4 monthly 1.0 x 1.0 degree V2.1, Greenbelt, Maryland, USA, Goddard Earth Sciences Data and Information Services Center (GES DISC), doi:10.5067/LWTYSMP3VM5Z."
