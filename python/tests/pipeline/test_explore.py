@@ -79,3 +79,19 @@ def test_region_files_give_engine_annual_values_and_validate(tmp_path, monkeypat
     tr = json.loads((tmp_path / "explore/trends/air_temp.json").read_text(encoding="utf-8"))
     assert {i["id"] for i in tr["items"]} == {"cmp:test_a", "cmp:test_b", "world"} and all(i["reason"] == "too_short" for i in tr["items"])
     assert validate(tmp_path) == []
+
+
+def test_a_configured_country_gains_its_continent(monkeypatch):
+    from shapely.geometry import box as _box
+
+    from casefile_pipeline.boundaries import RegionDef
+    cfg = RegionDef("country:AAA", "country", "country", {"en": "A", "bn": "A"}, {"en": "in A", "bn": "A"}, _box(0, 0, 1, 1), "cfg", "cfg")
+    ne = RegionDef("country:AAA", "country", "country", {"en": "A ne", "bn": "A ne"}, {"en": "in A", "bn": "A"}, _box(0, 0, 2, 2), "ne", "ne")
+    ne.extra = {"iso3": "AAA", "continent": "Asia", "subregion": "Southern Asia"}
+    other = RegionDef("country:BBB", "country", "country", {"en": "B", "bn": "B"}, {"en": "in B", "bn": "B"}, _box(3, 3, 4, 4), "ne", "ne")
+    other.extra = {"iso3": "BBB", "continent": "Asia", "subregion": None}
+    monkeypatch.setattr(explore.boundaries, "region_defs", lambda: [cfg])
+    monkeypatch.setattr(explore, "country_defs", lambda: [ne, other])
+    out = explore.all_region_defs()
+    assert [d.id for d in out] == ["country:AAA", "country:BBB"]
+    assert out[0].name["en"] == "A" and out[0].extra["continent"] == "Asia"     # the configured name and outline win

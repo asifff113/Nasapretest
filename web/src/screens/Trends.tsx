@@ -10,7 +10,8 @@ import { pick, useT } from '../i18n';
 import { int, rate as fmtRate } from '../i18n/format';
 import { loadMapLayer, type MapLayer } from '../data/results';
 import { useAsync, useBuild, useCatalog } from '../data/hooks';
-import { exploreForCountryName, useExploreIndex, type ExploreIndex } from '../data/explore';
+import { exploreForCountryName, useExploreArea, useExploreIndex, useExploreRegion, type ExploreIndex } from '../data/explore';
+import { CountryTrendMap, LatitudeYears, ScopeTrend, TrendRanking } from '../report/TrendsMore';
 import { useLang } from '../state/prefs';
 import { href, useView } from '../state/view';
 import { cellInfo } from '../map/ScreeningMap';
@@ -131,8 +132,7 @@ interface CountryRow {
   cells: number[];
 }
 
-function useCountryRows(layer: MapLayer | undefined, explore: ExploreIndex | undefined, lang: 'en' | 'bn') {
-  const countries = useAsync<CountryFeature[]>('countries', loadCountries);
+function useCountryRows(layer: MapLayer | undefined, explore: ExploreIndex | undefined, lang: 'en' | 'bn', countries: { data?: CountryFeature[] }) {
   return useMemo(() => {
     if (!layer || !countries.data) return null;
     const grid = layer.meta.grid;
@@ -160,7 +160,8 @@ export default function TrendsScreen() {
   const variable = analysed.find((v) => v.id === view.variable) ?? analysed[0];
   const root = build.data?.root;
   const layer = useAsync<MapLayer>(root !== undefined && variable ? `map|${root}|${variable.id}|ANN` : null, () => loadMapLayer(root ?? '', variable?.id ?? '', 'ANN'));
-  const rows = useCountryRows(layer.data, explore.data, lang);
+  const countries = useAsync<CountryFeature[]>('countries', loadCountries);
+  const rows = useCountryRows(layer.data, explore.data, lang, countries);
   const [level, setLevel] = useState<Level>('world');
   const continents = useMemo(() => [...new Set((rows ?? []).map((r) => r.continent).filter((c): c is string => Boolean(c)))].sort(), [rows]);
   const [continent, setContinent] = useState('Asia');
@@ -183,6 +184,14 @@ export default function TrendsScreen() {
 
   const record = variable ? pick(variable.name_mid ?? variable.name, lang) : '';
   const units = layer.data?.meta.units ?? '';
+  const areas = explore.data?.areas ?? [];
+  const areaId =
+    level === 'world' ? (areas.find((a) => a.kind === 'world')?.id ?? null) : level === 'continent' ? (areas.find((a) => a.kind === 'continent' && a.name.en === continent)?.id ?? null) : null;
+  const regionId = level === 'country' ? (rows?.find((r) => r.name === country)?.regionId ?? null) : null;
+  const area = useExploreArea(areaId);
+  const region = useExploreRegion(regionId);
+  const scopeData = level === 'country' ? region : area;
+  const scopeVar = variable ? scopeData.data?.variables[variable.id] : undefined;
   const scopeName =
     level === 'world' ? t('site.trends.world') : level === 'continent' ? continentName(t, continent) : (rows?.find((r) => r.name === country)?.displayName ?? country);
 
@@ -367,6 +376,11 @@ export default function TrendsScreen() {
               ) : null}
             </>
           )}
+
+          {explore.data && variable && scopeData.status !== 'loading' ? <ScopeTrend v={scopeVar} scope={scopeName} variable={variable} /> : null}
+          {explore.data && variable && level !== 'country' ? <TrendRanking variable={variable} continent={level === 'continent' ? continent : null} units={units} /> : null}
+          {explore.data && variable ? <CountryTrendMap variable={variable} countries={countries.data} explore={explore.data} units={units} /> : null}
+          {explore.data && variable ? <LatitudeYears variable={variable} /> : null}
 
           <div className="flex flex-col gap-2 rounded-[6px] border border-line bg-surface-2 p-4 text-[13.5px] leading-relaxed text-muted">
             <p className="m-0 flex gap-2">

@@ -17,6 +17,7 @@ import { RelationChart } from '../charts/RelationChart';
 import { LocatorGlobe } from '../components/atlas/LocatorGlobe';
 import { GroupIcon } from '../components/atlas/icons';
 import { WithData } from '../components/LoadState';
+import { ChangeDashboard, ThenAndNow } from './PastPresent';
 import { Badge } from '../ui/common/badge';
 import { SegmentedControl } from '../ui/common/toggle-group';
 import { cn } from '../ui/common/utils';
@@ -510,6 +511,11 @@ export function ReportBody({
   const record = varName(catalog, id, lang);
   const near = nearby(index, data.region, 6);
   const n = (k: number) => String(first + k).padStart(2, '0');
+  // The climograph's two records, found from the catalog (never by id): the tested heat record, and the tested
+  // record that has a cross-check of its own (rain and its satellite record).
+  const tested = (catalog?.variables ?? []).filter((v) => v.status === 'analysed');
+  const tempId = tested.find((v) => v.group === 'heat')?.id;
+  const rainId = tested.find((v) => Boolean(v.sensitivity))?.id;
   return (
     <div data-testid="region-report">
       <Chapter id="report-glance" n={n(0)} title={t('site.report.glance_title')} lead={t('site.report.glance_lead', { place: name })}>
@@ -522,18 +528,36 @@ export function ReportBody({
         <Glance data={data} ids={ids} catalog={catalog} value={id} onPick={onVariable} />
       </Chapter>
 
-      <Chapter id="report-years" n={n(1)} title={t('site.report.years_title', { record })} lead={t('site.report.years_lead')}>
+      <Chapter id="report-changing" n={n(1)} title={t('site.past.dash_title')} lead={t('site.past.dash_lead', { place: name })}>
+        <ChangeDashboard variables={data.variables} ids={ids} catalog={catalog} onPick={onVariable} />
+      </Chapter>
+
+      <Chapter id="report-years" n={n(2)} title={t('site.report.years_title', { record })} lead={t('site.report.years_lead')}>
         <div className="mb-4">
           <SegmentedControl size="sm" label={t('site.report.pick_record')} value={id} onValueChange={onVariable} options={ids.map((x) => ({ value: x, label: varName(catalog, x, lang), testId: `report-var-${x}` }))} />
         </div>
         <YearByYear key={`${id}_${other?.region.id ?? ''}`} data={data} id={id} catalog={catalog} compare={other} />
       </Chapter>
 
-      <Chapter id="report-rhythm" n={n(2)} title={t('site.report.rhythm_title')} lead={t('site.report.rhythm_lead', { record })}>
+      <Chapter id="report-then" n={n(3)} title={t('site.past.then_title', { record })} lead={t('site.past.then_lead')}>
+        {data.variables[id] ? (
+          <ThenAndNow
+            key={id}
+            v={data.variables[id]!}
+            id={id}
+            place={name}
+            catalog={catalog}
+            temp={tempId ? data.variables[tempId] : undefined}
+            rain={rainId ? data.variables[rainId] : undefined}
+          />
+        ) : null}
+      </Chapter>
+
+      <Chapter id="report-rhythm" n={n(4)} title={t('site.report.rhythm_title')} lead={t('site.report.rhythm_lead', { record })}>
         <Rhythm data={data} id={id} catalog={catalog} compare={other} />
       </Chapter>
 
-      <Chapter id="report-compare" n={n(3)} title={t('site.report.compare_title')} lead={t('site.report.compare_lead', { place: name })}>
+      <Chapter id="report-compare" n={n(5)} title={t('site.report.compare_title')} lead={t('site.report.compare_lead', { place: name })}>
         <div className="flex flex-col gap-5">
           <div className="grid items-end gap-4 md:grid-cols-[minmax(0,360px)_1fr]">
             <RegionSelect index={index} value={compareId} exclude={data.region.id} onPick={setCompareId} label={t('site.report.compare_with')} testId="compare-select" />
@@ -586,7 +610,7 @@ export function ReportBody({
       </Chapter>
 
       {ids.length > 1 ? (
-        <Chapter id="report-relations" n={n(4)} title={t('site.report.relations_title')} lead={t('site.report.relations_lead')}>
+        <Chapter id="report-relations" n={n(6)} title={t('site.report.relations_title')} lead={t('site.report.relations_lead')}>
           <Relations data={data} ids={ids} catalog={catalog} />
         </Chapter>
       ) : null}

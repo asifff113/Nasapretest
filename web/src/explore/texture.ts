@@ -6,7 +6,7 @@ import type { MapLayer } from '../data/results';
 import type { CountryFeature } from '../data/places';
 import { cached } from '../data/cache';
 import { diverging, rangePos, rgb, scalePos } from '../map/colours';
-import { yearValue, type MapYears } from '../data/explore';
+import type { Frames } from '../data/explore';
 
 export const TEX_W = 4096;
 export const TEX_H = 2048;
@@ -175,8 +175,8 @@ function canvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContex
 
 /**
  * Paints the yearly frames for the time-lapse: the Earth (faded outside a focused country) and the borders are
- * drawn once; each frame only recolours the 1° squares from the file's own yearly values. The colour runs from the
- * low to the high end of the file's `range`; nothing is computed but positions and colours.
+ * drawn once; each frame only recolours the 1° squares from the file's own decoded values. The colour runs from the
+ * frames' `lo` to `hi` (the file's range); nothing is computed but positions and colours.
  */
 export class YearPainter {
   readonly canvas: HTMLCanvasElement;
@@ -191,7 +191,7 @@ export class YearPainter {
     base: HTMLImageElement,
     countries: CountryFeature[],
     private readonly focus: TextureFocus | null,
-    private readonly years: MapYears,
+    private readonly frames: Frames,
   ) {
     [this.canvas, this.ctx] = canvas(TEX_W, TEX_H);
     const [under, uctx] = canvas(TEX_W, TEX_H);
@@ -203,7 +203,7 @@ export class YearPainter {
     const [over, octx] = canvas(TEX_W, TEX_H);
     if (octx) drawBorders(octx, countries, focus);
     this.over = over;
-    const g = years.meta.grid;
+    const g = frames.grid;
     [this.small, this.sctx] = canvas(g.nlon, g.nlat);
     this.img = this.sctx ? this.sctx.createImageData(g.nlon, g.nlat) : null;
   }
@@ -211,15 +211,15 @@ export class YearPainter {
   paint(frame: number, interp: (t: number) => string, opacity: number): HTMLCanvasElement {
     const { ctx, sctx, img } = this;
     if (!ctx || !sctx || !img) return this.canvas;
-    const g = this.years.meta.grid;
+    const g = this.frames.grid;
     const n = g.nlat * g.nlon;
-    const [lo, hi] = this.years.meta.range ?? [0, 1];
+    const { lo, hi } = this.frames;
     const lut = Array.from({ length: 256 }, (_, i) => rgb(interp(i / 255)));
     const a = Math.round(255 * opacity);
     img.data.fill(0);
     for (let i = 0; i < n; i++) {
       if (this.focus && !this.focus.cells.has(i)) continue;
-      const v = yearValue(this.years, frame, i);
+      const v = this.frames.value(frame, i);
       if (!Number.isFinite(v)) continue;
       const [r, gg, b] = lut[Math.round(rangePos(v, lo, hi) * 255)] ?? [128, 128, 128];
       img.data[i * 4] = r;

@@ -20,7 +20,7 @@ import { diverging, scalePos, sequential } from '../map/colours';
 import { ScreeningMap } from '../map/ScreeningMap';
 import { loadOutlines, type Outlines } from '../map/outlines';
 import { composeTexture, countryAt, loadCountries, loadEarthImage, YearPainter } from './texture';
-import { exploreForCountryName, useExploreIndex, useMapYears, type MapYears } from '../data/explore';
+import { exploreForCountryName, framesOf, loadFramesExtra, useExploreIndex, useMapYears, type Frames, type FramesKind } from '../data/explore';
 import type { LoadStatus } from '../data/hooks';
 import { CellPanel, NoPlacePanel, RegionPanel, VariablePanel } from './ExplorePanels';
 import { CountryPanel } from './CountryPanel';
@@ -209,138 +209,185 @@ function Legend({ layer, colormap, opacity, onOpacity, columns = false }: { laye
   );
 }
 
-/** The time-lapse panel: the year, play and pause, the slider, and the value scale of the yearly frames. */
+/** The time-lapse panel: what to paint (values, against the baseline, or then and now), the year, play and pause, the slider, and the scale. */
 function YearsPanel({
   status,
-  years,
+  frames,
+  kind,
+  kinds,
+  onKind,
   frame,
   onFrame,
   playing,
   onPlay,
   colormap,
+  trendColormap,
+  rule,
   name,
 }: {
   status: LoadStatus;
-  years: MapYears | undefined;
+  frames: Frames | null;
+  kind: FramesKind;
+  kinds: FramesKind[];
+  onKind: (k: FramesKind) => void;
   frame: number;
   onFrame: (i: number) => void;
   playing: boolean;
   onPlay: (on: boolean) => void;
   colormap: string | undefined;
+  trendColormap: string | undefined;
+  rule: 'mean' | 'sum';
   name: string;
 }) {
   const t = useT();
   const lang = useLang();
   const box = 'pointer-events-auto flex w-[min(760px,calc(100vw-88px))] flex-col gap-2.5 rounded-[6px] border border-line bg-surface/90 p-3 text-xs backdrop-blur-md';
-  if (status === 'loading') return <p className={box}>{t('site.years.loading')}</p>;
-  if (!years) return <p className={box}>{t('site.years.missing')}</p>;
-  const m = years.meta;
-  const ys = m.years;
-  const interp = sequential(colormap);
+  const picker =
+    kinds.length > 1 ? (
+      <SegmentedControl
+        size="sm"
+        label={t('site.years.kind')}
+        value={kind}
+        onValueChange={(v) => onKind(v as FramesKind)}
+        options={kinds.map((k) => ({ value: k, label: t(`site.years.kind_${k}`), testId: `years-kind-${k}` }))}
+      />
+    ) : null;
+  if (!frames) {
+    return (
+      <div className={box} data-testid="years-panel">
+        {picker}
+        <p className="m-0">{status === 'loading' ? t('site.years.loading') : t('site.years.missing')}</p>
+      </div>
+    );
+  }
+  const ys = frames.years;
+  const single = frames.kind === 'change';
+  const interp = frames.kind === 'values' ? sequential(colormap) : diverging(trendColormap);
   const stops = Array.from({ length: 9 }, (_, i) => interp(i / 8)).join(', ');
-  const [lo, hi] = m.range ?? [Number.NaN, Number.NaN];
   const year = ys[frame] ?? ys[ys.length - 1] ?? 0;
+  const period = (p: [number, number] | undefined) => (p ? `${int(p[0], lang)}–${int(p[1], lang)}` : '');
+  const legend =
+    frames.kind === 'values'
+      ? t(rule === 'sum' ? 'site.years.legend_sum' : 'site.years.legend_mean', { units: frames.units })
+      : frames.kind === 'anomaly'
+        ? t('site.years.legend_anomaly', { units: frames.units, base: period(frames.baseline) })
+        : t('site.years.legend_change', { units: frames.units, early: period(frames.early), late: period(frames.late) });
   return (
     <div className={box} data-testid="years-panel">
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => onPlay(!playing)}
-          aria-label={playing ? t('site.years.pause') : t('site.years.play')}
-          className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-ocean hover:brightness-110"
-          data-testid="years-play"
-        >
-          {playing ? <Pause className="size-5" aria-hidden="true" /> : <Play className="size-5" aria-hidden="true" />}
-        </button>
-        <div className="min-w-0 flex-1">
-          <p className="m-0 truncate text-[12px] text-muted">{t('site.years.title', { record: name })}</p>
-          <p className="m-0 font-display text-[34px] leading-none tabular" aria-live="polite" data-testid="years-year">
-            {int(year, lang)}
+      {picker}
+      {single ? (
+        <div className="min-w-0">
+          <p className="m-0 truncate text-[12px] text-muted">{t('site.years.change_title', { record: name })}</p>
+          <p className="m-0 font-display text-[26px] leading-tight tabular" data-testid="years-year">
+            {t('site.years.change_periods', { early: period(frames.early), late: period(frames.late) })}
           </p>
         </div>
-        <div className="flex gap-1">
-          <button
-            type="button"
-            onClick={() => {
-              onPlay(false);
-              onFrame(Math.max(0, frame - 1));
-            }}
-            disabled={frame <= 0}
-            aria-label={t('site.years.prev')}
-            className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
-            data-testid="years-prev"
-          >
-            <ChevronLeft className="size-4" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              onPlay(false);
-              onFrame(Math.min(ys.length - 1, frame + 1));
-            }}
-            disabled={frame >= ys.length - 1}
-            aria-label={t('site.years.next')}
-            className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
-            data-testid="years-next"
-          >
-            <ChevronRight className="size-4" aria-hidden="true" />
-          </button>
-        </div>
-      </div>
-      <div role="group" aria-label={t('site.years.timeline')} className="flex h-10 items-end gap-[2px]" data-testid="years-timeline">
-        {ys.map((y, i) => (
-          <button
-            key={y}
-            type="button"
-            onClick={() => {
-              onPlay(false);
-              onFrame(i);
-            }}
-            aria-label={int(y, lang)}
-            aria-pressed={i === frame}
-            title={int(y, lang)}
-            className={
-              'min-w-0 flex-1 rounded-[2px] transition-[height,background-color] duration-150 ' +
-              (i === frame ? 'h-10 bg-accent' : i < frame ? 'h-4 bg-accent/45 hover:h-7 hover:bg-accent/80' : 'h-4 bg-ink/25 hover:h-7 hover:bg-accent/70')
-            }
-            data-testid={`years-year-${y}`}
-          />
-        ))}
-      </div>
-      <div className="relative h-4 font-mono text-[11px] text-muted tabular" aria-hidden="true">
-        {ys.map((y, i) =>
-          y % 10 === 0 || i === 0 || i === ys.length - 1 ? (
-            <span key={y} className="absolute -translate-x-1/2" style={{ left: `${((i + 0.5) / ys.length) * 100}%` }}>
-              {int(y, lang)}
-            </span>
-          ) : null,
-        )}
-      </div>
-      <label className="flex flex-col gap-1" htmlFor="years-slider">
-        <span className="sr-only">{t('site.years.slider')}</span>
-        <input
-          id="years-slider"
-          type="range"
-          min={0}
-          max={ys.length - 1}
-          step={1}
-          value={frame}
-          onChange={(e) => {
-            onPlay(false);
-            onFrame(Number(e.target.value));
-          }}
-          aria-valuetext={int(year, lang)}
-          className="sr-only"
-          data-testid="years-slider"
-        />
-      </label>
-      <p className="m-0 text-[12.5px] font-semibold">{t(m.rule === 'sum' ? 'site.years.legend_sum' : 'site.years.legend_mean', { units: m.units })}</p>
+      ) : (
+        <>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => onPlay(!playing)}
+              aria-label={playing ? t('site.years.pause') : t('site.years.play')}
+              className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-ocean hover:brightness-110"
+              data-testid="years-play"
+            >
+              {playing ? <Pause className="size-5" aria-hidden="true" /> : <Play className="size-5" aria-hidden="true" />}
+            </button>
+            <div className="min-w-0 flex-1">
+              <p className="m-0 truncate text-[12px] text-muted">{t(frames.kind === 'anomaly' ? 'site.years.anomaly_title' : 'site.years.title', { record: name })}</p>
+              <p className="m-0 font-display text-[34px] leading-none tabular" aria-live="polite" data-testid="years-year">
+                {int(year, lang)}
+              </p>
+            </div>
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  onPlay(false);
+                  onFrame(Math.max(0, frame - 1));
+                }}
+                disabled={frame <= 0}
+                aria-label={t('site.years.prev')}
+                className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
+                data-testid="years-prev"
+              >
+                <ChevronLeft className="size-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onPlay(false);
+                  onFrame(Math.min(ys.length - 1, frame + 1));
+                }}
+                disabled={frame >= ys.length - 1}
+                aria-label={t('site.years.next')}
+                className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
+                data-testid="years-next"
+              >
+                <ChevronRight className="size-4" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+          <div role="group" aria-label={t('site.years.timeline')} className="flex h-10 items-end gap-[2px]" data-testid="years-timeline">
+            {ys.map((y, i) => (
+              <button
+                key={y}
+                type="button"
+                onClick={() => {
+                  onPlay(false);
+                  onFrame(i);
+                }}
+                aria-label={int(y, lang)}
+                aria-pressed={i === frame}
+                title={int(y, lang)}
+                className={
+                  'min-w-0 flex-1 rounded-[2px] transition-[height,background-color] duration-150 ' +
+                  (i === frame ? 'h-10 bg-accent' : i < frame ? 'h-4 bg-accent/45 hover:h-7 hover:bg-accent/80' : 'h-4 bg-ink/25 hover:h-7 hover:bg-accent/70')
+                }
+                data-testid={`years-year-${y}`}
+              />
+            ))}
+          </div>
+          <div className="relative h-4 font-mono text-[11px] text-muted tabular" aria-hidden="true">
+            {ys.map((y, i) =>
+              y % 10 === 0 || i === 0 || i === ys.length - 1 ? (
+                <span key={y} className="absolute -translate-x-1/2" style={{ left: `${((i + 0.5) / ys.length) * 100}%` }}>
+                  {int(y, lang)}
+                </span>
+              ) : null,
+            )}
+          </div>
+          <label className="flex flex-col gap-1" htmlFor="years-slider">
+            <span className="sr-only">{t('site.years.slider')}</span>
+            <input
+              id="years-slider"
+              type="range"
+              min={0}
+              max={ys.length - 1}
+              step={1}
+              value={frame}
+              onChange={(e) => {
+                onPlay(false);
+                onFrame(Number(e.target.value));
+              }}
+              aria-valuetext={int(year, lang)}
+              className="sr-only"
+              data-testid="years-slider"
+            />
+          </label>
+        </>
+      )}
+      <p className="m-0 text-[12.5px] font-semibold" data-testid="years-legend">
+        {legend}
+      </p>
       <div className="h-2.5 rounded-full" style={{ background: `linear-gradient(90deg, ${stops})` }} aria-hidden="true" />
       <div className="flex justify-between font-mono text-[11px] text-muted tabular">
-        <span>{num(lo, lang)}</span>
-        <span>{num(hi, lang)}</span>
+        <span>{frames.kind === 'values' ? num(frames.lo, lang) : `≤ ${fmtRate(frames.lo, lang)}`}</span>
+        {frames.kind === 'values' ? null : <span>0</span>}
+        <span>{frames.kind === 'values' ? num(frames.hi, lang) : `≥ ${fmtRate(frames.hi, lang)}`}</span>
       </div>
-      <p className="m-0 text-[12px] leading-snug text-muted">{t('site.years.note')}</p>
+      <p className="m-0 text-[12px] leading-snug text-muted">{t(`site.years.note_${frames.kind}`)}</p>
     </div>
   );
 }
@@ -381,10 +428,22 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const [frame, setFrame] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const flatView = flat || failed || IS_OFFLINE_BUILD;
+  const [framesKind, setFramesKind] = useState<FramesKind>('values');
   const years = useMapYears(variable?.id, season, yearsOn && !flatView);
   const yearsData = years.status === 'ok' ? years.data : undefined;
-  const yearsActive = yearsOn && !flatView && Boolean(yearsData);
-  const nYears = yearsData?.meta.years.length ?? 0;
+  const kinds = useMemo<FramesKind[]>(
+    () => (yearsData ? ['values', ...(yearsData.meta.anomaly ? (['anomaly'] as const) : []), ...(yearsData.meta.decades ? (['change'] as const) : [])] : ['values']),
+    [yearsData],
+  );
+  const kind: FramesKind = kinds.includes(framesKind) ? framesKind : 'values';
+  const extraKind = kind === 'values' ? null : kind;
+  const extra = useAsync<Int8Array | Int16Array>(yearsData && extraKind && root !== undefined ? `frames|${root}|${yearsData.meta.variable}|${season}|${extraKind}` : null, () =>
+    yearsData && extraKind ? loadFramesExtra(root ?? '', yearsData, extraKind) : Promise.reject(new Error('no frames')),
+  );
+  const frames = useMemo<Frames | null>(() => (yearsData ? framesOf(yearsData, kind, extra.data) : null), [yearsData, kind, extra.data]);
+  const framesStatus = years.status !== 'ok' ? years.status : kind === 'values' ? 'ok' : extra.status;
+  const yearsActive = yearsOn && !flatView && Boolean(frames);
+  const nYears = frames?.years.length ?? 0;
   const fi = frame === null ? Math.max(0, nYears - 1) : Math.min(frame, Math.max(0, nYears - 1));
 
   const host = useRef<HTMLDivElement>(null);
@@ -552,18 +611,19 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   }, [ready, activeLayer, layer.status, countries.status, countries.data, opacity, variable?.colormap?.trend, focusSet, columns, yearsActive]);
 
   // ---- the time-lapse: each year's frame painted into the globe's own texture -------------------------
-  const painterRef = useRef<{ years: MapYears; countries: unknown; focus: unknown; painter: YearPainter } | null>(null);
+  const painterRef = useRef<{ frames: Frames; countries: unknown; focus: unknown; painter: YearPainter } | null>(null);
   const savedImage = useRef<unknown>(null);
   useEffect(() => {
     const g = globeRef.current;
     const earth = earthRef.current;
-    if (!ready || !g || !earth || !yearsActive || !yearsData) return;
+    if (!ready || !g || !earth || !yearsActive || !frames) return;
     let p = painterRef.current;
-    if (!p || p.years !== yearsData || p.countries !== countries.data || p.focus !== focusSet) {
-      p = { years: yearsData, countries: countries.data, focus: focusSet, painter: new YearPainter(earth, countries.data ?? [], focusSet, yearsData) };
+    if (!p || p.frames !== frames || p.countries !== countries.data || p.focus !== focusSet) {
+      p = { frames, countries: countries.data, focus: focusSet, painter: new YearPainter(earth, countries.data ?? [], focusSet, frames) };
       painterRef.current = p;
     }
-    const cv = p.painter.paint(fi, sequential(variable?.colormap?.value), Math.min(0.95, opacity + 0.25));
+    const interp = frames.kind === 'values' ? sequential(variable?.colormap?.value) : diverging(variable?.colormap?.trend);
+    const cv = p.painter.paint(Math.min(fi, frames.years.length - 1), interp, Math.min(0.95, opacity + 0.25));
     const mat = g.globeMaterial();
     if (mat.map) {
       if (savedImage.current === null) savedImage.current = mat.map.image;
@@ -572,7 +632,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     } else {
       g.globeImageUrl(cv.toDataURL('image/jpeg', 0.85));
     }
-  }, [ready, yearsActive, yearsData, fi, countries.data, focusSet, opacity, variable?.colormap?.value]);
+  }, [ready, yearsActive, frames, fi, countries.data, focusSet, opacity, variable?.colormap?.value, variable?.colormap?.trend]);
   // Leaving the time-lapse puts the trend surface back.
   useEffect(() => {
     if (!yearsActive) return;
@@ -975,8 +1035,14 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
               <div className="pointer-events-none absolute bottom-3 left-3 z-10 sm:bottom-4 sm:left-4">
                 {yearsOn ? (
                   <YearsPanel
-                    status={years.status}
-                    years={yearsData}
+                    status={framesStatus}
+                    frames={frames}
+                    kind={kind}
+                    kinds={kinds}
+                    onKind={(k) => {
+                      setPlaying(false);
+                      setFramesKind(k);
+                    }}
                     frame={fi}
                     onFrame={setFrame}
                     playing={playing}
@@ -985,6 +1051,8 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
                       setPlaying(on);
                     }}
                     colormap={variable?.colormap?.value}
+                    trendColormap={variable?.colormap?.trend}
+                    rule={yearsData?.meta.rule ?? 'mean'}
                     name={variable ? pick(variable.name, lang) : ''}
                   />
                 ) : activeLayer ? (

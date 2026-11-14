@@ -190,8 +190,12 @@ def country_defs(folder: Path = boundaries.BOUNDARY_DIR) -> list[boundaries.Regi
 def all_region_defs() -> list[boundaries.RegionDef]:
     """The configured regions (their names win), then every other country."""
     cfg = boundaries.region_defs()
+    countries = {d.id: d for d in country_defs()}
+    for d in cfg:                      # a configured country keeps its own name and outline, and gains its continent
+        if d.id in countries and not getattr(d, "extra", None):
+            d.extra = dict(countries[d.id].extra)
     ids = {d.id for d in cfg}
-    return cfg + [d for d in country_defs() if d.id not in ids]
+    return cfg + [d for d in countries.values() if d.id not in ids]
 
 
 # Bangla names of Natural Earth's continents and of the two world areas.

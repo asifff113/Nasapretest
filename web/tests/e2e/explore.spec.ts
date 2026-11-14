@@ -81,6 +81,28 @@ test.describe('with the exploration files', () => {
     await expect(dir.getByRole('link', { name: 'Nepal' }).first()).toBeVisible();
   });
 
+  test('a place report shows what is changing and each record then and now', async ({ page }) => {
+    await open(page, '#/place?region=country:NPL');
+    const dash = page.getByTestId('change-dashboard');
+    await expect(dash).toBeVisible();
+    await expect(dash.locator('[data-testid^="change-row-"]').first()).toBeVisible();
+    await expect(page.getByTestId('then-and-now')).toBeVisible();
+    for (const id of ['then-values', 'then-trend', 'then-anomaly', 'then-heatmap', 'then-dumbbell']) await expect(page.getByTestId(id)).toBeVisible();
+  });
+
+  test('Trends tests the area itself, ranks and maps countries, and shows latitude by year', async ({ page }) => {
+    test.skip(!mapVar, 'no screening map in this build');
+    await open(page, `#/trends?variable=${mapVar!.id}`);
+    const scope = page.getByTestId('trends-scope');
+    await expect(scope).toBeVisible();
+    await expect(scope.getByTestId('trend-standsout').or(scope.getByTestId('trend-reason')).first()).toBeVisible();
+    for (const id of ['trends-forest', 'trends-map', 'trends-hovmoller']) await expect(page.getByTestId(id)).toBeVisible();
+    const area = page.getByRole('combobox', { name: 'Area' });
+    if (await area.isVisible()) await area.selectOption({ label: 'Continent' });
+    else await page.getByTestId('trends-level-continent').click();
+    await expect(scope).toContainText(':');
+  });
+
   test('the story of any place plays step by step', async ({ page }) => {
     await open(page, '#/watch?region=country:NPL');
     await expect(page.getByTestId('story-player')).toBeVisible();
@@ -97,4 +119,24 @@ test('the globe timeline repaints a chosen year', async ({ page }) => {
   await expect(page.getByTestId('years-timeline')).toBeVisible();
   await page.getByTestId('years-year-1990').click();
   await expect(page.getByTestId('years-year')).toHaveText('1990');
+});
+
+test('the globe shows each year against the baseline, and the last ten years against the first ten', async ({ page }) => {
+  test.skip(!yearsVar, 'this build has no yearly map frames');
+  const meta = read<{ anomaly?: unknown; decades?: unknown }>(`maps/${yearsVar!.id}/ANN/years.json`);
+  test.skip(!meta.anomaly || !meta.decades, 'this build has no anomaly or decade frames');
+  await open(page, `#/map?variable=${yearsVar!.id}`);
+  await page.getByRole('button', { name: 'Year by year' }).click();
+  await expect(page.getByTestId('years-timeline')).toBeVisible();
+  const pickKind = async (value: string, label: string) => {
+    const list = page.getByRole('combobox', { name: 'What the globe shows' });
+    if (await list.isVisible()) await list.selectOption({ label }); // phones show the switch as a list
+    else await page.getByTestId(`years-kind-${value}`).click();
+  };
+  await pickKind('anomaly', 'Against the baseline');
+  await expect(page.getByTestId('years-legend')).toContainText('Difference from the');
+  await expect(page.getByTestId('years-timeline')).toBeVisible();
+  await pickKind('change', 'Then and now');
+  await expect(page.getByTestId('years-legend')).toContainText('minus mean of');
+  await expect(page.getByTestId('years-timeline')).toHaveCount(0);
 });

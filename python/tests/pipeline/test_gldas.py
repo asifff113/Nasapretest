@@ -165,7 +165,7 @@ def test_a_sea_region_gets_no_series_and_the_bundle_passes_check_bundle(tmp_path
 def test_region_files_take_a_land_field_on_its_own_grid(tmp_path, monkeypatch):
     defs = [_region("cmp:test_land", (84.0, 18.0, 90.0, 24.0)), _region("cmp:test_sea", (60.0, -20.0, 70.0, -10.0))]
     monkeypatch.setattr(explore, "all_region_defs", lambda: defs)
-    monkeypatch.setattr(explore, "area_defs", lambda: [])       # the continents need the boundary files, which tests do not download
+    monkeypatch.setattr(explore, "area_defs", list)       # the continents need the boundary files, which tests do not download
     months = ed.month_range("2001-01", "2002-12")
     land = _land()
 
