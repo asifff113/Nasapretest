@@ -429,8 +429,135 @@
    ]
   },
   {
+   "id": "snowfall",
+   "status": "analysed",
+   "group": "water",
+   "kind": "model",
+   "source": "merra2_precip",
+   "variable": "PRECSNO",
+   "name": {
+    "en": "Snowfall",
+    "bn": "তুষারপাত"
+   },
+   "name_mid": {
+    "en": "snowfall",
+    "bn": "তুষারপাত"
+   },
+   "definition": {
+    "en": "Snow falling from the sky, measured as the water it holds once melted.",
+    "bn": "আকাশ থেকে পড়া তুষার, গলে গেলে যতটা পানি হয় সেই হিসাবে মাপা।"
+   },
+   "how_measured": {
+    "en": "From MERRA-2, a NASA model that blends many observations.",
+    "bn": "MERRA-2 থেকে, নাসার একটি মডেল যা বহু পর্যবেক্ষণ মিশিয়ে তৈরি।"
+   },
+   "conversion": "PRECSNO (\"snowfall\", kg m⁻² s⁻¹, read in an M2TMNXFLX granule on 14 Nov 2026) × 86 400 → mm/day of water; totals = Σ mm/day × days",
+   "units": {
+    "monthly": "mm/day",
+    "aggregated": "mm"
+   },
+   "rule": "sum",
+   "ratio_scale": true,
+   "record": {
+    "from": 1980,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None: the model fills every month from January 1980.",
+     "bn": "নেই: ১৯৮০ সালের জানুয়ারি থেকে মডেল প্রতিটি মাস পূরণ করে।"
+    },
+    "known_breaks": [
+     {
+      "id": "merra2_observing_system",
+      "label": {
+       "en": "MERRA-2 is a model: the satellite and ground observations it blends in changed over the record",
+       "bn": "MERRA-2 একটি মডেল: এটি যে স্যাটেলাইট ও ভূমি-পর্যবেক্ষণ মেলায়, রেকর্ডজুড়ে সেগুলো বদলেছে"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output. The rain and snowfall record already includes snow; this one shows the snow on its own.",
+     "bn": "মডেলের ফল। বৃষ্টি ও তুষারপাতের রেকর্ডে তুষার আগে থেকেই আছে; এটি শুধু তুষারের অংশটুকু দেখায়।"
+    },
+    "cannot_answer": {
+     "en": "Monthly, on a 0.5° grid: it cannot show snow on the ground, snow depth or a single storm. Exploration only, no verdict.",
+     "bn": "মাসিক, ০.৫° গ্রিডে: এটি মাটিতে জমা তুষার, তুষারের গভীরতা বা কোনো একক ঝড় দেখাতে পারে না। শুধু অনুসন্ধান, কোনো রায় নেই।"
+    }
+   },
+   "tags": [
+    "water",
+    "weather"
+   ]
+  },
+  {
+   "id": "wind_speed",
+   "status": "analysed",
+   "group": "weather",
+   "kind": "model",
+   "source": "merra2_precip",
+   "variable": "SPEED",
+   "name": {
+    "en": "Wind speed near the surface",
+    "bn": "ভূপৃষ্ঠের কাছে বাতাসের গতি"
+   },
+   "name_mid": {
+    "en": "wind speed",
+    "bn": "বাতাসের গতি"
+   },
+   "definition": {
+    "en": "How fast the air moves near the ground, averaged over the month.",
+    "bn": "মাটির কাছে বাতাস কত দ্রুত চলে, মাসজুড়ে গড় করা।"
+   },
+   "how_measured": {
+    "en": "From MERRA-2, a NASA model that blends many observations.",
+    "bn": "MERRA-2 থেকে, নাসার একটি মডেল যা বহু পর্যবেক্ষণ মিশিয়ে তৈরি।"
+   },
+   "conversion": "SPEED (\"surface_wind_speed\", m s⁻¹, read in an M2TMNXFLX granule on 14 Nov 2026), the monthly mean speed; no conversion",
+   "units": {
+    "monthly": "m/s",
+    "aggregated": "m/s"
+   },
+   "rule": "mean",
+   "ratio_scale": true,
+   "record": {
+    "from": 1980,
+    "to": 2025
+   },
+   "record_card": {
+    "gaps": {
+     "en": "None: the model fills every month from January 1980.",
+     "bn": "নেই: ১৯৮০ সালের জানুয়ারি থেকে মডেল প্রতিটি মাস পূরণ করে।"
+    },
+    "known_breaks": [
+     {
+      "id": "merra2_observing_system",
+      "label": {
+       "en": "MERRA-2 is a model: the satellite and ground observations it blends in changed over the record",
+       "bn": "MERRA-2 একটি মডেল: এটি যে স্যাটেলাইট ও ভূমি-পর্যবেক্ষণ মেলায়, রেকর্ডজুড়ে সেগুলো বদলেছে"
+      },
+      "date": null,
+      "verified": false
+     }
+    ],
+    "observation_or_model": {
+     "en": "Model output.",
+     "bn": "মডেলের ফল।"
+    },
+    "cannot_answer": {
+     "en": "A monthly mean on a 0.5° grid: it cannot show gusts, storms or the wind in one town. Exploration only, no verdict.",
+     "bn": "০.৫° গ্রিডে মাসিক গড়: এটি দমকা হাওয়া, ঝড় বা কোনো এক শহরের বাতাস দেখাতে পারে না। শুধু অনুসন্ধান, কোনো রায় নেই।"
+    }
+   },
+   "tags": [
+    "weather"
+   ]
+  },
+  {
    "id": "soil_moisture",
-   "status": "deferred",
+   "status": "analysed",
    "group": "water",
    "kind": "model",
    "source": "gldas_noah10_m",
@@ -444,27 +571,28 @@
     "bn": "ওপরের মাটির আর্দ্রতা"
    },
    "definition": {
-    "en": "How wet the top 10 cm of soil is.",
-    "bn": "মাটির ওপরের ১০ সেমি কতটা ভেজা।"
+    "en": "How much water the top 10 cm of soil holds, in millimetres: 100 mm would mean the layer is all water.",
+    "bn": "মাটির ওপরের ১০ সেমি কতটা পানি ধরে রাখে, মিলিমিটারে: ১০০ মিমি মানে পুরো স্তরটাই পানি।"
    },
    "how_measured": {
     "en": "From GLDAS, a NASA land model.",
     "bn": "GLDAS থেকে, নাসার একটি ভূমি-মডেল।"
    },
+   "conversion": "SoilMoi0_10cm_inst (\"soil_moisture_content\", kg m⁻², read in a GLDAS_NOAH10_M granule on 14 Nov 2026): 1 kg m⁻² of water is 1 mm; no conversion",
    "units": {
-    "monthly": "m³/m³",
-    "aggregated": "m³/m³"
+    "monthly": "mm",
+    "aggregated": "mm"
    },
    "rule": "mean",
    "ratio_scale": true,
    "record": {
     "from": 2000,
-    "to": null
+    "to": 2025
    },
    "record_card": {
     "gaps": {
-     "en": "Start year to be checked (#15).",
-     "bn": "শুরুর বছর যাচাই করতে হবে (#১৫)।"
+     "en": "No gaps on land from January 2000: the model fills every month. No values over the sea.",
+     "bn": "স্থলভাগে ২০০০ সালের জানুয়ারি থেকে কোনো ফাঁক নেই: মডেল প্রতিটি মাস পূরণ করে। সমুদ্রের ওপর কোনো মান নেই।"
     },
     "known_breaks": [
      {
@@ -482,8 +610,8 @@
      "bn": "মডেলের ফল; এর চালিকা-ইনপুট সময়ের সঙ্গে বদলেছে। এটি জমা-পরিমাপ, তাই শুধু বর্ণনামূলক থাকবে।"
     },
     "cannot_answer": {
-     "en": "Not analysed in this release.",
-     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+     "en": "Land only, the top 10 cm on a 1° grid: it cannot show one field or the water deeper down, and has no values over the sea. Descriptive only: no verdict and no trend test.",
+     "bn": "শুধু স্থলভাগ, ১° গ্রিডে ওপরের ১০ সেমি: এটি কোনো এক মাঠ বা আরও গভীরের পানি দেখাতে পারে না, আর সাগরের ওপর কোনো মান নেই। শুধু বর্ণনামূলক: কোনো রায় বা প্রবণতা-পরীক্ষা নেই।"
     }
    },
    "tags": [
