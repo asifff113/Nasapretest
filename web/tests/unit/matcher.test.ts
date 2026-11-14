@@ -38,9 +38,9 @@ describe('matcher', () => {
   });
 
   it('finds records that are not analysed yet', () => {
-    const soil = matchVariable('Soil moisture in Kenya', catalog.variables);
-    expect(soil?.name.en.toLowerCase()).toContain('moisture');
-    expect(soil?.status).toBe('deferred');
+    const ozone = matchVariable('Ozone over Kenya', catalog.variables);
+    expect(ozone?.name.en.toLowerCase()).toContain('ozone');
+    expect(ozone?.status).toBe('deferred');
   });
 
   it('reads seasons, and keeps pre-monsoon apart from monsoon', () => {
