@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://casefile-earth.github.io/spec/schemas/explore_index.schema.json",
-  "title": "Region detail index — every country and configured region with a detail file (exploration)",
+  "title": "Region detail index — every country, configured region and area with a detail file (exploration)",
   "type": "object",
   "properties": {
     "schema": {
@@ -41,6 +41,12 @@
           },
           "last": {
             "type": "integer"
+          },
+          "trendTested": {
+            "type": "integer"
+          },
+          "trendStandsOut": {
+            "type": "integer"
           }
         },
         "additionalProperties": false,
@@ -49,7 +55,9 @@
           "units",
           "rule",
           "first",
-          "last"
+          "last",
+          "trendTested",
+          "trendStandsOut"
         ]
       }
     },
@@ -135,6 +143,101 @@
           "file"
         ]
       }
+    },
+    "areas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(world|world:land|continent:[a-z_]+)$"
+          },
+          "kind": {
+            "enum": [
+              "world",
+              "continent"
+            ]
+          },
+          "name": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "bbox": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "centroid": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "areaKm2": {
+            "type": "number",
+            "minimum": 0
+          },
+          "effectiveCells": {
+            "type": "number",
+            "minimum": 0
+          },
+          "spillShare": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "passesSupport": {
+            "type": "boolean"
+          },
+          "iso3": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "continent": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "file": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "bbox",
+          "centroid",
+          "areaKm2",
+          "effectiveCells",
+          "spillShare",
+          "passesSupport",
+          "iso3",
+          "continent",
+          "file"
+        ]
+      }
+    },
+    "trends": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hovmoller": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "additionalProperties": false,
@@ -145,6 +248,9 @@
     "label",
     "grid",
     "variables",
-    "regions"
+    "regions",
+    "areas",
+    "trends",
+    "hovmoller"
   ]
 }

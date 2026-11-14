@@ -52,6 +52,9 @@ def _region(rid, b):
 def test_region_files_give_engine_annual_values_and_validate(tmp_path, monkeypatch):
     defs = [_region("cmp:test_a", (88.0, 22.0, 91.0, 25.0)), _region("cmp:test_b", (10.0, 40.0, 10.3, 40.3))]
     monkeypatch.setattr(explore, "all_region_defs", lambda: defs)
+    world = RegionDef("world", "world", "world", {"en": "World", "bn": "পৃথিবী"}, {"en": "", "bn": ""}, box(-180, -90, 180, 90),
+                      "the whole globe", "not applicable", (-180.0, -90.0, 180.0, 90.0))
+    monkeypatch.setattr(explore, "area_defs", lambda: [world])
     months = [f"{y}-{m:02d}" for y in (2001, 2002) for m in range(1, 13)]
     g = M.MERRA2
 
@@ -70,4 +73,9 @@ def test_region_files_give_engine_annual_values_and_validate(tmp_path, monkeypat
     assert small["region"]["passesSupport"] is False                   # a 0.3° box is far below 4 MERRA-2 cells
     idx = json.loads((tmp_path / "explore/index.json").read_text(encoding="utf-8"))
     assert [r["id"] for r in idx["regions"]] == ["cmp:test_a", "cmp:test_b"] and [v["id"] for v in idx["variables"]] == ["air_temp", "rain"]
+    w = json.loads((tmp_path / "explore/areas/world.json").read_text(encoding="utf-8"))
+    assert w["schema"] == "casefile/explore_area@3" and w["variables"]["air_temp"]["annual"] == [7.25, 7.25]   # chunked world mean
+    assert [a["id"] for a in idx["areas"]] == ["world"] and idx["trends"] == ["explore/trends/air_temp.json", "explore/trends/rain.json"]
+    tr = json.loads((tmp_path / "explore/trends/air_temp.json").read_text(encoding="utf-8"))
+    assert {i["id"] for i in tr["items"]} == {"cmp:test_a", "cmp:test_b", "world"} and all(i["reason"] == "too_short" for i in tr["items"])
     assert validate(tmp_path) == []

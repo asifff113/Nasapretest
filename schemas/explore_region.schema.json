@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://casefile-earth.github.io/spec/schemas/explore_region.schema.json",
-  "title": "Region detail — yearly values and monthly climatology of one region for every parameter (exploration)",
+  "title": "Region detail — yearly values, monthly climatology, past against present and an exploration trend of one region for every parameter",
   "type": "object",
   "properties": {
     "schema": {
@@ -153,6 +153,318 @@
             },
             "minItems": 12,
             "maxItems": 12
+          },
+          "baseline": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            ]
+          },
+          "annualAnomaly": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "monthlyAnomaly": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "minItems": 12,
+              "maxItems": 12
+            }
+          },
+          "rolling10": {
+            "type": "array",
+            "items": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "decades": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "early": {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": "integer"
+                      },
+                      "to": {
+                        "type": "integer"
+                      },
+                      "mean": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "monthly": {
+                        "type": "array",
+                        "items": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "minItems": 12,
+                        "maxItems": 12
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "from",
+                      "to",
+                      "mean",
+                      "monthly"
+                    ]
+                  },
+                  "late": {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": "integer"
+                      },
+                      "to": {
+                        "type": "integer"
+                      },
+                      "mean": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "monthly": {
+                        "type": "array",
+                        "items": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "minItems": 12,
+                        "maxItems": 12
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "from",
+                      "to",
+                      "mean",
+                      "monthly"
+                    ]
+                  },
+                  "change": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "changeMonthly": {
+                    "type": "array",
+                    "items": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "minItems": 12,
+                    "maxItems": 12
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "early",
+                  "late",
+                  "change",
+                  "changeMonthly"
+                ]
+              }
+            ]
+          },
+          "trend": {
+            "type": "object",
+            "properties": {
+              "testable": {
+                "type": "boolean"
+              },
+              "reason": {
+                "enum": [
+                  null,
+                  "ok",
+                  "descriptive",
+                  "too_short",
+                  "missing_year",
+                  "not_finite",
+                  "phi_out_of_range"
+                ]
+              },
+              "exploratory": {
+                "type": "boolean"
+              },
+              "n": {
+                "type": "integer"
+              },
+              "first": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "last": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "ratePerDecade": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "lowPerDecade": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "highPerDecade": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "p": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "q": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "standsOut": {
+                "type": "boolean"
+              },
+              "phi": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "jumpYear": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "testable",
+              "reason",
+              "exploratory",
+              "n",
+              "first",
+              "last",
+              "ratePerDecade",
+              "lowPerDecade",
+              "highPerDecade",
+              "p",
+              "q",
+              "standsOut",
+              "phi",
+              "jumpYear"
+            ]
+          },
+          "monthTrends": {
+            "type": "array",
+            "minItems": 12,
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "properties": {
+                "testable": {
+                  "type": "boolean"
+                },
+                "reason": {
+                  "enum": [
+                    null,
+                    "ok",
+                    "descriptive",
+                    "too_short",
+                    "missing_year",
+                    "not_finite",
+                    "phi_out_of_range"
+                  ]
+                },
+                "ratePerDecade": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "p": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "q": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "standsOut": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "testable",
+                "reason",
+                "ratePerDecade",
+                "p",
+                "q",
+                "standsOut"
+              ]
+            }
           }
         },
         "additionalProperties": false,
@@ -162,7 +474,14 @@
           "rule",
           "years",
           "annual",
-          "monthlyClimatology"
+          "monthlyClimatology",
+          "baseline",
+          "annualAnomaly",
+          "monthlyAnomaly",
+          "rolling10",
+          "decades",
+          "trend",
+          "monthTrends"
         ]
       }
     }

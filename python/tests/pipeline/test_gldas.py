@@ -52,10 +52,12 @@ def test_gldas_grid_is_the_documented_land_grid():
 
 def test_gldas_reader_is_registered_with_its_parts():
     assert R.short_name == "GLDAS_NOAH10_M" and R.version == "2.1" and R.grid_id == "gldas_1deg"
-    assert {v["id"] for v in R.variables()} == {"evapotranspiration", "runoff"}
-    assert R.file_variables() == ["Evap_tavg", "Qs_acc", "Qsb_acc"]
+    assert {v["id"] for v in R.variables()} == {"evapotranspiration", "runoff", "soil_moisture"}
+    assert R.file_variables() == ["SoilMoi0_10cm_inst", "Evap_tavg", "Qs_acc", "Qsb_acc"]
     assert parts("Qs_acc + Qsb_acc") == ["Qs_acc", "Qsb_acc"] and parts("T2M") == ["T2M"]
     assert R.entry_for("Qsb_acc")["id"] == "runoff" and R.entry_for("Evap_tavg")["id"] == "evapotranspiration"
+    assert R.entry_for("SoilMoi0_10cm_inst")["id"] == "soil_moisture"
+    assert units.convert(np.array([31.5]), "kg m-2", "mm")[0] == pytest.approx(31.5)             # 1 kg m-2 of water = 1 mm
     assert M.SOURCES["gldas_noah10_m"]["doi"] == "10.5067/LWTYSMP3VM5Z"
 
 

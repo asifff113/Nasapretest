@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/explore_trends.schema.json",
+  "title": "Exploration trends of one parameter in every place, adjusted for the number of places tested",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/explore_trends@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "label": {
+      "const": "exploration"
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/analysedVariable"
+    },
+    "units": {
+      "type": "string"
+    },
+    "rule": {
+      "enum": [
+        "mean",
+        "sum"
+      ]
+    },
+    "q": {
+      "type": "number"
+    },
+    "method": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "country",
+              "division",
+              "comparison",
+              "world",
+              "continent"
+            ]
+          },
+          "name": {
+            "$ref": "common.schema.json#/$defs/text2"
+          },
+          "iso3": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "continent": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "passesSupport": {
+            "type": "boolean"
+          },
+          "anomalyLast": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "decadeChange": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "testable": {
+            "type": "boolean"
+          },
+          "reason": {
+            "enum": [
+              null,
+              "ok",
+              "descriptive",
+              "too_short",
+              "missing_year",
+              "not_finite",
+              "phi_out_of_range"
+            ]
+          },
+          "exploratory": {
+            "type": "boolean"
+          },
+          "n": {
+            "type": "integer"
+          },
+          "first": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "last": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "ratePerDecade": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lowPerDecade": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "highPerDecade": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "p": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "q": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "standsOut": {
+            "type": "boolean"
+          },
+          "phi": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "jumpYear": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "iso3",
+          "continent",
+          "passesSupport",
+          "anomalyLast",
+          "decadeChange",
+          "testable",
+          "reason",
+          "exploratory",
+          "n",
+          "first",
+          "last",
+          "ratePerDecade",
+          "lowPerDecade",
+          "highPerDecade",
+          "p",
+          "q",
+          "standsOut",
+          "phi",
+          "jumpYear"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "synthetic",
+    "label",
+    "variable",
+    "units",
+    "rule",
+    "q",
+    "method",
+    "items"
+  ]
+}

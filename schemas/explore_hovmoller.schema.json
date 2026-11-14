@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://casefile-earth.github.io/spec/schemas/explore_hovmoller.schema.json",
+  "title": "Latitude × year — the mean anomaly of each 1° latitude row in each year (exploration)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "casefile/explore_hovmoller@3"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "label": {
+      "const": "exploration"
+    },
+    "variable": {
+      "$ref": "common.schema.json#/$defs/analysedVariable"
+    },
+    "units": {
+      "type": "string"
+    },
+    "baseline": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "years": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "lat": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "cells": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "values": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "range": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "method": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "buildId",
+    "synthetic",
+    "label",
+    "variable",
+    "units",
+    "baseline",
+    "years",
+    "lat",
+    "cells",
+    "values",
+    "range",
+    "method"
+  ]
+}

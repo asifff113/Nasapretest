@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://casefile-earth.github.io/spec/schemas/map_years.schema.json",
-  "title": "Yearly map frames — one [180][360] int16 frame per year for the globe's year slider (exploration)",
+  "title": "Yearly map frames — one [180][360] int16 frame per year for the globe's year slider, with anomalies and decades (exploration)",
   "type": "object",
   "properties": {
     "schema": {
@@ -76,6 +76,111 @@
     },
     "source": {
       "type": "string"
+    },
+    "anomaly": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            },
+            "baseline": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "scale": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "layout": {
+              "const": "[year][row][col]"
+            },
+            "range": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "baseline",
+            "scale",
+            "layout",
+            "range"
+          ]
+        }
+      ]
+    },
+    "decades": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            },
+            "frames": {
+              "const": [
+                "early",
+                "late",
+                "change"
+              ]
+            },
+            "early": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "late": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "scale": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "layout": {
+              "const": "[frame][row][col]"
+            },
+            "changeRange": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "frames",
+            "early",
+            "late",
+            "scale",
+            "layout",
+            "changeRange"
+          ]
+        }
+      ]
     }
   },
   "additionalProperties": false,
@@ -98,6 +203,8 @@
     "offset",
     "fill",
     "range",
-    "source"
+    "source",
+    "anomaly",
+    "decades"
   ]
 }

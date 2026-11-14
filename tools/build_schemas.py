@@ -403,36 +403,81 @@ S("view", "View state in the URL hash (01_ARCHITECTURE §6)", {"type": "object",
     "region": ref("regionId"), "pair": {"type": "string"}, "variable": ref("analysedVariable"), "season": ref("seasonId"),
     "sensitivity": {"const": "imerg"}, "case": {"type": "string"}, "question": {"type": "string"}}})
 
-# ------------------------------------------------------------------ exploration files (casefile-pipeline explore; added 13 Nov 2026)
+# ------------------------------------------------------------------ exploration files (casefile-pipeline explore; added 13 Nov 2026, extended 14 Nov 2026)
 num_list = {"type": "array", "items": num_or_null}
-S("map_years", "Yearly map frames — one [180][360] int16 frame per year for the globe's year slider (exploration)", obj({
+num12 = {"type": "array", "items": num_or_null, "minItems": 12, "maxItems": 12}
+years_pair = {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2}
+S("map_years", "Yearly map frames — one [180][360] int16 frame per year for the globe's year slider, with anomalies and decades (exploration)", obj({
     "schema": {"const": "casefile/map_years@3"}, "buildId": {"type": "string"}, "synthetic": {"type": "boolean"},
     "variable": ref("analysedVariable"), "season": ref("seasonId"), "label": {"const": "exploration"}, "grid": ref("grid"),
     "units": {"type": "string"}, "rule": {"enum": ["mean", "sum"]}, "years": {"type": "array", "items": {"type": "integer"}, "minItems": 1},
     "file": {"type": "string"}, "dtype": {"const": "int16"}, "byteOrder": {"const": "little"}, "layout": {"const": "[year][row][col]"},
     "scale": {"type": "number", "exclusiveMinimum": 0}, "offset": {"type": "number"}, "fill": {"const": -32768},
-    "range": {"type": ["array", "null"], "items": {"type": "number"}, "minItems": 2, "maxItems": 2}, "source": {"type": "string"}}))
+    "range": {"type": ["array", "null"], "items": {"type": "number"}, "minItems": 2, "maxItems": 2}, "source": {"type": "string"},
+    "anomaly": {"oneOf": [{"type": "null"}, obj({"file": {"type": "string"}, "baseline": years_pair, "scale": {"type": "number", "exclusiveMinimum": 0},
+                                                 "layout": {"const": "[year][row][col]"}, "range": num_or_null})]},
+    "decades": {"oneOf": [{"type": "null"}, obj({"file": {"type": "string"}, "frames": {"const": ["early", "late", "change"]},
+                                                 "early": years_pair, "late": years_pair, "scale": {"type": "number", "exclusiveMinimum": 0},
+                                                 "layout": {"const": "[frame][row][col]"}, "changeRange": num_or_null})]}}))
 
-explore_region_info = {"id": ref("regionId"), "kind": {"enum": ["country", "division", "comparison"]}, "name": ref("text2"),
-                       "bbox": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
-                       "centroid": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
-                       "areaKm2": {"type": "number", "minimum": 0}, "effectiveCells": {"type": "number", "minimum": 0},
-                       "spillShare": {"type": "number", "minimum": 0, "maximum": 1}, "passesSupport": {"type": "boolean"},
-                       "iso3": str_or_null, "continent": str_or_null}
-S("explore_region", "Region detail — yearly values and monthly climatology of one region for every parameter (exploration)", obj({
+place_info = {"bbox": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
+              "centroid": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+              "areaKm2": {"type": "number", "minimum": 0}, "effectiveCells": {"type": "number", "minimum": 0},
+              "spillShare": {"type": "number", "minimum": 0, "maximum": 1}, "passesSupport": {"type": "boolean"},
+              "iso3": str_or_null, "continent": str_or_null}
+explore_region_info = {"id": ref("regionId"), "kind": {"enum": ["country", "division", "comparison"]}, "name": ref("text2"), **place_info}
+explore_area_info = {"id": {"type": "string", "pattern": "^(world|world:land|continent:[a-z_]+)$"}, "kind": {"enum": ["world", "continent"]},
+                     "name": ref("text2"), **place_info}
+trend_reason = {"enum": [None, "ok", "descriptive", "too_short", "missing_year", "not_finite", "phi_out_of_range"]}
+trend_props = {"testable": {"type": "boolean"}, "reason": trend_reason, "exploratory": {"type": "boolean"}, "n": {"type": "integer"},
+               "first": int_or_null, "last": int_or_null, "ratePerDecade": num_or_null, "lowPerDecade": num_or_null, "highPerDecade": num_or_null,
+               "p": num_or_null, "q": num_or_null, "standsOut": {"type": "boolean"}, "phi": num_or_null, "jumpYear": int_or_null}
+period = obj({"from": {"type": "integer"}, "to": {"type": "integer"}, "mean": num_or_null, "monthly": num12})
+variable_block = obj({
+    "unitsMonthly": {"type": "string"}, "units": {"type": "string"}, "rule": {"enum": ["mean", "sum"]},
+    "years": {"type": "array", "items": {"type": "integer"}}, "annual": num_list, "monthlyClimatology": num12,
+    "baseline": {"oneOf": [{"type": "null"}, years_pair]}, "annualAnomaly": {"type": ["array", "null"], "items": num_or_null},
+    "monthlyAnomaly": {"type": ["array", "null"], "items": num12}, "rolling10": num_list,
+    "decades": {"oneOf": [{"type": "null"}, obj({"early": period, "late": period, "change": num_or_null, "changeMonthly": num12})]},
+    "trend": obj(trend_props),
+    "monthTrends": {"type": "array", "minItems": 12, "maxItems": 12,
+                    "items": obj({"testable": {"type": "boolean"}, "reason": trend_reason, "ratePerDecade": num_or_null, "p": num_or_null,
+                                  "q": num_or_null, "standsOut": {"type": "boolean"}})}})
+S("explore_region", "Region detail — yearly values, monthly climatology, past against present and an exploration trend of one region for every parameter", obj({
     "schema": {"const": "casefile/explore_region@3"}, "buildId": {"type": "string"}, "synthetic": {"type": "boolean"},
     "label": {"const": "exploration"}, "grid": {"type": "string"}, "region": obj(explore_region_info),
     "boundary": obj({"source": {"type": "string"}, "licence": {"type": "string"}}),
-    "variables": {"type": "object", "additionalProperties": obj({
-        "unitsMonthly": {"type": "string"}, "units": {"type": "string"}, "rule": {"enum": ["mean", "sum"]},
-        "years": {"type": "array", "items": {"type": "integer"}}, "annual": num_list,
-        "monthlyClimatology": {"type": "array", "items": num_or_null, "minItems": 12, "maxItems": 12}})}}))
+    "variables": {"type": "object", "additionalProperties": variable_block}}))
 
-S("explore_index", "Region detail index — every country and configured region with a detail file (exploration)", obj({
+S("explore_area", "Area detail — the world, the world's land or a continent: the same blocks as a region detail file (exploration)", obj({
+    "schema": {"const": "casefile/explore_area@3"}, "buildId": {"type": "string"}, "synthetic": {"type": "boolean"},
+    "label": {"const": "exploration"}, "grid": {"type": "string"}, "area": obj(explore_area_info),
+    "boundary": obj({"source": {"type": "string"}, "licence": {"type": "string"}}),
+    "variables": {"type": "object", "additionalProperties": variable_block}}))
+
+S("explore_trends", "Exploration trends of one parameter in every place, adjusted for the number of places tested", obj({
+    "schema": {"const": "casefile/explore_trends@3"}, "buildId": {"type": "string"}, "synthetic": {"type": "boolean"},
+    "label": {"const": "exploration"}, "variable": ref("analysedVariable"), "units": {"type": "string"}, "rule": {"enum": ["mean", "sum"]},
+    "q": {"type": "number"}, "method": {"type": "string"},
+    "items": {"type": "array", "items": obj({"id": {"type": "string"}, "kind": {"enum": ["country", "division", "comparison", "world", "continent"]},
+                                             "name": ref("text2"), "iso3": str_or_null, "continent": str_or_null, "passesSupport": {"type": "boolean"},
+                                             "anomalyLast": num_or_null, "decadeChange": num_or_null, **trend_props})}}))
+
+S("explore_hovmoller", "Latitude × year — the mean anomaly of each 1° latitude row in each year (exploration)", obj({
+    "schema": {"const": "casefile/explore_hovmoller@3"}, "buildId": {"type": "string"}, "synthetic": {"type": "boolean"},
+    "label": {"const": "exploration"}, "variable": ref("analysedVariable"), "units": {"type": "string"}, "baseline": years_pair,
+    "years": {"type": "array", "items": {"type": "integer"}}, "lat": {"type": "array", "items": {"type": "number"}},
+    "cells": {"type": "array", "items": {"type": "integer"}}, "values": {"type": "array", "items": num_list},
+    "range": num_or_null, "method": {"type": "string"}}))
+
+S("explore_index", "Region detail index — every country, configured region and area with a detail file (exploration)", obj({
     "schema": {"const": "casefile/explore_index@3"}, "buildId": {"type": "string"}, "synthetic": {"type": "boolean"},
     "label": {"const": "exploration"}, "grid": {"type": "string"},
     "variables": {"type": "array", "items": obj({"id": ref("analysedVariable"), "units": {"type": "string"}, "rule": {"enum": ["mean", "sum"]},
-                                                 "first": {"type": "integer"}, "last": {"type": "integer"}})},
-    "regions": {"type": "array", "items": obj({**explore_region_info, "file": {"type": "string"}})}}))
+                                                 "first": {"type": "integer"}, "last": {"type": "integer"},
+                                                 "trendTested": {"type": "integer"}, "trendStandsOut": {"type": "integer"}})},
+    "regions": {"type": "array", "items": obj({**explore_region_info, "file": {"type": "string"}})},
+    "areas": {"type": "array", "items": obj({**explore_area_info, "file": {"type": "string"}})},
+    "trends": {"type": "array", "items": {"type": "string"}}, "hovmoller": {"type": "array", "items": {"type": "string"}}}))
 
 print("schemas written:", sorted(p.name for p in OUT.glob("*.schema.json")))
