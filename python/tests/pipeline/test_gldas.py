@@ -141,7 +141,7 @@ def test_a_sea_region_gets_no_series_and_the_bundle_passes_check_bundle(tmp_path
     _, masks = regions.load_masks(out)
     assert all(stages.grid_passes(index, masks, r["id"], "gldas_1deg") for r in index["regions"])
     logged = []
-    stages.bundle("g1", cache=cache, log=logged.append)
+    stages.bundle("g1", cache=cache, log=logged.append, series_for={"evapotranspiration", "runoff"})   # as if pre-registered
     assert check_bundle(out) == []
     z = np.load(out / "series/runoff/cmp__test_land.npz")
     assert np.allclose(z["monthly"], 1.2) and str(z["grid"]) == "gldas_1deg" and str(z["start"]) == "2001-01"

@@ -147,7 +147,7 @@ def test_a_land_region_gets_a_greenness_series_and_the_bundle_passes(tmp_path):
     index, _ = regions.build_regions(defs, out, "m1", prereg={"pairs": []}, log=lambda *_: None)
     assert "modis_05deg" in [g["id"] for g in index["grids"]]
     assert all(set(r["support"]) == set(NATIVE_GRIDS) for r in index["regions"])     # the region set is not changed
-    stages.bundle("m1", cache=cache, log=lambda *_: None)
+    stages.bundle("m1", cache=cache, log=lambda *_: None, series_for={"greenness"})   # as if pre-registered
     assert check_bundle(out) == []
     z = np.load(out / "series/greenness/cmp__test_land.npz")
     assert np.allclose(z["monthly"], 0.6) and str(z["grid"]) == "modis_05deg"

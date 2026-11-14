@@ -239,8 +239,20 @@ def _d01(reader: Reader, field: MonthlyField) -> dict:
             "note": f"area-weighted global mean of the 1991-2020 monthly T2M: {v:.2f} °C (expected about 14-15 °C)"}
 
 
-def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
-    """.cache/monthly/ + .cache/bundle/<id>/regions/ → series, pairs, map fields and input_manifest.json."""
+def preregistered_variables() -> set[str]:
+    """The variables of config/preregistration.yaml: the only ones whose region and pair series the engine reads."""
+    from casefile_engine.base import load_yaml
+
+    return {v["id"] for v in load_yaml("config/preregistration.yaml").get("variables", [])}
+
+
+def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print, series_for: set[str] | None = None) -> Path:
+    """.cache/monthly/ + .cache/bundle/<id>/regions/ → series, pairs, map fields and input_manifest.json.
+
+    Region and pair series are written for the pre-registered variables only (`series_for`, default from
+    config/preregistration.yaml): the engine reads no other. Exploration variables get their map field; their place
+    values come from `casefile-pipeline explore`."""
+    series_for = preregistered_variables() if series_for is None else series_for
     out = cache / "bundle" / bundle_id
     if not (out / "regions/index.json").exists():
         raise SystemExit(f"{out / 'regions/index.json'} is missing: run `casefile-pipeline regions --bundle-id {bundle_id}` first")
@@ -266,7 +278,7 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
                 log(f"  {vid}: not in {monthly_path(reader, cache).name} yet (run fetch), skipped")
                 continue
             n, empty = 0, []
-            ok = [rid for rid in in_set if grid_passes(index, masks, rid, reader.grid_id)]
+            ok = [rid for rid in in_set if grid_passes(index, masks, rid, reader.grid_id)] if vid in series_for else []
             for rid in ok:
                 if series.write_series(out, vid, rid, field, masks[(rid, reader.grid_id)][0]) is None:
                     empty.append(rid)
@@ -274,9 +286,10 @@ def bundle(bundle_id: str = "b1", cache: Path = CACHE, log=print) -> Path:
                     n += 1
             if empty:
                 log(f"  {vid}: no series for {empty}: no month has a value there on {reader.grid_id} (a land-only product over the sea)")
-            for p in index["pairs"] if reader.grid_id in NATIVE_GRIDS else []:
+            for p in index["pairs"] if reader.grid_id in NATIVE_GRIDS and vid in series_for else []:
                 series.write_pair(out, vid, p["id"], field, masks[(p["a"], reader.grid_id)][0], masks[(p["b"], reader.grid_id)][0])
-            log(f"  {vid}: {n} region series, {len(index['pairs'])} pair series, {field.months[0]}..{field.months[-1]} on {reader.grid_id}")
+            log(f"  {vid}: {n} region series, {len(index['pairs']) if vid in series_for else 0} pair series, {field.months[0]}..{field.months[-1]} on {reader.grid_id}"
+                + ("" if vid in series_for else " (exploration: map field only)"))
             g = GRIDS[reader.grid_id]
             if VARS[vid]["status"] == "analysed" and field.values.shape[1:] == (g["nlat"], g["nlon"]):
                 start, vals = series.pad_to_january(field.months, field.values)

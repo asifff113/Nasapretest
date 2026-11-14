@@ -151,3 +151,8 @@ def test_p19_tiny_end_to_end_bundle_passes_check_bundle(tmp_path):
     sys.path.insert(0, str(ROOT / "tools"))
     from validate_results import validate
     assert validate(out) == []
+
+
+def test_series_only_for_preregistered_variables():
+    from casefile_pipeline.stages import preregistered_variables
+    assert preregistered_variables() == {"air_temp", "rain", "rain_imerg"}      # config/preregistration.yaml
