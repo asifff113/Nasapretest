@@ -159,3 +159,29 @@ export function offlineCsp(): Plugin {
     },
   };
 }
+
+/** The copilot relay at /api/copilot in `npm run dev` (the deployed site uses api/copilot.ts on Vercel). The key is
+ *  read from the environment or from web/.env.local (git-ignored); it never reaches the browser. */
+export function copilotRelay(): Plugin {
+  return {
+    name: 'casefile-copilot-relay',
+    configureServer(server) {
+      for (const f of ['.env.local', '.env']) {
+        const p = path.join(webRoot, f);
+        if (!process.env.ANTHROPIC_API_KEY && fs.existsSync(p)) {
+          const m = fs.readFileSync(p, 'utf8').match(/^\s*ANTHROPIC_API_KEY\s*=\s*"?([^"\r\n]+)"?\s*$/m);
+          if (m?.[1]) process.env.ANTHROPIC_API_KEY = m[1].trim();
+        }
+      }
+      server.middlewares.use('/api/copilot', (req, res) => {
+        server
+          .ssrLoadModule('/server/copilot-relay.ts')
+          .then((mod) => (mod as { handleCopilot: (a: typeof req, b: typeof res) => Promise<void> }).handleCopilot(req, res))
+          .catch(() => {
+            res.statusCode = 500;
+            res.end('{"error":"relay_failed"}');
+          });
+      });
+    },
+  };
+}

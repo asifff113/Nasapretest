@@ -28,7 +28,7 @@
       "nav": "More",
       "source": "Source code",
       "source_url": "https://github.com/asifff113/Nasapretest",
-      "no_ai": "No AI in the product: every number and sentence comes from one tested engine and fixed templates."
+      "no_ai": "No AI computes, changes or decides any number or verdict. The optional copilot uses an AI model to choose what evidence to show and to word its answers; every number it shows is checked against the result files."
     },
     "common": {
       "back": "Back",
@@ -390,8 +390,8 @@
       "how_3": "Code: AI coding assistants wrote the data pipeline and this website from that specification, checked by tests and read by a person.",
       "how_4": "Language: AI drafted Bangla and English interface text, which a native Bangla reader checks.",
       "how_5": "People decided the design, the statistical methods, every threshold, the regions and the comparisons, and we committed those choices before we looked at any real trend.",
-      "product_title": "AI in the product: none",
-      "product_body": "No AI computes, changes or words any number. Every value, verdict and sentence on screen comes from one tested Python engine and fixed templates.",
+      "product_title": "AI in the product: the copilot only",
+      "product_body": "No AI computes, changes or decides any number or verdict: every value and verdict comes from one tested Python engine. The optional investigation copilot uses an AI model (Claude, by Anthropic) to choose which evidence to open and to word its answers. It reads only this site's result files through fixed tools, and every number in its answers is checked against those files before it is shown; an answer that fails the check is replaced by a summary taken from the files.",
       "media_title": "Media",
       "media_body": "No AI-generated images, video or audio are used on this site.",
       "record_title": "The record",
@@ -835,6 +835,49 @@
         "exploratory_note": "Shown for exploration: no verdict, and no test registered in advance.",
         "descriptive_note": "Values as recorded, without a test of change.",
         "unavailable_note": "This build has no data for this."
+      },
+      "panel": {
+        "open": "Ask the copilot",
+        "title": "Investigation copilot",
+        "close": "Close the copilot",
+        "intro": "Ask about a place or a record. Answers come only from this site's NASA result files, and the evidence opens beside this panel.",
+        "placeholder": "Ask about a place, a record or a result…",
+        "send": "Ask",
+        "thinking": "Looking at the evidence…",
+        "new": "New investigation",
+        "you": "You",
+        "copilot": "Copilot",
+        "ai_note": "AI-written text. Every number and verdict comes from the result files and is checked before it is shown.",
+        "checked": "Numbers checked against the result files.",
+        "replaced": "The written answer did not pass the checks, so this summary from the result files is shown instead.",
+        "sources": "Sources",
+        "opened": "Opened on screen",
+        "open_again": "Open again",
+        "unavailable": "The copilot is not available here: it needs the site's server, which this copy does not have. Everything else works, and the ask box on the map answers many questions without it.",
+        "checking": "Checking whether the copilot is available…",
+        "to_map": "Go to the ask box",
+        "suggestions_title": "Try",
+        "suggestions": {
+          "s1": "Is Brazil getting greener?",
+          "s2": "How has air temperature changed in Kenya?",
+          "s3": "Has rain changed differently in Bangladesh and West Bengal?",
+          "s4": "Can you predict next year's rainfall in Nepal?",
+          "s5": "\"Can't tell yet\" মানে কী?"
+        },
+        "errors": {
+          "refusal": "The model declined this request. Try asking about a place and a record.",
+          "rate_limited": "Too many questions in a short time. Please wait a few minutes.",
+          "model_busy": "The model is busy. Try again in a minute.",
+          "not_configured": "The copilot is not set up on this server.",
+          "other": "Something went wrong ({code}). Try again, or use the ask box on the map."
+        },
+        "view": {
+          "place": "Place and verdict",
+          "compare": "Comparison",
+          "map": "World map",
+          "trends": "Trends",
+          "methods": "How we know"
+        }
       }
     }
   }

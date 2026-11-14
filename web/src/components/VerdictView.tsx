@@ -2,6 +2,7 @@
 // A verdict on screen: the chart (left, flexible) and the verdict card (right, 420 px) on desktop; chart then card
 // on tablets and phones (docs/04_UI.md §3). Sets the confidence spine while it is on screen.
 import { useState } from 'react';
+import { useCopilot } from '../copilot/agent';
 import { CalendarDays, ShieldQuestion } from 'lucide-react';
 import { ChallengePanel } from '../copilot/ChallengePanel';
 import type { NextAction } from '../copilot/evidence';
@@ -72,6 +73,13 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
   const tokens = useTokens();
   const [monthly, setMonthly] = useState(false);
   const [challenging, setChallenging] = useState(false);
+  // The copilot may ask for this verdict's challenge panel (show_view with challenge: true).
+  const requested = useCopilot((s) => s.challengeKey === `${verdict.region.id}|${verdict.variable.id}|${verdict.season}`);
+  const showChallenge = challenging || requested;
+  const closeChallenge = () => {
+    setChallenging(false);
+    if (requested) useCopilot.getState().clearChallenge();
+  };
   const navigate = useView((s) => s.navigate);
   const onAction = (a: NextAction) => {
     const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -135,8 +143,8 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
       </Card>
       <div className="flex flex-col gap-4">
         <VerdictCard verdict={verdict} path={path} about={about} />
-        {challenging ? (
-          <ChallengePanel result={verdict} path={path} onAction={onAction} onClose={() => setChallenging(false)} />
+        {showChallenge ? (
+          <ChallengePanel result={verdict} path={path} onAction={onAction} onClose={closeChallenge} />
         ) : (
           <Button variant="outline" onClick={() => setChallenging(true)} data-testid="challenge-open">
             <ShieldQuestion aria-hidden="true" />

@@ -1,6 +1,8 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
 import { useState } from 'react';
 import { Languages, Menu, Monitor, Moon, Sun } from 'lucide-react';
+import { CopilotButton } from '../copilot/CopilotPanel';
+import { IS_OFFLINE_BUILD } from '../data/offline';
 import { useT } from '../i18n';
 import { usePrefs, type Theme } from '../state/prefs';
 import { useView, type Screen } from '../state/view';
@@ -85,6 +87,7 @@ export function Header() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1">
+          {IS_OFFLINE_BUILD ? null : <CopilotButton />}
           <LanguageToggle />
           <ThemeToggle />
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label={t('site.header.menu')} aria-expanded={open}>
