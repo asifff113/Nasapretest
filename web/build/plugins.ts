@@ -9,9 +9,14 @@ import type { Plugin } from 'vite';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const webRoot = path.resolve(here, '..');
 
-/** The folder served at /results/ in dev and preview, and read by the offline build. */
-export function resultsDir(): string {
-  return path.resolve(webRoot, process.env.RESULTS_DIR ?? '../examples');
+/** The folder served at /results/ in dev and preview, and read by the offline build. RESULTS_DIR wins when set.
+ *  `npm run dev` shows the real results (../results) when the repository has a build; tests, preview and the
+ *  offline build default to the synthetic examples, which hold every screen state the tests check. */
+export function resultsDir(mode: 'dev' | 'default' = 'default'): string {
+  if (process.env.RESULTS_DIR) return path.resolve(webRoot, process.env.RESULTS_DIR);
+  const real = path.resolve(webRoot, '../results');
+  if (mode === 'dev' && fs.existsSync(path.join(real, 'current.json'))) return real;
+  return path.resolve(webRoot, '../examples');
 }
 
 const TYPES: Record<string, string> = {
@@ -21,8 +26,8 @@ const TYPES: Record<string, string> = {
 };
 
 /** Serves RESULTS_DIR at /results/ (dev and preview only). Files are sent as stored: a .bin.gz stays gzip. */
-export function resultsServer(): Plugin {
-  const dir = resultsDir();
+export function resultsServer(mode: 'dev' | 'default' = 'default'): Plugin {
+  const dir = resultsDir(mode);
   const handler = (req: { url?: string }, res: { statusCode: number; setHeader(k: string, v: string): void; end(b?: unknown): void }, next: () => void) => {
     const url = req.url ?? '';
     const marker = '/results/';

@@ -40,11 +40,19 @@ async function openProvenance(page: Page) {
 
 for (const lang of LANGS) {
   test.describe(`${lang}`, () => {
-    test('W-01 question cards open a shortlist with record cards; deferred cards are greyed', async ({ page }) => {
-      const q = catalog.questions.find((x) => (x.also_deferred ?? []).length > 0 && x.shortlist.length > 0) ?? catalog.questions[0];
+    test('W-01 question cards open a shortlist with record cards; only records with data are shown', async ({ page }) => {
+      const hasData = (id: string) => {
+        const v = catalog.variables.find((x) => x.id === id);
+        return v !== undefined && v.status !== 'deferred' && v.status !== 'reference';
+      };
+      const answerable = catalog.questions.filter((x) => x.flow !== 'none' && x.shortlist.length > 0);
+      const q = answerable.find((x) => (x.also_deferred ?? []).length > 0) ?? answerable[0];
       if (!q) test.skip();
       await open(page, '#/', lang);
       await page.getByTestId('cta-start').click();
+      for (const x of catalog.questions.filter((y) => !answerable.includes(y))) {
+        await expect(page.getByTestId(`question-card-${x.id}`)).toHaveCount(0);      // no placeholder questions
+      }
       await page.getByTestId(`question-card-${q!.id}`).click();
       await expect(page.getByTestId('shortlist')).toBeVisible();
       for (const s of q!.shortlist) {
@@ -54,8 +62,12 @@ for (const lang of LANGS) {
       }
       for (const d of q!.also_deferred ?? []) {
         const card = page.getByTestId(`record-card-${d}`);
-        await expect(card).toHaveAttribute('data-deferred', 'true');
-        await expect(card.getByTestId('not-analysed')).toHaveText(t(lang, 'record_card.not_analysed'));
+        if (hasData(d)) {
+          await expect(page.getByTestId('question-also').getByTestId(`record-card-${d}`)).toBeVisible();
+          await expect(card).toHaveAttribute('data-deferred', 'false');
+        } else {
+          await expect(card).toHaveCount(0);                                         // a record with no data is never shown
+        }
       }
     });
 

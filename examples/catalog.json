@@ -358,8 +358,8 @@
      "bn": "মডেলের ফল।"
     },
     "cannot_answer": {
-     "en": "Not analysed in this release.",
-     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+     "en": "Model output on a 0.5° grid, averaged by month: it cannot show the humidity of one town or one day. Exploration only: maps, yearly values and trends, no verdict.",
+     "bn": "০.৫° গ্রিডে মাসিক গড় করা মডেলের ফল: এটি কোনো এক শহরের বা এক দিনের আর্দ্রতা দেখাতে পারে না। শুধু অনুসন্ধান: মানচিত্র, বছরওয়ারি মান ও প্রবণতা, কোনো রায় নেই।"
     }
    },
    "tags": [
@@ -420,8 +420,8 @@
      "bn": "মডেলের ফল।"
     },
     "cannot_answer": {
-     "en": "Not analysed in this release.",
-     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+     "en": "Model output averaged by month: it cannot show a single storm or the pressure in one town. Exploration only: maps, yearly values and trends, no verdict.",
+     "bn": "মাসিক গড় করা মডেলের ফল: এটি কোনো একক ঝড় বা কোনো এক শহরের বায়ুচাপ দেখাতে পারে না। শুধু অনুসন্ধান: মানচিত্র, বছরওয়ারি মান ও প্রবণতা, কোনো রায় নেই।"
     }
    },
    "tags": [
@@ -546,8 +546,8 @@
      "bn": "মডেলের ফল; এর চালিকা-ইনপুট সময়ের সঙ্গে বদলেছে।"
     },
     "cannot_answer": {
-     "en": "Not analysed in this release.",
-     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+     "en": "Land only, from a model on a 1° grid: it cannot show the water use of one field or crop, and has no values over the sea. Exploration only, no verdict.",
+     "bn": "শুধু স্থলভাগ, ১° গ্রিডের মডেল থেকে: এটি কোনো এক মাঠ বা ফসলের পানি-ব্যবহার দেখাতে পারে না, আর সাগরের ওপর কোনো মান নেই। শুধু অনুসন্ধান, কোনো রায় নেই।"
     }
    },
    "tags": [
@@ -609,8 +609,8 @@
      "bn": "মডেলের ফল।"
     },
     "cannot_answer": {
-     "en": "Not analysed in this release.",
-     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+     "en": "Land only, on a 1° grid and without river routing: it is not river flow or flood depth, and has no values over the sea. Exploration only, no verdict.",
+     "bn": "শুধু স্থলভাগ, ১° গ্রিডে, নদীপথের হিসাব ছাড়া: এটি নদীর প্রবাহ বা বন্যার গভীরতা নয়, আর সাগরের ওপর কোনো মান নেই। শুধু অনুসন্ধান, কোনো রায় নেই।"
     }
    },
    "tags": [

@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { ArrowRight, Lock } from 'lucide-react';
 import { pick, useT } from '../i18n';
 import { int } from '../i18n/format';
-import type { Catalog, CatalogQuestion } from '../data/types';
+import type { Catalog, CatalogQuestion, CatalogVariable } from '../data/types';
 import { useCatalog } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { href, useView } from '../state/view';
@@ -42,6 +42,16 @@ function FlowGlyph({ flow }: { flow: string }) {
       <line x1="4" y1="14" x2="60" y2="14" stroke="currentColor" strokeWidth="1.4" strokeDasharray="2 4" />
     </svg>
   );
+}
+
+/** A record this build has data for (tested, a cross-check, or an exploration layer); deferred records have none. */
+function hasData(v: CatalogVariable): boolean {
+  return v.status !== 'deferred' && v.status !== 'reference';
+}
+
+/** A question the data in this build can answer: at least one of its records has data. */
+function answerable(q: CatalogQuestion): boolean {
+  return q.flow !== 'none' && q.shortlist.length > 0;
 }
 
 function QuestionCard({ q, n, catalog, selected }: { q: CatalogQuestion; n: number; catalog: Catalog; selected: boolean }) {
@@ -90,7 +100,8 @@ function Shortlist({ q, catalog }: { q: CatalogQuestion; catalog: Catalog }) {
   const t = useT();
   const lang = useLang();
   const vars = q.shortlist.map((s) => ({ v: catalog.variables.find((x) => x.id === s.variable), why: s.why })).filter((x) => x.v);
-  const deferred = (q.also_deferred ?? []).map((id) => catalog.variables.find((x) => x.id === id)).filter((v) => v !== undefined);
+  // Only records with data in this build: a record the release does not analyse is never shown as if it were there.
+  const also = (q.also_deferred ?? []).map((id) => catalog.variables.find((x) => x.id === id)).filter((v) => v !== undefined && hasData(v));
   useEffect(() => {
     const el = document.getElementById('shortlist-title');
     if (el && el.getBoundingClientRect().top > window.innerHeight * 0.6) {
@@ -121,12 +132,12 @@ function Shortlist({ q, catalog }: { q: CatalogQuestion; catalog: Catalog }) {
           <ArrowRight aria-hidden="true" />
         </a>
       ) : null}
-      {deferred.length ? (
-        <div className="mt-14">
-          <h3 className="font-display text-[26px] font-normal">{t('question.deferred_title')}</h3>
-          <p className="mb-5 mt-1 max-w-[70ch] text-[15px] text-muted">{t('site.question.deferred_note')}</p>
+      {also.length ? (
+        <div className="mt-14" data-testid="question-also">
+          <h3 className="font-display text-[26px] font-normal">{t('site.question.also_title')}</h3>
+          <p className="mb-5 mt-1 max-w-[70ch] text-[15px] text-muted">{t('site.question.also_note')}</p>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {deferred.map((v) => (v ? <RecordCard key={v.id} variable={v} /> : null))}
+            {also.map((v) => (v ? <RecordCard key={v.id} variable={v} /> : null))}
           </div>
         </div>
       ) : null}
@@ -165,7 +176,7 @@ export default function QuestionScreen() {
   const t = useT();
   const { view, badLink, flagBadLink } = useView();
   const catalog = useCatalog();
-  const selected = catalog.data?.questions.find((q) => q.id === view.question);
+  const selected = catalog.data?.questions.filter(answerable).find((q) => q.id === view.question);
   useEffect(() => {
     if (catalog.status === 'ok' && view.question && !selected) flagBadLink();
   }, [catalog.status, view.question, selected, flagBadLink]);
@@ -185,7 +196,7 @@ export default function QuestionScreen() {
               <section aria-labelledby="questions-title">
                 <StepHeading n={1} title={<span id="questions-title">{t('question.pick')}</span>} />
                 <ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
-                  {c.questions.map((q, i) => (
+                  {c.questions.filter(answerable).map((q, i) => (
                     <li key={q.id}>
                       <QuestionCard q={q} n={i + 1} catalog={c} selected={q.id === selected?.id} />
                     </li>

@@ -5,13 +5,13 @@ import tailwindcss from '@tailwindcss/vite';
 import { offlineData, resultsServer, siteCsp } from './build/plugins';
 
 // The site always reads its results from RESULTS_BASE (default "./results", relative to the page).
-// In development and preview, RESULTS_DIR picks which folder is served at /results/:
-// the repository's examples/ (default) or a real results folder such as ../results.
-export default defineConfig({
+// RESULTS_DIR picks which folder is served at /results/. Without it, `npm run dev` serves the real results
+// (../results) when the repository has a build, and preview and the tests serve the synthetic examples/.
+export default defineConfig(({ command, isPreview }) => ({
   base: './',
   // RESULTS_BASE (docs/01_ARCHITECTURE.md §6.3) is read at build time, as is any VITE_ value.
   envPrefix: ['VITE_', 'RESULTS_BASE'],
-  plugins: [react(), tailwindcss(), resultsServer(), offlineData(false), siteCsp()],
+  plugins: [react(), tailwindcss(), resultsServer(command === 'serve' && !isPreview ? 'dev' : 'default'), offlineData(false), siteCsp()],
   define: {
     __OFFLINE__: 'false',
   },
@@ -19,4 +19,4 @@ export default defineConfig({
     target: 'es2022',
     chunkSizeWarningLimit: 600,
   },
-});
+}));

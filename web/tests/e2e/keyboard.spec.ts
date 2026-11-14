@@ -22,6 +22,7 @@ test('X-02 keyboard only', async ({ page }) => {
   await open(page, '#/');
   await tabTo(page, '[data-testid="cta-start"]');
   await page.keyboard.press('Enter');
+  await expect(page.getByTestId(`question-card-${q.id}`)).toBeVisible();          // the list has loaded before we tab
   await tabTo(page, `[data-testid="question-card-${q.id}"]`);
   await page.keyboard.press('Enter');
   await expect(page.getByTestId('shortlist')).toBeVisible();

@@ -165,7 +165,9 @@
       "flow_compare": "Two places compared",
       "flow_none": "Not in this release yet",
       "start_compare": "Choose two places",
-      "deferred_note": "These records exist, but this release does not test them. Their cards are here so you can see what they would add."
+      "deferred_note": "These records exist, but this release does not test them. Their cards are here so you can see what they would add.",
+      "also_title": "Also worth a look",
+      "also_note": "Exploration layers: maps, yearly values and trends for any place, labelled exploration and given no verdict."
     },
     "place": {
       "eyebrow": "Step 2 · The place",

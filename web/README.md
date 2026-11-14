@@ -9,8 +9,8 @@ unchanged.
 
 ```bash
 npm ci
-npm run dev                 # http://localhost:5173, showing ../examples
-RESULTS_DIR=../results npm run dev   # the same site on a real results build
+npm run dev                 # http://localhost:5173, showing the real results in ../results
+RESULTS_DIR=../examples npm run dev  # the same site on the synthetic examples (every screen state)
 ```
 
 `npm run dev`, `build`, `test` and `typecheck` first run `scripts/compile-strings.mjs`, which merges
@@ -26,7 +26,8 @@ npm run build && npm run build:offline            # dist/ and dist-offline/index
 npm run screens                                   # screenshots of every screen → tests/screens/ (polish loop)
 ```
 
-`RESULTS_DIR` chooses the folder for `dev`, `preview`, the offline build and the tests (default `../examples`).
+`RESULTS_DIR` chooses the folder for `dev`, `preview`, the offline build and the tests. Without it, `dev` shows
+`../results` when the repository has a results build; `preview`, the offline build and the tests use `../examples`.
 The tests read every id from that folder, so the same suite runs on the examples and on `../results`.
 
 ## How it is built
