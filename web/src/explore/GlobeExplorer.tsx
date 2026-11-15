@@ -25,7 +25,7 @@ import { exploreForCountryName, framesOf, loadFramesExtra, useExploreIndex, useM
 import { NoPlacePanel, RegionPanel, VariablePanel } from './ExplorePanels';
 import { CountryPanel } from './CountryPanel';
 import { PlaceSheet, useLayer } from './PlaceSheet';
-import { ParamDock } from './ParamDock';
+import { ParamRail, ParamStrip } from './ParamRail';
 import { LayerLegend } from './LayerLegend';
 import { YearDock } from './YearDock';
 import { cellsInCountry, findCountry, fitAltitude } from './country';
@@ -187,7 +187,8 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const [yearsOn, setYearsOn] = useState(false);
   const [frame, setFrame] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  // The parameters rail, open by default so every record is in view; it folds away with its top button.
+  const [railOpen, setRailOpen] = useState(true);
   const [sheetMin, setSheetMin] = useState(false);
   const flatView = flat || failed || IS_OFFLINE_BUILD;
   const [framesKind, setFramesKind] = useState<FramesKind | null>(null);
@@ -660,11 +661,11 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   useEffect(() => {
     if (!panelOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !menuOpen && !(e.target instanceof HTMLInputElement)) closePanel();
+      if (e.key === 'Escape' && !(e.target instanceof HTMLInputElement)) closePanel();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [panelOpen, menuOpen, closePanel]);
+  }, [panelOpen, closePanel]);
 
   // The records the open place shows: the one on the globe, else all of them; the chips change it.
   const sheetVars = mapVars;
@@ -728,7 +729,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   }
 
   const showFlat = flatView;
-  const showIntro = Boolean(intro) && !panelOpen && !menuOpen && !yearsOn && !activeLayer;
+  const showIntro = Boolean(intro) && !panelOpen && !yearsOn && !activeLayer;
 
   const viewSwitch = (
     <SegmentedControl
@@ -756,7 +757,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
 
       {/* The globe (or the flat map) */}
       {showFlat ? (
-        <div key="flat" className={cn('absolute inset-0 overflow-y-auto bg-bg px-3 pb-6 pt-[124px] transition-[right] duration-300 sm:px-5 sm:pt-[84px]', panelOpen && 'lg:right-[480px]')} data-testid="flat-map">
+        <div key="flat" className={cn('absolute inset-0 overflow-y-auto bg-bg px-3 pb-6 pt-[124px] transition-[right] duration-300 sm:px-5 sm:pl-[92px] sm:pt-[84px]', panelOpen && 'lg:right-[480px]')} data-testid="flat-map">
           <div className="mx-auto flex max-w-[1400px] flex-col gap-3">
             {activeLayer ? <LayerLegend layer={activeLayer} colormap={variable?.colormap?.trend} className="w-full max-w-[420px]" /> : null}
             {grid && (activeLayer || !variable) ? (
@@ -793,16 +794,9 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
         <p className="pointer-events-none absolute inset-0 grid place-items-center font-mono text-xs uppercase tracking-[0.12em] text-muted">{t('site.explore.loading')}</p>
       ) : null}
 
-      {/* A dim veil behind the open Parameters staircase */}
-      <AnimatePresence>
-        {menuOpen ? (
-          <motion.div key="veil" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 z-[15] bg-gradient-to-r from-[#020812]/85 via-[#020812]/45 to-transparent" aria-hidden="true" />
-        ) : null}
-      </AnimatePresence>
 
       {/* Top: Parameters, the search box, and the view switches */}
       <div className={cn('pointer-events-none absolute inset-x-3 top-3 z-20 flex flex-wrap items-start gap-2 sm:inset-x-4', panelOpen && 'lg:right-[476px]')}>
-        <ParamDock variables={params} value={variable?.id} onPick={(v) => chooseVariable(v)} onOpenChange={setMenuOpen} />
         <form
           role="search"
           onSubmit={(e) => {
@@ -892,6 +886,14 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
           ) : null}
           {viewSwitch}
         </div>
+        <div className="order-last w-full sm:hidden">
+          <ParamStrip variables={params} value={variable?.id} onPick={(v) => chooseVariable(v)} />
+        </div>
+      </div>
+
+      {/* Top left: every parameter, always in view (tablets and up) */}
+      <div className="pointer-events-none absolute left-3 top-[72px] z-20 hidden sm:left-4 sm:block">
+        <ParamRail variables={params} value={variable?.id} onPick={(v) => chooseVariable(v)} open={railOpen} onOpenChange={setRailOpen} />
       </div>
 
       {/* The page's own words, floating in space until the reader starts exploring */}
@@ -903,7 +905,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.35 }}
-            className={cn('globe-intro pointer-events-auto absolute bottom-4 left-3 right-3 z-10 max-w-[380px] sm:left-5 lg:bottom-auto lg:top-[22%]', mode === 'map' && 'max-lg:hidden')}
+            className={cn('globe-intro pointer-events-auto absolute bottom-4 left-3 right-3 z-10 max-w-[380px] sm:left-[92px] lg:bottom-auto lg:top-[22%]', mode === 'map' && 'max-lg:hidden')}
             data-testid="globe-intro"
           >
             {intro}
@@ -914,7 +916,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
       {!showFlat ? (
         <>
           {/* Bottom left: what the globe shows, and its colour key */}
-          <div className={cn('pointer-events-none absolute bottom-3 left-3 z-10 flex flex-col items-start gap-2 sm:bottom-4 sm:left-4', showIntro && mode === 'home' && 'max-lg:hidden', panelOpen && 'max-lg:hidden')}>
+          <div className={cn('pointer-events-none absolute bottom-3 left-3 z-10 flex flex-col items-start gap-2 sm:bottom-4 sm:left-4', railOpen && 'sm:left-[88px]', showIntro && mode === 'home' && 'max-lg:hidden', panelOpen && 'max-lg:hidden')}>
             <p className={cn('pointer-events-auto m-0 inline-flex max-w-[calc(100vw-90px)] items-center gap-2 rounded-full px-3 py-1.5 text-[12.5px]', glass)} data-testid="map-label">
               <span className={cn('size-2 shrink-0 rounded-full', activeLayer ? 'bg-strong shadow-[0_0_8px_var(--grade-strong)]' : 'bg-accent')} aria-hidden="true" />
               {variable ? <b className="truncate font-semibold">{pick(variable.name, lang)}</b> : null}

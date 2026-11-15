@@ -25,9 +25,9 @@ test('Trends counts the squares of the engine map and ranks places', async ({ pa
 
 test('the record list shows only records with data in this build', async ({ page }) => {
   await open(page, '#/map');
-  await page.getByTestId('params-toggle').click(); // the records open from the Parameters button
-  const rail = page.getByTestId('variable-rail');
-  await expect(rail).toBeVisible();
+  // The records are always in view: a rail of icons on wider screens, a strip of chips on phones.
+  const rail = page.getByTestId('variable-rail').or(page.getByTestId('variable-strip'));
+  await expect(rail.first()).toBeVisible();
   for (const v of catalog.variables.filter((x) => x.status === 'deferred' || x.status === 'reference')) {
     await expect(rail.getByText(v.name.en, { exact: true })).toHaveCount(0);
   }

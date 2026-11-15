@@ -1047,7 +1047,9 @@
       "sheet_min": "Fold the place file away",
       "sheet_open": "Open the place file",
       "cell_all_title": "This square, every parameter",
-      "cell_all_lead": "Each card is the square's own change per decade in one record's screening map. Pick one to see its years below."
+      "cell_all_lead": "Each card is the square's own change per decade in one record's screening map. Pick one to see its years below.",
+      "params_hide": "Hide the parameters",
+      "params_show": "Show the parameters"
     },
     "ask2": {
       "board_title": "The answer for every registered place",
