@@ -23,6 +23,11 @@ import { Hero } from '../components/atlas/Hero';
 import { LocatorGlobe } from '../components/atlas/LocatorGlobe';
 import { Card } from '../ui/common/card';
 import { MissingPanel } from '../components/LoadState';
+import { useExploreIndex } from '../data/explore';
+import { CellParams } from '../explore/PlaceSheet';
+import { countryLabel, frameOf, squareName } from '../explore/naming';
+import { countryAt, loadCountries } from '../explore/texture';
+import { findCountry } from '../explore/country';
 
 function MiniMap({ layer, row, col, colormap }: { layer: MapLayer; row: number; col: number; colormap: string | undefined }) {
   const tokens = useTokens();
@@ -116,6 +121,16 @@ export default function CellPage() {
   const pv = layer.data?.fields.p?.[i];
   const qv = layer.data?.fields.q?.[i];
   const place = info ? latLon(info.lat, info.lon, lang) : '';
+  // Every record with a map, for the row of parameters at the top; and the square's readable name.
+  const exploreIndex = useExploreIndex();
+  const ids = exploreIndex.data?.variables.map((v) => v.id);
+  const mapVars = ids ? (catalog.data?.variables ?? []).filter((v) => ids.includes(v.id)) : analysed;
+  const countries = useAsync('countries', () => loadCountries());
+  const country = info ? countryAt(countries.data ?? [], info.lat, info.lon) : null;
+  const feature = findCountry(countries.data ?? [], country);
+  const cLabel = country ? countryLabel(country, lang, exploreIndex.data) : null;
+  const named = info && country ? squareName(t, lang, info, country, feature ? frameOf(feature) : null, cLabel ?? country) : null;
+  const placeName = named ? [named.charAt(0).toUpperCase() + named.slice(1), cLabel].filter((x, k, a) => x && a.indexOf(x) === k).join(' · ') : info ? t('site.explore.ocean') : '';
   const units = layer.data?.meta.units ?? '';
 
   // The spine shows the cell as exploration (it never gets a verdict).
@@ -163,12 +178,18 @@ export default function CellPage() {
           ) : undefined
         }
       >
+        {placeName ? (
+          <p className="m-0 mb-3 font-display text-[24px] leading-tight" data-testid="cell-place-name">
+            {placeName}
+          </p>
+        ) : null}
         <div className="flex flex-wrap items-center gap-3">
           <AnswerKindBadge kind="exploratory" testId="cell-status" />
           <p className="m-0 text-[16px] text-muted">{t('cell.exploration')}</p>
         </div>
       </Hero>
       <Body>
+      {valid && row >= 0 && mapVars.length > 1 ? <CellParams variables={mapVars} row={row} col={col} current={variable?.id} season={season} /> : null}
       <WithData res={layer}>
         {(l) =>
           info ? (

@@ -1,15 +1,16 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
-// The globe explorer (ADR-23): a realistic Earth (NASA Blue Marble, bundled) that any visitor can turn, zoom and
-// click anywhere. The chosen record's screening map is draped over it; a click opens that 1° square (exploration),
-// a pin opens a registered place (graded verdicts), and the ask box routes a free-text question with the smart
-// matcher (no AI). The globe library loads only on this screen, so the first view of the site stays small.
+// The globe explorer (ADR-23): a realistic Earth (NASA Blue Marble, bundled) alone in space, which any visitor can
+// turn, zoom and click anywhere. It opens with no data layer: the "Parameters" button (top left) paints a record's
+// screening map over it. Country borders are drawn as crisp lines with the countries' names; a hovered country
+// lights up. A click opens that 1° square for every record (or the one on the globe), a country opens whole with its
+// real outline, a pin opens a registered place (graded verdicts), and the search box routes a free-text question
+// with the smart matcher (no AI). The globe library loads only on this screen, so the first view stays small.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { BarChart3, ChevronLeft, ChevronRight, Globe2, History, Minus, Pause, Play, Plus, Search, X } from 'lucide-react';
-import { groupIcon } from '../components/atlas/icons';
+import { AnimatePresence, motion } from 'motion/react';
+import { BarChart3, ChevronDown, ChevronUp, Globe2, History, Minus, Plus, Search, X } from 'lucide-react';
 import { pick, useT } from '../i18n';
-import { int, num, rate as fmtRate } from '../i18n/format';
+import { int } from '../i18n/format';
 import type { CatalogVariable, Region } from '../data/types';
-import { loadMapLayer, type MapLayer } from '../data/results';
 import { useAsync, useBuild, useCatalog, usePrereg, useRegionIndex } from '../data/hooks';
 import { CITIES } from '../data/places';
 import { cellId, route, understand, type MatchContext, type Understood } from '../data/matcher';
@@ -21,10 +22,14 @@ import { ScreeningMap } from '../map/ScreeningMap';
 import { loadOutlines, type Outlines } from '../map/outlines';
 import { composeTexture, countryAt, loadCountries, loadEarthImage, YearPainter } from './texture';
 import { exploreForCountryName, framesOf, loadFramesExtra, useExploreIndex, useMapYears, type Frames, type FramesKind } from '../data/explore';
-import type { LoadStatus } from '../data/hooks';
-import { CellPanel, NoPlacePanel, RegionPanel, VariablePanel } from './ExplorePanels';
+import { NoPlacePanel, RegionPanel, VariablePanel } from './ExplorePanels';
 import { CountryPanel } from './CountryPanel';
+import { PlaceSheet, useLayer } from './PlaceSheet';
+import { ParamDock } from './ParamDock';
+import { LayerLegend } from './LayerLegend';
+import { YearDock } from './YearDock';
 import { cellsInCountry, findCountry, fitAltitude } from './country';
+import { countryLabel, countryLabels, frameOf, squareName } from './naming';
 import type { CountryFeature } from '../data/places';
 import { MissingPanel } from '../components/LoadState';
 import { SegmentedControl } from '../ui/common/toggle-group';
@@ -43,11 +48,16 @@ interface GlobeLike {
   bumpImageUrl(u: string): GlobeLike;
   onGlobeClick(cb: (c: { lat: number; lng: number }) => void): GlobeLike;
   polygonsData(d: object[]): GlobeLike;
-  polygonCapColor(f: () => string): GlobeLike;
-  polygonSideColor(f: () => string): GlobeLike;
-  polygonStrokeColor(f: () => string): GlobeLike;
-  polygonAltitude(a: number): GlobeLike;
+  polygonGeoJsonGeometry(f: (d: object) => object): GlobeLike;
+  polygonCapColor(f: (d: object) => string): GlobeLike;
+  polygonSideColor(f: (d: object) => string): GlobeLike;
+  polygonStrokeColor(f: (d: object) => string): GlobeLike;
+  polygonAltitude(f: (d: object) => number): GlobeLike;
+  polygonsTransitionDuration(ms: number): GlobeLike;
+  polygonCapCurvatureResolution(f: (d: object) => number): GlobeLike;
+  polygonLabel(f: (d: object) => string): GlobeLike;
   onPolygonClick(cb: (p: object, e: MouseEvent, c: { lat: number; lng: number }) => void): GlobeLike;
+  onPolygonHover(cb: (p: object | null) => void): GlobeLike;
   ringsData(d: object[]): GlobeLike;
   ringColor(f: () => (t: number) => string): GlobeLike;
   ringMaxRadius(r: number): GlobeLike;
@@ -78,20 +88,29 @@ interface GlobeLike {
   _destructor(): void;
 }
 
+type CountryFrom = { kind: 'country'; feature: CountryFeature; cells: number[] };
+
 type Selection =
-  | { kind: 'cell'; row: number; col: number; label?: string; understood?: Understood; from?: { kind: 'country'; feature: CountryFeature; cells: number[] } }
+  | { kind: 'cell'; row: number; col: number; label?: string; understood?: Understood; from?: CountryFrom }
   | { kind: 'region'; region: Region; understood?: Understood }
   | { kind: 'variable'; variable: CatalogVariable; understood?: Understood }
   | { kind: 'noplace'; understood: Understood }
   | { kind: 'country'; feature: CountryFeature; cells: number[]; understood?: Understood };
 
 interface Marker {
-  kind: 'pin' | 'city' | 'cluster';
+  kind: 'pin' | 'city' | 'cluster' | 'country' | 'target';
   lat: number;
   lng: number;
   label: string;
   region?: Region;
   members?: Region[];
+}
+
+/** One polygon on the globe: a country's border, the chosen country, or the chosen square. */
+interface Poly {
+  kind: 'border' | 'country' | 'cell';
+  name: string;
+  geometry: object;
 }
 
 /** Groups pins that would overlap at this zoom into one marker (positions only). */
@@ -111,287 +130,19 @@ function clusterPins(pins: Marker[], altitude: number): Marker[] {
   });
 }
 
-const HOME_VIEW = { lat: 20, lng: 60, altitude: 2.25 };
+const HOME_VIEW = { lat: 20, lng: 60, altitude: 2.4 };
+
+/** The opening view: a phone steps further back so the whole Earth fits its narrow screen. */
+function homeView() {
+  return typeof window !== 'undefined' && window.innerWidth < 640 ? { ...HOME_VIEW, altitude: 3.3 } : HOME_VIEW;
+}
 
 function reduceMotion(): boolean {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-
-function VariableRail({ variables, value, onPick }: { variables: CatalogVariable[]; value: string | undefined; onPick: (v: CatalogVariable) => void }) {
-  const t = useT();
-  const lang = useLang();
-  const groups: [string, (v: CatalogVariable) => boolean][] = [
-    ['site.explore.group_tested', (v) => v.status === 'analysed'],
-    ['site.explore.group_checks', (v) => v.status === 'sensitivity'],
-  ];
-  return (
-    <nav aria-label={t('site.explore.choose_record')} className="flex flex-col gap-4" data-testid="variable-rail">
-      {groups.map(([title, f]) => {
-        const list = variables.filter(f);
-        if (list.length === 0) return null;
-        return (
-          <section key={title}>
-            <h3 className="mb-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-muted">{t(title)}</h3>
-            <ul className="flex gap-1.5 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
-              {list.map((v) => {
-                const Icon = groupIcon(v.group);
-                const on = v.id === value;
-                return (
-                  <li key={v.id} className="shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => onPick(v)}
-                      aria-pressed={on}
-                      data-testid={`rail-${v.id}`}
-                      className={cn(
-                        'grid min-h-11 w-full grid-cols-[30px_1fr] items-center gap-2.5 rounded-[6px] border px-2.5 py-1.5 text-left transition-colors',
-                        on ? 'border-accent/60 bg-accent/15' : 'border-transparent hover:bg-ink/[0.06]',
-                      )}
-                    >
-                      <span className={cn('grid size-[30px] place-items-center rounded-full', on ? 'bg-accent text-ocean' : 'bg-ink/10')}>
-                        <Icon className="size-4" aria-hidden="true" />
-                      </span>
-                      <span className="min-w-0 text-[14px] font-medium leading-tight">
-                        {pick(v.name, lang)}
-                        <span className="hidden text-xs font-normal text-muted lg:block">
-                          {v.kind === 'model' ? t('record_card.badge_model') : v.kind === 'satellite' ? t('record_card.badge_satellite') : t('record_card.badge_observations')}
-                          {v.record?.from ? ` · ${int(v.record.from, lang)}–` : ''}
-                        </span>
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        );
-      })}
-    </nav>
-  );
-}
-
-function Legend({ layer, colormap, opacity, onOpacity, columns = false }: { layer: MapLayer; colormap: string | undefined; opacity?: number; onOpacity?: (v: number) => void; columns?: boolean }) {
-  const t = useT();
-  const lang = useLang();
-  const interp = diverging(colormap);
-  const stops = Array.from({ length: 9 }, (_, i) => interp(i / 8)).join(', ');
-  return (
-    <div className="pointer-events-auto flex w-[280px] max-w-[calc(100vw-32px)] flex-col gap-2 rounded-[6px] border border-line bg-surface/90 p-3 text-xs backdrop-blur-md" data-testid="map-legend">
-      <p className="text-[13px] font-semibold">{t('map.legend_rate', { units: layer.meta.units })}</p>
-      <div className="h-2.5 rounded-full" style={{ background: `linear-gradient(90deg, ${stops})` }} aria-hidden="true" />
-      <div className="flex justify-between font-mono text-[11px] text-muted tabular">
-        <span>{fmtRate(-layer.meta.colourLimit, lang)}</span>
-        <span>0</span>
-        <span>{fmtRate(layer.meta.colourLimit, lang)}</span>
-      </div>
-      {opacity !== undefined && onOpacity ? (
-        <label className="flex items-center gap-2" htmlFor="layer-strength">
-          <span className="shrink-0">{t('site.explore.strength')}</span>
-          <input id="layer-strength" type="range" min={0} max={100} step={5} value={Math.round(opacity * 100)} onChange={(e) => onOpacity(Number(e.target.value) / 100)} className="w-full accent-[var(--accent)]" />
-        </label>
-      ) : null}
-      {columns ? <p className="m-0 rounded-[4px] bg-accent/15 px-2 py-1.5 text-[12px] text-ink">{t('site.explore.columns_note')}</p> : null}
-      <ul className="flex flex-col gap-1 text-muted">
-        <li className="flex items-center gap-2">
-          <span className="inline-block h-2.5 w-3.5 rounded-[2px]" style={{ background: interp(0.85) }} aria-hidden="true" />
-          {t('site.explore.key_strong')}
-        </li>
-        <li className="flex items-center gap-2">
-          <span className="inline-block h-2.5 w-3.5 rounded-[2px] opacity-45" style={{ background: interp(0.85) }} aria-hidden="true" />
-          {t('site.map.lighter')}
-        </li>
-        <li className="flex items-center gap-2">
-          <span className="hatch inline-block h-2.5 w-3.5 rounded-[2px] border border-line-strong" aria-hidden="true" />
-          {t('map.legend_hatch')}
-        </li>
-      </ul>
-    </div>
-  );
-}
-
-/** The time-lapse panel: what to paint (values, against the baseline, or then and now), the year, play and pause, the slider, and the scale. */
-function YearsPanel({
-  status,
-  frames,
-  kind,
-  kinds,
-  onKind,
-  frame,
-  onFrame,
-  playing,
-  onPlay,
-  colormap,
-  trendColormap,
-  rule,
-  name,
-}: {
-  status: LoadStatus;
-  frames: Frames | null;
-  kind: FramesKind;
-  kinds: FramesKind[];
-  onKind: (k: FramesKind) => void;
-  frame: number;
-  onFrame: (i: number) => void;
-  playing: boolean;
-  onPlay: (on: boolean) => void;
-  colormap: string | undefined;
-  trendColormap: string | undefined;
-  rule: 'mean' | 'sum';
-  name: string;
-}) {
-  const t = useT();
-  const lang = useLang();
-  const box = 'pointer-events-auto flex w-[min(760px,calc(100vw-88px))] flex-col gap-2.5 rounded-[6px] border border-line bg-surface/90 p-3 text-xs backdrop-blur-md';
-  const picker =
-    kinds.length > 1 ? (
-      <SegmentedControl
-        size="sm"
-        label={t('site.years.kind')}
-        value={kind}
-        onValueChange={(v) => onKind(v as FramesKind)}
-        options={kinds.map((k) => ({ value: k, label: t(`site.years.kind_${k}`), testId: `years-kind-${k}` }))}
-      />
-    ) : null;
-  if (!frames) {
-    return (
-      <div className={box} data-testid="years-panel">
-        {picker}
-        <p className="m-0">{status === 'loading' ? t('site.years.loading') : t('site.years.missing')}</p>
-      </div>
-    );
-  }
-  const ys = frames.years;
-  const single = frames.kind === 'change';
-  const interp = frames.kind === 'values' ? sequential(colormap) : diverging(trendColormap);
-  const stops = Array.from({ length: 9 }, (_, i) => interp(i / 8)).join(', ');
-  const year = ys[frame] ?? ys[ys.length - 1] ?? 0;
-  const period = (p: [number, number] | undefined) => (p ? `${int(p[0], lang)}–${int(p[1], lang)}` : '');
-  const legend =
-    frames.kind === 'values'
-      ? t(rule === 'sum' ? 'site.years.legend_sum' : 'site.years.legend_mean', { units: frames.units })
-      : frames.kind === 'anomaly'
-        ? t('site.years.legend_anomaly', { units: frames.units, base: period(frames.baseline) })
-        : t('site.years.legend_change', { units: frames.units, early: period(frames.early), late: period(frames.late) });
-  return (
-    <div className={box} data-testid="years-panel">
-      {picker}
-      {single ? (
-        <div className="min-w-0">
-          <p className="m-0 truncate text-[12px] text-muted">{t('site.years.change_title', { record: name })}</p>
-          <p className="m-0 font-display text-[26px] leading-tight tabular" data-testid="years-year">
-            {t('site.years.change_periods', { early: period(frames.early), late: period(frames.late) })}
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => onPlay(!playing)}
-              aria-label={playing ? t('site.years.pause') : t('site.years.play')}
-              className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-ocean hover:brightness-110"
-              data-testid="years-play"
-            >
-              {playing ? <Pause className="size-5" aria-hidden="true" /> : <Play className="size-5" aria-hidden="true" />}
-            </button>
-            <div className="min-w-0 flex-1">
-              <p className="m-0 truncate text-[12px] text-muted">{t(frames.kind === 'anomaly' ? 'site.years.anomaly_title' : 'site.years.title', { record: name })}</p>
-              <p className="m-0 font-display text-[34px] leading-none tabular" aria-live="polite" data-testid="years-year">
-                {int(year, lang)}
-              </p>
-            </div>
-            <div className="flex gap-1">
-              <button
-                type="button"
-                onClick={() => {
-                  onPlay(false);
-                  onFrame(Math.max(0, frame - 1));
-                }}
-                disabled={frame <= 0}
-                aria-label={t('site.years.prev')}
-                className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
-                data-testid="years-prev"
-              >
-                <ChevronLeft className="size-4" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  onPlay(false);
-                  onFrame(Math.min(ys.length - 1, frame + 1));
-                }}
-                disabled={frame >= ys.length - 1}
-                aria-label={t('site.years.next')}
-                className="grid size-9 place-items-center rounded-full border border-line-strong hover:border-accent disabled:opacity-40"
-                data-testid="years-next"
-              >
-                <ChevronRight className="size-4" aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-          <div role="group" aria-label={t('site.years.timeline')} className="flex h-10 items-end gap-[2px]" data-testid="years-timeline">
-            {ys.map((y, i) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => {
-                  onPlay(false);
-                  onFrame(i);
-                }}
-                aria-label={int(y, lang)}
-                aria-pressed={i === frame}
-                title={int(y, lang)}
-                className={
-                  'min-w-0 flex-1 rounded-[2px] transition-[height,background-color] duration-150 ' +
-                  (i === frame ? 'h-10 bg-accent' : i < frame ? 'h-4 bg-accent/45 hover:h-7 hover:bg-accent/80' : 'h-4 bg-ink/25 hover:h-7 hover:bg-accent/70')
-                }
-                data-testid={`years-year-${y}`}
-              />
-            ))}
-          </div>
-          <div className="relative h-4 font-mono text-[11px] text-muted tabular" aria-hidden="true">
-            {ys.map((y, i) =>
-              y % 10 === 0 || i === 0 || i === ys.length - 1 ? (
-                <span key={y} className="absolute -translate-x-1/2" style={{ left: `${((i + 0.5) / ys.length) * 100}%` }}>
-                  {int(y, lang)}
-                </span>
-              ) : null,
-            )}
-          </div>
-          <label className="flex flex-col gap-1" htmlFor="years-slider">
-            <span className="sr-only">{t('site.years.slider')}</span>
-            <input
-              id="years-slider"
-              type="range"
-              min={0}
-              max={ys.length - 1}
-              step={1}
-              value={frame}
-              onChange={(e) => {
-                onPlay(false);
-                onFrame(Number(e.target.value));
-              }}
-              aria-valuetext={int(year, lang)}
-              className="sr-only"
-              data-testid="years-slider"
-            />
-          </label>
-        </>
-      )}
-      <p className="m-0 text-[12.5px] font-semibold" data-testid="years-legend">
-        {legend}
-      </p>
-      <div className="h-2.5 rounded-full" style={{ background: `linear-gradient(90deg, ${stops})` }} aria-hidden="true" />
-      <div className="flex justify-between font-mono text-[11px] text-muted tabular">
-        <span>{frames.kind === 'values' ? num(frames.lo, lang) : `≤ ${fmtRate(frames.lo, lang)}`}</span>
-        {frames.kind === 'values' ? null : <span>0</span>}
-        <span>{frames.kind === 'values' ? num(frames.hi, lang) : `≥ ${fmtRate(frames.hi, lang)}`}</span>
-      </div>
-      <p className="m-0 text-[12px] leading-snug text-muted">{t(`site.years.note_${frames.kind}`)}</p>
-    </div>
-  );
-}
+/** Glass buttons over the globe. */
+const glass = 'border border-white/12 bg-[#0a1e38]/78 backdrop-blur-xl shadow-[0_12px_30px_-14px_rgb(0_0_0/0.9)]';
 
 export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: ReactNode }) {
   const t = useT();
@@ -404,39 +155,51 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const reduce = reduceMotion();
 
   const variables = useMemo(() => catalog.data?.variables ?? [], [catalog.data]);
-  const analysed = variables.filter((v) => v.status === 'analysed');
+  /** The records the Parameters button offers: tested ones and cross-checks. */
+  const params = useMemo(() => variables.filter((v) => v.status === 'analysed' || v.status === 'sensitivity'), [variables]);
+  const exploreIndex = useExploreIndex();
+  /** The records with a screening map in this build (the exploration index lists them; else the tested ones). */
+  const mapVars = useMemo(() => {
+    const ids = exploreIndex.data?.variables.map((v) => v.id);
+    return ids ? params.filter((v) => ids.includes(v.id)) : params.filter((v) => v.status === 'analysed');
+  }, [params, exploreIndex.data]);
   const [localVar, setLocalVar] = useState<string | undefined>(undefined);
-  const variableId = (mode === 'map' ? view.variable : localVar) ?? analysed[0]?.id;
+  // The globe opens with no layer: a record is painted only once the reader picks one.
+  const variableId = mode === 'map' ? view.variable : localVar;
   const variable = variables.find((v) => v.id === variableId);
   const seasons = prereg.data ? [prereg.data.seasons.main, ...prereg.data.seasons.secondary] : ['ANN'];
   const season = mode === 'map' && view.season && seasons.includes(view.season) ? view.season : 'ANN';
   const root = build.data?.root;
-  const layerKey = root !== undefined && variable ? `map|${root}|${variable.id}|${season}` : null;
-  const layer = useAsync<MapLayer>(layerKey, () => loadMapLayer(root ?? '', variable?.id ?? '', season));
+  const layer = useLayer(variable?.id, season);
   const activeLayer = layer.status === 'ok' ? (layer.data ?? null) : null;
   const countries = useAsync('countries', () => loadCountries());
-  const exploreIndex = useExploreIndex();
-  const [opacity, setOpacity] = useState(0.6);
+  const [opacity, setOpacity] = useState(0.62);
   const [flat, setFlat] = useState(false);
   const [outlines, setOutlines] = useState<Outlines | null>(null);
   const [selection, setSelection] = useState<Selection | null>(null);
-  const [altitude, setAltitude] = useState(HOME_VIEW.altitude);
+  const [picked, setPicked] = useState<string[] | null>(null);
+  const [altitude, setAltitude] = useState(2.25);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const [question, setQuestion] = useState('');
+  const [askFocus, setAskFocus] = useState(false);
   const [columns, setColumns] = useState(false);
   const [yearsOn, setYearsOn] = useState(false);
   const [frame, setFrame] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [sheetMin, setSheetMin] = useState(false);
   const flatView = flat || failed || IS_OFFLINE_BUILD;
-  const [framesKind, setFramesKind] = useState<FramesKind>('values');
-  const years = useMapYears(variable?.id, season, yearsOn && !flatView);
+  const [framesKind, setFramesKind] = useState<FramesKind | null>(null);
+  const years = useMapYears(variable?.id, season, yearsOn && !flatView && Boolean(activeLayer));
   const yearsData = years.status === 'ok' ? years.data : undefined;
   const kinds = useMemo<FramesKind[]>(
     () => (yearsData ? ['values', ...(yearsData.meta.anomaly ? (['anomaly'] as const) : []), ...(yearsData.meta.decades ? (['change'] as const) : [])] : ['values']),
     [yearsData],
   );
-  const kind: FramesKind = kinds.includes(framesKind) ? framesKind : 'values';
+  // Year by year opens on each year against the baseline (the Earth stays visible); values and then-and-now are a tap away.
+  const wanted = framesKind ?? (kinds.includes('anomaly') ? 'anomaly' : 'values');
+  const kind: FramesKind = kinds.includes(wanted) ? wanted : 'values';
   const extraKind = kind === 'values' ? null : kind;
   const extra = useAsync<Int8Array | Int16Array>(yearsData && extraKind && root !== undefined ? `frames|${root}|${yearsData.meta.variable}|${season}|${extraKind}` : null, () =>
     yearsData && extraKind ? loadFramesExtra(root ?? '', yearsData, extraKind) : Promise.reject(new Error('no frames')),
@@ -451,8 +214,11 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const globeRef = useRef<GlobeLike | null>(null);
   const earthRef = useRef<HTMLImageElement | null>(null);
   const grid = index.data?.grids.find((g) => g.id === 'global_1deg') ?? activeLayer?.meta.grid;
+  const hoverRef = useRef<Poly | null>(null);
+  const nameOfCountry = useCallback((n: string) => countryLabel(n, lang, exploreIndex.data), [lang, exploreIndex.data]);
 
   // ---- selection helpers -------------------------------------------------------------------
+  const resetPicked = useCallback(() => setPicked(null), []);
   const selectCell = useCallback(
     (lat: number, lng: number, label?: string, understood?: Understood) => {
       if (!grid) return;
@@ -460,23 +226,15 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
       const [, rc] = id.split(':');
       const [row, col] = (rc ?? '0_0').split('_').map(Number);
       setSelection((prev) => ({ kind: 'cell', row: row ?? 0, col: col ?? 0, label, understood, from: prev?.kind === 'country' ? prev : prev?.kind === 'cell' ? prev.from : undefined }));
+      setSheetMin(false);
       const g = globeRef.current;
       if (g) {
         const cLat = grid.lat0 + (row ?? 0) * grid.dlat;
         const cLng = grid.lon0 + (col ?? 0) * grid.dlon;
-        const half = Math.abs(grid.dlat) / 2;
         g.controls().autoRotate = false;
-        g.polygonsData([
-          {
-            type: 'Feature',
-            properties: {},
-            // Clockwise ring: the square itself, not the rest of the sphere.
-            geometry: { type: 'Polygon', coordinates: [[[cLng - half, cLat - half], [cLng - half, cLat + half], [cLng + half, cLat + half], [cLng + half, cLat - half], [cLng - half, cLat - half]]] },
-          },
-        ]);
         g.ringsData([{ lat: cLat, lng: cLng }]);
         const p = g.pointOfView();
-        g.pointOfView({ lat: cLat, lng: cLng, altitude: Math.max(1.2, Math.min(p.altitude, 1.7)) }, reduce ? 0 : 1100);
+        g.pointOfView({ lat: cLat, lng: cLng, altitude: Math.max(0.75, Math.min(p.altitude, 1.05)) }, reduce ? 0 : 1100);
       }
       if (mode === 'map') navigate({ screen: 'map', variable: variable?.id, season, region: id }, { replace: true });
     },
@@ -486,10 +244,10 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const selectRegion = useCallback(
     (region: Region, understood?: Understood) => {
       setSelection({ kind: 'region', region, understood });
+      setSheetMin(false);
       const g = globeRef.current;
       if (g) {
         g.controls().autoRotate = false;
-        g.polygonsData([]);
         g.ringsData([{ lat: region.centroid[1], lng: region.centroid[0] }]);
         g.pointOfView({ lat: region.centroid[1], lng: region.centroid[0], altitude: 1.1 }, reduce ? 0 : 1100);
       }
@@ -501,10 +259,11 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     (feature: CountryFeature, understood?: Understood) => {
       if (!grid) return;
       setSelection({ kind: 'country', feature, cells: cellsInCountry(feature, grid), understood });
+      setSheetMin(false);
       const g = globeRef.current;
       if (g) {
         g.controls().autoRotate = false;
-        g.polygonsData([]).ringsData([]);
+        g.ringsData([]);
         g.pointOfView({ lat: feature.properties.lat, lng: feature.properties.lon, altitude: fitAltitude(feature) }, reduce ? 0 : 1300);
       }
     },
@@ -536,31 +295,27 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
         g = new Ctor(el, { animateIn: !reduce, rendererConfig: { antialias: true, alpha: true } });
         g.backgroundColor('rgba(0,0,0,0)')
           .showAtmosphere(true)
-          .atmosphereColor('#8fc7ff')
-          .atmosphereAltitude(0.17)
+          .atmosphereColor('#7ab8ff')
+          .atmosphereAltitude(0.2)
           .bumpImageUrl('./textures/earth-topology.png')
           .onGlobeClick(({ lat, lng }) => pickRef.current(lat, lng))
-          .polygonsData([])
-          .polygonCapColor(() => 'rgba(233,180,76,0.5)')
-          .polygonSideColor(() => 'rgba(233,180,76,0.25)')
-          .polygonStrokeColor(() => '#ffd27a')
-          .polygonAltitude(0.008)
+          .polygonsTransitionDuration(0)
           .onPolygonClick((_p, _e, c) => pickRef.current(c.lat, c.lng))
           .ringsData([])
           .ringColor(() => (x: number) => `rgba(255,210,122,${1 - x})`)
-          .ringMaxRadius(3.2)
-          .ringPropagationSpeed(2.2)
-          .ringRepeatPeriod(1200)
+          .ringMaxRadius(2.6)
+          .ringPropagationSpeed(2)
+          .ringRepeatPeriod(1300)
           .htmlLat((d) => (d as Marker).lat)
           .htmlLng((d) => (d as Marker).lng)
           .htmlAltitude(0.012)
           .onPointClick((p) => pickRef.current((p as { lat: number }).lat, (p as { lng: number }).lng))
-          .onZoom((p) => setAltitude(p.altitude < 0.9 ? 0.8 : p.altitude < 1.5 ? 1.2 : 2.25));
+          .onZoom((p) => setAltitude(p.altitude < 0.9 ? 0.8 : p.altitude < 1.6 ? 1.2 : 2.25));
         g.renderer().setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
         g.controls().autoRotate = !reduce;
-        g.controls().autoRotateSpeed = 0.3;
+        g.controls().autoRotateSpeed = 0.28;
         g.controls().enableDamping = true;
-        g.pointOfView(HOME_VIEW, 0);
+        g.pointOfView(homeView(), 0);
         const size = () => {
           const r = el.getBoundingClientRect();
           g?.width(Math.max(1, Math.round(r.width))).height(Math.max(1, Math.round(r.height)));
@@ -598,33 +353,81 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flat]);
 
-  // ---- the surface: Earth + layer + borders ----------------------------------------------------
+  // ---- the surface: Earth + layer (borders are drawn as lines, below) ---------------------------
   const focus = selection?.kind === 'country' ? selection : selection?.kind === 'cell' ? (selection.from ?? null) : null;
   const focusSet = useMemo(() => (focus ? { feature: focus.feature, cells: new Set(focus.cells) } : null), [focus]);
   useEffect(() => {
     const g = globeRef.current;
     const earth = earthRef.current;
-    if (!ready || !g || !earth || yearsActive || layer.status === 'loading' || countries.status === 'loading') return;
+    if (!ready || !g || !earth || yearsActive || (variable && layer.status === 'loading')) return;
     const id = window.setTimeout(() => {
-      g.globeImageUrl(composeTexture(earth, activeLayer, variable?.colormap?.trend, columns ? opacity * 0.3 : opacity, countries.data ?? [], focusSet));
-    }, 60);
+      g.globeImageUrl(composeTexture(earth, activeLayer, variable?.colormap?.trend, columns ? opacity * 0.3 : opacity, [], focusSet));
+    }, 40);
     return () => window.clearTimeout(id);
-  }, [ready, activeLayer, layer.status, countries.status, countries.data, opacity, variable?.colormap?.trend, focusSet, columns, yearsActive]);
+  }, [ready, activeLayer, layer.status, variable, opacity, focusSet, columns, yearsActive]);
+
+  // ---- borders, the chosen country's real outline, the chosen square ------------------------------
+  const cellPoly = useMemo<Poly | null>(() => {
+    const sel = selection;
+    if (!grid || sel?.kind !== 'cell') return null;
+    const cLat = grid.lat0 + sel.row * grid.dlat;
+    const cLng = grid.lon0 + sel.col * grid.dlon;
+    const h = Math.abs(grid.dlat) / 2;
+    // Clockwise ring: the square itself, not the rest of the sphere.
+    return { kind: 'cell', name: '', geometry: { type: 'Polygon', coordinates: [[[cLng - h, cLat - h], [cLng - h, cLat + h], [cLng + h, cLat + h], [cLng + h, cLat - h], [cLng - h, cLat - h]]] } };
+  }, [grid, selection]);
+  const borderPolys = useMemo<Poly[]>(() => (countries.data ?? []).map((f) => ({ kind: 'border', name: f.properties.name, geometry: f.geometry })), [countries.data]);
+  useEffect(() => {
+    const g = globeRef.current;
+    if (!ready || !g) return;
+    const chosen = focus ? ({ kind: 'country', name: focus.feature.properties.name, geometry: focus.feature.geometry } as Poly) : null;
+    const data: Poly[] = [...borderPolys, ...(chosen ? [chosen] : []), ...(cellPoly ? [cellPoly] : [])];
+    const cap = (d: object) => {
+      const p = d as Poly;
+      if (p.kind === 'cell') return 'rgba(255,214,120,0.62)';
+      if (p.kind === 'country') return 'rgba(233,180,76,0.10)';
+      return hoverRef.current && hoverRef.current.name === p.name && hoverRef.current.kind === 'border' ? 'rgba(160,210,255,0.16)' : 'rgba(0,0,0,0)';
+    };
+    g.polygonGeoJsonGeometry((d) => (d as Poly).geometry)
+      .polygonCapColor(cap)
+      .polygonSideColor(() => 'rgba(0,0,0,0)')
+      .polygonStrokeColor((d) => {
+        const p = d as Poly;
+        if (p.kind === 'cell') return '#fff1c9';
+        if (p.kind === 'country') return '#ffcf6b';
+        return 'rgba(225,238,255,0.62)';
+      })
+      // A 1° square needs a fine cap mesh, or its cap folds away to nothing.
+      .polygonCapCurvatureResolution((d) => ((d as Poly).kind === 'cell' ? 0.2 : 5))
+      .polygonAltitude((d) => ((d as Poly).kind === 'cell' ? 0.012 : (d as Poly).kind === 'country' ? 0.008 : 0.004))
+      .polygonLabel((d) => {
+        const p = d as Poly;
+        return p.kind === 'border' ? `<span class="globe-tip">${countryLabel(p.name, lang, exploreIndex.data)}</span>` : '';
+      })
+      .onPolygonHover((d) => {
+        const p = (d as Poly | null) ?? null;
+        if (p?.name === hoverRef.current?.name) return;
+        hoverRef.current = p && p.kind === 'border' ? p : null;
+        g.polygonCapColor((x) => cap(x));
+        if (host.current) host.current.style.cursor = p ? 'pointer' : '';
+      })
+      .polygonsData(data);
+  }, [ready, borderPolys, focus, cellPoly, lang, exploreIndex.data]);
 
   // ---- the time-lapse: each year's frame painted into the globe's own texture -------------------------
-  const painterRef = useRef<{ frames: Frames; countries: unknown; focus: unknown; painter: YearPainter } | null>(null);
+  const painterRef = useRef<{ frames: Frames; focus: unknown; painter: YearPainter } | null>(null);
   const savedImage = useRef<unknown>(null);
   useEffect(() => {
     const g = globeRef.current;
     const earth = earthRef.current;
     if (!ready || !g || !earth || !yearsActive || !frames) return;
     let p = painterRef.current;
-    if (!p || p.frames !== frames || p.countries !== countries.data || p.focus !== focusSet) {
-      p = { frames, countries: countries.data, focus: focusSet, painter: new YearPainter(earth, countries.data ?? [], focusSet, frames) };
+    if (!p || p.frames !== frames || p.focus !== focusSet) {
+      p = { frames, focus: focusSet, painter: new YearPainter(earth, [], focusSet, frames) };
       painterRef.current = p;
     }
     const interp = frames.kind === 'values' ? sequential(variable?.colormap?.value) : diverging(variable?.colormap?.trend);
-    const cv = p.painter.paint(Math.min(fi, frames.years.length - 1), interp, Math.min(0.95, opacity + 0.25));
+    const cv = p.painter.paint(Math.min(fi, frames.years.length - 1), interp, Math.min(0.9, opacity + 0.12));
     const mat = g.globeMaterial();
     if (mat.map) {
       if (savedImage.current === null) savedImage.current = mat.map.image;
@@ -633,7 +436,7 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     } else {
       g.globeImageUrl(cv.toDataURL('image/jpeg', 0.85));
     }
-  }, [ready, yearsActive, frames, fi, countries.data, focusSet, opacity, variable?.colormap?.value, variable?.colormap?.trend]);
+  }, [ready, yearsActive, frames, fi, focusSet, opacity, variable?.colormap?.value, variable?.colormap?.trend]);
   // Leaving the time-lapse puts the trend surface back.
   useEffect(() => {
     if (!yearsActive) return;
@@ -702,16 +505,35 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     }
   }, [ready, columns, activeLayer, variable?.colormap?.trend, focusSet, reduce, yearsOn]);
 
-  // ---- pins for registered places, and city names ------------------------------------------------
+  // ---- names: countries (by size and zoom), cities, and pins for registered places ------------------------
+  const labels = useMemo(() => countryLabels(countries.data ?? []), [countries.data]);
+  const targetSel = selection?.kind === 'cell' ? selection : null;
+  const targetAt = useMemo(
+    () => (grid && targetSel ? { lat: grid.lat0 + targetSel.row * grid.dlat, lng: grid.lon0 + targetSel.col * grid.dlon } : null),
+    [grid, targetSel],
+  );
   useEffect(() => {
     const g = globeRef.current;
     if (!ready || !g) return;
+    const minSpan = altitude >= 2 ? 16 : altitude >= 1 ? 6 : 1.5;
+    const countryMarks: Marker[] = labels.filter((c) => c.span >= minSpan).map((c) => ({ kind: 'country', lat: c.lat, lng: c.lon, label: countryLabel(c.name, lang, exploreIndex.data) }));
     const pins: Marker[] = (index.data?.regions ?? []).filter((r) => r.inSet).map((r) => ({ kind: 'pin', lat: r.centroid[1], lng: r.centroid[0], label: pick(r.name, lang), region: r }));
-    const cities: Marker[] = CITIES.filter((c, i, all) => all.findIndex((x) => x.lat === c.lat && x.lon === c.lon) === i)
-      .filter((c) => c.tier === 1 || altitude < 1.5)
-      .map((c) => ({ kind: 'city', lat: c.lat, lng: c.lon, label: lang === 'bn' && c.bn ? c.bn : c.name }));
-    g.htmlElementsData([...cities, ...clusterPins(pins, altitude)]).htmlElement((d) => {
+    const cities: Marker[] =
+      altitude >= 2
+        ? []
+        : CITIES.filter((c, i, all) => all.findIndex((x) => x.lat === c.lat && x.lon === c.lon) === i)
+            .filter((c) => c.tier === 1 || altitude < 1)
+            .map((c) => ({ kind: 'city', lat: c.lat, lng: c.lon, label: lang === 'bn' && c.bn ? c.bn : c.name }));
+    const target: Marker[] = targetAt ? [{ kind: 'target', lat: targetAt.lat, lng: targetAt.lng, label: '' }] : [];
+    g.htmlElementsData([...countryMarks, ...cities, ...clusterPins(pins, altitude), ...target]).htmlElement((d) => {
       const m = d as Marker;
+      if (m.kind === 'target') {
+        // A sighting reticle over the chosen square, so it is found at any zoom.
+        const s = document.createElement('span');
+        s.className = 'globe-target';
+        s.dataset.testid = 'globe-target';
+        return s;
+      }
       if (m.kind === 'cluster') {
         const b = document.createElement('button');
         b.type = 'button';
@@ -743,11 +565,11 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
         return b;
       }
       const s = document.createElement('span');
-      s.className = 'globe-city';
+      s.className = m.kind === 'country' ? 'globe-country' : 'globe-city';
       s.textContent = m.label;
       return s;
     });
-  }, [ready, index.data, lang, altitude, t]);
+  }, [ready, index.data, lang, altitude, t, labels, exploreIndex.data, targetAt]);
 
   // ---- open the square named in the URL (map screen) --------------------------------------------
   const restored = useRef(false);
@@ -758,7 +580,8 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     const g = globeRef.current;
     if (!g) return;
     restored.current = true;
-    g.pointOfView({ lat: grid.lat0 + Number(m[1]) * grid.dlat, lng: grid.lon0 + Number(m[2]) * grid.dlon, altitude: 1.5 }, 0);
+    g.controls().autoRotate = false;
+    g.pointOfView({ lat: grid.lat0 + Number(m[1]) * grid.dlat, lng: grid.lon0 + Number(m[2]) * grid.dlon, altitude: 1.4 }, 0);
   }, [mode, grid, view.region, ready]);
 
   useEffect(() => {
@@ -766,14 +589,21 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   }, [flat, failed]);
 
   // ---- choosing a record ------------------------------------------------------------------------
-  const chooseVariable = (v: CatalogVariable, understood?: Understood) => {
-    if (mode === 'map') navigate({ screen: 'map', variable: v.id, season, region: view.region }, { replace: true });
-    else setLocalVar(v.id);
-    if (v.status !== 'analysed' && v.status !== 'sensitivity') setSelection({ kind: 'variable', variable: v, understood });
+  const chooseVariable = (v: CatalogVariable | null, understood?: Understood) => {
+    if (mode === 'map') navigate({ screen: 'map', variable: v?.id, season: v ? season : undefined, region: view.region }, { replace: true });
+    else setLocalVar(v?.id);
+    if (!v) {
+      setYearsOn(false);
+      setColumns(false);
+      setPlaying(false);
+    }
+    // The open place follows the globe: the new record alone, or every record when the layer comes off.
+    setPicked(v && mapVars.some((x) => x.id === v.id) ? [v.id] : null);
+    if (v && v.status !== 'analysed' && v.status !== 'sensitivity') setSelection({ kind: 'variable', variable: v, understood });
     else if (selection?.kind === 'variable') setSelection(null);
   };
 
-  // ---- the ask box --------------------------------------------------------------------------------
+  // ---- the search box --------------------------------------------------------------------------------
   const ctx: MatchContext = {
     variables,
     regions: index.data?.regions ?? [],
@@ -790,10 +620,12 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   const ask = (q: string) => {
     const u = understand(q, ctx);
     const r = route(u, ctx);
+    setAskFocus(false);
     if (u.variable) {
       if (mode === 'map') navigate({ screen: 'map', variable: u.variable.id, season }, { replace: true });
       else setLocalVar(u.variable.id);
-    }
+      setPicked(mapVars.some((x) => x.id === u.variable?.id) ? [u.variable.id] : null);
+    } else resetPicked();
     if (r.kind === 'compare') {
       window.location.hash = toHash(r.view);
       return;
@@ -819,55 +651,74 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
     const p = g.pointOfView();
     g.pointOfView({ ...p, altitude: Math.max(0.15, Math.min(4, p.altitude * k)) }, 450);
   };
+  const closePanel = useCallback(() => {
+    setSelection(null);
+    resetPicked();
+    globeRef.current?.ringsData([]);
+    if (mode === 'map') navigate({ screen: 'map', variable: variable?.id, season: variable ? season : undefined }, { replace: true });
+  }, [mode, navigate, resetPicked, season, variable]);
+  useEffect(() => {
+    if (!panelOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !menuOpen && !(e.target instanceof HTMLInputElement)) closePanel();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [panelOpen, menuOpen, closePanel]);
+
+  // The records the open place shows: the one on the globe, else all of them; the chips change it.
+  const sheetVars = mapVars;
+  const defaultPicked = variable && sheetVars.some((v) => v.id === variable.id) ? [variable.id] : sheetVars.map((v) => v.id);
+  const selected = picked ?? defaultPicked;
 
   let panel: ReactNode = null;
-  const cellCountry =
-    current?.kind === 'cell' ? countryAt(countries.data ?? [], (grid?.lat0 ?? 89.5) + current.row * (grid?.dlat ?? -1), (grid?.lon0 ?? -179.5) + current.col * (grid?.dlon ?? 1)) : null;
+  const cellLatLon = current?.kind === 'cell' && grid ? { lat: grid.lat0 + current.row * grid.dlat, lon: grid.lon0 + current.col * grid.dlon } : null;
+  const cellCountry = cellLatLon ? countryAt(countries.data ?? [], cellLatLon.lat, cellLatLon.lon) : null;
+  const countryFeature = (name: string | null) => findCountry(countries.data ?? [], name);
   if (current?.kind === 'country') {
-    panel = activeLayer && variable ? (
+    const name = current.feature.properties.name;
+    const r = exploreForCountryName(exploreIndex.data, name);
+    const label = countryLabel(name, lang, exploreIndex.data);
+    panel = (
       <CountryPanel
-        key={`${current.feature.properties.name}_${variable.id}`}
-        name={current.feature.properties.name}
+        key={name}
+        feature={current.feature}
+        label={label}
         cells={current.cells}
-        layer={activeLayer}
-        variable={variable}
+        variables={sheetVars}
+        selected={selected}
+        onSelected={setPicked}
         understood={current.understood}
-        regionId={exploreForCountryName(exploreIndex.data, current.feature.properties.name)?.id}
-        reportHref={(() => {
-          const r = exploreForCountryName(exploreIndex.data, current.feature.properties.name);
-          return r ? href({ screen: 'place', region: r.id, variable: variable.id }) : undefined;
-        })()}
+        regionId={r?.id}
+        reportHref={r ? href({ screen: 'place', region: r.id, variable: selected.length === 1 ? selected[0] : undefined }) : undefined}
         onPickCell={(row, col) => {
           if (!grid) return;
           selectCell(grid.lat0 + row * grid.dlat, grid.lon0 + col * grid.dlon);
         }}
       />
-    ) : variable ? (
-      <VariablePanel variable={variable} hasMap={false} understood={current.understood} />
-    ) : null;
-  } else if (current?.kind === 'cell') {
-    panel = activeLayer && variable ? (
-      <CellPanel
-        key={`${current.row}_${current.col}_${variable.id}`}
-        layer={activeLayer}
-        variable={variable}
+    );
+  } else if (current?.kind === 'cell' && cellLatLon) {
+    const feature = countryFeature(cellCountry);
+    const cLabel = cellCountry ? countryLabel(cellCountry, lang, exploreIndex.data) : null;
+    const named = current.label ?? (cellCountry ? squareName(t, lang, cellLatLon, cellCountry, feature ? frameOf(feature) : null, cLabel ?? cellCountry) : t('site.explore.ocean'));
+    // A name that starts a heading starts with a capital ("Eastern Algeria"); Bangla has no case.
+    const title = named.charAt(0).toUpperCase() + named.slice(1);
+    panel = (
+      <PlaceSheet
+        key={`${current.row}_${current.col}`}
+        variables={sheetVars}
+        selected={selected}
+        onSelected={setPicked}
         row={current.row}
         col={current.col}
-        label={current.label}
-        country={cellCountry}
+        lat={cellLatLon.lat}
+        lon={cellLatLon.lon}
+        title={title}
+        country={cLabel}
         understood={current.understood}
-        onCountry={
-          cellCountry && findCountry(countries.data ?? [], cellCountry)
-            ? () => {
-                const feature = findCountry(countries.data ?? [], cellCountry);
-                if (feature) focusCountry(feature);
-              }
-            : undefined
-        }
+        onCountry={feature ? () => focusCountry(feature) : undefined}
       />
-    ) : variable ? (
-      <VariablePanel variable={variable} hasMap={false} understood={current.understood} />
-    ) : null;
+    );
   } else if (current?.kind === 'region') {
     panel = <RegionPanel region={current.region} index={index.data} catalog={catalog.data} understood={current.understood} />;
   } else if (current?.kind === 'variable') {
@@ -877,30 +728,91 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   }
 
   const showFlat = flatView;
+  const showIntro = Boolean(intro) && !panelOpen && !menuOpen && !yearsOn && !activeLayer;
+
+  const viewSwitch = (
+    <SegmentedControl
+      size="sm"
+      label={t('site.explore.view_label')}
+      value={showFlat ? 'flat' : 'globe'}
+      onValueChange={(v) => setFlat(v === 'flat')}
+      options={[
+        { value: 'globe', label: t('site.explore.view_globe'), disabled: IS_OFFLINE_BUILD || failed, testId: 'view-globe' },
+        { value: 'flat', label: t('site.explore.view_flat'), testId: 'view-flat' },
+      ]}
+      className="border-white/12 bg-[#0a1e38]/78 backdrop-blur-xl max-sm:[&_button]:px-2 max-sm:[&_button]:text-[12.5px]"
+    />
+  );
 
   return (
     <section
-      className={cn(
-        'dark relative isolate overflow-hidden bg-ocean text-ink',
-        mode === 'home' ? 'min-h-[620px] lg:h-[min(880px,calc(100dvh-var(--header-h)))]' : 'min-h-[680px] lg:h-[calc(100dvh-var(--header-h))]',
-      )}
+      className="dark relative isolate h-[calc(100dvh-var(--header-h))] min-h-[560px] overflow-hidden bg-[#020812] text-ink"
       aria-label={t('site.explore.region_label')}
       data-testid="globe-explorer"
     >
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(900px_700px_at_58%_50%,var(--ocean-2)_0%,transparent_70%)]" aria-hidden="true" />
-      <div className={cn('grid h-full grid-cols-1', panelOpen ? 'lg:grid-cols-[320px_minmax(0,1fr)_440px]' : 'lg:grid-cols-[320px_minmax(0,1fr)]')}>
-        {/* Left: question, ask box and the records */}
-        <aside className="flex min-w-0 flex-col gap-5 overflow-y-auto border-line px-4 py-5 sm:px-6 lg:border-r lg:px-5">
-          {intro}
-          <form
-            role="search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const q = question.trim();
-              if (q) ask(q);
-            }}
-            className="flex items-center gap-2 rounded-[8px] border border-line-strong bg-surface-2/80 p-1.5 pl-3 focus-within:border-accent"
-          >
+      {/* Space: a deep field of stars and a soft glow behind the Earth. */}
+      <div className="starfield pointer-events-none absolute inset-0 -z-10" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_55%_at_50%_52%,rgb(38_92_160/0.32)_0%,transparent_70%)]" aria-hidden="true" />
+
+      {/* The globe (or the flat map) */}
+      {showFlat ? (
+        <div key="flat" className={cn('absolute inset-0 overflow-y-auto bg-bg px-3 pb-6 pt-[124px] transition-[right] duration-300 sm:px-5 sm:pt-[84px]', panelOpen && 'lg:right-[480px]')} data-testid="flat-map">
+          <div className="mx-auto flex max-w-[1400px] flex-col gap-3">
+            {activeLayer ? <LayerLegend layer={activeLayer} colormap={variable?.colormap?.trend} className="w-full max-w-[420px]" /> : null}
+            {grid && (activeLayer || !variable) ? (
+              <ScreeningMap
+                layer={activeLayer}
+                grid={grid}
+                colormap={variable?.colormap?.trend}
+                outlines={outlines}
+                countries={countries.data ?? []}
+                countryName={nameOfCountry}
+                lang={lang}
+                label={`${t('map.title')} ${t('map.label')}`}
+                onOpen={(row, col) => {
+                  if (!grid) return;
+                  selectCell(grid.lat0 + row * grid.dlat, grid.lon0 + col * grid.dlon);
+                }}
+              />
+            ) : layer.status === 'loading' ? null : (
+              <MissingPanel />
+            )}
+          </div>
+        </div>
+      ) : (
+        <div
+          key="globe"
+          ref={host}
+          className={cn('absolute inset-0 isolate z-0 cursor-grab transition-[right,bottom] duration-500 active:cursor-grabbing', panelOpen && 'lg:right-[460px]', panelOpen && !sheetMin && 'max-lg:bottom-[38%]')}
+          role="group"
+          aria-label={t('site.explore.globe_label')}
+          data-testid="globe"
+        />
+      )}
+      {!showFlat && !ready ? (
+        <p className="pointer-events-none absolute inset-0 grid place-items-center font-mono text-xs uppercase tracking-[0.12em] text-muted">{t('site.explore.loading')}</p>
+      ) : null}
+
+      {/* A dim veil behind the open Parameters staircase */}
+      <AnimatePresence>
+        {menuOpen ? (
+          <motion.div key="veil" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 z-[15] bg-gradient-to-r from-[#020812]/85 via-[#020812]/45 to-transparent" aria-hidden="true" />
+        ) : null}
+      </AnimatePresence>
+
+      {/* Top: Parameters, the search box, and the view switches */}
+      <div className={cn('pointer-events-none absolute inset-x-3 top-3 z-20 flex flex-wrap items-start gap-2 sm:inset-x-4', panelOpen && 'lg:right-[476px]')}>
+        <ParamDock variables={params} value={variable?.id} onPick={(v) => chooseVariable(v)} onOpenChange={setMenuOpen} />
+        <form
+          role="search"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const q = question.trim();
+            if (q) ask(q);
+          }}
+          className="pointer-events-auto relative order-last w-full sm:order-none sm:w-auto sm:min-w-[180px] sm:max-w-[440px] sm:flex-1 sm:basis-[180px]"
+        >
+          <div className={cn('flex items-center gap-2 rounded-full p-1 pl-4 focus-within:border-accent/80', glass)}>
             <Search className="size-[18px] shrink-0 text-muted" aria-hidden="true" />
             <label htmlFor="ask-input" className="sr-only">
               {t('site.explore.ask_label')}
@@ -909,217 +821,226 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
               id="ask-input"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
+              onFocus={() => setAskFocus(true)}
+              onBlur={() => window.setTimeout(() => setAskFocus(false), 150)}
               placeholder={t('site.explore.ask_placeholder')}
-              className="min-w-0 flex-1 bg-transparent py-2 text-[15px] outline-none placeholder:text-muted"
+              autoComplete="off"
+              className="min-w-0 flex-1 bg-transparent py-2 text-[14.5px] outline-none placeholder:text-muted"
               data-testid="ask-input"
             />
-            <button type="submit" className="min-h-10 rounded-[6px] bg-accent px-4 font-semibold text-ocean hover:brightness-110" data-testid="ask-submit">
+            <button type="submit" className="min-h-9 rounded-full bg-accent px-4 text-[14px] font-semibold text-ocean hover:brightness-110" data-testid="ask-submit">
               {t('site.explore.ask_button')}
             </button>
-          </form>
-          <div className="-mt-2 flex flex-wrap gap-1.5" aria-label={t('site.explore.tries')}>
-            {tries.map((q) => (
-              <button
-                key={q}
-                type="button"
-                onClick={() => {
-                  setQuestion(q);
-                  ask(q);
-                }}
-                className="min-h-8 rounded-full border border-line-strong px-3 text-[13px] text-muted hover:border-accent hover:text-ink"
-              >
-                {q}
-              </button>
-            ))}
           </div>
-          {variables.length ? <VariableRail variables={variables} value={variable?.id} onPick={(v) => chooseVariable(v)} /> : null}
-        </aside>
-
-        {/* Centre: the globe (or the flat map) */}
-        <div className="relative h-[62vh] min-h-[380px] min-w-0 lg:h-auto">
-          {showFlat ? (
-            <div key="flat" className="flex h-full flex-col gap-3 overflow-y-auto bg-bg p-3 pt-16 sm:p-4 sm:pt-16" data-testid="flat-map">
-              {activeLayer ? <Legend layer={activeLayer} colormap={variable?.colormap?.trend} /> : null}
-              {activeLayer ? (
-                <ScreeningMap
-                  layer={activeLayer}
-                  colormap={variable?.colormap?.trend}
-                  outlines={outlines}
-                  lang={lang}
-                  label={`${t('map.title')} ${t('map.label')}`}
-                  onOpen={(row, col) => {
-                    if (!grid) return;
-                    selectCell(grid.lat0 + row * grid.dlat, grid.lon0 + col * grid.dlon);
-                  }}
-                />
-              ) : layer.status === 'loading' ? null : (
-                <MissingPanel />
-              )}
-            </div>
-          ) : (
-            <div key="globe" ref={host} className="absolute inset-0 cursor-grab active:cursor-grabbing" role="group" aria-label={t('site.explore.globe_label')} data-testid="globe" />
-          )}
-          {!showFlat && !ready ? (
-            <p className="pointer-events-none absolute inset-0 grid place-items-center font-mono text-xs uppercase tracking-[0.12em] text-muted">{t('site.explore.loading')}</p>
+          <AnimatePresence>
+            {askFocus && !question ? (
+              <motion.ul
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.16 }}
+                className={cn('absolute inset-x-0 top-[calc(100%+6px)] z-30 m-0 flex list-none flex-col gap-0.5 rounded-[18px] p-1.5', glass)}
+                aria-label={t('site.explore.tries')}
+              >
+                {tries.map((q) => (
+                  <li key={q}>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        setQuestion(q);
+                        ask(q);
+                      }}
+                      className="flex min-h-9 w-full items-center gap-2 rounded-[12px] px-3 text-left text-[13.5px] text-muted hover:bg-white/10 hover:text-ink"
+                    >
+                      <Search className="size-3.5 shrink-0" aria-hidden="true" />
+                      {q}
+                    </button>
+                  </li>
+                ))}
+              </motion.ul>
+            ) : null}
+          </AnimatePresence>
+        </form>
+        <div className="pointer-events-auto ml-auto flex flex-wrap items-center justify-end gap-2">
+          {!showFlat && activeLayer ? (
+            <button
+              type="button"
+              aria-pressed={yearsOn}
+              onClick={() => {
+                setYearsOn((y) => !y);
+                setPlaying(false);
+              }}
+              className={cn('inline-flex min-h-10 min-w-10 items-center justify-center gap-2 rounded-full px-3.5 text-[13px] font-semibold max-sm:px-0', yearsOn ? 'border border-accent bg-accent text-ocean' : cn(glass, 'hover:border-accent'))}
+              data-testid="view-years"
+            >
+              <History className="size-4" aria-hidden="true" />
+              <span className="max-sm:sr-only">{t('site.years.toggle')}</span>
+            </button>
           ) : null}
+          {!showFlat && activeLayer && !yearsOn ? (
+            <button
+              type="button"
+              aria-pressed={columns}
+              onClick={() => setColumns((c) => !c)}
+              className={cn('inline-flex min-h-10 min-w-10 items-center justify-center gap-2 rounded-full px-3.5 text-[13px] font-semibold max-sm:px-0', columns ? 'border border-accent bg-accent text-ocean' : cn(glass, 'hover:border-accent'))}
+              data-testid="view-columns"
+            >
+              <BarChart3 className="size-4" aria-hidden="true" />
+              <span className="max-sm:sr-only">{t('site.explore.columns')}</span>
+            </button>
+          ) : null}
+          {viewSwitch}
+        </div>
+      </div>
 
-          {/* Layer status and view switch */}
-          <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex flex-wrap items-start gap-2 sm:inset-x-4 sm:top-4">
-            <p className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-line bg-surface/85 px-3 py-1.5 text-[13px] backdrop-blur-md" data-testid="map-label">
-              <span className={cn('size-2 rounded-full', activeLayer ? 'bg-strong' : 'bg-accent')} aria-hidden="true" />
-              {variable ? <b className="font-semibold">{pick(variable.name, lang)}</b> : null}
-              <span className="text-muted">
+      {/* The page's own words, floating in space until the reader starts exploring */}
+      <AnimatePresence>
+        {showIntro && !showFlat ? (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.35 }}
+            className={cn('globe-intro pointer-events-auto absolute bottom-4 left-3 right-3 z-10 max-w-[380px] sm:left-5 lg:bottom-auto lg:top-[22%]', mode === 'map' && 'max-lg:hidden')}
+            data-testid="globe-intro"
+          >
+            {intro}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      {!showFlat ? (
+        <>
+          {/* Bottom left: what the globe shows, and its colour key */}
+          <div className={cn('pointer-events-none absolute bottom-3 left-3 z-10 flex flex-col items-start gap-2 sm:bottom-4 sm:left-4', showIntro && mode === 'home' && 'max-lg:hidden', panelOpen && 'max-lg:hidden')}>
+            <p className={cn('pointer-events-auto m-0 inline-flex max-w-[calc(100vw-90px)] items-center gap-2 rounded-full px-3 py-1.5 text-[12.5px]', glass)} data-testid="map-label">
+              <span className={cn('size-2 shrink-0 rounded-full', activeLayer ? 'bg-strong shadow-[0_0_8px_var(--grade-strong)]' : 'bg-accent')} aria-hidden="true" />
+              {variable ? <b className="truncate font-semibold">{pick(variable.name, lang)}</b> : null}
+              <span className="truncate text-muted">
                 {activeLayer
                   ? t('site.explore.layer_line', { from: int(activeLayer.meta.window.first, lang), to: int(activeLayer.meta.window.last, lang), n: int(activeLayer.meta.nTestable, lang) })
-                  : layer.status === 'loading'
+                  : variable && layer.status === 'loading'
                     ? t('site.common.loading')
                     : variable?.status === 'deferred'
                       ? t('record_card.not_analysed')
-                      : t('site.explore.no_map')}
+                      : variable
+                        ? t('site.explore.no_map')
+                        : t('site.gx.no_layer')}
               </span>
             </p>
             {activeLayer ? (
-              <p className="pointer-events-auto rounded-full border border-line bg-surface/85 px-3 py-1.5 text-[13px] backdrop-blur-md" data-testid="map-tests">
+              <p className={cn('pointer-events-auto m-0 rounded-full px-3 py-1 text-[11.5px] text-muted', glass)} data-testid="map-tests">
                 {t('map.label')}
               </p>
             ) : null}
-            <div className="pointer-events-auto ml-auto flex items-center gap-2">
-              {!showFlat && activeLayer ? (
-                <button
-                  type="button"
-                  aria-pressed={yearsOn}
-                  onClick={() => {
-                    setYearsOn((y) => !y);
-                    setPlaying(false);
-                  }}
-                  className={cn(
-                    'inline-flex min-h-10 items-center gap-2 rounded-[6px] border px-3 text-[13px] font-semibold backdrop-blur-md',
-                    yearsOn ? 'border-accent bg-accent text-ocean' : 'border-line bg-surface/85 hover:border-accent',
-                  )}
-                  data-testid="view-years"
-                >
-                  <History className="size-4" aria-hidden="true" />
-                  {t('site.years.toggle')}
-                </button>
-              ) : null}
-              {!showFlat && activeLayer && !yearsOn ? (
-                <button
-                  type="button"
-                  aria-pressed={columns}
-                  onClick={() => setColumns((c) => !c)}
-                  className={cn(
-                    'inline-flex min-h-10 items-center gap-2 rounded-[6px] border px-3 text-[13px] font-semibold backdrop-blur-md',
-                    columns ? 'border-accent bg-accent text-ocean' : 'border-line bg-surface/85 hover:border-accent',
-                  )}
-                  data-testid="view-columns"
-                >
-                  <BarChart3 className="size-4" aria-hidden="true" />
-                  {t('site.explore.columns')}
-                </button>
-              ) : null}
-              <SegmentedControl
-                size="sm"
-                label={t('site.explore.view_label')}
-                value={showFlat ? 'flat' : 'globe'}
-                onValueChange={(v) => setFlat(v === 'flat')}
-                options={[
-                  { value: 'globe', label: t('site.explore.view_globe'), disabled: IS_OFFLINE_BUILD || failed, testId: 'view-globe' },
-                  { value: 'flat', label: t('site.explore.view_flat'), testId: 'view-flat' },
-                ]}
-                className="bg-surface/85 backdrop-blur-md"
-              />
-            </div>
+            {activeLayer && !yearsOn ? <LayerLegend layer={activeLayer} colormap={variable?.colormap?.trend} opacity={opacity} onOpacity={setOpacity} columns={columns} /> : null}
           </div>
 
-          {!showFlat ? (
-            <>
-              <div className="pointer-events-none absolute bottom-3 left-3 z-10 sm:bottom-4 sm:left-4">
-                {yearsOn ? (
-                  <YearsPanel
-                    status={framesStatus}
-                    frames={frames}
-                    kind={kind}
-                    kinds={kinds}
-                    onKind={(k) => {
-                      setPlaying(false);
-                      setFramesKind(k);
-                    }}
-                    frame={fi}
-                    onFrame={setFrame}
-                    playing={playing}
-                    onPlay={(on) => {
-                      if (on && fi >= nYears - 1) setFrame(0);
-                      setPlaying(on);
-                    }}
-                    colormap={variable?.colormap?.value}
-                    trendColormap={variable?.colormap?.trend}
-                    rule={yearsData?.meta.rule ?? 'mean'}
-                    name={variable ? pick(variable.name, lang) : ''}
-                  />
-                ) : activeLayer ? (
-                  <Legend layer={activeLayer} colormap={variable?.colormap?.trend} opacity={opacity} onOpacity={setOpacity} columns={columns} />
-                ) : null}
-              </div>
-              {/* Where the copilot's floating button exists (bottom right of the screen), the zoom column sits above it. */}
-              <div className={cn('absolute right-3 z-10 flex flex-col gap-1.5 sm:right-4', COPILOT_HOSTED ? 'bottom-20 lg:bottom-24' : 'bottom-3 sm:bottom-4')}>
-                <button type="button" onClick={() => zoom(0.6)} aria-label={t('site.map.zoom_in')} className="grid size-10 place-items-center rounded-[6px] border border-line bg-surface/85 backdrop-blur-md hover:border-accent">
-                  <Plus className="size-5" aria-hidden="true" />
-                </button>
-                <button type="button" onClick={() => zoom(1 / 0.6)} aria-label={t('site.map.zoom_out')} className="grid size-10 place-items-center rounded-[6px] border border-line bg-surface/85 backdrop-blur-md hover:border-accent">
-                  <Minus className="size-5" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => globeRef.current?.pointOfView(HOME_VIEW, reduce ? 0 : 900)}
-                  aria-label={t('site.map.reset')}
-                  className="grid size-10 place-items-center rounded-[6px] border border-line bg-surface/85 backdrop-blur-md hover:border-accent"
-                >
-                  <Globe2 className="size-5" aria-hidden="true" />
-                </button>
-              </div>
-              {ready && !panelOpen && !yearsOn ? (
-                <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 rounded-full bg-black/45 px-3 py-1.5 text-[13px] text-white md:block">
-                  {t('site.explore.hint')}
-                </p>
-              ) : null}
-            </>
+          {/* Bottom centre: the year dock */}
+          {yearsOn && activeLayer ? (
+            <div className={cn('pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center sm:bottom-4', panelOpen && 'lg:right-[460px]', panelOpen && 'max-lg:hidden')}>
+              <YearDock
+                status={framesStatus}
+                frames={frames}
+                kind={kind}
+                kinds={kinds}
+                onKind={(k) => {
+                  setPlaying(false);
+                  setFramesKind(k);
+                }}
+                frame={fi}
+                onFrame={setFrame}
+                playing={playing}
+                onPlay={(on) => {
+                  if (on && fi >= nYears - 1) setFrame(0);
+                  setPlaying(on);
+                }}
+                colormap={variable?.colormap?.value}
+                trendColormap={variable?.colormap?.trend}
+                rule={yearsData?.meta.rule ?? 'mean'}
+                name={variable ? pick(variable.name, lang) : ''}
+                onClose={() => {
+                  setYearsOn(false);
+                  setPlaying(false);
+                }}
+              />
+            </div>
           ) : null}
-        </div>
 
-        {/* Right: the answer, printed on the atlas's ivory sheet */}
-        {panelOpen ? (
-          <aside className="paper relative min-w-0 overflow-y-auto border-line bg-surface px-5 pb-6 pt-5 text-ink lg:border-l" aria-live="polite" data-testid="explore-panel">
-            <button
-              type="button"
-              onClick={() => {
-                setSelection(null);
-                globeRef.current?.polygonsData([]).ringsData([]);
-                if (mode === 'map') navigate({ screen: 'map', variable: variable?.id, season }, { replace: true });
-              }}
-              aria-label={t('site.common.close')}
-              className="absolute right-3 top-3 grid size-10 place-items-center rounded-full text-muted hover:bg-ink/[0.06] hover:text-ink"
-              data-testid="explore-close"
-            >
-              <X className="size-5" aria-hidden="true" />
+          {/* Bottom right: zoom; where the copilot's floating button exists, the column sits above it. */}
+          <div className={cn('absolute right-3 z-10 flex flex-col gap-1.5 sm:right-4', COPILOT_HOSTED ? 'bottom-20 lg:bottom-24' : 'bottom-3 sm:bottom-4', panelOpen && 'lg:right-[476px]', panelOpen && 'max-lg:hidden', showIntro && mode === 'home' && 'max-sm:hidden', yearsOn && 'max-sm:bottom-[220px]')}>
+            {[
+              { k: 0.6, label: t('site.map.zoom_in'), Icon: Plus },
+              { k: 1 / 0.6, label: t('site.map.zoom_out'), Icon: Minus },
+            ].map(({ k, label, Icon }) => (
+              <button key={label} type="button" onClick={() => zoom(k)} aria-label={label} className={cn('grid size-10 place-items-center rounded-full hover:border-accent', glass)}>
+                <Icon className="size-[18px]" aria-hidden="true" />
+              </button>
+            ))}
+            <button type="button" onClick={() => globeRef.current?.pointOfView(homeView(), reduce ? 0 : 900)} aria-label={t('site.map.reset')} className={cn('grid size-10 place-items-center rounded-full hover:border-accent', glass)}>
+              <Globe2 className="size-[18px]" aria-hidden="true" />
             </button>
-            {current?.kind === 'cell' && current.from ? (
+          </div>
+          {ready && !panelOpen && !yearsOn && !showIntro ? (
+            <p className="pointer-events-none absolute bottom-5 left-1/2 hidden -translate-x-1/2 rounded-full bg-black/45 px-3 py-1.5 text-[12.5px] text-white/90 xl:block">{t('site.explore.hint')}</p>
+          ) : null}
+        </>
+      ) : null}
+
+      {/* The answer: a sheet on the right (a bottom sheet on phones), printed on the atlas's ivory paper */}
+      <AnimatePresence>
+        {panelOpen ? (
+          <motion.aside
+            key="sheet"
+            initial={reduce ? { opacity: 0 } : { opacity: 0, x: 40, y: 0 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, x: 40 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 30 }}
+            className={cn(
+              'paper absolute z-30 flex flex-col overflow-hidden bg-surface text-ink shadow-[0_30px_80px_-30px_rgb(0_0_0/0.9)]',
+              'inset-x-0 bottom-0 rounded-t-[24px] border-t border-line lg:inset-x-auto lg:bottom-3 lg:right-3 lg:top-3 lg:w-[444px] lg:rounded-[24px] lg:border',
+              sheetMin ? 'max-lg:h-[76px]' : 'max-lg:h-[62%]',
+            )}
+            aria-live="polite"
+            data-testid="explore-panel"
+          >
+            <div className="flex shrink-0 items-center gap-1 border-b border-line/70 px-3 py-2">
               <button
                 type="button"
-                onClick={() => {
-                  const from = current.from;
-                  if (from) setSelection(from);
-                  globeRef.current?.polygonsData([]).ringsData([]);
-                }}
-                className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-[14px] font-medium text-link hover:underline"
-                data-testid="back-to-country"
+                onClick={() => setSheetMin(!sheetMin)}
+                aria-label={sheetMin ? t('site.gx.sheet_open') : t('site.gx.sheet_min')}
+                aria-expanded={!sheetMin}
+                className="grid size-10 place-items-center rounded-full text-muted hover:bg-ink/[0.06] hover:text-ink lg:hidden"
               >
-                ← {t('site.country.back', { country: current.from.feature.properties.name })}
+                {sheetMin ? <ChevronUp className="size-5" aria-hidden="true" /> : <ChevronDown className="size-5" aria-hidden="true" />}
               </button>
-            ) : null}
-            <div className="pr-8">{panel}</div>
-          </aside>
+              {current?.kind === 'cell' && current.from ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const from = current.from;
+                    if (from) setSelection(from);
+                    globeRef.current?.ringsData([]);
+                  }}
+                  className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-2 text-[14px] font-medium text-link hover:underline"
+                  data-testid="back-to-country"
+                >
+                  ← {t('site.country.back', { country: countryLabel(current.from.feature.properties.name, lang, exploreIndex.data) })}
+                </button>
+              ) : (
+                <span className="px-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted">{t('site.gx.sheet_title')}</span>
+              )}
+              <button type="button" onClick={closePanel} aria-label={t('site.common.close')} className="ml-auto grid size-10 place-items-center rounded-full text-muted hover:bg-ink/[0.06] hover:text-ink" data-testid="explore-close">
+                <X className="size-5" aria-hidden="true" />
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-8 pt-4">{panel}</div>
+          </motion.aside>
         ) : null}
-      </div>
+      </AnimatePresence>
+
       {showFlat ? null : (
         <p className="sr-only">
           {t('site.explore.keyboard_note')}{' '}

@@ -124,7 +124,8 @@ for (const lang of LANGS) {
     test('W-06 map: exploration label, number of tests, hatching; a square has no verdict words', async ({ page }) => {
       const maps = list('maps').filter((p) => p.endsWith('meta.json'));
       test.skip(maps.length === 0, 'no map in this build');
-      await open(page, '#/map', lang);
+      // The globe opens with no layer; a record's map is painted once one is chosen (here, from the link).
+      await open(page, `#/map?variable=${maps[0]!.split('/')[1]}`, lang);
       await expect(page.getByTestId('globe-explorer')).toBeVisible();
       await expect(page.getByTestId('map-tests')).toContainText(t(lang, 'map.label'));
       await expect(page.getByTestId('map-label')).toBeVisible();
@@ -263,7 +264,8 @@ test('W-09 a "can\'t tell yet" ending picks the verdict beat and the last screen
 test('W-11 every view restores from its URL', async ({ page }) => {
   const pair = regionIndex.pairs[0];
   const views: [string, string][] = [
-    ['#/', 'lead-case'],
+    ['#/', 'globe-explorer'],
+    ['#/watch', 'lead-case'],
     [`#/question?question=${catalog.questions[0]!.id}`, 'shortlist'],
     [`#/place?region=${home!.id}&variable=${homeLineup!.items[1]?.variable ?? ''}&season=${homeLineup!.items[1]?.season ?? ''}`, 'verdict-card'],
     ...(pair ? ([[`#/compare?pair=${pair.id}`, 'compare-view']] as [string, string][]) : []),

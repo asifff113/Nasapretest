@@ -25,6 +25,7 @@ test('Trends counts the squares of the engine map and ranks places', async ({ pa
 
 test('the record list shows only records with data in this build', async ({ page }) => {
   await open(page, '#/map');
+  await page.getByTestId('params-toggle').click(); // the records open from the Parameters button
   const rail = page.getByTestId('variable-rail');
   await expect(rail).toBeVisible();
   for (const v of catalog.variables.filter((x) => x.status === 'deferred' || x.status === 'reference')) {

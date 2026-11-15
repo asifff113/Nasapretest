@@ -9,10 +9,11 @@ import { ChevronLeft, ChevronRight, Fingerprint, Pause, Play, RotateCcw, Search 
 import { pick, useT } from '../i18n';
 import { int, shortHash } from '../i18n/format';
 import type { CaseFile, Contrast, Lineup, Mask, RegionIndex, Verdict } from '../data/types';
-import { caseResultPath, useCases } from '../data/cases';
+import { caseResultPath, pickLeadCase, useCases } from '../data/cases';
+import { LeadCase } from '../components/HomeGuide';
 import { PlaceStory } from '../report/StoryPlayer';
 import { paths } from '../data/results';
-import { useCatalog, useRegionIndex, useResult, useResults } from '../data/hooks';
+import { useCatalog, usePrereg, useRegionIndex, useResult, useResults } from '../data/hooks';
 import { useLang } from '../state/prefs';
 import { href, useView, type View } from '../state/view';
 import { useSpineClaim } from '../state/spine';
@@ -496,6 +497,56 @@ function CaseList() {
   );
 }
 
+/** The page's start: the featured case beside the two ways to watch (a guided case, or any place's own story). */
+function WatchStart() {
+  const t = useT();
+  const { cases } = useCases();
+  const prereg = usePrereg();
+  const lead = cases.data ? pickLeadCase(cases.data, prereg.data) : undefined;
+  const reduce = useReducedMotion();
+  const ways = [
+    { id: 'watch-cases', icon: Play, title: t('site.watch2.way_cases'), body: t('site.watch2.way_cases_body') },
+    { id: 'watch-story', icon: Search, title: t('site.watch2.way_story'), body: t('site.watch2.way_story_body') },
+  ];
+  return (
+    <section className="mb-12 grid items-start gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]" aria-labelledby="watch-start">
+      <div>
+        <h2 id="watch-start" className="mb-3 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-accent-ink">
+          {t('site.watch2.featured')}
+        </h2>
+        {lead ? <LeadCase c={lead} /> : <Loading />}
+      </div>
+      <div className="flex flex-col gap-3">
+        <p className="m-0 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-muted">{t('site.watch2.ways')}</p>
+        {ways.map((w, i) => (
+          <motion.a
+            key={w.id}
+            href={`#${w.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById(w.id)?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+            }}
+            initial={reduce ? false : { opacity: 0, x: 18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: reduce ? 0 : 0.1 + 0.08 * i }}
+            className="atlas-panel group flex items-start gap-4 rounded-card border border-line bg-surface p-5 text-ink no-underline transition-[border-color,transform] hover:-translate-y-0.5 hover:border-accent/60 hover:no-underline"
+            data-testid={`watch-way-${i + 1}`}
+          >
+            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent/15 text-accent-ink transition-colors group-hover:bg-accent group-hover:text-ocean">
+              <w.icon className="size-5" aria-hidden="true" />
+            </span>
+            <span>
+              <span className="block font-display text-[22px] leading-tight">{w.title}</span>
+              <span className="mt-1 block text-[14.5px] text-muted">{w.body}</span>
+            </span>
+          </motion.a>
+        ))}
+        <p className="m-0 rounded-card border border-dashed border-line-strong p-4 text-[14px] leading-relaxed text-muted">{t('site.watch2.why')}</p>
+      </div>
+    </section>
+  );
+}
+
 export default function WatchScreen() {
   const t = useT();
   const lang = useLang();
@@ -506,6 +557,7 @@ export default function WatchScreen() {
       <>
         <Hero eyebrow={t('site.watch.eyebrow')} title={t('nav.watch')} lead={t('site.watch.lead')} />
         <Body>
+          <WatchStart />
           <section className="mb-10 grid gap-3 rounded-card border border-line bg-surface-2 p-5 sm:grid-cols-3" aria-labelledby="what-case" data-testid="what-case">
             <h2 id="what-case" className="m-0 text-[20px] font-semibold sm:col-span-3">
               {t('site.story.what_title')}
@@ -514,9 +566,9 @@ export default function WatchScreen() {
             <p className="m-0 text-[14.5px] leading-relaxed">{t('site.story.what_2')}</p>
             <p className="m-0 text-[14.5px] leading-relaxed">{t('site.story.what_3')}</p>
           </section>
-          <h2 className="mb-4 text-chapter">{t('site.story.cases_title')}</h2>
+          <h2 id="watch-cases" className="mb-4 scroll-mt-24 text-chapter">{t('site.story.cases_title')}</h2>
           <CaseList />
-          <div className="mt-16">
+          <div id="watch-story" className="mt-16 scroll-mt-24">
             <PlaceStory />
           </div>
         </Body>

@@ -464,6 +464,117 @@ html:lang(bn) .globe-city {
   outline-offset: 2px;
 }
 
+/* Country names on the globe: quiet, spaced capitals, like an atlas. */
+.globe-country {
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  font: 600 10.5px/1.1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(236 244 255 / 0.86);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.95), 0 0 8px rgb(0 0 0 / 0.7);
+  white-space: nowrap;
+}
+html:lang(bn) .globe-country {
+  font-family: var(--font-bn);
+  letter-spacing: 0.02em;
+  font-size: 12px;
+}
+/* The reticle over the chosen square: a gold ring that settles, with a slow pulse. */
+.globe-target {
+  pointer-events: none;
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+  border: 2px solid #ffd27a;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5), 0 0 16px rgb(255 210 122 / 0.7);
+  animation: target-in 0.6s var(--ease-out) both;
+}
+.globe-target::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 1.5px solid rgb(255 210 122 / 0.8);
+  border-radius: 10px;
+  animation: target-pulse 1.8s var(--ease-out) infinite;
+}
+@keyframes target-in {
+  from {
+    transform: translate(-50%, -50%) scale(2.4) rotate(45deg);
+    opacity: 0;
+  }
+}
+@keyframes target-pulse {
+  from {
+    transform: scale(0.7);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* The hover tooltip globe.gl shows over a country. */
+.globe-tip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(6 20 40 / 0.86);
+  color: #fff;
+  font: 600 12.5px/1.2 var(--font-sans);
+  backdrop-filter: blur(8px);
+}
+html:lang(bn) .globe-tip {
+  font-family: var(--font-bn);
+}
+
+/* Space behind the globe: three layers of small stars (pure CSS, nothing fetched). */
+.starfield {
+  background-color: #020812;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgb(255 255 255 / 0.85) 50%, transparent 51%),
+    radial-gradient(1px 1px at 72% 12%, rgb(255 255 255 / 0.7) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 38% 74%, rgb(255 255 255 / 0.8) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 66%, rgb(200 220 255 / 0.75) 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 58%, rgb(255 255 255 / 0.55) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 58% 36%, rgb(255 240 220 / 0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 94% 24%, rgb(255 255 255 / 0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 86%, rgb(255 255 255 / 0.65) 50%, transparent 51%);
+  background-size: 340px 340px, 420px 420px, 520px 520px, 380px 380px, 260px 260px, 610px 610px, 300px 300px, 470px 470px;
+  animation: starfield-drift 240s linear infinite;
+}
+@keyframes starfield-drift {
+  to {
+    background-position: 340px 120px, -420px 210px, 520px -260px, -380px 190px, 260px 130px, -610px 305px, 300px -150px, 470px 235px;
+  }
+}
+
+/* The Parameters button calls for a first tap with a slow ring. */
+.params-ping {
+  box-shadow: 0 0 0 0 rgb(233 180 76 / 0.6);
+  animation: params-ping 2.4s var(--ease-out) infinite;
+}
+@keyframes params-ping {
+  0% {
+    box-shadow: 0 0 0 0 rgb(233 180 76 / 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 16px rgb(233 180 76 / 0);
+  }
+}
+
+/* The globe page's own words float in space, with a soft shadow for legibility. */
+.globe-intro h1,
+.globe-intro p {
+  text-shadow: 0 2px 18px rgb(2 8 18 / 0.9);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

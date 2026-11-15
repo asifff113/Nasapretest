@@ -1,25 +1,19 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
-// What the globe's side panel shows: a 1° square (exploration), a registered place (graded verdicts), or a record
-// that has no map in this build. Every number is read from a result file; the panel only lays it out.
-import { ArrowRight, Map as MapIcon, MapPin } from 'lucide-react';
-import { AnswerKindBadge } from '../components/AnswerKind';
-import { pick, tOr, useT } from '../i18n';
-import { int, p as fmtP, rate as fmtRate } from '../i18n/format';
+// What the globe's side panel shows besides a square (PlaceSheet) and a country (CountryPanel): a registered place
+// (graded verdicts), or a record that has no map in this build. Every number is read from a result file; the panel only lays it out.
+import { MapPin } from 'lucide-react';
+import { pick, useT } from '../i18n';
+import { rate as fmtRate } from '../i18n/format';
 import type { Catalog, CatalogVariable, Lineup, Region, RegionIndex } from '../data/types';
-import { loadCellSeries, paths, type MapLayer } from '../data/results';
-import { useAsync, useBuild, useResult } from '../data/hooks';
+import { paths } from '../data/results';
+import { useResult } from '../data/hooks';
 import type { Understood } from '../data/matcher';
 import { useLang } from '../state/prefs';
 import { href } from '../state/view';
-import { cellInfo, latLon } from '../map/ScreeningMap';
-import { SeriesChart } from '../charts/SeriesChart';
-import { ClimateStripes } from '../charts/ClimateStripes';
 import { RecordCard } from '../components/RecordCard';
 import { FamilyBadge, StatusBadge } from '../components/StatusBadge';
 import { Loading } from '../components/LoadState';
-import { Badge } from '../ui/common/badge';
 import { buttonVariants } from '../ui/common/button';
-import { cn } from '../ui/common/utils';
 
 export function UnderstoodChips({ u, placeLabel }: { u: Understood; placeLabel?: string }) {
   const t = useT();
@@ -62,127 +56,6 @@ export function RangeBar({ rate, lo, hi, lang }: { rate: number; lo: number; hi:
       <span className="absolute top-[31px] -translate-x-1/2 font-mono text-[10.5px] text-muted" style={{ left: `${pos(hi)}%` }}>
         {fmtRate(hi, lang, rate)}
       </span>
-    </div>
-  );
-}
-
-export function CellPanel({
-  layer,
-  variable,
-  row,
-  col,
-  label,
-  country,
-  understood,
-  onCountry,
-}: {
-  layer: MapLayer;
-  variable: CatalogVariable;
-  row: number;
-  col: number;
-  label?: string;
-  country: string | null;
-  understood?: Understood;
-  /** Opens the country view for the country that holds this square. */
-  onCountry?: () => void;
-}) {
-  const t = useT();
-  const lang = useLang();
-  const build = useBuild();
-  const root = build.data?.root;
-  const info = cellInfo(layer, row, col);
-  const i = row * layer.meta.grid.nlon + col;
-  const lo = layer.fields.rate_low?.[i];
-  const hi = layer.fields.rate_high?.[i];
-  const pv = layer.fields.p?.[i];
-  const qv = layer.fields.q?.[i];
-  const series = useAsync(root !== undefined ? `cell|${root}|${variable.id}|${row}|${col}` : null, () => loadCellSeries(root ?? '', variable.id, row, col, layer.meta.season));
-  const units = layer.meta.units;
-  const where = [label, country ?? t('site.explore.ocean')].filter(Boolean).join(' · ');
-  const varName = pick(variable.name, lang);
-  const hasRange = lo !== undefined && hi !== undefined && Number.isFinite(lo) && Number.isFinite(hi) && info.rate !== null;
-  return (
-    <div className="flex flex-col gap-4" data-testid="explore-cell">
-      {understood ? <UnderstoodChips u={understood} placeLabel={label} /> : null}
-      <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted">
-        {varName} · {t('site.explore.square')} · {latLon(info.lat, info.lon, lang)}
-      </p>
-      <h2 className="text-[30px] leading-[1.1]">{where}</h2>
-      <div className="flex flex-wrap gap-2">
-        <AnswerKindBadge kind="exploratory" />
-        <Badge tone={info.testable ? (info.significant ? 'strong' : 'canttell') : 'noverdict'} data-testid="explore-cell-status">
-          {info.testable ? (info.significant ? t('site.map.status_stands_out') : t('site.map.status_tested')) : t('site.map.status_untestable')}
-        </Badge>
-      </div>
-      {info.testable && info.rate !== null ? (
-        <>
-          <p className="m-0 flex flex-wrap items-baseline gap-x-2">
-            <span className="font-display text-[54px] leading-none tabular">{fmtRate(info.rate, lang)}</span>
-            <span className="text-sm text-muted">
-              {units} {t('verdict.labels.rate_short')} · {int(layer.meta.window.first, lang)}–{int(layer.meta.window.last, lang)}
-            </span>
-          </p>
-          {hasRange ? <RangeBar rate={info.rate} lo={lo} hi={hi} lang={lang} /> : null}
-          <p className="text-[17px] leading-relaxed">
-            {info.significant
-              ? t('site.explore.cell_stands_out', { rate: `${fmtRate(info.rate, lang)} ${units}`, n: int(layer.meta.nTestable, lang) })
-              : t('site.explore.cell_not_out', { rate: `${fmtRate(info.rate, lang)} ${units}`, n: int(layer.meta.nTestable, lang) })}
-          </p>
-          <dl className="m-0 grid grid-cols-2 gap-2 text-sm tabular">
-            <div className="rounded-[6px] border border-line p-2.5">
-              <dt className="text-xs text-muted">{t('verdict.labels.ci')}</dt>
-              <dd className="m-0 font-semibold">{hasRange ? `${fmtRate(lo, lang, info.rate)} … ${fmtRate(hi, lang, info.rate)}` : '–'}</dd>
-            </div>
-            <div className="rounded-[6px] border border-line p-2.5">
-              <dt className="text-xs text-muted">p · q</dt>
-              <dd className="m-0 font-semibold">
-                {pv !== undefined && Number.isFinite(pv) ? fmtP(pv, lang) : '–'} · {qv !== undefined && Number.isFinite(qv) ? fmtP(qv, lang) : '–'}
-              </dd>
-            </div>
-          </dl>
-        </>
-      ) : (
-        <p className="text-[17px]" data-testid="explore-untestable">
-          {t('site.explore.cell_untestable')} {info.reasons.map((r) => tOr(t, `site.map.flag_${r}`, r)).join('; ')}
-        </p>
-      )}
-      <section className="flex flex-col gap-2 border-t border-line pt-3">
-        <h3 className="font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">{t('site.explore.year_by_year')}</h3>
-        {series.status === 'loading' ? (
-          <Loading />
-        ) : series.data ? (
-          <>
-            <ClimateStripes
-              years={series.data.years}
-              values={series.data.values}
-              units={series.data.units}
-              colormap={variable.colormap?.trend}
-              lang={lang}
-              height={46}
-              label={t('site.stripes.alt', { place: where, from: int(series.data.years[0] ?? 0, lang), to: int(series.data.years[series.data.years.length - 1] ?? 0, lang) })}
-            />
-            <SeriesChart x={series.data.years} y={series.data.values} units={series.data.units} lang={lang} height={190} label={t('site.cell.chart_alt', { place: where })} testId="explore-cell-chart" />
-            <p className="text-xs text-muted">{t('site.cell.no_line')}</p>
-          </>
-        ) : (
-          <p className="text-sm text-muted">{t('site.explore.no_tile')}</p>
-        )}
-      </section>
-      {onCountry && country ? (
-        <button type="button" onClick={onCountry} className={cn(buttonVariants({ variant: 'accent', size: 'sm' }), 'self-start')} data-testid="explore-country-open">
-          <MapIcon aria-hidden="true" />
-          {t('site.country.open', { country })}
-        </button>
-      ) : null}
-      <a
-        href={href({ screen: 'place', region: `cell:${row}_${col}`, variable: variable.id, season: layer.meta.season })}
-        className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'self-start')}
-        data-testid="explore-open-cell"
-      >
-        {t('site.explore.open_square')}
-        <ArrowRight aria-hidden="true" />
-      </a>
-      <p className="text-xs leading-relaxed text-muted">{t('site.explore.square_note')}</p>
     </div>
   );
 }

@@ -567,7 +567,7 @@
       "view_globe": "Globe",
       "view_flat": "Flat map",
       "hint": "Drag to turn · click anywhere on Earth",
-      "strength": "Layer strength",
+      "strength": "Colour strength",
       "key_strong": "Strong colour: stands out after testing every square",
       "square": "1° square",
       "ocean": "Open ocean",
@@ -1019,6 +1019,52 @@
           "methods": "How we know"
         }
       }
+    },
+    "gx": {
+      "params": "Parameters",
+      "none": "Just the Earth",
+      "none_note": "No data layer: borders and names only",
+      "no_layer": "Just the Earth · choose a parameter to colour it",
+      "legend_more": "What do the colours mean?",
+      "legend_less": "Fold",
+      "legend_what": "Each 1° square is coloured by its fitted change per decade over {from}–{to}. Middle colours: little change.",
+      "legend_down": "going down",
+      "legend_up": "going up",
+      "key_bright": "Bright: the change stands out even after testing every square",
+      "key_faded": "Faded: it does not stand out once we allow for testing {n} squares at once",
+      "strength_low": "Earth shows through",
+      "strength_high": "Colour only",
+      "years_close": "Close year by year",
+      "years_about": "What is this?",
+      "show_params": "Show",
+      "all_params": "All {n} parameters",
+      "chips_hint": "Pick one parameter to see it in full, or several to set them side by side.",
+      "only_this": "See this parameter in full",
+      "only_this_squares": "See its squares across the country",
+      "squares_out": "{out} of {n} squares here stand out on the map",
+      "n_squares": "{n} squares",
+      "sheet_title": "Place file",
+      "sheet_min": "Fold the place file away",
+      "sheet_open": "Open the place file",
+      "cell_all_title": "This square, every parameter",
+      "cell_all_lead": "Each card is the square's own change per decade in one record's screening map. Pick one to see its years below."
+    },
+    "ask2": {
+      "board_title": "The answer for every registered place",
+      "board_lead": "Each cell is that place's registered result for the record ({season}), graded before anyone looked at the trend. Open a cell for its evidence.",
+      "place": "Place",
+      "no_test": "No registered test",
+      "world_line": "exploration across {n} countries and regions: {out} stand out on their own",
+      "on_globe": "See it on the globe, square by square"
+    },
+    "watch2": {
+      "featured": "Start here",
+      "ways": "Two ways to watch",
+      "way_cases": "A guided case",
+      "way_cases_body": "A registered investigation played on the real screens, step by step, ending in its verdict or in \"can't tell yet\".",
+      "way_story": "The story of any place",
+      "way_story_body": "Pick any country or region and watch its records play year by year. Values, not tests.",
+      "why": "The globe answers one place at a time and the copilot answers in words. A case shows the whole reasoning: what was fixed in advance, what the data say, which checks it passed, and why the answer is what it is."
     }
   }
 }

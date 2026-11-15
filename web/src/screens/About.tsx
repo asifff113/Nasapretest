@@ -4,6 +4,7 @@ import { Info } from 'lucide-react';
 import { useT } from '../i18n';
 import { Body } from '../components/Page';
 import { Hero } from '../components/atlas/Hero';
+import { HowItWorks, WordsWeUse } from '../components/HomeGuide';
 
 export default function AboutScreen() {
   const t = useT();
@@ -27,6 +28,12 @@ export default function AboutScreen() {
         <p>{t('site.about.body_1')}</p>
         <p>{t('site.about.body_2')}</p>
       </section>
+      <div className="mt-12 border-t border-line pt-10" data-testid="how-it-works">
+        <HowItWorks />
+      </div>
+      <div className="mt-12 border-t border-line pt-10">
+        <WordsWeUse />
+      </div>
       <section className="mt-10">
         <h2 className="text-chapter">{t('site.about.team_title')}</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-3">

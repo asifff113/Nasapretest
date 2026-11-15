@@ -6,7 +6,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Minus, Plus, RotateCcw } from 'lucide-react';
 import type { MapLayer } from '../data/results';
-import type { Lang } from '../data/types';
+import type { Grid, Lang } from '../data/types';
+import type { CountryFeature } from '../data/places';
+import { countryLabels } from '../explore/naming';
+import { countryAt } from '../explore/texture';
 import { tOr, useT } from '../i18n';
 import { int, num, rate as fmtRate } from '../i18n/format';
 import { useTokens } from '../charts/tokens';
@@ -52,6 +55,8 @@ export function latLon(lat: number, lon: number, lang: Lang): string {
   return `${la}, ${lo}`;
 }
 
+const same = (n: string) => n;
+
 interface ViewBox {
   k: number;
   x: number;
@@ -60,16 +65,25 @@ interface ViewBox {
 
 export function ScreeningMap({
   layer,
+  grid,
   colormap,
   outlines,
+  countries = [],
+  countryName = same,
   lang,
   onOpen,
   label,
   start,
 }: {
-  layer: MapLayer;
+  /** The record's screening map; null draws the plain map (land, borders and country names) to pick a square from. */
+  layer: MapLayer | null;
+  /** The grid squares are picked on when there is no layer. */
+  grid?: Grid;
   colormap: string | undefined;
   outlines: Outlines | null;
+  /** Country outlines, for the countries' names on the map. */
+  countries?: CountryFeature[];
+  countryName?: (name: string) => string;
   lang: Lang;
   onOpen: (row: number, col: number) => void;
   label: string;
@@ -85,7 +99,8 @@ export function ScreeningMap({
   const [cursor, setCursor] = useState<{ row: number; col: number } | null>(null);
   const [hover, setHover] = useState<{ info: CellInfo; px: number; py: number } | null>(null);
   const drag = useRef<{ x: number; y: number; vx: number; vy: number; moved: boolean } | null>(null);
-  const g = layer.meta.grid;
+  const g = layer?.meta.grid ?? (grid as Grid);
+  const names = useMemo(() => countryLabels(countries), [countries]);
 
   // The base raster: one pixel per cell, drawn once per layer, palette and theme.
   const raster = useMemo(() => {
@@ -97,7 +112,7 @@ export function ScreeningMap({
     mask.width = g.nlon;
     mask.height = g.nlat;
     const mctx = mask.getContext('2d');
-    if (!ctx || !mctx) return { c, mask };
+    if (!ctx || !mctx || !layer) return { c, mask };
     const img = ctx.createImageData(g.nlon, g.nlat);
     const mimg = mctx.createImageData(g.nlon, g.nlat);
     const interp = diverging(colormap);
@@ -229,7 +244,22 @@ export function ScreeningMap({
       }
     }
 
-    // Outlines.
+    // Outlines (with no layer, the land is filled so the map reads as a map).
+    if (outlines && !layer) {
+      ctx.fillStyle = tokens.line;
+      ctx.globalAlpha = 0.85;
+      ctx.beginPath();
+      for (const ring of outlines.land) {
+        ring.forEach(([lon, lat], i) => {
+          const [x, y] = toPx(lon, lat);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+      }
+      ctx.fill('evenodd');
+      ctx.globalAlpha = 1;
+    }
     if (outlines) {
       ctx.lineWidth = Math.max(0.9, Math.min(1.6, 0.8 + vb.k * 0.08));
       ctx.strokeStyle = tokens.ink;
@@ -243,7 +273,7 @@ export function ScreeningMap({
         });
       }
       ctx.stroke();
-      ctx.globalAlpha = 0.25;
+      ctx.globalAlpha = 0.55;
       ctx.beginPath();
       for (const line of outlines.borders) {
         line.forEach(([lon, lat], i) => {
@@ -256,8 +286,32 @@ export function ScreeningMap({
       ctx.globalAlpha = 1;
     }
 
+    // Country names, once a country is wide enough on screen to hold its name.
+    if (names.length) {
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      const fs = Math.max(10, Math.min(14, 9 + vb.k * 0.6));
+      ctx.font = `600 ${fs}px Inter, 'Noto Sans Bengali', system-ui, sans-serif`;
+      for (const n of names) {
+        const text = countryName(n.name);
+        const w = n.span * cellPx;
+        if (w < Math.max(36, text.length * fs * 0.45)) continue;
+        const [x, y] = toPx(n.lon, n.lat);
+        if (x < -40 || y < -10 || x > size.w + 40 || y > size.h + 10) continue;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = tokens.surface;
+        ctx.globalAlpha = 0.9;
+        ctx.strokeText(text, x, y);
+        ctx.fillStyle = tokens.ink;
+        ctx.globalAlpha = 0.92;
+        ctx.fillText(text, x, y);
+      }
+      ctx.globalAlpha = 1;
+    }
+
     // Centre dots on cells that stand out, once cells are big enough to see them.
-    if (cellPx >= 7) {
+    if (layer && cellPx >= 7) {
       const sb = layer.meta.flagBits.significant ?? 2;
       const c0 = Math.max(0, Math.floor(-vb.x / cellPx));
       const c1 = Math.min(g.nlon - 1, Math.ceil((size.w - vb.x) / cellPx));
@@ -285,7 +339,7 @@ export function ScreeningMap({
       const pad = Math.max(2, cellPx * 0.1);
       ctx.strokeRect(vb.x + cursor.col * cellPx - pad, vb.y + cursor.row * cellPx - pad, cellPx + 2 * pad, cellPx + 2 * pad);
     }
-  }, [raster, size, vb, cellPx, outlines, tokens, cursor, layer, g.nlat, g.nlon, toPx]);
+  }, [raster, size, vb, cellPx, outlines, tokens, cursor, layer, g.nlat, g.nlon, toPx, names, countryName]);
 
   const cellAt = (px: number, py: number): { row: number; col: number } | null => {
     const col = Math.floor((px - vb.x) / cellPx);
@@ -323,9 +377,18 @@ export function ScreeningMap({
     return () => cv.removeEventListener('wheel', onWheel);
   });
 
-  const cursorInfo = cursor ? cellInfo(layer, cursor.row, cursor.col) : null;
+  /** A square's flags and rate, or only its place when there is no layer. */
+  const infoAt = (row: number, col: number): CellInfo =>
+    layer ? cellInfo(layer, row, col) : { row, col, lat: g.lat0 + row * g.dlat, lon: g.lon0 + col * g.dlon, rate: null, testable: false, significant: false, reasons: [] };
+  const where = (c: CellInfo) => {
+    const country = countries.length ? countryAt(countries, c.lat, c.lon) : null;
+    return country ? `${countryName(country)} · ${latLon(c.lat, c.lon, lang)}` : latLon(c.lat, c.lon, lang);
+  };
+  const cursorInfo = cursor ? infoAt(cursor.row, cursor.col) : null;
   const describe = (c: CellInfo) =>
-    t('site.map.cursor', {
+    !layer
+      ? where(c)
+      : t('site.map.cursor', {
       place: latLon(c.lat, c.lon, lang),
       rate: c.rate === null ? '–' : `${fmtRate(c.rate, lang)} ${layer.meta.units}`,
       status: c.testable ? (c.significant ? t('site.map.status_stands_out') : t('site.map.status_tested')) : `${t('site.map.status_untestable')}${c.reasons.length ? ` (${c.reasons.map((r) => tOr(t, `site.map.flag_${r}`, r)).join('; ')})` : ''}`,
@@ -365,7 +428,7 @@ export function ScreeningMap({
             }
             if (e.pointerType === 'mouse') {
               const c = cellAt(px, py);
-              setHover(c ? { info: cellInfo(layer, c.row, c.col), px, py } : null);
+              setHover(c ? { info: infoAt(c.row, c.col), px, py } : null);
             }
           }}
           onPointerUp={(e) => {
@@ -378,7 +441,7 @@ export function ScreeningMap({
             const same = cursor && cursor.row === c.row && cursor.col === c.col;
             setCursor(c);
             if (e.pointerType === 'mouse' || same) onOpen(c.row, c.col);
-            else setHover({ info: cellInfo(layer, c.row, c.col), px: e.clientX - rect.left, py: e.clientY - rect.top });
+            else setHover({ info: infoAt(c.row, c.col), px: e.clientX - rect.left, py: e.clientY - rect.top });
           }}
           onPointerLeave={() => setHover(null)}
           onKeyDown={(e) => {
@@ -419,8 +482,8 @@ export function ScreeningMap({
             style={{ left: Math.min(hover.px + 14, Math.max(0, size.w - 270)), top: Math.max(4, hover.py - 70) }}
             data-testid="map-hover"
           >
-            <p className="font-medium tabular">{latLon(hover.info.lat, hover.info.lon, lang)}</p>
-            {hover.info.testable ? (
+            <p className="font-medium tabular">{where(hover.info)}</p>
+            {!layer ? null : hover.info.testable ? (
               <p className="tabular">
                 {hover.info.rate === null ? '–' : `${fmtRate(hover.info.rate, lang)} ${layer.meta.units} ${t('verdict.labels.rate_short')}`}
                 <span className="block text-muted">{hover.info.significant ? t('site.map.status_stands_out') : t('site.map.status_tested')}</span>
