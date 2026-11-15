@@ -5,7 +5,7 @@
 // format: the browser's tool_result blocks become function_result steps, and the model's function_call steps and
 // text come back as tool_use and text blocks. Instructions and tools are the same contract as for any model.
 import { ApiError, GoogleGenAI } from '@google/genai';
-import { LIMITS, SYSTEM_PROMPT, TOOLS } from '../src/copilot/contract';
+import { LIMITS, SYSTEM_PROMPT, TOOLS } from '../src/copilot/contract.js';
 
 export const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 

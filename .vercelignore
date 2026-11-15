@@ -9,6 +9,7 @@
 !/results
 !/tools
 !/vercel.json
+!/package.json
 
 # Only the current results build: the site never loads earlier builds (current.json lists them as "previous").
 /results/*

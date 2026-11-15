@@ -1,0 +1,6 @@
+{
+  "name": "casefile-earth",
+  "private": true,
+  "description": "Repository root. Only marks the Vercel function in api/ as an ES module, like the web/ code it imports; the site's own package is web/package.json.",
+  "type": "module"
+}

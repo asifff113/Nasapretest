@@ -7,8 +7,8 @@
 // Provider: Google Gemini when GEMINI_API_KEY is set (copilot-gemini.ts), else Claude when ANTHROPIC_API_KEY is set.
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import Anthropic from '@anthropic-ai/sdk';
-import { LIMITS, MODEL, SYSTEM_PROMPT, TOOLS } from '../src/copilot/contract';
-import { GEMINI_MODEL, geminiConfigured, geminiError, geminiTurn } from './copilot-gemini';
+import { LIMITS, MODEL, SYSTEM_PROMPT, TOOLS } from '../src/copilot/contract.js';
+import { GEMINI_MODEL, geminiConfigured, geminiError, geminiTurn } from './copilot-gemini.js';
 
 type Messages = Anthropic.Beta.Messages.BetaMessageParam[];
 
