@@ -925,8 +925,8 @@
      "bn": "স্যাটেলাইটের মাপ; মেঘে ঢাকা মাসগুলো দীর্ঘমেয়াদি গড় দিয়ে পূরণ করা।"
     },
     "cannot_answer": {
-     "en": "Not analysed in this release.",
-     "bn": "এই সংস্করণে বিশ্লেষণ করা হয়নি।"
+     "en": "Monthly, on a 0.5° grid, with cloudy months filled from the long-term average: it cannot show one field, one stand of forest or a single day. Exploration only, no verdict.",
+     "bn": "মাসিক, ০.৫° গ্রিডে, মেঘে ঢাকা মাসগুলো দীর্ঘমেয়াদি গড় দিয়ে পূরণ করা: এটি একটি মাঠ, এক টুকরো বন বা একটি দিন দেখাতে পারে না। শুধু অনুসন্ধান, কোনো রায় নেই।"
     }
    },
    "colormap": {

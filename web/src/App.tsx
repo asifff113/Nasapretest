@@ -9,6 +9,9 @@ import { PageSkeleton } from './components/LoadState';
 import { useView, type Screen } from './state/view';
 import { useT } from './i18n';
 import { Home } from './screens/Home';
+import { CopilotPanel } from './copilot/CopilotPanel';
+import { useCopilot } from './copilot/agent';
+import { IS_OFFLINE_BUILD } from './data/offline';
 
 // Screens load on demand, so the first view stays small (docs/01_ARCHITECTURE.md §8).
 const screens: Record<Exclude<Screen, 'home'>, ComponentType> = {
@@ -27,6 +30,7 @@ const screens: Record<Exclude<Screen, 'home'>, ComponentType> = {
 
 export function App() {
   const view = useView((s) => s.view);
+  const copilotOpen = useCopilot((s) => s.open) && !IS_OFFLINE_BUILD;
   const t = useT();
   const main = useRef<HTMLElement>(null);
   const first = useRef(true);
@@ -60,7 +64,7 @@ export function App() {
       <Banners />
       <Header />
       <ConfidenceSpine />
-      <main id="main" ref={main} tabIndex={-1} className="flex-1 outline-none" data-screen={view.screen}>
+      <main id="main" ref={main} tabIndex={-1} className={copilotOpen ? 'flex-1 outline-none sm:mr-[420px]' : 'flex-1 outline-none'} data-screen={view.screen}>
         <ErrorBoundary key={view.screen}>
           <Suspense fallback={<PageSkeleton />}>
             <ScreenComp />
@@ -68,6 +72,7 @@ export function App() {
         </ErrorBoundary>
       </main>
       <Footer />
+      {IS_OFFLINE_BUILD ? null : <CopilotPanel />}
     </>
   );
 }

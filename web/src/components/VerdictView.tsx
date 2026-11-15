@@ -1,7 +1,8 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
 // A verdict on screen: the chart (left, flexible) and the verdict card (right, 420 px) on desktop; chart then card
 // on tablets and phones (docs/04_UI.md §3). Sets the confidence spine while it is on screen.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useCopilot } from '../copilot/agent';
 import { CalendarDays } from 'lucide-react';
 import { pick, tOr, useT } from '../i18n';
 import type { BreakItem, Catalog, SeriesFile, Verdict } from '../data/types';
@@ -70,6 +71,14 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
   const lang = useLang();
   const tokens = useTokens();
   const [monthly, setMonthly] = useState(false);
+  // The copilot may ask for this verdict's challenge panel (show_view with challenge: true): the panel is always on
+  // screen, so the request scrolls to it and is then cleared.
+  const requested = useCopilot((s) => s.challengeKey === `${verdict.region.id}|${verdict.variable.id}|${verdict.season}`);
+  useEffect(() => {
+    if (!requested) return;
+    document.getElementById('challenge-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    useCopilot.getState().clearChallenge();
+  }, [requested]);
   const info = statusInfo(t, verdict.status, verdict.grade, verdict.reason, verdict.family);
   const variable = catalog?.variables.find((v) => v.id === verdict.variable.id);
   const varName = variable ? pick(variable.name, lang) : verdict.variable.id;
@@ -126,8 +135,14 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
       </Card>
       <div className="flex flex-col gap-4">
         <VerdictCard verdict={verdict} path={path} about={about} />
-        <ChallengePanel result={verdict} />
-        {verdict.sensitivity ? <SensitivityPanel path={verdict.sensitivity} /> : null}
+        <div id="challenge-panel" className="scroll-mt-28">
+          <ChallengePanel result={verdict} />
+        </div>
+        {verdict.sensitivity ? (
+          <div id="sensitivity-panel" className="scroll-mt-28">
+            <SensitivityPanel path={verdict.sensitivity} />
+          </div>
+        ) : null}
       </div>
     </div>
   );
