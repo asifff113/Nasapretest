@@ -19,6 +19,7 @@ import { Disclosure } from '../ui/common/collapsible';
 import { Switch } from '../ui/common/switch';
 import { CaseFolder, Section, SentenceList } from './CaseFolder';
 import { ChecksList, OverturnList } from './ChecksList';
+import { ChallengePanel } from './ChallengePanel';
 import { ExpertPanel } from './ExpertPanel';
 import { ProvenancePanel } from './ProvenancePanel';
 import { FamilyBadge, StatusBadge, statusInfo } from './StatusBadge';
@@ -211,6 +212,7 @@ export function CompareView({
           <ChartLegend solid={solid} hasBand={Boolean(c.chart?.band)} hasBreaks={c.robustness.breaks.length > 0} colour={toneColour(tokens, info.tone)} />
         </Card>
         <SensitivityBlock c={c} on={sensitivityOn} onToggle={onSensitivity} nameA={nameA} nameB={nameB} />
+        <ChallengePanel result={c} />
       </div>
       <CaseFolder caseId={c.id} tabLabel={t('site.verdict.case')} id="compare-card" testId="compare-card" tour="verdict-card" live className="paper text-ink">
         <div className="px-5 pb-5 pt-5 sm:px-6">

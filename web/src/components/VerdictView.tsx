@@ -19,6 +19,7 @@ import { int } from '../i18n/format';
 import { statusInfo } from './StatusBadge';
 import { VerdictCard } from './VerdictCard';
 import { SensitivityPanel } from './SensitivityPanel';
+import { ChallengePanel } from './ChallengePanel';
 import { WithData } from './LoadState';
 
 export function chartText(t: ReturnType<typeof useT>, lang: 'en' | 'bn') {
@@ -123,6 +124,7 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
       </Card>
       <div className="flex flex-col gap-4">
         <VerdictCard verdict={verdict} path={path} about={about} />
+        <ChallengePanel result={verdict} />
         {verdict.sensitivity ? <SensitivityPanel path={verdict.sensitivity} /> : null}
       </div>
     </div>
