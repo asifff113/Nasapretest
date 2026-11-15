@@ -1017,7 +1017,8 @@
           "map": "বিশ্ব মানচিত্র",
           "trends": "প্রবণতা",
           "methods": "আমরা কীভাবে জানি"
-        }
+        },
+        "unavailable_dev": "লোকালি চালালে: web/.env.local ফাইলে GEMINI_API_KEY=… লিখুন, তারপর npm run dev আবার চালু করুন।"
       }
     },
     "gx": {

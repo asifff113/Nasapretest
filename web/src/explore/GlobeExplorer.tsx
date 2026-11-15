@@ -729,7 +729,9 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
   }
 
   const showFlat = flatView;
-  const showIntro = Boolean(intro) && !panelOpen && !yearsOn && !activeLayer;
+  // The intro stays away once a parameter is chosen, also while its map is still loading (switching parameters
+  // briefly has no layer; tying this to the loaded layer made the intro flash in between).
+  const showIntro = Boolean(intro) && !panelOpen && !yearsOn && !variable;
 
   const viewSwitch = (
     <SegmentedControl

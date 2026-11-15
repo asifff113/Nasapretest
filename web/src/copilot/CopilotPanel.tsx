@@ -28,7 +28,9 @@ export function CopilotLauncher() {
   useEffect(() => {
     if (available === null) checkAvailable().then((ok) => useCopilot.setState({ available: ok }));
   }, [available]);
-  if (open || available !== true) return null;
+  // Deployed: shown once the relay says it is configured. Running locally (npm run dev): always shown, and the panel
+  // says when no key is set, so the copilot can be found and tried.
+  if (open || (available !== true && !import.meta.env.DEV)) return null;
   return (
     <button
       type="button"
@@ -144,6 +146,7 @@ export function CopilotPanel() {
         {available === false ? (
           <div className="mt-4 rounded-md border border-line p-3 text-[14px]" data-testid="copilot-unavailable">
             <p>{t('site.copilot.panel.unavailable')}</p>
+            {import.meta.env.DEV ? <p className="mt-2 font-mono text-[12px] text-muted">{t('site.copilot.panel.unavailable_dev')}</p> : null}
             <a href={href({ screen: 'map' })} className="mt-2 inline-block">{t('site.copilot.panel.to_map')}</a>
           </div>
         ) : null}

@@ -1017,7 +1017,8 @@
           "map": "World map",
           "trends": "Trends",
           "methods": "How we know"
-        }
+        },
+        "unavailable_dev": "Running locally: put GEMINI_API_KEY=… in web/.env.local, then restart npm run dev."
       }
     },
     "gx": {
