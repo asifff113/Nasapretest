@@ -9,9 +9,8 @@ import { PageSkeleton } from './components/LoadState';
 import { useView, type Screen } from './state/view';
 import { useT } from './i18n';
 import { Home } from './screens/Home';
-import { CopilotPanel } from './copilot/CopilotPanel';
+import { COPILOT_HOSTED, CopilotLauncher, CopilotPanel } from './copilot/CopilotPanel';
 import { useCopilot } from './copilot/agent';
-import { IS_OFFLINE_BUILD } from './data/offline';
 
 // Screens load on demand, so the first view stays small (docs/01_ARCHITECTURE.md §8).
 const screens: Record<Exclude<Screen, 'home'>, ComponentType> = {
@@ -30,7 +29,7 @@ const screens: Record<Exclude<Screen, 'home'>, ComponentType> = {
 
 export function App() {
   const view = useView((s) => s.view);
-  const copilotOpen = useCopilot((s) => s.open) && !IS_OFFLINE_BUILD;
+  const copilotOpen = useCopilot((s) => s.open) && COPILOT_HOSTED;
   const t = useT();
   const main = useRef<HTMLElement>(null);
   const first = useRef(true);
@@ -72,7 +71,12 @@ export function App() {
         </ErrorBoundary>
       </main>
       <Footer />
-      {IS_OFFLINE_BUILD ? null : <CopilotPanel />}
+      {COPILOT_HOSTED ? (
+        <>
+          <CopilotPanel />
+          <CopilotLauncher />
+        </>
+      ) : null}
     </>
   );
 }

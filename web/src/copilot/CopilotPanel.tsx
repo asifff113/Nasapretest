@@ -8,6 +8,7 @@ import { MessagesSquare, RotateCcw, Send, X } from 'lucide-react';
 import { useT } from '../i18n';
 import { useLang } from '../state/prefs';
 import { href, type View } from '../state/view';
+import { useSpineStore } from '../state/spine';
 import { Button } from '../ui/common/button';
 import { cn } from '../ui/common/utils';
 import { ask, checkAvailable, useCopilot, type Exchange } from './agent';
@@ -15,14 +16,36 @@ import { ask, checkAvailable, useCopilot, type Exchange } from './agent';
 const ERROR_KEYS = new Set(['refusal', 'rate_limited', 'model_busy', 'not_configured']);
 const VIEW_KEYS = new Set(['place', 'compare', 'map', 'trends', 'methods']);
 
-export function CopilotButton({ className }: { className?: string }) {
+export { COPILOT_HOSTED } from './hosted';
+
+/** The floating button that opens the copilot, on every page (bottom right). It appears once the relay says it is
+ * configured, hides while the panel is open, and sits above the bars fixed to the bottom of a phone screen (the
+ * step bar, through --bottombar, and the current-claim bar when a result is on screen). */
+export function CopilotLauncher() {
   const t = useT();
-  const { open, setOpen } = useCopilot();
+  const { open, setOpen, available } = useCopilot();
+  const claim = useSpineStore((s) => s.claim !== null);
+  useEffect(() => {
+    if (available === null) checkAvailable().then((ok) => useCopilot.setState({ available: ok }));
+  }, [available]);
+  if (open || available !== true) return null;
   return (
-    <Button variant={open ? 'primary' : 'ghost'} size="sm" className={cn('min-h-11 gap-1.5 px-3', className)} onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="copilot-panel" data-testid="copilot-open">
-      <MessagesSquare aria-hidden="true" />
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      aria-expanded={false}
+      title={t('site.copilot.panel.open')}
+      data-testid="copilot-open"
+      className={cn(
+        'fixed right-4 z-40 inline-flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-accent px-3.5 text-[15px] font-semibold text-ocean shadow-lift sm:right-6 sm:px-5 lg:bottom-6',
+        'transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-link focus-visible:ring-offset-2 focus-visible:ring-offset-surface motion-reduce:transition-none motion-reduce:hover:translate-y-0',
+        claim ? 'bottom-[calc(var(--bottombar,0px)+56px)]' : 'bottom-[calc(var(--bottombar,0px)+16px)]',
+      )}
+    >
+      <MessagesSquare className="size-5" aria-hidden="true" />
       <span className="hidden sm:inline">{t('site.copilot.panel.open')}</span>
-    </Button>
+      <span className="sr-only sm:hidden">{t('site.copilot.panel.open')}</span>
+    </button>
   );
 }
 

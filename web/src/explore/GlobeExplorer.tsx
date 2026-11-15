@@ -29,6 +29,7 @@ import type { CountryFeature } from '../data/places';
 import { MissingPanel } from '../components/LoadState';
 import { SegmentedControl } from '../ui/common/toggle-group';
 import { cn } from '../ui/common/utils';
+import { COPILOT_HOSTED } from '../copilot/hosted';
 
 /** The parts of the globe.gl instance this screen uses (the library's own types take untyped accessors). */
 interface GlobeLike {
@@ -1059,7 +1060,8 @@ export function GlobeExplorer({ mode, intro }: { mode: 'home' | 'map'; intro?: R
                   <Legend layer={activeLayer} colormap={variable?.colormap?.trend} opacity={opacity} onOpacity={setOpacity} columns={columns} />
                 ) : null}
               </div>
-              <div className="absolute bottom-3 right-3 z-10 flex flex-col gap-1.5 sm:bottom-4 sm:right-4">
+              {/* Where the copilot's floating button exists (bottom right of the screen), the zoom column sits above it. */}
+              <div className={cn('absolute right-3 z-10 flex flex-col gap-1.5 sm:right-4', COPILOT_HOSTED ? 'bottom-20 lg:bottom-24' : 'bottom-3 sm:bottom-4')}>
                 <button type="button" onClick={() => zoom(0.6)} aria-label={t('site.map.zoom_in')} className="grid size-10 place-items-center rounded-[6px] border border-line bg-surface/85 backdrop-blur-md hover:border-accent">
                   <Plus className="size-5" aria-hidden="true" />
                 </button>
