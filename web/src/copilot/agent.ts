@@ -109,6 +109,24 @@ async function relay(messages: ApiMessage[], state: Record<string, unknown> | nu
   return { content: body.content, stop_reason: body.stop_reason ?? null, state: body.state ?? null };
 }
 
+/** Every tool result already in the conversation (earlier turns), parsed back from its tool_result block. A follow-up
+ * answer may repeat a number a tool returned earlier in the same conversation; it is still a number from the files. */
+export function priorToolResults(messages: ApiMessage[]): unknown[] {
+  const out: unknown[] = [];
+  for (const m of messages) {
+    if (m.role !== 'user' || typeof m.content === 'string') continue;
+    for (const b of m.content) {
+      if (b.type !== 'tool_result') continue;
+      try {
+        out.push(JSON.parse(String(b.content ?? '')));
+      } catch {
+        out.push(String(b.content ?? ''));
+      }
+    }
+  }
+  return out;
+}
+
 /** A summary made only of file content, used when a written answer fails the checks. */
 function verifiedSummary(outcomes: Outcome[], lang: Lang): string {
   const main = [...outcomes].reverse().find((o) => o.evidence && o.result.evidence_class);
@@ -130,6 +148,7 @@ export async function ask(question: string, lang: Lang): Promise<void> {
   if (st.busy || !question.trim()) return;
   const exchanges = [...st.exchanges, { question }];
   const messages: ApiMessage[] = [...st.messages, { role: 'user', content: question }];
+  const earlier = priorToolResults(st.messages);
   let state = st.state;
   useCopilot.setState({ busy: true, exchanges });
   const outcomes: Outcome[] = [];
@@ -160,7 +179,7 @@ export async function ask(question: string, lang: Lang): Promise<void> {
       if (res.stop_reason === 'refusal') throw new Error('refusal');
       if (res.stop_reason === 'max_tokens') throw new Error('too_long');
       const written = res.content.filter((x) => x.type === 'text').map((x) => String(x.text)).join('\n').trim();
-      const check = checkAnswer(written, outcomes.map((o) => o.result), question);
+      const check = checkAnswer(written, [...earlier, ...outcomes.map((o) => o.result)], question);
       const reply: Reply = {
         text: check.ok && written ? written : verifiedSummary(outcomes, lang),
         checked: check.ok,

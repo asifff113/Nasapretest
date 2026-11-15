@@ -43,12 +43,18 @@ export const GEMINI_TOOLS = TOOLS.map((t) => ({
   parameters: geminiParameters(t.input_schema as unknown as { properties: Record<string, Record<string, unknown>>; required: readonly string[] }),
 }));
 
-/** The new input of this turn: the user's text, or the results of the tools the model asked for. */
-export function turnInput(last: Turn): string | Record<string, unknown>[] {
+/** The new input of this turn: the user's text, or the results of the tools the model asked for. Gemini requires each
+ * function_result to name its function; the browser's tool_result blocks carry only the call id, so `names` maps each
+ * call id to the tool the model called (from the previous assistant turn). */
+export function turnInput(last: Turn, names?: Map<string, string>): string | Record<string, unknown>[] {
   if (typeof last.content === 'string') return last.content;
   const steps: Record<string, unknown>[] = [];
   for (const b of last.content) {
-    if (b.type === 'tool_result') steps.push({ type: 'function_result', call_id: String(b.tool_use_id), result: String(b.content ?? '') });
+    if (b.type === 'tool_result') {
+      const id = String(b.tool_use_id);
+      const name = names?.get(id);
+      steps.push({ type: 'function_result', call_id: id, ...(name ? { name } : {}), result: String(b.content ?? '') });
+    }
     else if (b.type === 'text') steps.push({ type: 'user_input', content: [{ type: 'text', text: String(b.text) }] });
   }
   return steps;
@@ -68,6 +74,16 @@ export function toBlocks(steps: { type: string; [k: string]: unknown }[], status
   return { content, stop_reason };
 }
 
+/** Every tool call in the conversation's assistant turns: call id → tool name. */
+export function callNames(messages: Turn[]): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const m of messages) {
+    if (m.role !== 'assistant' || typeof m.content === 'string') continue;
+    for (const b of m.content) if (b.type === 'tool_use' && b.id && b.name) out.set(String(b.id), String(b.name));
+  }
+  return out;
+}
+
 let client: GoogleGenAI | null = null;
 
 export function geminiConfigured(): boolean {
@@ -77,8 +93,9 @@ export function geminiConfigured(): boolean {
 export async function geminiTurn(messages: Turn[], state: { previous_interaction_id?: unknown } | undefined): Promise<RelayReply> {
   client ??= new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   const previous = typeof state?.previous_interaction_id === 'string' ? state.previous_interaction_id : undefined;
-  // A new conversation sends its whole text; a continued one sends only the latest turn.
-  const input = previous ? turnInput(messages[messages.length - 1]!) : messages.length === 1 ? turnInput(messages[0]!) : null;
+  // A new conversation sends its whole text; a continued one sends only the latest turn, with each tool result named
+  // after the call it answers.
+  const input = previous ? turnInput(messages[messages.length - 1]!, callNames(messages)) : messages.length === 1 ? turnInput(messages[0]!) : null;
   if (input === null) throw new Error('lost_state');
   const interaction = await client.interactions.create({
     model: GEMINI_MODEL,
@@ -93,10 +110,13 @@ export async function geminiTurn(messages: Turn[], state: { previous_interaction
 }
 
 export function geminiError(err: unknown): { status: number; error: string } {
-  if (err instanceof ApiError) {
-    if (err.status === 429) return { status: 429, error: 'model_busy' };
-    if (err.status === 401 || err.status === 403) return { status: 503, error: 'not_configured' };
-    if (err.status === 400) return { status: 400, error: 'model_rejected' };
+  // The models client throws ApiError; the Interactions client throws its own error classes (BadRequestError, …),
+  // which are not exported: both carry the HTTP status.
+  const status = err instanceof ApiError ? err.status : typeof (err as { status?: unknown })?.status === 'number' ? (err as { status: number }).status : null;
+  if (status !== null) {
+    if (status === 429) return { status: 429, error: 'model_busy' };
+    if (status === 401 || status === 403) return { status: 503, error: 'not_configured' };
+    if (status === 400) return { status: 400, error: 'model_rejected' };
     return { status: 502, error: 'model_error' };
   }
   if (err instanceof Error && err.message === 'lost_state') return { status: 409, error: 'lost_state' };

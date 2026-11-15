@@ -83,7 +83,10 @@ export function CopilotPanel() {
   useEffect(() => {
     if (open && available === null) checkAvailable().then((ok) => useCopilot.setState({ available: ok }));
   }, [open, available]);
-  useEffect(() => end.current?.scrollIntoView({ block: 'end' }), [exchanges.length, busy]);
+  // A block body: some browsers return a Promise from scrollIntoView, and an effect may only return a clean-up.
+  useEffect(() => {
+    end.current?.scrollIntoView({ block: 'end' });
+  }, [exchanges.length, busy]);
 
   if (!open) return null;
   const submit = (q: string) => {

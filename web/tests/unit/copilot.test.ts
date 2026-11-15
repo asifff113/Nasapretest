@@ -160,11 +160,48 @@ describe('the Gemini translation keeps one format in the browser', async () => {
     expect(turnInput({ role: 'user', content: 'Is Kenya warming?' })).toBe('Is Kenya warming?');
     expect(turnInput({ role: 'user', content: [{ type: 'tool_result', tool_use_id: 'c1', content: '{"a":1}' }] })).toEqual([{ type: 'function_result', call_id: 'c1', result: '{"a":1}' }]);
   });
+  it('a continued turn names each tool result after the call it answers (Gemini requires the name)', async () => {
+    const { callNames } = await import('../../server/copilot-gemini');
+    const names = callNames([
+      { role: 'user', content: 'Has rain changed in Bangladesh?' },
+      { role: 'assistant', content: [{ type: 'tool_use', id: 'c1', name: 'resolve_place', input: {} }, { type: 'tool_use', id: 'c2', name: 'get_capabilities', input: {} }] },
+    ]);
+    expect(turnInput({ role: 'user', content: [{ type: 'tool_result', tool_use_id: 'c2', content: 'x' }, { type: 'tool_result', tool_use_id: 'c1', content: 'y' }] }, names)).toEqual([
+      { type: 'function_result', call_id: 'c2', name: 'get_capabilities', result: 'x' },
+      { type: 'function_result', call_id: 'c1', name: 'resolve_place', result: 'y' },
+    ]);
+  });
+  it('errors that carry an HTTP status map to the relay codes', async () => {
+    const { geminiError } = await import('../../server/copilot-gemini');
+    expect(geminiError(Object.assign(new Error('bad'), { status: 400 }))).toEqual({ status: 400, error: 'model_rejected' });
+    expect(geminiError(Object.assign(new Error('busy'), { status: 429 }))).toEqual({ status: 429, error: 'model_busy' });
+    expect(geminiError(Object.assign(new Error('key'), { status: 403 }))).toEqual({ status: 503, error: 'not_configured' });
+    expect(geminiError(new Error('network'))).toEqual({ status: 502, error: 'model_unreachable' });
+  });
   it('function calls come back as tool_use; text alone ends the turn', () => {
     const calls = toBlocks([{ type: 'thought', signature: 's' }, { type: 'function_call', id: 'c1', name: 'resolve_place', arguments: { name: 'Kenya' } }], 'requires_action');
     expect(calls).toEqual({ content: [{ type: 'tool_use', id: 'c1', name: 'resolve_place', input: { name: 'Kenya' } }], stop_reason: 'tool_use' });
     const done = toBlocks([{ type: 'function_result', call_id: 'c1', result: 'x' }, { type: 'model_output', content: [{ type: 'text', text: 'Exploratory finding.' }] }], 'completed');
     expect(done).toEqual({ content: [{ type: 'text', text: 'Exploratory finding.' }], stop_reason: 'end_turn' });
     expect(toBlocks([], 'incomplete').stop_reason).toBe('max_tokens');
+  });
+});
+
+describe('a follow-up answer is checked against every tool result of the conversation', async () => {
+  const { priorToolResults } = await import('../../src/copilot/agent');
+  const { checkAnswer } = await import('../../src/copilot/validate');
+  const earlier = [
+    { role: 'user' as const, content: 'Has rain changed in Bangladesh?' },
+    { role: 'assistant' as const, content: [{ type: 'tool_use', id: 'c1', name: 'get_evidence', input: {} }] },
+    { role: 'user' as const, content: [{ type: 'tool_result', tool_use_id: 'c1', content: JSON.stringify({ adjusted_p: '0.079', q: 0.041 }) }] },
+    { role: 'assistant' as const, content: [{ type: 'text', text: 'Pre-registered result: cannot tell yet.' }] },
+  ];
+  it('collects earlier tool results', () => {
+    expect(priorToolResults(earlier)).toEqual([{ adjusted_p: '0.079', q: 0.041 }]);
+  });
+  it('accepts numbers a tool returned earlier, and still refuses invented ones', () => {
+    const pool = priorToolResults(earlier);
+    expect(checkAnswer('Exploration gives q = 0.041; the registered test gives adjusted p = 0.079.', pool, 'Why do they differ?').ok).toBe(true);
+    expect(checkAnswer('Exploration gives q = 0.042.', pool, 'Why do they differ?').ok).toBe(false);
   });
 });
