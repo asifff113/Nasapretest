@@ -2,12 +2,14 @@
 // Past against present for one place, from its exploration file: every record's tested trend and its first-against-
 // last ten years (the dashboard), and one record in depth (then and now). Every number is the file's own: the
 // engine's trend statistics, the pipeline's anomalies, decade means and 10-year means. The screen places them and
-// never computes a mean, a difference or a test. Exploration only: no verdict words.
+// never computes a mean, a difference or a test. Exploration only: no verdict words, except the registered answer from a
+// tested place's line-up, shown beside a trend under its own "registered" badge (components/AnswerKind).
 import type { ReactNode } from "react";
 import { ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { pick, useT } from "../i18n";
 import { int, num, p as pText, rate } from "../i18n/format";
-import type { Catalog, CatalogVariable } from "../data/types";
+import type { Catalog, CatalogVariable, LineupItem } from "../data/types";
+import { AnswerKindBadge, RegisteredAnswer, type AnswerKind } from "../components/AnswerKind";
 import type { ExploreTrend, ExploreVariable } from "../data/explore";
 import { useLang } from "../state/prefs";
 import { ClimateStripes } from "../charts/ClimateStripes";
@@ -35,12 +37,15 @@ function Panel({
   children,
   testId,
   className,
+  kind,
 }: {
   title?: string;
   lead?: string;
   children: ReactNode;
   testId?: string;
   className?: string;
+  /** Which kind of answer the panel shows (components/AnswerKind). */
+  kind?: AnswerKind;
 }) {
   return (
     <div
@@ -50,10 +55,15 @@ function Panel({
       )}
       data-testid={testId}
     >
-      {title ? (
-        <h3 className="m-0 font-display text-[22px] font-normal leading-tight">
-          {title}
-        </h3>
+      {title || kind ? (
+        <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5">
+          {title ? (
+            <h3 className="m-0 font-display text-[22px] font-normal leading-tight">
+              {title}
+            </h3>
+          ) : null}
+          {kind ? <AnswerKindBadge kind={kind} /> : null}
+        </div>
       ) : null}
       {lead ? (
         <p className="m-0 max-w-[75ch] text-[14px] leading-relaxed text-muted">
@@ -140,11 +150,16 @@ export function ChangeDashboard({
   ids,
   catalog,
   onPick,
+  registered,
+  regionId,
 }: {
   variables: Record<string, ExploreVariable>;
   ids: string[];
   catalog: Catalog | undefined;
   onPick: (id: string) => void;
+  /** The place's registered main-season tests by record (tested places only). */
+  registered?: Record<string, LineupItem>;
+  regionId?: string;
 }) {
   const t = useT();
   const lang = useLang();
@@ -202,6 +217,13 @@ export function ChangeDashboard({
                     units={t("site.past.per_decade_units", { units: v.units })}
                     compact
                   />
+                  {registered?.[id] && regionId ? (
+                    <RegisteredAnswer
+                      item={registered[id]!}
+                      standsOut={v.trend?.testable ? v.trend.standsOut : null}
+                      link={{ screen: "place", region: regionId, variable: id, season: registered[id]!.season }}
+                    />
+                  ) : null}
                 </td>
                 <td className="py-3 pr-3 tabular">
                   {d && d.change !== null ? (
@@ -257,6 +279,8 @@ export function ThenAndNow({
   catalog,
   temp,
   rain,
+  registered,
+  regionId,
 }: {
   v: ExploreVariable;
   id: string;
@@ -264,6 +288,9 @@ export function ThenAndNow({
   catalog: Catalog | undefined;
   temp?: ExploreVariable;
   rain?: ExploreVariable;
+  /** This record's registered main-season test at this place, if there is one. */
+  registered?: LineupItem;
+  regionId?: string;
 }) {
   const t = useT();
   const lang = useLang();
@@ -288,6 +315,7 @@ export function ThenAndNow({
           title={t("site.past.values_title")}
           lead={t("site.past.values_lead")}
           testId="then-values"
+          kind="descriptive"
         >
           <YearsChart
             series={[
@@ -318,11 +346,19 @@ export function ThenAndNow({
           title={t("site.past.trend_title")}
           lead={t("site.past.trend_method")}
           testId="then-trend"
+          kind="exploratory"
         >
           <TrendLine
             trend={v.trend}
             units={t("site.past.per_decade_units", { units: v.units })}
           />
+          {registered && regionId ? (
+            <RegisteredAnswer
+              item={registered}
+              standsOut={v.trend.testable ? v.trend.standsOut : null}
+              link={{ screen: "place", region: regionId, variable: id, season: registered.season }}
+            />
+          ) : null}
           {d && d.change !== null ? (
             <p className="m-0 text-[14px] leading-relaxed">
               {t("site.past.decade_sentence", {
@@ -356,6 +392,7 @@ export function ThenAndNow({
           })}
           lead={t("site.past.anomaly_lead")}
           testId="then-anomaly"
+          kind="descriptive"
         >
           <AnomalyBars
             years={v.years}
@@ -378,6 +415,7 @@ export function ThenAndNow({
             })}
             lead={t("site.past.heatmap_lead")}
             testId="then-heatmap"
+            kind="descriptive"
           >
             <MonthHeatmap
               years={v.years}
@@ -399,6 +437,7 @@ export function ThenAndNow({
               })}
               lead={t("site.past.dumbbell_lead")}
               testId="then-dumbbell"
+              kind="descriptive"
             >
               <DecadeDumbbell
                 rows={months.map((m, i) => ({
@@ -419,6 +458,7 @@ export function ThenAndNow({
               title={t("site.past.months_title")}
               lead={t("site.past.months_lead")}
               testId="then-months"
+              kind="exploratory"
             >
               {v.monthTrends.some((m) => m.testable) ? (
                 <MonthTrendBars
@@ -451,6 +491,7 @@ export function ThenAndNow({
           title={t("site.past.climograph_title")}
           lead={t("site.past.climograph_lead")}
           testId="then-climograph"
+          kind="descriptive"
         >
           <ClimographThenNow
             months={months}

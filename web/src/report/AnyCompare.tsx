@@ -3,7 +3,8 @@
 // latest yearly values, the year-by-year chart and stripes of both, and the year's rhythm of both. Nothing is
 // subtracted and no test is run: a tested answer exists only for the pre-registered pairs (the "Tested pairs"
 // mode of the same screen). URL: #/compare?a=<region>&b=<region>&variable=<id>.
-import { ArrowLeftRight, Compass } from 'lucide-react';
+import { ArrowLeftRight } from 'lucide-react';
+import { AnswerKindBadge } from '../components/AnswerKind';
 import { pick, useT } from '../i18n';
 import { useCatalog } from '../data/hooks';
 import { useExploreIndex, useExploreRegion, type ExploreIndex } from '../data/explore';
@@ -13,7 +14,6 @@ import { Loading, WithData } from '../components/LoadState';
 import { Body } from '../components/Page';
 import { Hero } from '../components/atlas/Hero';
 import { LocatorGlobe } from '../components/atlas/LocatorGlobe';
-import { Badge } from '../ui/common/badge';
 import { SegmentedControl } from '../ui/common/toggle-group';
 import { cn } from '../ui/common/utils';
 import { CompareGlance, RegionSelect, Rhythm, YearByYear } from './ReportBody';
@@ -132,10 +132,7 @@ export function AnyCompareScreen() {
           {index.status === 'loading' ? <Loading /> : null}
           {index.data ? <Pickers index={index.data} /> : null}
           <div>
-            <Badge tone="exploration">
-              <Compass aria-hidden="true" />
-              {t('family.exploration')}
-            </Badge>
+            <AnswerKindBadge kind="exploratory" />
           </div>
           {!view.a || !view.b ? (
             <p className="m-0 rounded-[6px] border border-dashed border-line-strong p-4 text-[14px] text-muted">{t('site.any.empty')}</p>

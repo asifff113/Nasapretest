@@ -75,6 +75,27 @@
       "undated_breaks": "The check above covers only data changes with a known date. This record also has gradual data changes with no single date, so they cannot be checked year by year, and part of this trend could come from them:",
       "undated_jump": "The jump around {year} has not been checked against these gradual data changes."
     },
+    "kind": {
+      "registered": {
+        "name": "Registered test",
+        "desc": "Tested with rules we fixed and signed before looking at any trend. Only these answers can get a verdict word."
+      },
+      "exploratory": {
+        "name": "Exploration",
+        "desc": "The same trend test, run on a place or record we did not register in advance. It shows what stands out; it gives no verdict."
+      },
+      "descriptive": {
+        "name": "Values only",
+        "desc": "The data as recorded: yearly values, averages and differences. No test is run."
+      },
+      "unavailable": {
+        "name": "Not available",
+        "desc": "This release has no data or test for this."
+      },
+      "explored_only": "Explored only, no registered test",
+      "disagree": "The two answers can differ: they correct for different sets of tests and use different cut-offs. Only the registered test gives a verdict.",
+      "see_registered": "Open the registered test"
+    },
     "chart": {
       "legend": "Chart key",
       "yearly_values": "One value per year",

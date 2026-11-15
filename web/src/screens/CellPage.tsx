@@ -3,7 +3,8 @@
 // range, p and q. The status is always "Exploration": no verdict words, no grade, no trend line.
 // The 5 × 5 neighbourhood used for its memory check is outlined on the mini-map.
 import { useEffect, useMemo, useRef } from 'react';
-import { ArrowLeft, Compass } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import { AnswerKindBadge } from '../components/AnswerKind';
 import { pick, tOr, useT } from '../i18n';
 import { int, p as fmtP, rate as fmtRate } from '../i18n/format';
 import { loadCellSeries, loadMapLayer, type CellSeries, type MapLayer } from '../data/results';
@@ -20,7 +21,6 @@ import { BadLinkNotice, Loading, WithData } from '../components/LoadState';
 import { Body } from '../components/Page';
 import { Hero } from '../components/atlas/Hero';
 import { LocatorGlobe } from '../components/atlas/LocatorGlobe';
-import { Badge } from '../ui/common/badge';
 import { Card } from '../ui/common/card';
 import { MissingPanel } from '../components/LoadState';
 
@@ -164,10 +164,7 @@ export default function CellPage() {
         }
       >
         <div className="flex flex-wrap items-center gap-3">
-          <Badge tone="exploration" data-testid="cell-status">
-            <Compass aria-hidden="true" />
-            {t('family.exploration')}
-          </Badge>
+          <AnswerKindBadge kind="exploratory" testId="cell-status" />
           <p className="m-0 text-[16px] text-muted">{t('cell.exploration')}</p>
         </div>
       </Hero>

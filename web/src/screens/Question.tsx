@@ -59,6 +59,11 @@ function QuestionCard({ q, n, catalog, selected }: { q: CatalogQuestion; n: numb
   const t = useT();
   const first = catalog.variables.find((v) => v.id === (q.shortlist[0]?.variable ?? q.also_deferred?.[0]));
   const later = q.flow === 'none';
+  // A question with no registered test can still have exploration data for some of its records.
+  const explored = later && (q.also_deferred ?? []).some((id) => {
+    const v = catalog.variables.find((x) => x.id === id);
+    return v !== undefined && hasData(v);
+  });
   return (
     <a
       href={href({ screen: 'question', question: q.id })}
@@ -81,7 +86,7 @@ function QuestionCard({ q, n, catalog, selected }: { q: CatalogQuestion; n: numb
             selected ? 'border-accent bg-accent text-ocean' : 'border-accent/40 bg-accent/10 text-accent-ink',
           )}
         >
-          {later ? <Lock className="size-5" aria-hidden="true" /> : <GroupIcon group={first?.group} className="size-5" />}
+          {later && !explored ? <Lock className="size-5" aria-hidden="true" /> : <GroupIcon group={first?.group} className="size-5" />}
         </span>
         <span className="font-mono text-[12px] tracking-[0.12em] text-muted" aria-hidden="true">
           {int(n, lang).padStart(2, int(0, lang))}
@@ -89,7 +94,7 @@ function QuestionCard({ q, n, catalog, selected }: { q: CatalogQuestion; n: numb
       </span>
       <span className="mt-4 block font-display text-[25px] leading-[1.12]">{pick(q.question, lang)}</span>
       <span className="mt-auto flex items-center justify-between gap-3 pt-4 text-muted">
-        <span className="text-sm">{t(`site.question.flow_${q.flow}`)}</span>
+        <span className="text-sm" data-testid="question-flow">{explored ? t('site.kind.explored_only') : t(`site.question.flow_${q.flow}`)}</span>
         <FlowGlyph flow={q.flow} />
       </span>
     </a>

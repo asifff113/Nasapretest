@@ -12,6 +12,7 @@ import { href, useView } from '../state/view';
 import { AnyCompareScreen, CompareModes } from '../report/AnyCompare';
 import { BadLinkNotice, WithData } from '../components/LoadState';
 import { Body, StepBar, StepHeading, goToStep, useStepObserver } from '../components/Page';
+import { AnswerKindBadge } from '../components/AnswerKind';
 import { Hero } from '../components/atlas/Hero';
 import { LocatorGlobe, type LocatorMark } from '../components/atlas/LocatorGlobe';
 import { CompareView } from '../components/CompareView';
@@ -209,7 +210,9 @@ function TestedCompareScreen() {
       </section>
       {pair ? (
         <section id="step-compare" className="mt-16 scroll-mt-28">
-          <StepHeading n={2} title={t('site.compare.step_result_title')} />
+          <StepHeading n={2} title={t('site.compare.step_result_title')}>
+            <AnswerKindBadge kind="registered" />
+          </StepHeading>
           <div className="mb-5 flex flex-wrap items-center gap-3">
             {analysed.length > 1 ? (
               <SegmentedControl

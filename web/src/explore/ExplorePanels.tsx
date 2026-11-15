@@ -1,7 +1,8 @@
 // Part of CaseFile Earth. Written with AI assistance; see docs/AI_USE.md.
 // What the globe's side panel shows: a 1° square (exploration), a registered place (graded verdicts), or a record
 // that has no map in this build. Every number is read from a result file; the panel only lays it out.
-import { ArrowRight, Compass, Map as MapIcon, MapPin } from 'lucide-react';
+import { ArrowRight, Map as MapIcon, MapPin } from 'lucide-react';
+import { AnswerKindBadge } from '../components/AnswerKind';
 import { pick, tOr, useT } from '../i18n';
 import { int, p as fmtP, rate as fmtRate } from '../i18n/format';
 import type { Catalog, CatalogVariable, Lineup, Region, RegionIndex } from '../data/types';
@@ -108,10 +109,7 @@ export function CellPanel({
       </p>
       <h2 className="text-[30px] leading-[1.1]">{where}</h2>
       <div className="flex flex-wrap gap-2">
-        <Badge tone="exploration">
-          <Compass aria-hidden="true" />
-          {t('family.exploration')}
-        </Badge>
+        <AnswerKindBadge kind="exploratory" />
         <Badge tone={info.testable ? (info.significant ? 'strong' : 'canttell') : 'noverdict'} data-testid="explore-cell-status">
           {info.testable ? (info.significant ? t('site.map.status_stands_out') : t('site.map.status_tested')) : t('site.map.status_untestable')}
         </Badge>

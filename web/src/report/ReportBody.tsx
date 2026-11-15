@@ -2,12 +2,14 @@
 // The body of a region report (exploration): every record at a glance, one record year by year (with a "play"
 // that draws it one year at a time), the year's rhythm as a clock, a comparison with any other place, and two
 // records against each other. Every number is the detail file's own; the screen sorts and places them and never
-// computes a mean, a trend or a difference. Region detail files are exploration, so no verdict words appear.
+// computes a mean, a trend or a difference. Region detail files are exploration, so no verdict words appear, except
+// on a tested place, where the line-up's registered answer sits beside each trend under its own "registered" badge.
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ArrowDown, ArrowUp, Compass, Info, Pause, Play, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Info, Pause, Play, X } from 'lucide-react';
 import { pick, tOr, useT } from '../i18n';
 import { int, num } from '../i18n/format';
-import type { Catalog, CatalogVariable, Lang } from '../data/types';
+import type { Catalog, CatalogVariable, Lang, LineupItem } from '../data/types';
+import { AnswerKindBadge, type AnswerKind } from '../components/AnswerKind';
 import { useExploreRegion, type ExploreIndex, type ExploreRegion, type ExploreRegionInfo, type ExploreVariable } from '../data/explore';
 import { useLang } from '../state/prefs';
 import { ClimateStripes } from '../charts/ClimateStripes';
@@ -18,7 +20,6 @@ import { LocatorGlobe } from '../components/atlas/LocatorGlobe';
 import { GroupIcon } from '../components/atlas/icons';
 import { WithData } from '../components/LoadState';
 import { ChangeDashboard, ThenAndNow } from './PastPresent';
-import { Badge } from '../ui/common/badge';
 import { SegmentedControl } from '../ui/common/toggle-group';
 import { cn } from '../ui/common/utils';
 
@@ -58,15 +59,18 @@ function varName(catalog: Catalog | undefined, id: string, lang: Lang): string {
   return v ? pick(v.name, lang) : id;
 }
 
-function Chapter({ id, n, title, lead, children }: { id: string; n: string; title: string; lead?: string; children: ReactNode }) {
+function Chapter({ id, n, title, lead, kind, children }: { id: string; n: string; title: string; lead?: string; kind?: AnswerKind; children: ReactNode }) {
   return (
     <section id={id} className="mt-14 scroll-mt-28 first:mt-0" aria-labelledby={`${id}-h`}>
       <div className="mb-5 flex items-baseline gap-3 border-b border-line pb-3">
         <span className="font-mono text-[12px] text-accent-ink">{n}</span>
-        <div className="min-w-0">
-          <h2 id={`${id}-h`} className="text-chapter">
-            {title}
-          </h2>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <h2 id={`${id}-h`} className="text-chapter">
+              {title}
+            </h2>
+            {kind ? <AnswerKindBadge kind={kind} /> : null}
+          </div>
           {lead ? <p className="mt-1.5 max-w-[70ch] text-[15px] leading-relaxed text-muted">{lead}</p> : null}
         </div>
       </div>
@@ -491,6 +495,7 @@ export function ReportBody({
   variable,
   onVariable,
   first = 1,
+  registered,
 }: {
   data: ExploreRegion;
   index: ExploreIndex;
@@ -499,6 +504,8 @@ export function ReportBody({
   onVariable: (id: string) => void;
   /** The number of the first chapter (a place page puts these after its own chapters). */
   first?: number;
+  /** A tested place's registered main-season tests by record, shown beside the exploration trends. */
+  registered?: Record<string, LineupItem>;
 }) {
   const t = useT();
   const lang = useLang();
@@ -518,21 +525,15 @@ export function ReportBody({
   const rainId = tested.find((v) => Boolean(v.sensitivity))?.id;
   return (
     <div data-testid="region-report">
-      <Chapter id="report-glance" n={n(0)} title={t('site.report.glance_title')} lead={t('site.report.glance_lead', { place: name })}>
-        <div className="mb-4 flex flex-wrap gap-2">
-          <Badge tone="exploration">
-            <Compass aria-hidden="true" />
-            {t('family.exploration')}
-          </Badge>
-        </div>
+      <Chapter id="report-glance" n={n(0)} title={t('site.report.glance_title')} lead={t('site.report.glance_lead', { place: name })} kind="descriptive">
         <Glance data={data} ids={ids} catalog={catalog} value={id} onPick={onVariable} />
       </Chapter>
 
-      <Chapter id="report-changing" n={n(1)} title={t('site.past.dash_title')} lead={t('site.past.dash_lead', { place: name })}>
-        <ChangeDashboard variables={data.variables} ids={ids} catalog={catalog} onPick={onVariable} />
+      <Chapter id="report-changing" n={n(1)} title={t('site.past.dash_title')} lead={t('site.past.dash_lead', { place: name })} kind="exploratory">
+        <ChangeDashboard variables={data.variables} ids={ids} catalog={catalog} onPick={onVariable} registered={registered} regionId={data.region.id} />
       </Chapter>
 
-      <Chapter id="report-years" n={n(2)} title={t('site.report.years_title', { record })} lead={t('site.report.years_lead')}>
+      <Chapter id="report-years" n={n(2)} title={t('site.report.years_title', { record })} lead={t('site.report.years_lead')} kind="descriptive">
         <div className="mb-4">
           <SegmentedControl size="sm" label={t('site.report.pick_record')} value={id} onValueChange={onVariable} options={ids.map((x) => ({ value: x, label: varName(catalog, x, lang), testId: `report-var-${x}` }))} />
         </div>
@@ -549,15 +550,17 @@ export function ReportBody({
             catalog={catalog}
             temp={tempId ? data.variables[tempId] : undefined}
             rain={rainId ? data.variables[rainId] : undefined}
+            registered={registered?.[id]}
+            regionId={data.region.id}
           />
         ) : null}
       </Chapter>
 
-      <Chapter id="report-rhythm" n={n(4)} title={t('site.report.rhythm_title')} lead={t('site.report.rhythm_lead', { record })}>
+      <Chapter id="report-rhythm" n={n(4)} title={t('site.report.rhythm_title')} lead={t('site.report.rhythm_lead', { record })} kind="descriptive">
         <Rhythm data={data} id={id} catalog={catalog} compare={other} />
       </Chapter>
 
-      <Chapter id="report-compare" n={n(5)} title={t('site.report.compare_title')} lead={t('site.report.compare_lead', { place: name })}>
+      <Chapter id="report-compare" n={n(5)} title={t('site.report.compare_title')} lead={t('site.report.compare_lead', { place: name })} kind="descriptive">
         <div className="flex flex-col gap-5">
           <div className="grid items-end gap-4 md:grid-cols-[minmax(0,360px)_1fr]">
             <RegionSelect index={index} value={compareId} exclude={data.region.id} onPick={setCompareId} label={t('site.report.compare_with')} testId="compare-select" />
@@ -610,7 +613,7 @@ export function ReportBody({
       </Chapter>
 
       {ids.length > 1 ? (
-        <Chapter id="report-relations" n={n(6)} title={t('site.report.relations_title')} lead={t('site.report.relations_lead')}>
+        <Chapter id="report-relations" n={n(6)} title={t('site.report.relations_title')} lead={t('site.report.relations_lead')} kind="descriptive">
           <Relations data={data} ids={ids} catalog={catalog} />
         </Chapter>
       ) : null}

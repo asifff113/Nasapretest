@@ -3,7 +3,8 @@
 // slowest to the fastest change, the squares rising and falling fastest, and simple counts of the squares by
 // their flags. Every value is the map file's own; the squares are only sorted and counted, never averaged. A
 // single answer for the whole country needs its own result file (exploration until it is pre-registered).
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Compass, Info } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Info } from 'lucide-react';
+import { AnswerKindBadge } from '../components/AnswerKind';
 import { pick, useT } from '../i18n';
 import { int, rate as fmtRate } from '../i18n/format';
 import type { CatalogVariable } from '../data/types';
@@ -11,7 +12,6 @@ import type { MapLayer } from '../data/results';
 import { useLang } from '../state/prefs';
 import { cellInfo, latLon } from '../map/ScreeningMap';
 import { diverging, scalePos } from '../map/colours';
-import { Badge } from '../ui/common/badge';
 import { cn } from '../ui/common/utils';
 import type { Understood } from '../data/matcher';
 import { UnderstoodChips } from './ExplorePanels';
@@ -145,10 +145,7 @@ export function CountryPanel({
       </p>
       <h2 className="text-[34px] leading-[1.05]">{name}</h2>
       <div className="flex flex-wrap gap-2">
-        <Badge tone="exploration">
-          <Compass aria-hidden="true" />
-          {t('family.exploration')}
-        </Badge>
+        <AnswerKindBadge kind="exploratory" />
       </div>
       {reportHref ? (
         <a

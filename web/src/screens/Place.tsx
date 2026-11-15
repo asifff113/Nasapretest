@@ -7,7 +7,7 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { pick, tOr, useT } from '../i18n';
 import { int, num } from '../i18n/format';
-import type { Lineup, Mask, Region, RegionIndex, Verdict } from '../data/types';
+import type { Lineup, LineupItem, Mask, Region, RegionIndex, Verdict } from '../data/types';
 import { paths } from '../data/results';
 import { useCatalog, usePrereg, useRegionIndex, useResult } from '../data/hooks';
 import { useLang } from '../state/prefs';
@@ -26,6 +26,7 @@ import { SegmentedControl } from '../ui/common/toggle-group';
 import { useExploreIndex, useExploreRegion, type ExploreIndex } from '../data/explore';
 import { RegionReport } from '../report/RegionReport';
 import { ReportBody, continentName } from '../report/ReportBody';
+import { AnswerKindBadge, registeredMain } from '../components/AnswerKind';
 import { href } from '../state/view';
 
 const CellPage = lazy(() => import('./CellPage'));
@@ -275,7 +276,9 @@ function RegionScreen() {
           <CellsPanel key={validRegion.id} region={validRegion} />
         </section>
         <section id="step-lineup" className="mt-16 scroll-mt-28">
-          <StepHeading n={2} title={t('lineup.title')} />
+          <StepHeading n={2} title={t('lineup.title')}>
+            <AnswerKindBadge kind="registered" />
+          </StepHeading>
           <WithData res={lineup} path={lineupPath ?? undefined}>
             {(l) => (
               <LineupTable
@@ -288,7 +291,9 @@ function RegionScreen() {
           </WithData>
         </section>
         <section id="step-verdict" className="mt-16 scroll-mt-28">
-          <StepHeading n={3} title={t('site.place.step_verdict_title')} />
+          <StepHeading n={3} title={t('site.place.step_verdict_title')}>
+            <AnswerKindBadge kind="registered" />
+          </StepHeading>
           {selected ? (
             <WithData res={verdict} path={selected.path}>
               {(v) => <VerdictView key={selected.path} verdict={v} path={selected.path} catalog={catalog.data} regionName={regionName} />}
@@ -299,7 +304,7 @@ function RegionScreen() {
         </section>
         {reportInfo && explore.data ? (
           <section id="step-report" className="mt-16 scroll-mt-28">
-            <RegionReportChapters id={reportInfo.id} index={explore.data} />
+            <RegionReportChapters id={reportInfo.id} index={explore.data} registered={registeredMain(lineup.data?.items)} />
           </section>
         ) : null}
         <StepBar steps={steps} current={step} onGo={(i) => goToStep(steps[i]?.id ?? '')} />
@@ -309,13 +314,13 @@ function RegionScreen() {
 }
 
 /** The report's chapters (every record year by year, the rhythm, comparisons) below a tested place's verdict. */
-function RegionReportChapters({ id, index }: { id: string; index: ExploreIndex }) {
+function RegionReportChapters({ id, index, registered }: { id: string; index: ExploreIndex; registered: Record<string, LineupItem> }) {
   const { view, patch } = useView();
   const catalog = useCatalog();
   const res = useExploreRegion(id);
   return (
     <WithData res={res}>
-      {(data) => <ReportBody data={data} index={index} catalog={catalog.data} variable={view.variable} onVariable={(v) => patch({ variable: v }, { replace: true })} first={4} />}
+      {(data) => <ReportBody data={data} index={index} catalog={catalog.data} variable={view.variable} onVariable={(v) => patch({ variable: v }, { replace: true })} first={4} registered={registered} />}
     </WithData>
   );
 }

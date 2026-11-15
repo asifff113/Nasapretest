@@ -5,7 +5,8 @@
 // fall, how many stand out, a histogram of their rates, and every country ranked by its squares. It computes no
 // mean and runs no test; a single tested trend for a whole country or continent needs its own engine run.
 import { useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, Compass, Info } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Info } from 'lucide-react';
+import { AnswerKindBadge } from '../components/AnswerKind';
 import { pick, useT } from '../i18n';
 import { int, rate as fmtRate } from '../i18n/format';
 import { loadMapLayer, type MapLayer } from '../data/results';
@@ -22,7 +23,6 @@ import type { CountryFeature } from '../data/places';
 import { Loading } from '../components/LoadState';
 import { Body } from '../components/Page';
 import { Hero } from '../components/atlas/Hero';
-import { Badge } from '../ui/common/badge';
 import { SegmentedControl } from '../ui/common/toggle-group';
 import { continentName } from '../report/ReportBody';
 
@@ -276,10 +276,7 @@ export default function TrendsScreen() {
           </div>
 
           <div>
-            <Badge tone="exploration">
-              <Compass aria-hidden="true" />
-              {t('family.exploration')}
-            </Badge>
+            <AnswerKindBadge kind="exploratory" />
           </div>
 
           {layer.status === 'loading' || !total ? (

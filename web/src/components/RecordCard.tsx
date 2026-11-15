@@ -6,6 +6,9 @@ import { pick, useT } from '../i18n';
 import { int } from '../i18n/format';
 import type { CatalogVariable } from '../data/types';
 import { useLang } from '../state/prefs';
+import { usePrereg } from '../data/hooks';
+import { useExploreIndex } from '../data/explore';
+import { AnswerKindBadge, recordKind } from './AnswerKind';
 import { Badge } from '../ui/common/badge';
 import { cn } from '../ui/common/utils';
 import { GroupIcon } from './atlas/icons';
@@ -35,6 +38,9 @@ export function RecordCard({ variable: v, why }: { variable: CatalogVariable; wh
   const lang = useLang();
   const deferred = v.status === 'deferred';
   const rc = v.record_card;
+  const prereg = usePrereg();
+  const explore = useExploreIndex();
+  const kind = recordKind(v, prereg.data, explore.data);
   return (
     <article
       data-tour={`record-card-${v.id}`}
@@ -55,8 +61,10 @@ export function RecordCard({ variable: v, why }: { variable: CatalogVariable; wh
         </span>
         <div className="min-w-0 flex-1">
           <h3 className={cn('font-display text-[24px] font-normal leading-tight', deferred && 'text-muted')}>{pick(v.name, lang)}</h3>
-          <div className="mt-1.5">
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
             <KindBadge v={v} />
+            {kind === 'registered' ? <AnswerKindBadge kind="registered" /> : null}
+            {kind === 'exploratory' ? <AnswerKindBadge kind="exploratory" label={t('site.kind.explored_only')} /> : null}
           </div>
         </div>
       </div>
