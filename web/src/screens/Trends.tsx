@@ -13,6 +13,7 @@ import { loadMapLayer, type MapLayer } from '../data/results';
 import { useAsync, useBuild, useCatalog } from '../data/hooks';
 import { exploreForCountryName, useExploreArea, useExploreIndex, useExploreRegion, type ExploreIndex } from '../data/explore';
 import { CountryTrendMap, LatitudeYears, ScopeTrend, TrendRanking } from '../report/TrendsMore';
+import { SquareRanking } from '../report/SquareRanking';
 import { useLang } from '../state/prefs';
 import { href, useView } from '../state/view';
 import { cellInfo } from '../map/ScreeningMap';
@@ -175,11 +176,11 @@ export default function TrendsScreen() {
   const total = useMemo(() => (layer.data ? tally(layer.data, scopeCells) : null), [layer.data, scopeCells]);
   const ranking = useMemo(() => {
     if (!layer.data || !rows) return [];
-    const list = rows
+    // Places with at least three tested squares; SquareRanking orders them.
+    return rows
       .filter((r) => level !== 'continent' || r.continent === continent)
       .map((r) => ({ r, x: tally(layer.data!, r.cells) }))
       .filter((o) => o.x.tested >= 3);
-    return list.sort((a, b) => b.x.up / b.x.tested - a.x.up / a.x.tested || b.x.sigUp - a.x.sigUp);
   }, [layer.data, rows, level, continent]);
 
   const record = variable ? pick(variable.name_mid ?? variable.name, lang) : '';
@@ -327,49 +328,19 @@ export default function TrendsScreen() {
               {layer.data ? <Histogram x={total} layer={layer.data} colormap={variable?.colormap?.trend} units={units} /> : null}
 
               {level !== 'country' ? (
-                <section aria-labelledby="trends-rank">
-                  <h2 id="trends-rank" className="mb-1 text-chapter">
-                    {t('site.trends.rank_title')}
-                  </h2>
-                  <p className="mb-4 mt-1 max-w-[70ch] text-[14.5px] text-muted">{t('site.trends.rank_lead', { record })}</p>
-                  {!rows ? (
-                    <Loading />
-                  ) : (
-                    <ol className="m-0 grid list-none gap-2 p-0 md:grid-cols-2" data-testid="trends-ranking">
-                      {ranking.map(({ r, x }, i) => (
-                        <li key={r.name}>
-                          <a
-                            href={
-                              r.regionId
-                                ? href({
-                                    screen: 'place',
-                                    region: r.regionId,
-                                    variable: variable?.id,
-                                  })
-                                : href({
-                                    screen: 'map',
-                                    variable: variable?.id,
-                                  })
-                            }
-                            className="flex flex-col gap-1.5 rounded-[8px] border border-line px-3 py-2 text-ink no-underline hover:border-accent hover:no-underline"
-                          >
-                            <span className="flex items-baseline gap-2">
-                              <span className="w-8 font-mono text-[12px] text-muted tabular">{int(i + 1, lang)}</span>
-                              <span className="flex-1 truncate font-medium">{r.displayName}</span>
-                              <span className="font-mono text-[12px] text-muted tabular">
-                                {t('site.trends.row', {
-                                  up: int(x.up, lang),
-                                  tested: int(x.tested, lang),
-                                })}
-                              </span>
-                            </span>
-                            <Split t={x} />
-                          </a>
-                        </li>
-                      ))}
-                    </ol>
-                  )}
-                </section>
+                !rows ? (
+                  <Loading />
+                ) : (
+                  <SquareRanking
+                    record={record}
+                    places={ranking.map(({ r, x }) => ({
+                      key: r.name,
+                      name: r.displayName,
+                      href: r.regionId ? href({ screen: 'place', region: r.regionId, variable: variable?.id }) : href({ screen: 'map', variable: variable?.id }),
+                      x,
+                    }))}
+                  />
+                )
               ) : null}
             </>
           )}
