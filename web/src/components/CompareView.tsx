@@ -290,7 +290,7 @@ export function CompareView({
           </Section>
         ) : null}
         <Section title={t('verdict.labels.checks')}>
-          <ChecksList sentences={text.checks} robustness={c.robustness} windowsLabel />
+          <ChecksList sentences={text.checks} robustness={c.robustness} variable={c.variable} windowsLabel />
         </Section>
         {text.practical.length ? (
           <Section title={t('verdict.labels.practical')}>

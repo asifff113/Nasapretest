@@ -71,7 +71,9 @@
       "mark_pass": "Passed",
       "mark_doubt": "Doubt",
       "mark_note": "Note",
-      "mark_skip": "Skipped"
+      "mark_skip": "Skipped",
+      "undated_breaks": "The check above covers only data changes with a known date. This record also has gradual data changes with no single date, so they cannot be checked year by year, and part of this trend could come from them:",
+      "undated_jump": "The jump around {year} has not been checked against these gradual data changes."
     },
     "chart": {
       "legend": "Chart key",

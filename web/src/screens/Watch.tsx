@@ -255,7 +255,7 @@ function Scene({ at, c, main, verdicts, index, lineupCatalog }: { at: string; c:
       return (
         <Card className="p-5 sm:p-6">
           <p className="mb-3 text-h3">{t('verdict.labels.checks')}</p>
-          <ChecksList sentences={(r.text[lang] ?? r.text.en).checks} robustness={r.robustness} windowsLabel />
+          <ChecksList sentences={(r.text[lang] ?? r.text.en).checks} robustness={r.robustness} variable={typeof r.variable === 'string' ? r.variable : r.variable.id} windowsLabel />
         </Card>
       );
     }

@@ -104,7 +104,7 @@ export function VerdictCard({ verdict, path, about }: { verdict: Verdict; path: 
         </Section>
       ) : null}
       <Section title={t('verdict.labels.checks')} testId="checks">
-        <ChecksList sentences={text.checks} robustness={verdict.robustness} windowsLabel />
+        <ChecksList sentences={text.checks} robustness={verdict.robustness} variable={verdict.variable.id} windowsLabel />
       </Section>
       {text.practical.length ? (
         <Section title={t('verdict.labels.practical')} testId="practical">
