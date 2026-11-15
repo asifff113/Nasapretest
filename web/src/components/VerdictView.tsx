@@ -20,6 +20,7 @@ import { statusInfo } from './StatusBadge';
 import { VerdictCard } from './VerdictCard';
 import { SensitivityPanel } from './SensitivityPanel';
 import { ChallengePanel } from './ChallengePanel';
+import { ExplainChart } from './ExplainChart';
 import { WithData } from './LoadState';
 
 export function chartText(t: ReturnType<typeof useT>, lang: 'en' | 'bn') {
@@ -108,6 +109,7 @@ export function VerdictView({ verdict, path, catalog, regionName }: { verdict: V
           <p className="text-muted">{t('site.chart.no_chart')}</p>
         )}
         <ChartLegend solid={solid} hasBand={Boolean(verdict.chart?.band)} hasBreaks={verdict.robustness.breaks.length > 0} colour={toneColour(tokens, info.tone)} />
+        <ExplainChart result={verdict} subject={`${varName}, ${regionName}`} />
         <div className="mt-6 border-t border-line pt-4">
           <p className="mb-1 text-sm font-semibold">{t('site.stripes.title')}</p>
           <p className="mb-3 text-[13px] text-muted">{t('site.stripes.note')}</p>

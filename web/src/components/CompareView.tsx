@@ -20,6 +20,7 @@ import { Switch } from '../ui/common/switch';
 import { CaseFolder, Section, SentenceList } from './CaseFolder';
 import { ChecksList, OverturnList } from './ChecksList';
 import { ChallengePanel } from './ChallengePanel';
+import { ExplainChart } from './ExplainChart';
 import { ExpertPanel } from './ExpertPanel';
 import { ProvenancePanel } from './ProvenancePanel';
 import { FamilyBadge, StatusBadge, statusInfo } from './StatusBadge';
@@ -210,6 +211,7 @@ export function CompareView({
           <p className="mb-3 mt-1 text-sm text-muted">{t('site.compare.departure_note', { from: int(c.window.first, lang), to: int(c.window.last, lang) })}</p>
           <DifferenceChart contrast={c} colour={toneColour(tokens, info.tone)} lang={lang} label={text.headline} text={{ ...chartText(t, lang), units: c.difference.units }} />
           <ChartLegend solid={solid} hasBand={Boolean(c.chart?.band)} hasBreaks={c.robustness.breaks.length > 0} colour={toneColour(tokens, info.tone)} />
+          <ExplainChart result={c} subject={`${nameA} − ${nameB}`} />
         </Card>
         <SensitivityBlock c={c} on={sensitivityOn} onToggle={onSensitivity} nameA={nameA} nameB={nameB} />
         <ChallengePanel result={c} />
